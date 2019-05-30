@@ -17,6 +17,7 @@ namespace ESFA.DC.Web.Operations.StartupConfiguration
                 })
                 .AddCookie(options =>
                 {
+                    options.Cookie.Domain = authSettings.Domain;
                     options.AccessDeniedPath = new PathString("/NotAuthorized");
                 })
                 .AddWsFederation(options =>
