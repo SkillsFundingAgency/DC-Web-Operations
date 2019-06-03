@@ -26,4 +26,14 @@
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Content Update="wwwroot\js\chat.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\lib\signalr\dist\browser\signalr.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

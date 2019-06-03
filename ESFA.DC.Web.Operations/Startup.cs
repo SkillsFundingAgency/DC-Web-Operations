@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Hubs;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -44,6 +44,8 @@ namespace ESFA.DC.Web.Operations
                 .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = false);
 
             services.AddAndConfigureAuthentication(authSettings);
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +63,13 @@ namespace ESFA.DC.Web.Operations
             }
 
             app.UseAuthentication();
+
+            app.UseStaticFiles();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
 
             app.UseMvc(routes =>
             {
