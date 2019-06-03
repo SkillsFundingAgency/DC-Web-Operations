@@ -6,6 +6,7 @@ using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -68,7 +69,10 @@ namespace ESFA.DC.Web.Operations
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<ChatHub>("/chatHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>

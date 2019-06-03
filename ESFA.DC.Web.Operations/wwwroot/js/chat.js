@@ -1,8 +1,10 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-connection.hub.logging = true;
-connection.start({ transport: ['webSockets','longPolling', 'serverSentEvents'] });
+var connection = new signalR
+    .HubConnectionBuilder()
+    .configureLogging(signalR.LogLevel.Information)
+    .withUrl("/chatHub", { transport: signalR.HttpTransportType.WebSockets }) 
+    .build();
 
 //Disable send button until connection is established
 document.getElementById("sendButton").disabled = true;
