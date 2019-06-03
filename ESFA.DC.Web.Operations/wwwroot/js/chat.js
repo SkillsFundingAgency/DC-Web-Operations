@@ -2,6 +2,7 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 connection.hub.logging = true;
+connection.start({ transport: ['webSockets','longPolling', 'serverSentEvents'] });
 
 //Disable send button until connection is established
 document.getElementById("sendButton").disabled = true;
