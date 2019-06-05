@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Settings", "ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj", "{2D2C6306-517F-420B-9470-C6A8763CAE9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.Web.Operations.Services", "ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj", "{F20133D9-0F2D-458F-9C35-C3E077264CF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Services", "ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj", "{F20133D9-0F2D-458F-9C35-C3E077264CF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.Web.Operations.Interfaces", "ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj", "{8BFC6849-1F44-4197-9064-1914E04D36AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Interfaces", "ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj", "{8BFC6849-1F44-4197-9064-1914E04D36AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.Web.Operations.Models", "ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj", "{A276A229-E30E-414B-9371-09E58C0B3C52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8BFC6849-1F44-4197-9064-1914E04D36AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BFC6849-1F44-4197-9064-1914E04D36AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BFC6849-1F44-4197-9064-1914E04D36AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A276A229-E30E-414B-9371-09E58C0B3C52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A276A229-E30E-414B-9371-09E58C0B3C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A276A229-E30E-414B-9371-09E58C0B3C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A276A229-E30E-414B-9371-09E58C0B3C52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

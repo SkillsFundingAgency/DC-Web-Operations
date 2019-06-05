@@ -22,12 +22,15 @@
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.664" />
+    <PackageReference Include="Microsoft.ServiceFabric.Client.Http" Version="2.0.0-preview13" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
   </ItemGroup>
 
 
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
   </ItemGroup>

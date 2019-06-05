@@ -17,6 +17,10 @@ namespace ESFA.DC.Web.Operations.Ioc
                     configuration.GetConfigSection<AuthenticationSettings>())
                 .As<AuthenticationSettings>().SingleInstance();
 
+            builder.Register(c =>
+                    configuration.GetConfigSection<JobQueueApiSettings>())
+                .As<JobQueueApiSettings>().SingleInstance();
+
             //builder.Register(c =>
             //        configuration.GetConfigSection<ApiSettings>())
             //    .As<ApiSettings>().SingleInstance();

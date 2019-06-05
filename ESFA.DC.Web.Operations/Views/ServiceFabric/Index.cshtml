@@ -1,0 +1,66 @@
+﻿@using Microsoft.ServiceFabric.Common
+@model ESFA.DC.Web.Operations.Models.ServiceFabric.RootObject
+@{
+    ViewData["Title"] = "ServiceFabric";
+}
+
+<h2>ServiceFabric Applications</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <td>Name</td>
+        <td>Version</td>
+        <td>HealthState</td>
+        <td>Status</td>
+    </tr>
+    </thead>
+    @foreach (var data in Model.Items)
+    {
+        <tr>
+            <td>
+                @data.TypeName
+            </td>
+            <td>
+                @data.TypeVersion
+            </td>
+            <td>
+                @data.HealthState
+            </td>
+            <td>
+                @data.Status
+            </td>
+        </tr>
+    }
+</table>
+
+
+<h2>ServiceFabric Nodes</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <td>Node Type</td>
+        <td>Count</td>
+        <td>Healthy</td>
+        <td>Bad</td>
+    </tr>
+    </thead>
+    @foreach (var nodeGroup in @Model.NodeItems.GroupBy(x => x.Type).Select(y => new {y.Key, NodeCount = y.Count()}))
+    {
+        <tr>
+            <td>
+                @nodeGroup.Key
+            </td>
+            <td>
+                @nodeGroup.NodeCount
+            </td>
+            <td>
+                @Model.NodeItems.Count(x => x.HealthState.HasValue && x.HealthState == HealthState.Ok && x.Type.Equals(nodeGroup.Key))
+            </td>
+            <td>
+                @Model.NodeItems.Count(x => (!x.HealthState.HasValue || x.HealthState != HealthState.Ok) && x.Type.Equals(nodeGroup.Key))
+            </td>
+        </tr>
+    }
+</table>
