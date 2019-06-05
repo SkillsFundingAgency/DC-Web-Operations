@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Hubs
 {
-    public class ChatHub : Hub
+    public class OperationsHub : Hub
     {
         public async Task SendMessage(string user, string message)
         {

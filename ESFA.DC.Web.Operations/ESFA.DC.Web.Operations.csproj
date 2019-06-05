@@ -34,7 +34,10 @@
 
 
   <ItemGroup>
-    <Content Update="wwwroot\js\chat.js">
+    <Content Update="wwwroot\js\periodEnd.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\js\operations.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\lib\signalr\dist\browser\signalr.js">

@@ -3,7 +3,7 @@
 var connection = new signalR
     .HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
-    .withUrl("/chatHub", { transport: signalR.HttpTransportType.WebSockets }) 
+    .withUrl("/operationsHub", { transport: signalR.HttpTransportType.WebSockets }) 
     .build();
 
 //Disable send button until connection is established
