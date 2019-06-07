@@ -4,8 +4,22 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
   </ItemGroup>
 
   <ItemGroup>

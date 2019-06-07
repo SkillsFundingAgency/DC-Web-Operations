@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Hubs;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +16,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace ESFA.DC.Web.Operations
 {
@@ -52,6 +57,10 @@ namespace ESFA.DC.Web.Operations
             services.AddSignalR();
 
             services.AddHostedService<TimedHostedService>();
+
+            services.AddHttpClient<IPeriodEndService, PeriodEndService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
 
             return ConfigureAutofac(services);
         }
@@ -94,12 +103,24 @@ namespace ESFA.DC.Web.Operations
             });
         }
 
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            var jitter = new Random();
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(3, retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    + TimeSpan.FromMilliseconds(jitter.Next(0, 100)));
+        }
+
         private IServiceProvider ConfigureAutofac(IServiceCollection services)
         {
             var containerBuilder = new ContainerBuilder();
             containerBuilder.SetupConfigurations(_config);
 
-            //containerBuilder.RegisterModule<ServiceRegistrations>();
+            containerBuilder.RegisterModule<ServiceRegistrations>();
             containerBuilder.RegisterModule<LoggerRegistrations>();
 
             containerBuilder.Populate(services);

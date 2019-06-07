@@ -21,9 +21,9 @@ namespace ESFA.DC.Web.Operations.Ioc
                     configuration.GetConfigSection<JobQueueApiSettings>())
                 .As<JobQueueApiSettings>().SingleInstance();
 
-            //builder.Register(c =>
-            //        configuration.GetConfigSection<ApiSettings>())
-            //    .As<ApiSettings>().SingleInstance();
+            builder.Register(c =>
+                    configuration.GetConfigSection<ApiSettings>())
+                .As<ApiSettings>().SingleInstance();
 
             //builder.Register(c =>
             //        configuration.GetConfigSection<FeatureFlags>())

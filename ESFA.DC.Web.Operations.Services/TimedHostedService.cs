@@ -20,15 +20,9 @@ namespace ESFA.DC.Web.Operations.Services
         {
             _logger.LogInfo("Timed Background Service is starting.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, 
-                TimeSpan.FromSeconds(5));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 
             return Task.CompletedTask;
-        }
-
-        private void DoWork(object state)
-        {
-            _logger.LogInfo("Timed Background Service is working.");
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -43,6 +37,11 @@ namespace ESFA.DC.Web.Operations.Services
         public void Dispose()
         {
             _timer?.Dispose();
+        }
+
+        private void DoWork(object state)
+        {
+            _logger.LogInfo("Timed Background Service is working.");
         }
     }
 }
