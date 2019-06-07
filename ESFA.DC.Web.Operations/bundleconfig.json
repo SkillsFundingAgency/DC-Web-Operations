@@ -24,16 +24,6 @@
     "sourceMap": false
   },
   {
-    "outputFileName": "wwwroot/assets/minified/declaration.min.js",
-    "inputFiles": [
-      "wwwroot/assets/js/declaration.js"
-    ],
-    "minify": {
-      "enabled": true
-    },
-    "sourceMap": false
-  },
-  {
     "outputFileName": "wwwroot/assets/minified/hub.min.js",
     "inputFiles": [
       "wwwroot/assets/js/hubs/operations.js",
