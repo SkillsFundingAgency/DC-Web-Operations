@@ -56,7 +56,7 @@ namespace ESFA.DC.Web.Operations
 
             services.AddSignalR();
 
-            services.AddHostedService<TimedHostedService>();
+            //services.AddHostedService<TimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes

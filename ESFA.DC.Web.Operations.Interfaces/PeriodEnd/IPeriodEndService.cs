@@ -4,6 +4,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IPeriodEndService
     {
-        Task Proceed();
+        Task Proceed(int startIndex = 0);
     }
 }

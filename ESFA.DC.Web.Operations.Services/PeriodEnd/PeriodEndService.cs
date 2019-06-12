@@ -19,9 +19,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task Proceed()
+        public async Task Proceed(int startIndex = 0)
         {
-            await GetDataAsync(_baseUrl + "/api/periodend/proceed");
+            await GetDataAsync(_baseUrl + "/api/periodend/proceed/" + startIndex);
         }
     }
 }
