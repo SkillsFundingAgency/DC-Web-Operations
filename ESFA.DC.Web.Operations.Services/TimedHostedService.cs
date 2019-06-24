@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.Hubs;
 using Microsoft.Extensions.Hosting;
 
 namespace ESFA.DC.Web.Operations.Services
@@ -9,11 +11,18 @@ namespace ESFA.DC.Web.Operations.Services
     public class TimedHostedService : IHostedService, IDisposable
     {
         private readonly ILogger _logger;
+        private readonly IPeriodEndService _periodEndService;
         private Timer _timer;
+        private readonly PeriodEndHub _periodEndHub;
 
-        public TimedHostedService(ILogger logger)
+        public TimedHostedService(
+            ILogger logger,
+            IPeriodEndService periodEndService,
+            PeriodEndHub periodEndHub)
         {
             _logger = logger;
+            _periodEndService = periodEndService;
+            _periodEndHub = periodEndHub;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -41,7 +50,9 @@ namespace ESFA.DC.Web.Operations.Services
 
         private void DoWork(object state)
         {
-            _logger.LogInfo("Timed Background Service is working.");
+            var result = _periodEndService.GetPathItemStates().Result;
+
+            _periodEndHub.SendMessage(result);
         }
     }
 }

@@ -4,10 +4,10 @@ using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ESFA.DC.Web.Operations.Extensions;
-using ESFA.DC.Web.Operations.Hubs;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
@@ -56,7 +56,7 @@ namespace ESFA.DC.Web.Operations
 
             services.AddSignalR();
 
-            //services.AddHostedService<TimedHostedService>();
+            services.AddHostedService<TimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
@@ -122,6 +122,8 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterModule<ServiceRegistrations>();
             containerBuilder.RegisterModule<LoggerRegistrations>();
+
+            containerBuilder.RegisterType<PeriodEndHub>().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

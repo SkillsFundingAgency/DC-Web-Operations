@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -15,12 +15,15 @@
   <ItemGroup>
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.ViewModels\ESFA.DC.Web.Operations.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

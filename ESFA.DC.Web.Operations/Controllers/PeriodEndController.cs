@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
+    [Route("periodend")]
     public class PeriodEndController : Controller
     {
         private readonly IPeriodEndService _periodEndService;
@@ -14,9 +15,15 @@ namespace ESFA.DC.Web.Operations.Controllers
 
         public IActionResult Index()
         {
+            return View();
+        }
+
+        [HttpPost("proceed")]
+        public IActionResult Proceed()
+        {
             _periodEndService.Proceed();
 
-            return View();
+            return View("Index");
         }
     }
 }

@@ -1,25 +1,22 @@
-﻿<div class="container">
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            User..........<input type="text" id="userInput" />
-            <br />
-            Message...<input type="text" id="messageInput" />
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
+﻿<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Period end
+            <span class="govuk-caption-xl">RO6 closed 22 April 2019 at 18.05</span>
+        </h1>
+        
+        
+        @using (Html.BeginForm("Proceed", "PeriodEnd", FormMethod.Post, new {@class = "app-task-list__section"}))
+        {
+            <input type="submit" class="govuk-button customised" id="start" name="Start">
+        }
+        <ol id="pathContainer" class="app-task-list">
+        </ol>
     </div>
 </div>
-<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/assets/js/hubs/periodEnd.js"></script>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/hubs/periodEnd.js"></script>
+}

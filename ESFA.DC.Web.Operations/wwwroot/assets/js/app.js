@@ -1,40 +1,40 @@
-﻿/* global $ */
+﻿///* global $ */
 
-// Warn about using the kit in production
-if (window.console && window.console.info) {
-    window.console.info('GOV.UK Prototype Kit - do not use for production');
-}
+//// Warn about using the kit in production
+//if (window.console && window.console.info) {
+//    window.console.info('GOV.UK Prototype Kit - do not use for production');
+//}
 
-$(document).ready(function() {
-    window.GOVUKFrontend.initAll();
-});
+//$(document).ready(function() {
+//    window.GOVUKFrontend.initAll();
+//});
 
-$("#backlink").click(function(event) {
-    event.preventDefault();
-    history.back(1);
-});
+//$("#backlink").click(function(event) {
+//    event.preventDefault();
+//    history.back(1);
+//});
 
-$("#typeFilter :checkbox").click(function() {
-    $(".cards").hide();
-    $("#typeFilter :checkbox:checked").each(function() {
-        $("." + $(this).val()).show();
-    });
+//$("#typeFilter :checkbox").click(function() {
+//    $(".cards").hide();
+//    $("#typeFilter :checkbox:checked").each(function() {
+//        $("." + $(this).val()).show();
+//    });
 
-    if (!$("#typeFilter :checkbox").is(':checked')) {
-      $(".cards").show();
-    }
-});
+//    if (!$("#typeFilter :checkbox").is(':checked')) {
+//      $(".cards").show();
+//    }
+//});
 
-$("#yearFilter :checkbox").click(function() {
-    $(".year-groups").hide();
-    $("#yearFilter :checkbox:checked").each(function() {
-        $("." + $(this).val()).show();
-    });
+//$("#yearFilter :checkbox").click(function() {
+//    $(".year-groups").hide();
+//    $("#yearFilter :checkbox:checked").each(function() {
+//        $("." + $(this).val()).show();
+//    });
 
-    if (!$("#yearFilter :checkbox").is(':checked')) {
-      $(".year-groups").show();
-    }
-});
+//    if (!$("#yearFilter :checkbox").is(':checked')) {
+//      $(".year-groups").show();
+//    }
+//});
 
 
 // to add a URL to the button when any radio button is select - ADD NEW PROVIDER PAGE //

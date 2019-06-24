@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ESFA.DC.Web.Operations.Hubs
+namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class OperationsHub : Hub
     {
