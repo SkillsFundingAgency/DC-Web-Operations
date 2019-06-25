@@ -8,18 +8,21 @@ using Microsoft.Extensions.Hosting;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class TimedHostedService : IHostedService, IDisposable
+    public sealed class TimedHostedService : IHostedService, IDisposable
     {
+        private const int TimerCadenceMs = 5000;
+
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
         private readonly PeriodEndHub _periodEndHub;
 
-        private readonly ManualResetEvent timerResetEvent = new ManualResetEvent(false);
-        private readonly object timerStopLock = new object();
-        private readonly object timerChangeLock = new object();
+        private readonly ManualResetEvent _timerResetEvent = new ManualResetEvent(false);
+        private readonly object _timerStopLock = new object();
+        private readonly object _timerChangeLock = new object();
 
         private Timer _timer;
-        private bool timerStopFlag;
+        private bool _timerStopFlag;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public TimedHostedService(
             ILogger logger,
@@ -56,52 +59,70 @@ namespace ESFA.DC.Web.Operations.Services
 
         private void StartTimer()
         {
-            lock (timerChangeLock)
+            lock (_timerChangeLock)
             {
-                timerStopFlag = false;
-                timerResetEvent.Set();
-                _timer = new Timer(DoWork, null, TimeSpan.FromSeconds(5).Milliseconds, Timeout.Infinite);
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = new CancellationTokenSource();
+                _timerStopFlag = false;
+                _timerResetEvent.Set();
+                _timer = new Timer(DoWork, null, TimerCadenceMs, Timeout.Infinite);
             }
         }
 
         private void StopTimer()
         {
-            lock (timerChangeLock)
+            lock (_timerChangeLock)
             {
-                timerResetEvent.Reset();
-                lock (timerStopLock)
+                // Stop and Dispose called together, prevent running method twice.
+                if (_timer == null)
                 {
-                    timerStopFlag = true;
+                    return;
                 }
 
-                if (timerResetEvent.WaitOne(5500))
+                _cancellationTokenSource.Cancel();
+                _timerResetEvent.Reset();
+                lock (_timerStopLock)
                 {
-                    _timer?.Dispose();
-                    _timer = null;
+                    _timerStopFlag = true;
                 }
+
+                if (!_timerResetEvent.WaitOne(TimerCadenceMs * 2))
+                {
+                    _logger.LogWarning("Timed SignalR Background Service did not terminate correctly");
+                }
+
+                _timer?.Dispose();
+                _timer = null;
             }
         }
 
         private async void DoWork(object state)
         {
-            // Get state JSON.
-            string result = await _periodEndService.GetPathItemStates();
+            try
+            {
+                // Get state JSON.
+                string result = await _periodEndService.GetPathItemStates(_cancellationTokenSource.Token);
 
-            // Send JSON to clients.
-            await _periodEndHub.SendMessage(result);
+                // Send JSON to clients.
+                await _periodEndHub.SendMessage(result, _cancellationTokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Timed SignalR Background Service failed to DoWork", ex);
+            }
 
             // If we're told to stop then set block to continue, and exit method.
-            lock (timerStopLock)
+            lock (_timerStopLock)
             {
-                if (timerStopFlag)
+                if (_timerStopFlag)
                 {
-                    timerResetEvent.Set();
+                    _timerResetEvent.Set();
                     return;
                 }
             }
 
-            // Set timer to tick in 5 seconds.
-            _timer.Change(TimeSpan.FromSeconds(5).Milliseconds, Timeout.Infinite);
+            // Set timer to tick in TimerCadenceMs milliseconds.
+            _timer.Change(TimerCadenceMs, Timeout.Infinite);
         }
     }
 }

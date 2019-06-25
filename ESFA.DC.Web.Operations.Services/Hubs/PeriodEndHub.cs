@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
@@ -12,11 +13,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _hubContext = hubContext;
         }
 
-        public async Task SendMessage(string paths)
+        public async Task SendMessage(string paths, CancellationToken cancellationToken)
         {
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths);
-
-            //await Clients.All.SendAsync("ReceiveMessage", paths);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
         }
     }
 }

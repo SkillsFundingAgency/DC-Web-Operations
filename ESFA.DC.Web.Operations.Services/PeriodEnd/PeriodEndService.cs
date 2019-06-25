@@ -1,5 +1,5 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -11,38 +11,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
     {
         private readonly string _baseUrl;
 
-    //    private string mockData = @"[{
-    //            'PathId': '1',
-    //        'Name': 'Critical Path',
-    //        'PathItems': [{
-    //        'PathId': '1',
-    //        'Name': 'Item1',
-    //        'Ordinal': '1',
-    //        'PathItemJobs': [{
-    //            'JobId': '123',
-    //            'Status': '1'
-    //        },
-    //        {
-    //            'JobId': '124',
-    //            'Status': '2'
-    //        }
-    //        ]
-    //    },
-    //    {
-    //        'PathId': '2',
-    //        'Name': 'Item2',
-    //        'Ordinal': '2',
-    //        'PathItemJobs': []
-    //    },
-    //    {
-    //        'PathId': '3',
-    //        'Name': 'Item3',
-    //        'Ordinal': '3',
-    //        'PathItemJobs': []
-    //    }
-    //    ]
-    //}]";
-
         public PeriodEndService(
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
@@ -52,14 +20,14 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task Proceed(int startIndex = 0)
+        public async Task Proceed(int startIndex = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync(_baseUrl + "/api/periodend/proceed/" + startIndex);
+            await GetDataAsync(_baseUrl + "/api/periodend/proceed/" + startIndex, cancellationToken);
         }
 
-        public async Task<string> GetPathItemStates()
+        public async Task<string> GetPathItemStates(CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync(_baseUrl + "/api/periodend/getStates/");
+            string data = await GetDataAsync(_baseUrl + "/api/periodend/getStates/", cancellationToken);
             return data;
         }
     }

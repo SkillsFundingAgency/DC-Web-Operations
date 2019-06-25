@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -37,9 +38,9 @@ namespace ESFA.DC.Web.Operations.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<string> GetDataAsync(string url)
+        public async Task<string> GetDataAsync(string url, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.GetAsync(new Uri(url));
+            HttpResponseMessage response = await _httpClient.GetAsync(new Uri(url), cancellationToken);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
