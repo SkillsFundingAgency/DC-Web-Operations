@@ -20,6 +20,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
+        public async Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await GetDataAsync($"{_baseUrl}/api/periodend/proceed/{year}/{period}", cancellationToken);
+        }
+
         public async Task Proceed(int startIndex = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
             await GetDataAsync(_baseUrl + "/api/periodend/proceed/" + startIndex, cancellationToken);

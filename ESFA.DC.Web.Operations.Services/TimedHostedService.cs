@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public sealed class TimedHostedService : IHostedService, IDisposable
+    public class TimedHostedService : IHostedService, IDisposable
     {
         private const int TimerCadenceMs = 5000;
 

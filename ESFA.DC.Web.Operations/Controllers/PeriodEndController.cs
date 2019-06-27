@@ -18,6 +18,14 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View();
         }
 
+        [HttpPost("startPeriodEnd")]
+        public IActionResult StartPeriodEnd()
+        {
+            _periodEndService.StartPeriodEnd(2018, 1);
+
+            return View("Index");
+        }
+
         [HttpPost("proceed")]
         public IActionResult Proceed()
         {
