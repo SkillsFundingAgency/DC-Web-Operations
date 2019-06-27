@@ -1,4 +1,5 @@
-﻿using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+﻿using System.Threading.Tasks;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
@@ -13,8 +14,10 @@ namespace ESFA.DC.Web.Operations.Controllers
             _periodEndService = periodEndService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var paths = await _periodEndService.GetPathItemStates();
+            ViewBag.Paths = paths;
             return View();
         }
 

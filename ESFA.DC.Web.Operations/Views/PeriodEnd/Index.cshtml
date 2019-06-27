@@ -4,15 +4,14 @@
             Period end
             <span class="govuk-caption-xl">RO6 closed 22 April 2019 at 18.05</span>
         </h1>
-        
-        
-        @using (Html.BeginForm("StartPeriodEnd", "PeriodEnd", FormMethod.Post, new {@class = "app-task-list__section"}))
+
+
+        @using (Html.BeginForm("StartPeriodEnd", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
         {
             <input type="submit" class="govuk-button customised" id="start" value="Start Period End">
         }
 
-        <ol id="pathContainer" class="app-task-list">
-        </ol>
+        <ol id="pathContainer" class="app-task-list"></ol>
     </div>
 </div>
 
@@ -20,4 +19,11 @@
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/assets/js/hubs/periodEnd.js"></script>
+
+    <script>
+        (function() {
+            let paths = '@Html.Raw(ViewBag.Paths)';
+            renderPaths(paths);
+        })();
+    </script>
 }

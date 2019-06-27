@@ -30,7 +30,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await GetDataAsync(_baseUrl + "/api/periodend/proceed/" + startIndex, cancellationToken);
         }
 
-        public async Task<string> GetPathItemStates(CancellationToken cancellationToken)
+        public async Task<string> GetPathItemStates(CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + "/api/periodend/getStates/", cancellationToken);
             return data;

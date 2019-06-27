@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var connection = new signalR
+let connection = new signalR
     .HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .withUrl("/periodEndHub", { transport: signalR.HttpTransportType.WebSockets }) 
@@ -18,31 +18,37 @@ function pathItemCompare( a, b ) {
 
 function jobStatusConvertor(status) {
     switch (status) {
-    case 1:
-        return "Ready";
-    case 1:
-        return "Moved For Processing";
-    case 1:
-        return "Processing";
-    case 1:
-        return "Completed";
-    case 1:
-        return "Failed Retry";
-    case 1:
-        return "Failed";
-    case 1:
-        return "Paused";
-    case 1:
-        return "Waiting";
-    default:
+        case 1:
+            return "Ready";
+        case 2:
+            return "Moved For Processing";
+        case 3:
+            return "Processing";
+        case 4:
+            return "Completed";
+        case 5:
+            return "Failed Retry";
+        case 6:
+            return "Failed";
+        case 7:
+            return "Paused";
+        case 8:
+            return "Waiting";
+        default:
     }
 }
 
-function renderProceed(pathItem) {
+function isJobComplete(jobStatus) {
+    if (jobStatus === 4 || jobStatus === 6)
+        return true;
+    return false;
+}
+
+function renderProceed(pathItem, enabled) {
     const node = 
         `<span>
             <form method='post' action='/periodend/proceed'>
-                <input type="submit" value="Proceed"> 
+                <input type="submit" value="Proceed" ${enabled ? "" : "disabled"}> 
             </form>
         </span>`;
     pathItem.insertAdjacentHTML('beforeend', node);
@@ -52,11 +58,15 @@ function renderJob(job, jobList) {
     let jobItem = document.createElement("li");
     jobItem.textContent = `Job Id : ${job.jobId}, Status : ${jobStatusConvertor(job.status)}`;
     jobList.appendChild(jobItem);
+
+    return isJobComplete(job.status);
 }
 
 function renderPathItem(path, pathItem, subItemList){
     let currentItem = pathItem.ordinal === path.position;
-    
+
+    let enableProceed = true;
+
     let item = document.createElement("li");
     item.textContent = pathItem.name;
 
@@ -64,14 +74,17 @@ function renderPathItem(path, pathItem, subItemList){
     if (jobItems != undefined && jobItems.length > 0) {
         var jobList = document.createElement("ul");
         jobItems.forEach(function(job) {
-            renderJob(job, jobList);
+            var completed  = renderJob(job, jobList);
+            if (!completed) {
+                enableProceed = false;
+            }
         });
 
         item.appendChild(jobList);
     }
 
     if (currentItem) {
-        renderProceed(item);
+        renderProceed(item, enableProceed);
     
         let bold = document.createElement("b");
         subItemList.appendChild(bold);
@@ -85,35 +98,36 @@ function renderPathItem(path, pathItem, subItemList){
 }
 
 
-connection.on("ReceiveMessage",
-    function(pathString) {
-        
-        let paths = JSON.parse(pathString);
+function renderPaths(pathString) {
 
-        let pathContainer = document.getElementById("pathContainer");
-        while (pathContainer.firstChild) {
-            pathContainer.removeChild(pathContainer.firstChild);
+    let paths = JSON.parse(pathString);
+
+    let pathContainer = document.getElementById("pathContainer");
+    while (pathContainer.firstChild) {
+        pathContainer.removeChild(pathContainer.firstChild);
+    }
+
+    paths.forEach(function(path) {
+        let pathItems = path.pathItems;
+
+        if (pathItems != undefined && pathItems.length > 0) {
+            pathItems.sort(pathItemCompare);
+
+            let li = document.createElement("li");
+            li.textContent = path.name;
+
+            let subItemList = document.createElement("ul");
+            pathItems.forEach(function(pathItem) {
+                renderPathItem(path, pathItem, subItemList);
+            });
+
+            li.appendChild(subItemList);
+
+            pathContainer.appendChild(li);
         }
+    });
+}
 
-        paths.forEach(function(path) {
-            let pathItems = path.pathItems;
-
-            if (pathItems != undefined && pathItems.length > 0) {
-                pathItems.sort(pathItemCompare);
-
-                let li = document.createElement("li");
-                li.textContent = path.name;
-
-                let subItemList = document.createElement("ul");
-                pathItems.forEach(function(pathItem) {
-                    renderPathItem(path, pathItem, subItemList);
-                });
-
-                li.appendChild(subItemList);
-
-                pathContainer.appendChild(li);
-            }
-        });
-});
+connection.on("ReceiveMessage", renderPaths);
 
 connection.start();
