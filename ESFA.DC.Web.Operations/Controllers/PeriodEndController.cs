@@ -24,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpPost("startPeriodEnd")]
         public IActionResult StartPeriodEnd()
         {
-            _periodEndService.StartPeriodEnd(2018, 1);
+            _periodEndService.StartPeriodEnd(1819, 1);
 
             return View("Index");
         }

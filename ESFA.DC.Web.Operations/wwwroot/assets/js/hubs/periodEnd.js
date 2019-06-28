@@ -39,7 +39,7 @@ function jobStatusConvertor(status) {
 }
 
 function isJobComplete(jobStatus) {
-    if (jobStatus === 4 || jobStatus === 6)
+    if (jobStatus === 4)
         return true;
     return false;
 }
@@ -99,6 +99,10 @@ function renderPathItem(path, pathItem, subItemList){
 
 
 function renderPaths(pathString) {
+
+    if (pathString === "" || pathString === undefined) {
+        return;
+    }
 
     let paths = JSON.parse(pathString);
 
