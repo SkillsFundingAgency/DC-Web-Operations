@@ -98,10 +98,13 @@ namespace ESFA.DC.Web.Operations.Services
 
         private async void DoWork(object state)
         {
+            var year = 1819;
+            var period = 1;
+
             try
             {
                 // Get state JSON.
-                string result = await _periodEndService.GetPathItemStates(_cancellationTokenSource.Token);
+                string result = await _periodEndService.GetPathItemStates(year, period, _cancellationTokenSource.Token);
 
                 // Send JSON to clients.
                 await _periodEndHub.SendMessage(result, _cancellationTokenSource.Token);

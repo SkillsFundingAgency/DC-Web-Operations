@@ -7,8 +7,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
     {
         Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task Proceed(int startIndex = 0, CancellationToken cancellationToken = default(CancellationToken));
+        Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<string> GetPathItemStates(CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

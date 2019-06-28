@@ -47,7 +47,7 @@ function isJobComplete(jobStatus) {
 function renderProceed(pathItem, enabled) {
     const node = 
         `<span>
-            <form method='post' action='/periodend/proceed'>
+            <form method='post' action='/periodEnd/proceed'>
                 <input type="submit" value="Proceed" ${enabled ? "" : "disabled"}> 
             </form>
         </span>`;
@@ -62,7 +62,7 @@ function renderJob(job, jobList) {
     return isJobComplete(job.status);
 }
 
-function renderPathItem(path, pathItem, subItemList){
+function renderPathItem(path, pathItem, subItemList, pathItemCount){
     let currentItem = pathItem.ordinal === path.position;
 
     let enableProceed = true;
@@ -84,8 +84,10 @@ function renderPathItem(path, pathItem, subItemList){
     }
 
     if (currentItem) {
-        renderProceed(item, enableProceed);
-    
+        if (pathItem.ordinal !== pathItemCount - 1) {
+            renderProceed(item, enableProceed);
+        }
+
         let bold = document.createElement("b");
         subItemList.appendChild(bold);
 
@@ -114,6 +116,7 @@ function renderPaths(pathString) {
     paths.forEach(function(path) {
         let pathItems = path.pathItems;
 
+        let pathItemCount = pathItems.length;
         if (pathItems != undefined && pathItems.length > 0) {
             pathItems.sort(pathItemCompare);
 
@@ -122,7 +125,7 @@ function renderPaths(pathString) {
 
             let subItemList = document.createElement("ul");
             pathItems.forEach(function(pathItem) {
-                renderPathItem(path, pathItem, subItemList);
+                renderPathItem(path, pathItem, subItemList, pathItemCount);
             });
 
             li.appendChild(subItemList);

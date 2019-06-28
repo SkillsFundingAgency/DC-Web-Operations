@@ -22,17 +22,17 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync($"{_baseUrl}/api/periodend/proceed/{year}/{period}", cancellationToken);
+            await GetDataAsync($"{_baseUrl}/api/periodend/startPeriodEnd/{year}/{period}", cancellationToken);
         }
 
-        public async Task Proceed(int startIndex = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync(_baseUrl + "/api/periodend/proceed/" + startIndex, cancellationToken);
+            await GetDataAsync(_baseUrl + $"/api/periodend/proceed/{year}/{period}/{path}", cancellationToken);
         }
 
-        public async Task<string> GetPathItemStates(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + "/api/periodend/getStates/", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + $"/api/periodend/getStates/{year}/{period}", cancellationToken);
             return data;
         }
     }

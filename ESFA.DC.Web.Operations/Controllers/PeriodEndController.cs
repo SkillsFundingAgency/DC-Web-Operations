@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    [Route("periodend")]
+    [Route("periodEnd")]
     public class PeriodEndController : Controller
     {
         private readonly IPeriodEndService _periodEndService;
@@ -16,7 +16,7 @@ namespace ESFA.DC.Web.Operations.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var paths = await _periodEndService.GetPathItemStates();
+            var paths = await _periodEndService.GetPathItemStates(1819, 1);
             ViewBag.Paths = paths;
             return View();
         }
@@ -32,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpPost("proceed")]
         public IActionResult Proceed()
         {
-            _periodEndService.Proceed();
+            _periodEndService.Proceed(1819, 1, 0);
 
             return View("Index");
         }
