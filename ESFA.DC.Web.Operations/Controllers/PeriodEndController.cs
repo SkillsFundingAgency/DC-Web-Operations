@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
@@ -7,34 +9,79 @@ namespace ESFA.DC.Web.Operations.Controllers
     [Route("periodEnd")]
     public class PeriodEndController : Controller
     {
+        private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
 
-        public PeriodEndController(IPeriodEndService periodEndService)
+        public PeriodEndController(
+            IPeriodService periodService,
+            IPeriodEndService periodEndService)
         {
+            _periodService = periodService;
             _periodEndService = periodEndService;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet("{collectionYear?}/{period?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var paths = await _periodEndService.GetPathItemStates(1819, 1);
-            ViewBag.Paths = paths;
-            return View();
+            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            PeriodEndViewModel model;
+
+            if (collectionYear != null && period != null)
+            {
+                model = await ShowPath(collectionYear.Value, period.Value);
+            }
+            else
+            {
+                model = await ShowPath(currentYearPeriod.Year, currentYearPeriod.Period);
+            }
+
+            model.CurrentPeriod = currentYearPeriod.Period;
+
+            return View(model);
         }
 
         [HttpPost("startPeriodEnd")]
-        public IActionResult StartPeriodEnd()
+        public async Task<IActionResult> StartPeriodEnd(int collectionYear, int period)
         {
-            _periodEndService.StartPeriodEnd(1819, 1);
+            await _periodEndService.StartPeriodEnd(collectionYear, period);
 
-            return View("Index");
+            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var model = await ShowPath(collectionYear, period);
+            model.CurrentPeriod = currentYearPeriod.Period;
+
+            return View("Index", model);
         }
 
         [HttpPost("proceed")]
-        public IActionResult Proceed()
+        public async Task<IActionResult> Proceed(int collectionYear, int period)
         {
-            _periodEndService.Proceed(1819, 1, 0);
+            await _periodEndService.Proceed(collectionYear, period, 0);
 
-            return View("Index");
+            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var model = await ShowPath(collectionYear, period);
+            model.CurrentPeriod = currentYearPeriod.Period;
+
+            return View("Index", model);
+        }
+
+        [HttpPost("selectPeriod")]
+        public async Task<IActionResult> SelectPeriod(int collectionYear, int period)
+        {
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
+        private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
+        {
+            var paths = await _periodEndService.GetPathItemStates(collectionYear, period);
+
+            var model = new PeriodEndViewModel
+            {
+                Period = period,
+                Year = collectionYear,
+                Paths = paths
+            };
+
+            return model;
         }
     }
 }

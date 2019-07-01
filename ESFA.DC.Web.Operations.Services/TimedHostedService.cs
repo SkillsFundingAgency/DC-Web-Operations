@@ -12,6 +12,7 @@ namespace ESFA.DC.Web.Operations.Services
     {
         private const int TimerCadenceMs = 5000;
 
+        private readonly IPeriodService _periodService;
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
         private readonly PeriodEndHub _periodEndHub;
@@ -25,10 +26,12 @@ namespace ESFA.DC.Web.Operations.Services
         private CancellationTokenSource _cancellationTokenSource;
 
         public TimedHostedService(
+            IPeriodService periodService,
             ILogger logger,
             IPeriodEndService periodEndService,
             PeriodEndHub periodEndHub)
         {
+            _periodService = periodService;
             _logger = logger;
             _periodEndService = periodEndService;
             _periodEndHub = periodEndHub;
@@ -98,13 +101,12 @@ namespace ESFA.DC.Web.Operations.Services
 
         private async void DoWork(object state)
         {
-            var year = 1819;
-            var period = 1;
+            var currentPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
 
             try
             {
                 // Get state JSON.
-                string result = await _periodEndService.GetPathItemStates(year, period, _cancellationTokenSource.Token);
+                string result = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
 
                 // Send JSON to clients.
                 await _periodEndHub.SendMessage(result, _cancellationTokenSource.Token);

@@ -62,6 +62,10 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddHttpClient<IPeriodService, PeriodService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
             return ConfigureAutofac(services);
         }
 

@@ -9,7 +9,7 @@ namespace ESFA.DC.Web.Operations.Services
 {
     public abstract class BaseHttpClientService
     {
-        private readonly IJsonSerializationService _jsonSerializationService;
+        protected readonly IJsonSerializationService _jsonSerializationService;
         private readonly HttpClient _httpClient;
 
         public BaseHttpClientService(
