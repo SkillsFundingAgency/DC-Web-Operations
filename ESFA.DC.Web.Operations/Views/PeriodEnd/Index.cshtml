@@ -5,7 +5,7 @@
         <h1 class="govuk-heading-xl" style="margin-bottom:10px;">Period end</h1>
         <br />
         <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
-        
+
 
         @using (Html.BeginForm("SelectPeriod", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
         {
@@ -21,19 +21,31 @@
 
             <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="start" value="Select Period">
         }
-        
+
         <br />
 
         @if (Model != null && Model.Period == Model.CurrentPeriod)
         {
-            @using (Html.BeginForm("StartPeriodEnd", "PeriodEnd", FormMethod.Post, new {@class = "app-task-list__section"}))
-             {
-                 <input type="hidden" name="collectionYear" value="@Model.Year" />
-                 <input type="hidden" name="period" value="@Model.Period" />
-                 <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Start Period End">
-             }
+            @using (Html.BeginForm("PauseReferenceJobs", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
+            {
+                <input type="hidden" name="collectionYear" value="@Model.Year" />
+                <input type="hidden" name="period" value="@Model.Period" />
+                <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="pauseReferenceData" value="Pause Reference Data Jobs">
+            }
         }
-        
+
+        <br />
+
+        @if (Model != null && Model.Period == Model.CurrentPeriod)
+        {
+            @using (Html.BeginForm("StartPeriodEnd", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
+            {
+                <input type="hidden" name="collectionYear" value="@Model.Year" />
+                <input type="hidden" name="period" value="@Model.Period" />
+                <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Start Period End">
+            }
+        }
+
         <br />
         <div>
             <ol id="pathContainer" class="app-task-list"></ol>

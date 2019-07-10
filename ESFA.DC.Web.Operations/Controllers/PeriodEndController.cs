@@ -40,16 +40,28 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View(model);
         }
 
+        [HttpGet("pauseReferenceData")]
+        public async Task<IActionResult> PauseReferenceJobs(int collectionYear, int period)
+        {
+            await _periodEndService.ToggleReferenceDataJobs(true);
+
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
+        [HttpGet("unPauseReferenceData")]
+        public async Task<IActionResult> UnPauseReferenceJobs(int collectionYear, int period)
+        {
+            await _periodEndService.ToggleReferenceDataJobs(false);
+
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
         [HttpPost("startPeriodEnd")]
         public async Task<IActionResult> StartPeriodEnd(int collectionYear, int period)
         {
             await _periodEndService.StartPeriodEnd(collectionYear, period);
 
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
-            var model = await ShowPath(collectionYear, period);
-            model.CurrentPeriod = currentYearPeriod.Period;
-
-            return View("Index", model);
+            return RedirectToAction("Index", new { collectionYear, period });
         }
 
         [HttpPost("proceed")]
@@ -57,11 +69,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         {
             await _periodEndService.Proceed(collectionYear, period, 0);
 
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
-            var model = await ShowPath(collectionYear, period);
-            model.CurrentPeriod = currentYearPeriod.Period;
-
-            return View("Index", model);
+            return RedirectToAction("Index", new { collectionYear, period });
         }
 
         [HttpPost("selectPeriod")]

@@ -30,6 +30,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await GetDataAsync(_baseUrl + $"/api/periodend/proceed/{year}/{period}/{path}", cancellationToken);
         }
 
+        public async Task ToggleReferenceDataJobs(bool pause, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await GetDataAsync(_baseUrl + $"/api/periodend/referenceDataJobs/{pause}", cancellationToken);
+        }
+
         public async Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + $"/api/periodend/getStates/{year}/{period}", cancellationToken);
