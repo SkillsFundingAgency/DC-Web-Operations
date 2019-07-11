@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <ApplicationInsightsResourceId>/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/DCOL-DEVCI-AppSrvEnv-WEU/providers/microsoft.insights/components/DCOL-DEVCI-Operations-WEU-AI</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/DCOL-DEVCI-AppSrvEnv-WEU/providers/microsoft.insights/components/DCOL-DEVCI-Operations-WEU-AI</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -246,6 +248,7 @@
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
@@ -280,6 +283,11 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\assets\minified\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
