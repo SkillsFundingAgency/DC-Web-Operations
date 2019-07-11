@@ -71,6 +71,8 @@ namespace ESFA.DC.Web.Operations
         {
             _logger.LogDebug("Start of ConfigureServices");
 
+            services.AddApplicationInsightsTelemetry();
+
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
 
             services.AddMvc()
