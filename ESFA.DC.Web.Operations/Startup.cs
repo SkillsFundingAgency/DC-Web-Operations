@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using ESFA.DC.Logging;
+using ESFA.DC.Logging.Config;
+using ESFA.DC.Logging.Config.Interfaces;
+using ESFA.DC.Logging.Enums;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Ioc;
@@ -25,10 +30,11 @@ namespace ESFA.DC.Web.Operations
     {
         private readonly IConfiguration _config;
         private IContainer _applicationContainer;
+        private SeriLogger _logger;
 
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder();
+           var builder = new ConfigurationBuilder();
 
             builder.SetBasePath(Directory.GetCurrentDirectory());
 
@@ -42,11 +48,29 @@ namespace ESFA.DC.Web.Operations
             }
 
             _config = builder.Build();
+
+            var connectionStrings = _config.GetConfigSection<ConnectionStrings>();
+            _logger = new SeriLogger(
+                new ApplicationLoggerSettings
+                {
+                    ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
+                    {
+                        new MsSqlServerApplicationLoggerOutputSettings
+                        {
+                            MinimumLogLevel = LogLevel.Verbose,
+                            ConnectionString = connectionStrings.AppLogs,
+                            LogsTableName = "Logs"
+                        }
+                    }
+                },
+                new ExecutionContext());
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            _logger.LogDebug("Start of ConfigureServices");
+
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
 
             services.AddMvc()
@@ -66,12 +90,14 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
+            _logger.LogDebug("End of ConfigureServices");
             return ConfigureAutofac(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            _logger.LogDebug("Start of Configure");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -105,6 +131,8 @@ namespace ESFA.DC.Web.Operations
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            _logger.LogDebug("End of Configure");
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -121,6 +149,8 @@ namespace ESFA.DC.Web.Operations
 
         private IServiceProvider ConfigureAutofac(IServiceCollection services)
         {
+            _logger.LogDebug("Start of ConfigureAutofac");
+
             var containerBuilder = new ContainerBuilder();
             containerBuilder.SetupConfigurations(_config);
 
@@ -132,6 +162,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
 
+            _logger.LogDebug("End of ConfigureAutofac");
             return new AutofacServiceProvider(_applicationContainer);
         }
     }
