@@ -34,7 +34,7 @@ namespace ESFA.DC.Web.Operations
 
         public Startup(IHostingEnvironment env)
         {
-           var builder = new ConfigurationBuilder();
+            var builder = new ConfigurationBuilder();
 
             builder.SetBasePath(Directory.GetCurrentDirectory());
 
@@ -71,7 +71,14 @@ namespace ESFA.DC.Web.Operations
         {
             _logger.LogDebug("Start of ConfigureServices");
 
-            services.AddApplicationInsightsTelemetry();
+            Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+
+            // Disables adaptive sampling.
+            aiOptions.EnableAdaptiveSampling = false;
+
+            // Disables QuickPulse (Live Metrics stream).
+            aiOptions.EnableQuickPulseMetricStream = false;
+            services.AddApplicationInsightsTelemetry(aiOptions);
 
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
 
