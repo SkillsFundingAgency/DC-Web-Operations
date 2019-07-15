@@ -93,8 +93,9 @@ function renderPathItem(path, pathItem, subItemList, collectionYear, period){
 
 function disableStart() {
     let startButton = document.getElementById("startPeriodEnd");
-
-    startButton.disabled = true;
+    if(startButton != null) {
+        startButton.disabled = true;
+    }
 }
 
 
