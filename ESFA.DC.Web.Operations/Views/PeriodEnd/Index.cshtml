@@ -50,6 +50,18 @@
         <div>
             <ol id="pathContainer" class="app-task-list"></ol>
         </div>
+
+        <br />
+
+        @if (Model != null && Model.Period == Model.CurrentPeriod)
+        {
+            @using (Html.BeginForm("PublishReports", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
+            {
+                <input type="hidden" name="collectionYear" value="@Model.Year" />
+                <input type="hidden" name="period" value="@Model.Period" />
+                <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="publishReports" value="Publish Reports">
+            }
+        }
     </div>
 </div>
 

@@ -40,7 +40,7 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View(model);
         }
 
-        [HttpGet("pauseReferenceData")]
+        [HttpPost("pauseReferenceData")]
         public async Task<IActionResult> PauseReferenceJobs(int collectionYear, int period)
         {
             await _periodEndService.ToggleReferenceDataJobs(true);
@@ -48,10 +48,18 @@ namespace ESFA.DC.Web.Operations.Controllers
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
-        [HttpGet("unPauseReferenceData")]
+        [HttpPost("unPauseReferenceData")]
         public async Task<IActionResult> UnPauseReferenceJobs(int collectionYear, int period)
         {
             await _periodEndService.ToggleReferenceDataJobs(false);
+
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
+        [HttpPost("publishReports")]
+        public async Task<IActionResult> PublishReports(int collectionYear, int period)
+        {
+            await _periodEndService.PublishReports(collectionYear, period);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }
