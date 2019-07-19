@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
@@ -44,6 +45,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             string data = await GetDataAsync(_baseUrl + $"/api/periodend/getStates/{year}/{period}", cancellationToken);
             return data;
+        }
+
+        public async Task ClosePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await GetDataAsync(_baseUrl + $"/api/periodend/closePeriodEnd/{year}/{period}", cancellationToken);
         }
     }
 }
