@@ -113,9 +113,9 @@ function renderPaths(pathString) {
     }
 
     paths.forEach(function(path) {
-        if (path.position >= 0) {
-            disableStart();
-        }
+        //if (path.position >= 0) {
+        //    disableStart();
+        //}
 
         let period = path.period;
         let collectionYear = path.collectionYear;

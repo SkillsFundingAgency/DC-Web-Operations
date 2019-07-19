@@ -7,5 +7,9 @@
         public int Year { get; set; }
 
         public int Period { get; set; }
+
+        public bool ReportsPublished { get; set; }
+
+        public bool PeriodClosed { get; set; }
     }
 }

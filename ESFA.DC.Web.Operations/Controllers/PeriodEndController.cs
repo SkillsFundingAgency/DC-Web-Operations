@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +14,16 @@ namespace ESFA.DC.Web.Operations.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
+        private readonly IJsonSerializationService _jsonSerializationService;
 
         public PeriodEndController(
             IPeriodService periodService,
-            IPeriodEndService periodEndService)
+            IPeriodEndService periodEndService,
+            IJsonSerializationService jsonSerializationService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
+            _jsonSerializationService = jsonSerializationService;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
@@ -86,18 +92,30 @@ namespace ESFA.DC.Web.Operations.Controllers
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
+        [HttpPost("closePeriodEnd")]
+        public async Task<IActionResult> ClosePeriodEnd(int collectionYear, int period)
+        {
+            await _periodEndService.ClosePeriodEnd(collectionYear, period);
+
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
             var paths = await _periodEndService.GetPathItemStates(collectionYear, period);
 
-            var model = new PeriodEndViewModel
+            var model = _jsonSerializationService.Deserialize<List<PeriodEndViewModel>>(paths).FirstOrDefault();
+
+            var pathModel = new PeriodEndViewModel
             {
                 Period = period,
                 Year = collectionYear,
-                Paths = paths
+                Paths = paths,
+                Closed = model?.Closed ?? false,
+                ReportsPublished = model?.ReportsPublished ?? false
             };
 
-            return model;
+            return pathModel;
         }
     }
 }
