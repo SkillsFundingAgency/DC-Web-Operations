@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Models.PeriodEnd;
 
@@ -17,5 +18,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task PublishReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task ClosePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<string> GetReferenceDataJobs(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
