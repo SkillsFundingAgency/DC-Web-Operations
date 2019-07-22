@@ -43,6 +43,8 @@ namespace ESFA.DC.Web.Operations.Controllers
 
             model.CurrentPeriod = currentYearPeriod.Period;
 
+            model.ReferenceDataJobs = await GetReferenceDataJobs();
+
             return View(model);
         }
 
@@ -116,6 +118,14 @@ namespace ESFA.DC.Web.Operations.Controllers
             };
 
             return pathModel;
+        }
+
+        private async Task<IEnumerable<ReferenceDataJobViewModel>> GetReferenceDataJobs()
+        {
+            var data = await _periodEndService.GetReferenceDataJobs();
+            var models = _jsonSerializationService.Deserialize<List<ReferenceDataJobViewModel>>(data);
+
+            return models;
         }
     }
 }
