@@ -43,17 +43,7 @@ namespace ESFA.DC.Web.Operations.Controllers
 
             model.CurrentPeriod = currentYearPeriod.Period;
 
-            model.ReferenceDataJobs = await GetReferenceDataJobs();
-
             return View(model);
-        }
-
-        [HttpPost("pauseReferenceData")]
-        public async Task<IActionResult> PauseReferenceJobs(int collectionYear, int period)
-        {
-            await _periodEndService.ToggleReferenceDataJobs(true);
-
-            return RedirectToAction("Index", new { collectionYear, period });
         }
 
         [HttpPost("unPauseReferenceData")]
@@ -88,12 +78,6 @@ namespace ESFA.DC.Web.Operations.Controllers
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
-        [HttpPost("selectPeriod")]
-        public async Task<IActionResult> SelectPeriod(int collectionYear, int period)
-        {
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
         [HttpPost("closePeriodEnd")]
         public async Task<IActionResult> ClosePeriodEnd(int collectionYear, int period)
         {
@@ -118,14 +102,6 @@ namespace ESFA.DC.Web.Operations.Controllers
             };
 
             return pathModel;
-        }
-
-        private async Task<IEnumerable<ReferenceDataJobViewModel>> GetReferenceDataJobs()
-        {
-            var data = await _periodEndService.GetReferenceDataJobs();
-            var models = _jsonSerializationService.Deserialize<List<ReferenceDataJobViewModel>>(data);
-
-            return models;
         }
     }
 }
