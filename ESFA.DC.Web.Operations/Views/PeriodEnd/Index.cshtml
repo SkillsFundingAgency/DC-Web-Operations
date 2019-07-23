@@ -10,6 +10,17 @@
         <br />
         <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
 
+
+        <br />
+        <br />
+
+        @using (Html.BeginForm("StartPeriodEnd", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
+        {
+            <input type="hidden" name="collectionYear" value="@Model.Year" />
+            <input type="hidden" name="period" value="@Model.Period" />
+            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Start Period End">
+        }
+
         <br />
         <br />
 
