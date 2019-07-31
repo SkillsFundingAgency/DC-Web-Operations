@@ -41,6 +41,7 @@ namespace ESFA.DC.Web.Operations.Controllers
                 model.Period = currentYearPeriod.Period;
             }
 
+            model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
             model.ReferenceDataJobs = await GetReferenceDataJobs();
 
             return View(model);
@@ -49,6 +50,14 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpPost("selectPeriod")]
         public async Task<IActionResult> SelectPeriod(int collectionYear, int period)
         {
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
+        [HttpPost("resubmitJob")]
+        public async Task<IActionResult> ReSubmitJob(int collectionYear, int period, int jobId)
+        {
+            await _periodEndService.ReSubmitFailedJob(jobId);
+
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
@@ -70,6 +79,14 @@ namespace ESFA.DC.Web.Operations.Controllers
         {
             var data = await _periodEndService.GetReferenceDataJobs();
             var models = _jsonSerializationService.Deserialize<List<ReferenceDataJobViewModel>>(data);
+
+            return models;
+        }
+
+        private async Task<IEnumerable<FailedJob>> GetFailedJobs(int collectionYear, int period)
+        {
+            var data = await _periodEndService.GetFailedJobs("ILR", collectionYear, period);
+            var models = _jsonSerializationService.Deserialize<List<FailedJob>>(data);
 
             return models;
         }

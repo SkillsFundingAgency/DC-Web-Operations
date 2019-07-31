@@ -7,6 +7,7 @@ namespace ESFA.DC.Web.Operations.ViewModels
         public PeriodEndPrepViewModel()
         {
             ReferenceDataJobs = new List<ReferenceDataJobViewModel>();
+            FailedJobs = new List<FailedJob>();
         }
 
         public int Period { get; set; }
@@ -14,5 +15,7 @@ namespace ESFA.DC.Web.Operations.ViewModels
         public int Year { get; set; }
 
         public IEnumerable<ReferenceDataJobViewModel> ReferenceDataJobs { get; set; }
+
+        public IEnumerable<FailedJob> FailedJobs { get; set; }
     }
 }

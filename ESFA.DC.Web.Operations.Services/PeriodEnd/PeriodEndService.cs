@@ -1,6 +1,9 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -51,11 +54,24 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await GetDataAsync(_baseUrl + $"/api/periodend/closePeriodEnd/{year}/{period}", cancellationToken);
         }
 
+        public async Task<string> GetFailedJobs(string collectionType, int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string data = await GetDataAsync(_baseUrl + $"/api/job/failedJobs/{collectionType}/{year}/{period}", cancellationToken);
+
+            return data;
+        }
+
         public async Task<string> GetReferenceDataJobs(CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + $"/api/periodend/getReferenceDataJobs", cancellationToken);
 
             return data;
         }
-    }
+
+        public async Task ReSubmitFailedJob(long jobId)
+        {
+            var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
+            await SendDataAsync(_baseUrl + $"/api/job/{JobStatusType.Ready}", jobStatusDto);
+        }
+     }
 }
