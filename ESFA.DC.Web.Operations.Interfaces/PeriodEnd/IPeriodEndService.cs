@@ -20,5 +20,9 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task ClosePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetReferenceDataJobs(CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<string> GetFailedJobs(string collectionType, int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ReSubmitFailedJob(long jobId);
     }
 }
