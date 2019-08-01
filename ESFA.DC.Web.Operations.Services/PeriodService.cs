@@ -27,9 +27,9 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<PathYearPeriod> ReturnPeriod(DateTime dateUtc, CancellationToken cancellationToken = default)
         {
-            var collectionYear = GetCollectionYearFromDate(dateUtc);
+            //var collectionYear = GetCollectionYearFromDate(dateUtc);
 
-            var collectionName = Constants.IlrCollectionNamePrefix + collectionYear;
+            var collectionName = "ILR1819"; //Constants.IlrCollectionNamePrefix + collectionYear;
 
             var dateString = DateHelper.GetUrlFriendlyDate(dateUtc);
 
@@ -41,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Services
             var pathYearPeriod = new PathYearPeriod
             {
                 Period = returnPeriod.PeriodNumber,
-                Year = collectionYear
+                Year = 1819
             };
 
             return pathYearPeriod;
