@@ -27,7 +27,7 @@
     </div>
 
     <div class="govuk-grid-column-two-thirds">
-        @using (Html.BeginForm("SelectPeriod", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
+        @*@using (Html.BeginForm("SelectPeriod", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
         {
             <div>
                 <span style="display: inline-block; width: 170px; text-align: right;"><label>Collection Year</label></span>
@@ -43,7 +43,7 @@
         }
 
         <br />
-        <br />
+        <br />*@
 
         @if (Model != null)
         {
@@ -101,14 +101,14 @@
             {
                 <input type="hidden" name="collectionYear" value="@Model.Year" />
                 <input type="hidden" name="period" value="@Model.Period" />
-                <input type="submit" class="govuk-button" style="margin-left: 0;" id="pauseReferenceData" value="Pause Reference Data Jobs">
+                <input type="submit" class="govuk-button" style="margin-left: 0;" onclick = "return confirm('Are you sure you want to pause reference data jobs?');"
+                       id="pauseReferenceData" value="Pause Reference Data Jobs">
             }
 
             <table class="govuk-table">
 
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-
                         <th class="govuk-table__header" scope="col">Job</th>
                         <th class="govuk-table__header" scope="col">Status</th>
                     </tr>
