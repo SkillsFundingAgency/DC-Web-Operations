@@ -58,30 +58,32 @@
 
                 @if (Model.FailedJobs.Any())
                 {
-                    foreach (var failedJob in Model.FailedJobs)
-                    {
-                        var provider = $"{failedJob.Ukprn} - {failedJob.OrganisationName}";
+                    <div id="failedJobContainer">
+                        @foreach (var failedJob in Model.FailedJobs)
+                        {
+                            var provider = $"{failedJob.Ukprn} - {failedJob.OrganisationName}";
 
-                        <div class="main-card">
-                            <div class="flex govuk-!-margin-bottom-2">
-                                <strong class="govuk-link govuk-!-font-size-19 provider-title ">@provider</strong>
-                            </div>
-                            <div class="govuk-body card-wrapper ilr">
-                                <div class="flex space-between govuk-!-margin-bottom-2">
-                                    <span class="wrong-file-name">@failedJob.CollectionName</span>
-                                    <div class="submit-and-clear">
-                                        <button type="submit" name="jobId" value="@failedJob.JobId">Submit Again</button>
-                                        @*&nbsp &nbsp <a href="#">Clear from list</a>*@
+                            <div class="main-card">
+                                <div class="flex govuk-!-margin-bottom-2">
+                                    <strong class="govuk-link govuk-!-font-size-19 provider-title ">@provider</strong>
+                                </div>
+                                <div class="govuk-body card-wrapper ilr">
+                                    <div class="flex space-between govuk-!-margin-bottom-2">
+                                        <span class="wrong-file-name">@failedJob.CollectionName</span>
+                                        <div class="submit-and-clear">
+                                            <button type="submit" name="jobId" value="@failedJob.JobId">Submit Again</button>
+                                            @*&nbsp &nbsp <a href="#">Clear from list</a>*@
+                                        </div>
+                                    </div>
+                                    <div class="flex space-between">
+                                        <span class="govuk-!-font-size-16">@failedJob.FileName</span>
+                                        <span class="govuk-!-font-size-16">@failedJob.DateTimeSubmitted?.ToString("dd MMM yyyy hh.mm")</span>
                                     </div>
                                 </div>
-                                <div class="flex space-between">
-                                    <span class="govuk-!-font-size-16">@failedJob.FileName</span>
-                                    <span class="govuk-!-font-size-16">@failedJob.DateTimeSubmitted?.ToString("dd MMM yyyy hh.mm")</span>
-                                </div>
+                                <hr class="main-divider">
                             </div>
-                            <hr class="main-divider">
-                        </div>
-                    }
+                        }
+                    </div>
                 }
                 else
                 {
@@ -105,7 +107,6 @@
             }
 
             <table class="govuk-table">
-
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
 
@@ -113,7 +114,7 @@
                         <th class="govuk-table__header" scope="col">Status</th>
                     </tr>
                 </thead>
-                <tbody class="govuk-table__body">
+                <tbody class="govuk-table__body" id="referenceDataContainer">
                     @if (Model.ReferenceDataJobs.Any())
                     {
                         foreach (var refDataJob in Model.ReferenceDataJobs)
@@ -154,9 +155,17 @@
 
 @section PageScripts
 {
-    <script>
-        function doNothing() { return; }
-    </script>
+    <script src="~/assets/js/periodEnd/renderJobs.js"></script>
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/assets/js/hubs/periodEndPrep.js"></script>
+
+    <script>
+        (function() {
+            let referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';
+            let failedJobs = '@Html.Raw(Model?.FailedJobs)';
+
+            renderReferenceJobs(referenceJobs);
+            renderFailedJobs(failedJobs);
+        })();
+    </script>
 }

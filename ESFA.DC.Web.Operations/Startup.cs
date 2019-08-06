@@ -170,8 +170,8 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterModule<ServiceRegistrations>();
             containerBuilder.RegisterModule<LoggerRegistrations>();
 
-            containerBuilder.RegisterType<PeriodEndHub>().ExternallyOwned();
-            containerBuilder.RegisterType<PeriodEndPrepHub>().ExternallyOwned();
+            containerBuilder.RegisterType<PeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<PeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

@@ -8,4 +8,6 @@ let connection = new signalR
 
 connection.on("ReceiveMessage", doNothing);
 
-connection.start();
+connection.start().then(() => {
+    connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
+});
