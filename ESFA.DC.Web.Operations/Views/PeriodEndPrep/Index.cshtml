@@ -3,7 +3,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Period end</h1>
-        <br/>
+        <br />
         <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
     </div>
 </div>
@@ -18,7 +18,7 @@
                 <a href="#" class="govuk-link">Email distribution</a>
             </li>
             <li>
-                <div class="flex"><a href="#" class="govuk-link ">Reports </a></div>
+                <div class="flex"><a href="#" class="govuk-link ">Reports</a></div>
             </li>
             <li>
                 <a href="#" class="govuk-link">History</a>
@@ -57,36 +57,36 @@
                 <input type="hidden" name="period" value="@Model.Period" />
 
                 @if (Model.FailedJobs.Any())
-                 {
-                     foreach (var failedJob in Model.FailedJobs)
-                     {
-                         var provider = $"{failedJob.Ukprn} - {failedJob.OrganisationName}";
+                {
+                    foreach (var failedJob in Model.FailedJobs)
+                    {
+                        var provider = $"{failedJob.Ukprn} - {failedJob.OrganisationName}";
 
-                          <div class="main-card">
-                              <div class="flex govuk-!-margin-bottom-2">
-                                  <strong class="govuk-link govuk-!-font-size-19 provider-title ">@provider</strong>
-                              </div>
-                              <div class="govuk-body card-wrapper ilr">
-                                  <div class="flex space-between govuk-!-margin-bottom-2">
-                                      <span class="wrong-file-name">@failedJob.CollectionName</span>
-                                      <div class="submit-and-clear">
-                                          <button type="submit" name="jobId" value="@failedJob.JobId">Submit Again</button>
-                                          @*&nbsp &nbsp <a href="#">Clear from list</a>*@
-                                      </div>
-                                  </div>
-                                  <div class="flex space-between">
-                                      <span class="govuk-!-font-size-16">@failedJob.FileName</span>
-                                      <span class="govuk-!-font-size-16">@failedJob.DateTimeSubmitted?.ToString("dd MMM yyyy hh.mm")</span>
-                                  </div>
-                              </div>
-                              <hr class="main-divider">
-                          </div>
-                      }
-                 }
-                 else
-                 {
-                     <div class="govuk-!-font-size-16">No Failed Jobs</div>
-                 }
+                        <div class="main-card">
+                            <div class="flex govuk-!-margin-bottom-2">
+                                <strong class="govuk-link govuk-!-font-size-19 provider-title ">@provider</strong>
+                            </div>
+                            <div class="govuk-body card-wrapper ilr">
+                                <div class="flex space-between govuk-!-margin-bottom-2">
+                                    <span class="wrong-file-name">@failedJob.CollectionName</span>
+                                    <div class="submit-and-clear">
+                                        <button type="submit" name="jobId" value="@failedJob.JobId">Submit Again</button>
+                                        @*&nbsp &nbsp <a href="#">Clear from list</a>*@
+                                    </div>
+                                </div>
+                                <div class="flex space-between">
+                                    <span class="govuk-!-font-size-16">@failedJob.FileName</span>
+                                    <span class="govuk-!-font-size-16">@failedJob.DateTimeSubmitted?.ToString("dd MMM yyyy hh.mm")</span>
+                                </div>
+                            </div>
+                            <hr class="main-divider">
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="govuk-!-font-size-16">No Failed Jobs</div>
+                }
             }
         }
 
@@ -151,3 +151,12 @@
         }
     </div>
 </div>
+
+@section PageScripts
+{
+    <script>
+        function doNothing() { return; }
+    </script>
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/hubs/periodEndPrep.js"></script>
+}

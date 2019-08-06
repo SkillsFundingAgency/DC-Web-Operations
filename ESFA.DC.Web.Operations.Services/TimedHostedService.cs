@@ -16,6 +16,7 @@ namespace ESFA.DC.Web.Operations.Services
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
         private readonly PeriodEndHub _periodEndHub;
+        private readonly PeriodEndPrepHub _periodEndPrepHub;
 
         private readonly ManualResetEvent _timerResetEvent = new ManualResetEvent(false);
         private readonly object _timerStopLock = new object();
@@ -29,12 +30,14 @@ namespace ESFA.DC.Web.Operations.Services
             IPeriodService periodService,
             ILogger logger,
             IPeriodEndService periodEndService,
-            PeriodEndHub periodEndHub)
+            PeriodEndHub periodEndHub,
+            PeriodEndPrepHub periodEndPrepHub)
         {
             _periodService = periodService;
             _logger = logger;
             _periodEndService = periodEndService;
             _periodEndHub = periodEndHub;
+            _periodEndPrepHub = periodEndPrepHub;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -110,6 +113,8 @@ namespace ESFA.DC.Web.Operations.Services
 
                 // Send JSON to clients.
                 await _periodEndHub.SendMessage(result, _cancellationTokenSource.Token);
+
+                await _periodEndPrepHub.SendMessage(string.Empty, _cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {

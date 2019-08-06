@@ -132,6 +132,10 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+                routes.MapHub<PeriodEndPrepHub>("/periodEndPrepHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -167,6 +171,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterModule<LoggerRegistrations>();
 
             containerBuilder.RegisterType<PeriodEndHub>().ExternallyOwned();
+            containerBuilder.RegisterType<PeriodEndPrepHub>().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
