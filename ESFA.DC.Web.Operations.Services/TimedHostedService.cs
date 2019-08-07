@@ -16,7 +16,6 @@ namespace ESFA.DC.Web.Operations.Services
         private readonly IPeriodService _periodService;
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
-        private readonly IHubEventBase _eventBase;
         private readonly PeriodEndHub _periodEndHub;
         private readonly PeriodEndPrepHub _periodEndPrepHub;
 
@@ -25,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Services
         private readonly object _timerChangeLock = new object();
 
         private Timer _timer;
-        private bool _timerStopFlag;
+        private volatile bool _timerStopFlag;
         private CancellationTokenSource _cancellationTokenSource;
 
         private DateTime _lastClientTimestamp = DateTime.MinValue;
@@ -41,23 +40,25 @@ namespace ESFA.DC.Web.Operations.Services
             _periodService = periodService;
             _logger = logger;
             _periodEndService = periodEndService;
-            _eventBase = eventBase;
+
             _periodEndHub = periodEndHub;
             _periodEndPrepHub = periodEndPrepHub;
 
-            _eventBase.PeriodEndHubCallback += RegisterClient;
-            _eventBase.PeriodEndHubPrepCallback += RegisterClient;
+            eventBase.PeriodEndHubCallback += RegisterClient;
+            eventBase.PeriodEndHubPrepCallback += RegisterClient;
         }
 
         public void RegisterClient(object sender, EventArgs a)
         {
             _lastClientTimestamp = DateTime.UtcNow;
-            if (_timerStopFlag)
+            lock (_timerStopLock)
             {
-                lock (_timerStopLock)
+                if (!_timerStopFlag)
                 {
-                    StartTimer();
+                    return;
                 }
+
+                StartTimer();
             }
         }
 
