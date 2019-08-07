@@ -18,9 +18,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _hubContext = hubContext;
         }
 
-        public async Task SendMessage(string paths, CancellationToken cancellationToken)
+        public async Task SendMessage(string referenceJobs, string failedJobs, CancellationToken cancellationToken)
         {
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", referenceJobs, failedJobs, cancellationToken);
         }
 
         public async Task ReceiveMessage()

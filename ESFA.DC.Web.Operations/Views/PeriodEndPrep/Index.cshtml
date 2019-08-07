@@ -56,39 +56,7 @@
                 <input type="hidden" name="collectionYear" value="@Model.Year" />
                 <input type="hidden" name="period" value="@Model.Period" />
 
-                @if (Model.FailedJobs.Any())
-                {
-                    <div id="failedJobContainer">
-                        @foreach (var failedJob in Model.FailedJobs)
-                        {
-                            var provider = $"{failedJob.Ukprn} - {failedJob.OrganisationName}";
-
-                            <div class="main-card">
-                                <div class="flex govuk-!-margin-bottom-2">
-                                    <strong class="govuk-link govuk-!-font-size-19 provider-title ">@provider</strong>
-                                </div>
-                                <div class="govuk-body card-wrapper ilr">
-                                    <div class="flex space-between govuk-!-margin-bottom-2">
-                                        <span class="wrong-file-name">@failedJob.CollectionName</span>
-                                        <div class="submit-and-clear">
-                                            <button type="submit" name="jobId" value="@failedJob.JobId">Submit Again</button>
-                                            @*&nbsp &nbsp <a href="#">Clear from list</a>*@
-                                        </div>
-                                    </div>
-                                    <div class="flex space-between">
-                                        <span class="govuk-!-font-size-16">@failedJob.FileName</span>
-                                        <span class="govuk-!-font-size-16">@failedJob.DateTimeSubmitted?.ToString("dd MMM yyyy hh.mm")</span>
-                                    </div>
-                                </div>
-                                <hr class="main-divider">
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="govuk-!-font-size-16">No Failed Jobs</div>
-                }
+                <div id="failedJobContainer"></div>
             }
         }
 
@@ -114,30 +82,7 @@
                         <th class="govuk-table__header" scope="col">Status</th>
                     </tr>
                 </thead>
-                <tbody class="govuk-table__body" id="referenceDataContainer">
-                    @if (Model.ReferenceDataJobs.Any())
-                    {
-                        foreach (var refDataJob in Model.ReferenceDataJobs)
-                        {
-                            var status = refDataJob.Status;
-                            var displayStatus = status.Equals("Paused", StringComparison.OrdinalIgnoreCase)
-                                ? "Paused"
-                                : status.Equals("Enabled", StringComparison.OrdinalIgnoreCase) ? $"Next due: {refDataJob.NextRunDue}" : "Disabled";
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">@refDataJob.DisplayName</td>
-                                <td class="govuk-table__cell">
-                                    @displayStatus
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" colspan="2">No scheduled jobs</td>
-                        </tr>
-                    }
-                </tbody>
+                <tbody class="govuk-table__body" id="referenceDataContainer"></tbody>
             </table>
         }
 
@@ -164,8 +109,7 @@
             let referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';
             let failedJobs = '@Html.Raw(Model?.FailedJobs)';
 
-            renderReferenceJobs(referenceJobs);
-            renderFailedJobs(failedJobs);
+            renderJobs(referenceJobs, failedJobs);
         })();
     </script>
 }

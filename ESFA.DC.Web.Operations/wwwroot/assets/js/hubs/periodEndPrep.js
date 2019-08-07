@@ -6,7 +6,7 @@ let connection = new signalR
     .withUrl("/periodEndPrepHub", { transport: signalR.HttpTransportType.WebSockets }) 
     .build();
 
-connection.on("ReceiveMessage", doNothing);
+connection.on("ReceiveMessage", renderJobs);
 
 connection.start().then(() => {
     connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));

@@ -127,12 +127,20 @@ namespace ESFA.DC.Web.Operations.Services
             try
             {
                 // Get state JSON.
-                string result = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
+                string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
+
+                string failedJobs = await _periodEndService.GetFailedJobs(
+                    "ILR",
+                    currentPeriod.Year,
+                    currentPeriod.Period,
+                    _cancellationTokenSource.Token);
+
+                string referenceDataJobs = await _periodEndService.GetReferenceDataJobs(_cancellationTokenSource.Token);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(result, _cancellationTokenSource.Token);
+                await _periodEndHub.SendMessage(pathItemStates, _cancellationTokenSource.Token);
 
-                await _periodEndPrepHub.SendMessage(string.Empty, _cancellationTokenSource.Token);
+                await _periodEndPrepHub.SendMessage(referenceDataJobs, failedJobs, _cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {
