@@ -75,20 +75,18 @@ namespace ESFA.DC.Web.Operations.Controllers
             return RedirectToAction("Index", "PeriodEnd", new { collectionYear, period });
         }
 
-        private async Task<IEnumerable<ReferenceDataJobViewModel>> GetReferenceDataJobs()
+        private async Task<string> GetReferenceDataJobs()
         {
             var data = await _periodEndService.GetReferenceDataJobs();
-            var models = _jsonSerializationService.Deserialize<List<ReferenceDataJobViewModel>>(data);
 
-            return models;
+            return data;
         }
 
-        private async Task<IEnumerable<FailedJob>> GetFailedJobs(int collectionYear, int period)
+        private async Task<string> GetFailedJobs(int collectionYear, int period)
         {
             var data = await _periodEndService.GetFailedJobs("ILR", collectionYear, period);
-            var models = _jsonSerializationService.Deserialize<List<FailedJob>>(data);
 
-            return models;
+            return data;
         }
     }
 }

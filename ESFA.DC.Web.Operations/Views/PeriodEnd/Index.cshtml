@@ -69,12 +69,9 @@
 @section PageScripts
 {
     <script src="~/assets/js/periodEnd/renderPaths.js"></script>
-    @*@if (Model != null && Model.Period == Model.CurrentPeriod)
-    {*@
-        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-        <script src="~/assets/js/hubs/periodEnd.js"></script>
-    @*}*@
-
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/hubs/periodEnd.js"></script>
+    
     <script>
         (function() {
             let paths = '@Html.Raw(Model?.Paths)';

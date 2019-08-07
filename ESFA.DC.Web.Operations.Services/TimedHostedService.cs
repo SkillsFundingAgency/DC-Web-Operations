@@ -11,30 +11,55 @@ namespace ESFA.DC.Web.Operations.Services
     public class TimedHostedService : IHostedService, IDisposable
     {
         private const int TimerCadenceMs = 5000;
+        private const int SleepAfterMinutes = 5;
 
         private readonly IPeriodService _periodService;
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
         private readonly PeriodEndHub _periodEndHub;
+        private readonly PeriodEndPrepHub _periodEndPrepHub;
 
         private readonly ManualResetEvent _timerResetEvent = new ManualResetEvent(false);
         private readonly object _timerStopLock = new object();
         private readonly object _timerChangeLock = new object();
 
         private Timer _timer;
-        private bool _timerStopFlag;
+        private volatile bool _timerStopFlag;
         private CancellationTokenSource _cancellationTokenSource;
+
+        private DateTime _lastClientTimestamp = DateTime.MinValue;
 
         public TimedHostedService(
             IPeriodService periodService,
             ILogger logger,
             IPeriodEndService periodEndService,
-            PeriodEndHub periodEndHub)
+            IHubEventBase eventBase,
+            PeriodEndHub periodEndHub,
+            PeriodEndPrepHub periodEndPrepHub)
         {
             _periodService = periodService;
             _logger = logger;
             _periodEndService = periodEndService;
+
             _periodEndHub = periodEndHub;
+            _periodEndPrepHub = periodEndPrepHub;
+
+            eventBase.PeriodEndHubCallback += RegisterClient;
+            eventBase.PeriodEndHubPrepCallback += RegisterClient;
+        }
+
+        public void RegisterClient(object sender, EventArgs a)
+        {
+            _lastClientTimestamp = DateTime.UtcNow;
+            lock (_timerStopLock)
+            {
+                if (!_timerStopFlag)
+                {
+                    return;
+                }
+
+                StartTimer();
+            }
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -106,10 +131,20 @@ namespace ESFA.DC.Web.Operations.Services
             try
             {
                 // Get state JSON.
-                string result = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
+                string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
+
+                string failedJobs = await _periodEndService.GetFailedJobs(
+                    "ILR",
+                    currentPeriod.Year,
+                    currentPeriod.Period,
+                    _cancellationTokenSource.Token);
+
+                string referenceDataJobs = await _periodEndService.GetReferenceDataJobs(_cancellationTokenSource.Token);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(result, _cancellationTokenSource.Token);
+                await _periodEndHub.SendMessage(pathItemStates, _cancellationTokenSource.Token);
+
+                await _periodEndPrepHub.SendMessage(referenceDataJobs, failedJobs, _cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {
@@ -128,6 +163,11 @@ namespace ESFA.DC.Web.Operations.Services
 
             // Set timer to tick in TimerCadenceMs milliseconds.
             _timer.Change(TimerCadenceMs, Timeout.Infinite);
+
+            if (_lastClientTimestamp < DateTime.UtcNow.AddMinutes(-SleepAfterMinutes))
+            {
+                StopTimer();
+            }
         }
     }
 }

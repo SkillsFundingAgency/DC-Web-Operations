@@ -5,27 +5,27 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
-    public class PeriodEndHub : Hub
+    public class PeriodEndPrepHub : Hub
     {
         private readonly IHubEventBase _eventBase;
-        private readonly IHubContext<PeriodEndHub> _hubContext;
+        private readonly IHubContext<PeriodEndPrepHub> _hubContext;
 
-        public PeriodEndHub(
+        public PeriodEndPrepHub(
             IHubEventBase eventBase,
-            IHubContext<PeriodEndHub> hubContext)
+            IHubContext<PeriodEndPrepHub> hubContext)
         {
             _eventBase = eventBase;
             _hubContext = hubContext;
         }
 
-        public async Task SendMessage(string paths, CancellationToken cancellationToken)
+        public async Task SendMessage(string referenceJobs, string failedJobs, CancellationToken cancellationToken)
         {
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", referenceJobs, failedJobs, cancellationToken);
         }
 
         public async Task ReceiveMessage()
         {
-            _eventBase.TriggerPeriodEnd();
+            _eventBase.TriggerPeriodEndPrep();
         }
     }
 }
