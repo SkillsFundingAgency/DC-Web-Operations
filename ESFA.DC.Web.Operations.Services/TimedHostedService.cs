@@ -54,7 +54,10 @@ namespace ESFA.DC.Web.Operations.Services
             _lastClientTimestamp = DateTime.UtcNow;
             if (_timerStopFlag)
             {
-                StartTimer();
+                lock (_timerStopLock)
+                {
+                    StartTimer();
+                }
             }
         }
 
@@ -157,14 +160,13 @@ namespace ESFA.DC.Web.Operations.Services
                 }
             }
 
+            // Set timer to tick in TimerCadenceMs milliseconds.
+            _timer.Change(TimerCadenceMs, Timeout.Infinite);
+
             if (_lastClientTimestamp < DateTime.UtcNow.AddMinutes(-SleepAfterMinutes))
             {
                 StopTimer();
-                return;
             }
-
-            // Set timer to tick in TimerCadenceMs milliseconds.
-            _timer.Change(TimerCadenceMs, Timeout.Infinite);
         }
     }
 }
