@@ -12,21 +12,17 @@ namespace ESFA.DC.Web.Operations.Services
     {
         private const int TimerCadenceMs = 5000;
         private const int SleepAfterMinutes = 5;
-
         private readonly IPeriodService _periodService;
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
         private readonly PeriodEndHub _periodEndHub;
         private readonly PeriodEndPrepHub _periodEndPrepHub;
-
         private readonly ManualResetEvent _timerResetEvent = new ManualResetEvent(false);
         private readonly object _timerStopLock = new object();
         private readonly object _timerChangeLock = new object();
-
         private Timer _timer;
         private volatile bool _timerStopFlag;
         private CancellationTokenSource _cancellationTokenSource;
-
         private DateTime _lastClientTimestamp = DateTime.MinValue;
 
         public TimedHostedService(
@@ -40,15 +36,41 @@ namespace ESFA.DC.Web.Operations.Services
             _periodService = periodService;
             _logger = logger;
             _periodEndService = periodEndService;
-
             _periodEndHub = periodEndHub;
             _periodEndPrepHub = periodEndPrepHub;
-
             eventBase.PeriodEndHubCallback += RegisterClient;
             eventBase.PeriodEndHubPrepCallback += RegisterClient;
         }
 
-        public void RegisterClient(object sender, EventArgs a)
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInfo("Timed SignalR Background Service is starting.");
+            lock (_timerStopLock)
+            {
+                if (!_timerStopFlag)
+                {
+                    return Task.CompletedTask;
+                }
+
+                StartTimer();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInfo("Timed SignalR Background Service is stopping.");
+            StopTimer();
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            StopTimer();
+        }
+
+        private void RegisterClient(object sender, EventArgs a)
         {
             _lastClientTimestamp = DateTime.UtcNow;
             lock (_timerStopLock)
@@ -60,29 +82,6 @@ namespace ESFA.DC.Web.Operations.Services
 
                 StartTimer();
             }
-        }
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInfo("Timed SignalR Background Service is starting.");
-
-            StartTimer();
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInfo("Timed SignalR Background Service is stopping.");
-
-            StopTimer();
-
-            return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            StopTimer();
         }
 
         private void StartTimer()
@@ -97,7 +96,7 @@ namespace ESFA.DC.Web.Operations.Services
             }
         }
 
-        private void StopTimer()
+        private void StopTimer(bool block = true)
         {
             lock (_timerChangeLock)
             {
@@ -107,14 +106,21 @@ namespace ESFA.DC.Web.Operations.Services
                     return;
                 }
 
-                _cancellationTokenSource.Cancel();
-                _timerResetEvent.Reset();
                 lock (_timerStopLock)
                 {
+                    // Make sure we aren't trying to stop because we haven't heard from a client, but then a client message has come in
+                    if (!block && !NoActiveClients())
+                    {
+                        return;
+                    }
+
                     _timerStopFlag = true;
                 }
 
-                if (!_timerResetEvent.WaitOne(TimerCadenceMs * 2))
+                _cancellationTokenSource.Cancel();
+                _timerResetEvent.Reset();
+
+                if (block && !_timerResetEvent.WaitOne(TimerCadenceMs * 2))
                 {
                     _logger.LogWarning("Timed SignalR Background Service did not terminate correctly");
                 }
@@ -126,31 +132,6 @@ namespace ESFA.DC.Web.Operations.Services
 
         private async void DoWork(object state)
         {
-            var currentPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
-
-            try
-            {
-                // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
-
-                string failedJobs = await _periodEndService.GetFailedJobs(
-                    "ILR",
-                    currentPeriod.Year,
-                    currentPeriod.Period,
-                    _cancellationTokenSource.Token);
-
-                string referenceDataJobs = await _periodEndService.GetReferenceDataJobs(_cancellationTokenSource.Token);
-
-                // Send JSON to clients.
-                await _periodEndHub.SendMessage(pathItemStates, _cancellationTokenSource.Token);
-
-                await _periodEndPrepHub.SendMessage(referenceDataJobs, failedJobs, _cancellationTokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Timed SignalR Background Service failed to DoWork", ex);
-            }
-
             // If we're told to stop then set block to continue, and exit method.
             lock (_timerStopLock)
             {
@@ -161,13 +142,42 @@ namespace ESFA.DC.Web.Operations.Services
                 }
             }
 
+            // We haven't received a ping from any clients, so sleep this timer.
+            if (NoActiveClients())
+            {
+                StopTimer(false);
+                return;
+            }
+
+            try
+            {
+                var currentPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+
+                // Get state JSON.
+                string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
+                string failedJobs = await _periodEndService.GetFailedJobs(
+                    "ILR",
+                    currentPeriod.Year,
+                    currentPeriod.Period,
+                    _cancellationTokenSource.Token);
+                string referenceDataJobs = await _periodEndService.GetReferenceDataJobs(_cancellationTokenSource.Token);
+
+                // Send JSON to clients.
+                await _periodEndHub.SendMessage(pathItemStates, _cancellationTokenSource.Token);
+                await _periodEndPrepHub.SendMessage(referenceDataJobs, failedJobs, _cancellationTokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Timed SignalR Background Service failed to DoWork", ex);
+            }
+
             // Set timer to tick in TimerCadenceMs milliseconds.
             _timer.Change(TimerCadenceMs, Timeout.Infinite);
+        }
 
-            if (_lastClientTimestamp < DateTime.UtcNow.AddMinutes(-SleepAfterMinutes))
-            {
-                StopTimer();
-            }
+        private bool NoActiveClients()
+        {
+            return _lastClientTimestamp < DateTime.UtcNow.AddMinutes(-SleepAfterMinutes);
         }
     }
 }
