@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ESFA.DC.Web.Operations.ViewModels
+﻿namespace ESFA.DC.Web.Operations.ViewModels
 {
     public class PeriodEndViewModel
     {

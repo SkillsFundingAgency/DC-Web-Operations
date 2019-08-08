@@ -269,6 +269,9 @@
 
 
   <ItemGroup>
+    <Content Update="wwwroot\assets\js\hubs\periodEndPrep.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\assets\js\hubs\periodEnd.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
