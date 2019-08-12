@@ -27,23 +27,6 @@
     </div>
 
     <div class="govuk-grid-column-two-thirds">
-        @*@using (Html.BeginForm("SelectPeriod", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
-            {
-                <div>
-                    <span style="display: inline-block; width: 170px; text-align: right;"><label>Collection Year</label></span>
-                    <input type="text" name="collectionYear" style="float: right; width: 200px; margin-left: 10px;" />
-                </div>
-
-                <div>
-                    <span style="display: inline-block; width: 170px; text-align: right;"><label>Period</label></span>
-                    <input type="text" name="period" style="float: right; width: 200px; margin-left: 10px;" />
-                </div>
-
-                <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="start" value="Select Period">
-            }
-
-            <br />
-            <br />*@
 
         @if (Model != null)
         {
@@ -122,11 +105,14 @@
 
 @section PageScripts
 {
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-
     <script src="~/assets/js/periodEnd/renderJobs.js"></script>
     <script src="~/assets/js/periodEnd/confirmPause.js"></script>
-    <script src="~/assets/js/hubs/periodEndPrep.js"></script>
+    
+    @if (Model != null && Model.Closed)
+    {
+        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+        <script src="~/assets/js/hubs/periodEndPrep.js"></script>
+    }
 
     <script>
         (function() {

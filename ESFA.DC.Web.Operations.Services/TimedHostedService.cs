@@ -151,7 +151,7 @@ namespace ESFA.DC.Web.Operations.Services
 
             try
             {
-                var currentPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+                var currentPeriod = await _periodService.ReturnPeriod();
 
                 // Get state JSON.
                 string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
