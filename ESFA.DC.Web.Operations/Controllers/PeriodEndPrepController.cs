@@ -35,8 +35,10 @@ namespace ESFA.DC.Web.Operations.Controllers
                 model.Period = currentYearPeriod.Period;
             }
 
-            model.Closed = (currentYearPeriod.Year == collectionYear && currentYearPeriod.Period == period)
-                           && currentYearPeriod.PeriodClosed;
+            //model.Closed = (currentYearPeriod.Year == collectionYear && currentYearPeriod.Period == period)
+            //               && currentYearPeriod.PeriodClosed;
+
+            model.Closed = true;
 
             model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
             model.ReferenceDataJobs = await GetReferenceDataJobs();
