@@ -265,6 +265,7 @@
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Topics.Data\ESFA.DC.Web.Operations.Topics.Data.csproj" />
   </ItemGroup>
 
 

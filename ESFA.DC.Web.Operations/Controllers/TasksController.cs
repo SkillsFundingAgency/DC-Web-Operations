@@ -1,29 +1,34 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Entities;
+using ESFA.DC.Web.Operations.Topics.Data;
+using ESFA.DC.Web.Operations.Topics.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    public class JobSubscriptionTasksController : Controller
+    public class TasksController : Controller
     {
         private readonly JobQueueDataContext _context;
 
-        public JobSubscriptionTasksController(JobQueueDataContext context)
+        public TasksController(JobQueueDataContext context)
         {
             _context = context;
         }
 
         // GET: JobSubscriptionTasks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             var jobQueueDataContext = _context.JobSubscriptionTask.Include(j => j.JobTopic)
                 .ThenInclude(x => x.Collection)
+                .Where(x => string.IsNullOrEmpty(searchString) || x.JobTopic.Collection.Name.StartsWith(searchString, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(x => x.JobTopic.Collection.Name)
                 .ThenBy(x => x.JobTopic.TopicOrder)
                 .ThenBy(x => x.TaskOrder);
+
+            ViewData["currentFilter"] = searchString;
             return View(await jobQueueDataContext.ToListAsync());
         }
 

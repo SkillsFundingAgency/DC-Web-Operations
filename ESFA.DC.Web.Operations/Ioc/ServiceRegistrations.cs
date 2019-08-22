@@ -5,12 +5,12 @@ using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
-using ESFA.DC.Web.Operations.Entities;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Topics.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

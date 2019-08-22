@@ -1,4 +1,4 @@
-﻿@model ESFA.DC.Web.Operations.Entities.JobTopicSubscription
+﻿@model ESFA.DC.Web.Operations.Topics.Data.Entities.JobTopicSubscription
 
 @{
     ViewData["Title"] = "Edit";
@@ -54,6 +54,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
+@section Pagescripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

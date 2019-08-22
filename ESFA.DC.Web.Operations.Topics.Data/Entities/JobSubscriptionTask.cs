@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.Web.Operations.Entities
+﻿namespace ESFA.DC.Web.Operations.Topics.Data.Entities
 {
     public partial class JobSubscriptionTask
     {
