@@ -29,7 +29,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().SingleInstance();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
 
-            builder.RegisterType<JobQueueDataContext>().InstancePerDependency();
+            builder.RegisterType<JobQueueDataContext>().InstancePerLifetimeScope();
 
             builder.Register(context =>
                 {
