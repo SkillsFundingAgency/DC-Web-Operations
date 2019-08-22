@@ -3,12 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Topics.Data;
 using ESFA.DC.Web.Operations.Topics.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
+    [Authorize]
     public class TopicsController : Controller
     {
         private readonly JobQueueDataContext _context;
