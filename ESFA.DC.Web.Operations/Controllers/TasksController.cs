@@ -27,6 +27,7 @@ namespace ESFA.DC.Web.Operations.Controllers
                 .ThenInclude(x => x.Collection)
                 .Where(x => string.IsNullOrEmpty(searchString) || x.JobTopic.Collection.Name.StartsWith(searchString, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(x => x.JobTopic.Collection.Name)
+                .ThenBy(x => x.JobTopic.IsFirstStage.GetValueOrDefault())
                 .ThenBy(x => x.JobTopic.TopicOrder)
                 .ThenBy(x => x.TaskOrder);
 

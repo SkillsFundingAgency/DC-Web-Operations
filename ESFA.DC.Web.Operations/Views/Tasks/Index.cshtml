@@ -40,7 +40,10 @@
             <th style="text-align: left">
                 @Html.DisplayNameFor(model => model.Enabled)
             </th>
-         
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.JobTopic.IsFirstStage)
+            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -64,7 +67,9 @@
             <td class="govuk-table__cell">
                 @item.Enabled
             </td>
-
+            <td class="govuk-table__cell">
+                @item.JobTopic.IsFirstStage
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.JobTopicTaskId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.JobTopicTaskId">Details</a> |
