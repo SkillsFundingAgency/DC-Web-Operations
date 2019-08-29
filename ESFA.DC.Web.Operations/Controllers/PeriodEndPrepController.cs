@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +11,13 @@ namespace ESFA.DC.Web.Operations.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
-        private readonly IJsonSerializationService _jsonSerializationService;
 
         public PeriodEndPrepController(
             IPeriodService periodService,
-            IPeriodEndService periodEndService,
-            IJsonSerializationService jsonSerializationService)
+            IPeriodEndService periodEndService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
-            _jsonSerializationService = jsonSerializationService;
         }
 
         public async Task<IActionResult> Index(int? collectionYear, int? period)
@@ -48,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         }
 
         [HttpPost("selectPeriod")]
-        public async Task<IActionResult> SelectPeriod(int collectionYear, int period)
+        public IActionResult SelectPeriod(int collectionYear, int period)
         {
             return RedirectToAction("Index", new { collectionYear, period });
         }

@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using ESFA.DC.FileService.Config;
+using ESFA.DC.FileService.Config.Interface;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Settings.Models;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +26,10 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.Register(c =>
                     configuration.GetConfigSection<ApiSettings>())
                 .As<ApiSettings>().SingleInstance();
+
+            builder.Register(c =>
+                configuration.GetConfigSection<AzureStorageFileServiceConfiguration>("AzureStorageSection"))
+                .As<IAzureStorageFileServiceConfiguration>().SingleInstance();
 
             //builder.Register(c =>
             //        configuration.GetConfigSection<FeatureFlags>())

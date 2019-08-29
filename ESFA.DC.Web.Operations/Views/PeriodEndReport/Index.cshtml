@@ -1,0 +1,39 @@
+﻿@using System.Text.Encodings.Web
+@using System.Web
+@model ESFA.DC.Web.Operations.ViewModels.PeriodEndReportViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Period end reports</h1>
+        <br />
+        <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col">Report name</th>
+                <th class="govuk-table__header" scope="col">Download</th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @if (Model != null && Model.ReportDetails.Any())
+                {
+                    foreach (var reportDetail in Model.ReportDetails)
+                    {
+                        var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                            <td class="govuk-table__cell">
+                                @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.Year, fileName = reportDetail.Url })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
