@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ESFA.DC.Serialization.Interfaces;
+﻿using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -13,21 +10,18 @@ namespace ESFA.DC.Web.Operations.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
-        private readonly IJsonSerializationService _jsonSerializationService;
 
         public PeriodEndPrepController(
             IPeriodService periodService,
-            IPeriodEndService periodEndService,
-            IJsonSerializationService jsonSerializationService)
+            IPeriodEndService periodEndService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
-            _jsonSerializationService = jsonSerializationService;
         }
 
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var currentYearPeriod = await _periodService.ReturnPeriod();
             var model = new PeriodEndPrepViewModel();
 
             if (collectionYear != null && period != null)
@@ -40,6 +34,11 @@ namespace ESFA.DC.Web.Operations.Controllers
                 model.Year = currentYearPeriod.Year;
                 model.Period = currentYearPeriod.Period;
             }
+
+            //model.Closed = (currentYearPeriod.Year == collectionYear && currentYearPeriod.Period == period)
+            //               && currentYearPeriod.PeriodClosed;
+
+            model.Closed = true;
 
             model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
             model.ReferenceDataJobs = await GetReferenceDataJobs();

@@ -29,19 +29,26 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var currentYearPeriod = await _periodService.ReturnPeriod();
             PeriodEndViewModel model;
 
             if (collectionYear != null && period != null)
             {
                 model = await ShowPath(collectionYear.Value, period.Value);
+                model.Year = collectionYear.Value;
+                model.Period = period.Value;
             }
             else
             {
                 model = await ShowPath(currentYearPeriod.Year, currentYearPeriod.Period);
+                model.Year = currentYearPeriod.Year;
+                model.Period = currentYearPeriod.Period;
             }
 
-            model.CurrentPeriod = currentYearPeriod.Period;
+            //model.Closed = (currentYearPeriod.Year == collectionYear && currentYearPeriod.Period == period)
+            //               && currentYearPeriod.PeriodClosed;
+
+            model.Closed = true;
 
             return View(model);
         }
