@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         }
 
         [HttpPost("selectPeriod")]
-        public async Task<IActionResult> SelectPeriod(int collectionYear, int period)
+        public IActionResult SelectPeriod(int collectionYear, int period)
         {
             return RedirectToAction("Index", new { collectionYear, period });
         }

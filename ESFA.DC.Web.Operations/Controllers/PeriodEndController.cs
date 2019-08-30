@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
@@ -78,7 +77,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpPost("proceed")]
         public async Task<IActionResult> Proceed(int collectionYear, int period)
         {
-            await _periodEndService.Proceed(collectionYear, period, 0);
+            await _periodEndService.Proceed(collectionYear, period);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }

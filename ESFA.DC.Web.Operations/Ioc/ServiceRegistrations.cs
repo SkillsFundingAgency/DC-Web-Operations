@@ -1,12 +1,16 @@
 ﻿using Autofac;
 using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.Storage;
 
 namespace ESFA.DC.Web.Operations.Ioc
 {
@@ -14,9 +18,12 @@ namespace ESFA.DC.Web.Operations.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<AzureStorageFileService>().As<IFileService>();
+
             builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
+            builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
 
             builder.RegisterType<HubEventBase>().As<IHubEventBase>().SingleInstance();
 
