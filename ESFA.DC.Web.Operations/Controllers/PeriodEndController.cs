@@ -45,10 +45,8 @@ namespace ESFA.DC.Web.Operations.Controllers
                 model.Period = currentYearPeriod.Period;
             }
 
-            //model.Closed = (currentYearPeriod.Year == collectionYear && currentYearPeriod.Period == period)
-            //               && currentYearPeriod.PeriodClosed;
-
-            model.Closed = true;
+            var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
+            model.Closed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return View(model);
         }

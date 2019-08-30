@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -17,6 +18,7 @@ namespace ESFA.DC.Web.Operations.Services
     {
         private const string NoPeriodError = "No return period found in PeriodService.";
 
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
         private readonly string _baseUrl;
 
@@ -24,9 +26,11 @@ namespace ESFA.DC.Web.Operations.Services
             ApiSettings apiSettings,
             IJsonSerializationService jsonSerializationService,
             HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider,
             ILogger logger)
             : base(jsonSerializationService, httpClient)
         {
+            _dateTimeProvider = dateTimeProvider;
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -34,20 +38,21 @@ namespace ESFA.DC.Web.Operations.Services
         public async Task<PathYearPeriod> ReturnPeriod(CancellationToken cancellationToken = default)
         {
             ReturnPeriod returnPeriod;
-
-            var openPeriods = _jsonSerializationService.Deserialize<IEnumerable<ReturnPeriod>>(
-                await GetDataAsync($"{_baseUrl}/api/returns-calendar/open", cancellationToken)).ToList();
             var isClosed = false;
 
-            if (openPeriods.Any())
+            var closedPeriod = _jsonSerializationService.Deserialize<ReturnPeriod>(
+                await GetDataAsync($"{_baseUrl}/api/returns-calendar/closed", cancellationToken));
+            var openPeriods = _jsonSerializationService.Deserialize<IEnumerable<ReturnPeriod>>(
+                    await GetDataAsync($"{_baseUrl}/api/returns-calendar/open", cancellationToken)).ToList();
+
+            if (closedPeriod != null && openPeriods.All(x => x.CollectionName != closedPeriod.CollectionName))
             {
-                returnPeriod = openPeriods.OrderBy(op => op.EndDateTimeUtc).First();
+                returnPeriod = closedPeriod;
+                isClosed = true;
             }
             else
             {
-                returnPeriod = _jsonSerializationService.Deserialize<ReturnPeriod>(
-                    await GetDataAsync($"{_baseUrl}/api/returns-calendar/closed", cancellationToken));
-                isClosed = true;
+                returnPeriod = openPeriods.OrderBy(op => op.EndDateTimeUtc).FirstOrDefault();
             }
 
             if (returnPeriod == null)
