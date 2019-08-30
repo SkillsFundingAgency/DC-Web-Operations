@@ -34,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var currentYearPeriod = await _periodService.ReturnPeriod();
             var model = new PeriodEndReportViewModel();
 
             if (collectionYear != null && period != null)
