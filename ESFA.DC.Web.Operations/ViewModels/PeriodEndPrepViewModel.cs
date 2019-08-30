@@ -11,5 +11,7 @@ namespace ESFA.DC.Web.Operations.ViewModels
         public string ReferenceDataJobs { get; set; }
 
         public string FailedJobs { get; set; }
+
+        public bool Closed { get; set; }
     }
 }

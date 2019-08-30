@@ -18,7 +18,7 @@
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Start Period End">
+            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Start Period End" @(Model.Closed ? string.Empty : "disabled" ) />
         }
 
         <br />
@@ -69,9 +69,13 @@
 @section PageScripts
 {
     <script src="~/assets/js/periodEnd/renderPaths.js"></script>
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/assets/js/hubs/periodEnd.js"></script>
     
+    @if (Model != null && Model.Closed)
+    {
+        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+        <script src="~/assets/js/hubs/periodEnd.js"></script>
+    }
+
     <script>
         (function() {
             let paths = '@Html.Raw(Model?.Paths)';

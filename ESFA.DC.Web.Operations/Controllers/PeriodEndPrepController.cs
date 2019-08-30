@@ -22,7 +22,7 @@ namespace ESFA.DC.Web.Operations.Controllers
 
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var currentYearPeriod = await _periodService.ReturnPeriod();
             var model = new PeriodEndPrepViewModel();
 
             if (collectionYear != null && period != null)
@@ -35,6 +35,11 @@ namespace ESFA.DC.Web.Operations.Controllers
                 model.Year = currentYearPeriod.Year;
                 model.Period = currentYearPeriod.Period;
             }
+
+            //model.Closed = (currentYearPeriod.Year == collectionYear && currentYearPeriod.Period == period)
+            //               && currentYearPeriod.PeriodClosed;
+
+            model.Closed = true;
 
             model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
             model.ReferenceDataJobs = await GetReferenceDataJobs();
