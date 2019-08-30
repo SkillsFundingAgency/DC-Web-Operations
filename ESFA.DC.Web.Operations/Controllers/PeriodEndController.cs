@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.ViewModels;
@@ -15,21 +16,24 @@ namespace ESFA.DC.Web.Operations.Controllers
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public PeriodEndController(
             IPeriodService periodService,
             IPeriodEndService periodEndService,
-            IJsonSerializationService jsonSerializationService)
+            IJsonSerializationService jsonSerializationService,
+            IDateTimeProvider dateTimeProvider)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
             _jsonSerializationService = jsonSerializationService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var currentYearPeriod = await _periodService.ReturnPeriod(_dateTimeProvider.GetNowUtc());
             PeriodEndViewModel model;
 
             if (collectionYear != null && period != null)
