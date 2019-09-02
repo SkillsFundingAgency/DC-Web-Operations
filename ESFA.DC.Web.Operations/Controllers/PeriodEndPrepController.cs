@@ -20,6 +20,7 @@ namespace ESFA.DC.Web.Operations.Controllers
             _periodEndService = periodEndService;
         }
 
+        [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
@@ -82,7 +83,7 @@ namespace ESFA.DC.Web.Operations.Controllers
 
         private async Task<string> GetFailedJobs(int collectionYear, int period)
         {
-            var data = await _periodEndService.GetFailedJobs("ILR", collectionYear, period);
+            var data = await _periodEndService.GetFailedJobs(collectionYear, period);
 
             return data;
         }
