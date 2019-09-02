@@ -34,7 +34,7 @@
                 <h2 class="govuk-heading-m">Failed submissions</h2>
             </div>
 
-            @using (Html.BeginForm("ReSubmitJob", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
+            @using (Html.BeginForm("ReSubmitJob", "PeriodEndPrep", FormMethod.Post, new { @id = "failedJobForm", @class = "app-task-list__section" }))
             {
                 <input type="hidden" name="collectionYear" value="@Model.Year" />
                 <input type="hidden" name="period" value="@Model.Period" />
@@ -107,13 +107,9 @@
 {
     <script src="~/assets/js/periodEnd/renderJobs.js"></script>
     <script src="~/assets/js/periodEnd/confirmPause.js"></script>
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/hubs/periodEndPrep.js"></script>
     
-    @if (Model != null && Model.Closed)
-    {
-        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-        <script src="~/assets/js/hubs/periodEndPrep.js"></script>
-    }
-
     <script>
         (function() {
             let referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';

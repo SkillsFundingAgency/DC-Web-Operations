@@ -9,5 +9,7 @@ let connection = new signalR
 connection.on("ReceiveMessage", renderJobs);
 
 connection.start().then(() => {
-    connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
+    setTimeout(function() {
+        connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
+    }, 30*1000);
 });

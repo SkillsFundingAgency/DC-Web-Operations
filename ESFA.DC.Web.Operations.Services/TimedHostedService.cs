@@ -47,7 +47,7 @@ namespace ESFA.DC.Web.Operations.Services
             _logger.LogInfo("Timed SignalR Background Service is starting.");
             lock (_timerStopLock)
             {
-                if (!_timerStopFlag)
+                if (_timerStopFlag)
                 {
                     return Task.CompletedTask;
                 }
