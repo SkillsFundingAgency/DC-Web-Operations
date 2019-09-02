@@ -56,9 +56,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await GetDataAsync(_baseUrl + $"/api/periodend/closePeriodEnd/{year}/{period}", cancellationToken);
         }
 
-        public async Task<string> GetFailedJobs(string collectionType, int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetFailedJobs(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"/api/job/failedJobs/{collectionType}/{year}/{period}", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + $"/api/job/failedJobs/{year}/{period}", cancellationToken);
 
             return data;
         }

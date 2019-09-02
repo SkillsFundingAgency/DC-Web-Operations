@@ -156,7 +156,6 @@ namespace ESFA.DC.Web.Operations.Services
                 // Get state JSON.
                 string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year, currentPeriod.Period, _cancellationTokenSource.Token);
                 string failedJobs = await _periodEndService.GetFailedJobs(
-                    "ILR",
                     currentPeriod.Year,
                     currentPeriod.Period,
                     _cancellationTokenSource.Token);
