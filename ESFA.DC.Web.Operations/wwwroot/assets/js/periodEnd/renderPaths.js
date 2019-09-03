@@ -98,6 +98,11 @@ function disableStart() {
     }
 }
 
+function startPeriodEnd(collectionYear, period) {
+    connection
+        .invoke("StartPeriodEnd", collectionYear, period)
+        .catch(err => console.error(err.toString()));
+}
 
 function renderPaths(pathString) {
 
