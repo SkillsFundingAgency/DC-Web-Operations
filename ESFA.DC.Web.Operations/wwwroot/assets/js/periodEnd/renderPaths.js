@@ -1,8 +1,4 @@
-﻿//let startButton = document.getElementById("startPeriodEnd");
-//startButton.addEventListener("click", startPeriodEnd);
-
-
-function pathItemCompare( a, b ) {
+﻿function pathItemCompare( a, b ) {
     if ( a.ordinal < b.ordinal ){
         return -1;
     }
