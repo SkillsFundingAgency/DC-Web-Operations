@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
@@ -50,13 +48,16 @@ namespace ESFA.DC.Web.Operations.Controllers
 
             var reportDetails = await _periodEndService.GetPeriodEndReports(model.Year, model.Period);
 
+            var sampleReports = await _periodEndService.GetSampleReports(model.Year, model.Period, CancellationToken.None);
+
             model.ReportDetails = reportDetails;
+            model.SampleReports = sampleReports;
 
             return View(model);
         }
 
         [Route("getReportFile/{collectionYear}/{*fileName}")]
-        public async Task<FileResult> GetReportFile(int collectionYear, string fileName)
+        public async Task<FileResult> GetReportFile(int collectionYear, string fileName, string downloadName = "")
         {
             try
             {
@@ -64,7 +65,7 @@ namespace ESFA.DC.Web.Operations.Controllers
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {
-                    FileDownloadName = fileName
+                    FileDownloadName = string.IsNullOrEmpty(downloadName) ? fileName : downloadName
                 };
             }
             catch (Exception e)
@@ -72,6 +73,14 @@ namespace ESFA.DC.Web.Operations.Controllers
                 _logger.LogError($"Download report failed for file name : {fileName}", e);
                 throw;
             }
+        }
+
+        [Route("getSampleReport/{collectionYear}/{period}/{*fileName}")]
+        public async Task<FileResult> GetReportFile(int collectionYear, int period, string fileName)
+        {
+            var downloadName = $"{fileName.Substring(0, fileName.IndexOf('/'))}_R{period.ToString().PadLeft(2, '0')}_Reports.zip";
+
+            return await GetReportFile(collectionYear, fileName, downloadName);
         }
     }
 }

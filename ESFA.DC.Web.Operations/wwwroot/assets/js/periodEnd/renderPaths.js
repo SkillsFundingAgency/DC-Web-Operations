@@ -1,4 +1,8 @@
-﻿function pathItemCompare( a, b ) {
+﻿//let startButton = document.getElementById("startPeriodEnd");
+//startButton.addEventListener("click", startPeriodEnd);
+
+
+function pathItemCompare( a, b ) {
     if ( a.ordinal < b.ordinal ){
         return -1;
     }
@@ -98,6 +102,11 @@ function disableStart() {
     }
 }
 
+function startPeriodEnd(collectionYear, period) {
+    connection
+        .invoke("StartPeriodEnd", collectionYear, period)
+        .catch(err => console.error(err.toString()));
+}
 
 function renderPaths(pathString) {
 

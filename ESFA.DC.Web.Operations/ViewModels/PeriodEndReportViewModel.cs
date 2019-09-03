@@ -15,5 +15,7 @@ namespace ESFA.DC.Web.Operations.ViewModels
         public int Year { get; set; }
 
         public IEnumerable<ReportDetails> ReportDetails { get; set; }
+
+        public IEnumerable<ReportDetails> SampleReports { get; set; }
     }
 }

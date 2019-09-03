@@ -8,8 +8,10 @@ let connection = new signalR
 
 connection.on("ReceiveMessage", renderPaths);
 
+connection.on("DisableStartPeriodEnd", disableStart);
+
 connection.start().then(() => {
     setTimeout(function() {
-        connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
-    }, 30*1000);
+        connection.invoke("ReceiveMessage").catch(err => console.error(err.toString()));
+    }, 30 * 1000);
 });
