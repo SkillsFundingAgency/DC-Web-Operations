@@ -21,7 +21,7 @@
             <tbody class="govuk-table__body">
                 @if (Model != null && Model.ReportDetails.Any())
                 {
-                    foreach (var reportDetail in Model.ReportDetails)
+                    foreach (var reportDetail in Model.ReportDetails.Where(rd => !string.IsNullOrEmpty(rd.Url)))
                     {
                         var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
                         <tr class="govuk-table__row">
