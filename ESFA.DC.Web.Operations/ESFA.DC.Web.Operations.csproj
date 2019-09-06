@@ -276,9 +276,6 @@
     <Content Update="wwwroot\assets\js\hubs\periodEnd.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\hubs\operations.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Update="wwwroot\assets\js\signalr\dist\browser\signalr.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
