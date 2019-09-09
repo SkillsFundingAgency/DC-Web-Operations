@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ESFA.DC.Web.Operations.Topics.Data.Entities.JobTopicSubscription>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = null;
+}
+
+<h1>Topics</h1>
+
+<a href="/tasks">Go To Tasks</a>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Collection: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="govuk-table">
+    <thead class="govuk-table__header">
+        <tr>
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.Collection)
+            </th>
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.TopicName)
+            </th>
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.SubscriptionName)
+            </th>
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.TopicOrder)
+            </th>
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.IsFirstStage)
+            </th>
+            <th style="text-align: left">
+                @Html.DisplayNameFor(model => model.Enabled)
+            </th>
+
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    <tr style="background-color: @(item.Enabled.GetValueOrDefault()? "#808080" : "red"); color: white">
+        <td class="govuk-table__cell">
+            @Html.DisplayFor(modelItem => item.Collection.Name)
+        </td>
+        <td class="govuk-table__cell">
+            @Html.DisplayFor(modelItem => item.TopicName)
+        </td>
+        <td class="govuk-table__cell">
+            @Html.DisplayFor(modelItem => item.SubscriptionName)
+        </td>
+        <td class="govuk-table__cell">
+            @Html.DisplayFor(modelItem => item.TopicOrder)
+        </td>
+        <td class="govuk-table__cell">
+            @item.IsFirstStage
+        </td>
+        <td class="govuk-table__cell">
+            @item.Enabled
+        </td>
+
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.JobTopicId">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.JobTopicId">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.JobTopicId">Delete</a>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

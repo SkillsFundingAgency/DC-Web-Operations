@@ -266,10 +266,14 @@
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Topics.Data\ESFA.DC.Web.Operations.Topics.Data.csproj" />
   </ItemGroup>
 
 
   <ItemGroup>
+    <Content Update="appsettings.salman.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\assets\js\hubs\periodEndPrep.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

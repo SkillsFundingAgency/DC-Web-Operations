@@ -1,0 +1,52 @@
+﻿@model ESFA.DC.Web.Operations.Topics.Data.Entities.JobTopicSubscription
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>JobTopicSubscription</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="JobTopicId" class="control-label"></label>
+                <input asp-for="JobTopicId" class="form-control" />
+                <span asp-validation-for="JobTopicId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CollectionId" class="control-label"></label>
+                <select asp-for="CollectionId" class ="form-control" asp-items="ViewBag.CollectionId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TopicName" class="control-label"></label>
+                <input asp-for="TopicName" class="form-control" />
+                <span asp-validation-for="TopicName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubscriptionName" class="control-label"></label>
+                <input asp-for="SubscriptionName" class="form-control" />
+                <span asp-validation-for="SubscriptionName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsFirstStage" class="control-label"></label>
+                <input asp-for="IsFirstStage" class="form-control" />
+                <span asp-validation-for="IsFirstStage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

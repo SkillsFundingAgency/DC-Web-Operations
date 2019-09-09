@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using Autofac;
 using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
@@ -11,6 +13,10 @@ using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Storage;
+using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Topics.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ESFA.DC.Web.Operations.Ioc
 {
@@ -29,6 +35,21 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().SingleInstance();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
+
+            builder.RegisterType<JobQueueDataContext>().InstancePerLifetimeScope();
+
+            builder.Register(context =>
+                {
+                    var config = context.Resolve<ConnectionStrings>();
+                    var optionsBuilder = new DbContextOptionsBuilder<JobQueueDataContext>();
+                    optionsBuilder.UseSqlServer(
+                        config.JobManagement,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<JobQueueDataContext>>()
+                .SingleInstance();
         }
     }
 }
