@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
@@ -29,19 +28,24 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(DateTime.UtcNow);
+            var currentYearPeriod = await _periodService.ReturnPeriod();
             PeriodEndViewModel model;
 
             if (collectionYear != null && period != null)
             {
                 model = await ShowPath(collectionYear.Value, period.Value);
+                model.Year = collectionYear.Value;
+                model.Period = period.Value;
             }
             else
             {
                 model = await ShowPath(currentYearPeriod.Year, currentYearPeriod.Period);
+                model.Year = currentYearPeriod.Year;
+                model.Period = currentYearPeriod.Period;
             }
 
-            model.CurrentPeriod = currentYearPeriod.Period;
+            var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
+            model.Closed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return View(model);
         }
@@ -73,7 +77,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         [HttpPost("proceed")]
         public async Task<IActionResult> Proceed(int collectionYear, int period)
         {
-            await _periodEndService.Proceed(collectionYear, period, 0);
+            await _periodEndService.Proceed(collectionYear, period);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }

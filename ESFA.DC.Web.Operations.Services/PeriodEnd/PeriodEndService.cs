@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
@@ -25,45 +27,45 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync($"{_baseUrl}/api/periodend/startPeriodEnd/{year}/{period}", cancellationToken);
+            await SendDataAsync($"{_baseUrl}/api/period-end/{year}/{period}/start", cancellationToken);
         }
 
         public async Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync(_baseUrl + $"/api/periodend/proceed/{year}/{period}/{path}", cancellationToken);
+            await SendDataAsync(_baseUrl + $"/api/period-end/{year}/{period}/{path}/proceed", cancellationToken);
         }
 
         public async Task ToggleReferenceDataJobs(bool pause, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync(_baseUrl + $"/api/periodend/referenceDataJobs/{pause}", cancellationToken);
+            await SendDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{pause}", cancellationToken);
         }
 
         public async Task PublishReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync(_baseUrl + $"/api/periodend/publishReports/{year}/{period}", cancellationToken);
+            await SendDataAsync(_baseUrl + $"/api/period-end/reports/{year}/{period}/publish", cancellationToken);
         }
 
         public async Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"/api/periodend/getStates/{year}/{period}", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + $"/api/period-end/states/{year}/{period}", cancellationToken);
             return data;
         }
 
         public async Task ClosePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await GetDataAsync(_baseUrl + $"/api/periodend/closePeriodEnd/{year}/{period}", cancellationToken);
+            await SendDataAsync(_baseUrl + $"/api/period-end/{year}/{period}/close", cancellationToken);
         }
 
-        public async Task<string> GetFailedJobs(string collectionType, int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetFailedJobs(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"/api/job/failedJobs/{collectionType}/{year}/{period}", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + $"/api/job/failedJobs/{year}/{period}", cancellationToken);
 
             return data;
         }
 
         public async Task<string> GetReferenceDataJobs(CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"/api/periodend/getReferenceDataJobs", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs", cancellationToken);
 
             return data;
         }
@@ -72,6 +74,22 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
             await SendDataAsync(_baseUrl + $"/api/job/{JobStatusType.Ready}", jobStatusDto);
+        }
+
+        public async Task<IEnumerable<ReportDetails>> GetPeriodEndReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
+                await GetDataAsync(_baseUrl + $"/api/period-end/reports/{year}/{period}", cancellationToken));
+
+            return data;
+        }
+
+        public async Task<IEnumerable<ReportDetails>> GetSampleReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
+                await GetDataAsync(_baseUrl + $"/api/period-end/reports/{year}/{period}/samples", cancellationToken));
+
+            return data;
         }
      }
 }
