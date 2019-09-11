@@ -59,6 +59,8 @@ function renderJob(job, jobList) {
 function renderPathItem(path, pathItem, subItemList, collectionYear, period){
     let currentItem = pathItem.ordinal === path.position -1;
 
+    let totalPathItems = path.pathItems.length;
+
     let enableProceed = true;
 
     let item = document.createElement("li");
@@ -66,9 +68,9 @@ function renderPathItem(path, pathItem, subItemList, collectionYear, period){
 
     let jobItems = pathItem.pathItemJobs;
     if (jobItems != undefined && jobItems.length > 0) {
-        var jobList = document.createElement("ul");
+        let jobList = document.createElement("ul");
         jobItems.forEach(function(job) {
-            var completed  = renderJob(job, jobList);
+            let completed  = renderJob(job, jobList);
             if (!completed) {
                 enableProceed = false;
             }
@@ -78,7 +80,9 @@ function renderPathItem(path, pathItem, subItemList, collectionYear, period){
     }
 
     if (currentItem) {
-        renderProceed(item, enableProceed, collectionYear, period);
+        if(pathItem.ordinal + 1 !== totalPathItems) {
+            renderProceed(item, enableProceed, collectionYear, period);
+        }
         
         let bold = document.createElement("b");
         subItemList.appendChild(bold);
