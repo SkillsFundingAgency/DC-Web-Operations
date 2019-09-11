@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Utils;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Controllers
+namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
-    [Route("periodEndReports")]
+    [Area(AreaNames.PeriodEnd)]
+    [Route(AreaNames.PeriodEnd + "/periodEndReports")]
     public class PeriodEndReportController : Controller
     {
         private readonly IPeriodService _periodService;

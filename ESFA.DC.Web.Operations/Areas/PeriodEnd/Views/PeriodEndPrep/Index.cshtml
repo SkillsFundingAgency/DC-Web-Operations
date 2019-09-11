@@ -15,10 +15,10 @@
                 <a href="#" class="govuk-link">Application version</a>
             </li>
             <li>
-                <a href="#" class="govuk-link">Email distribution</a>
+                @Html.ActionLink("Email Distribution", "Index", "PeriodEndDistributionList", new {area = "periodend"}, new {@class="govuk-link"})
             </li>
             <li>
-                <div class="flex"><a asp-controller="PeriodEndReport" asp-action="Index" class="govuk-link ">Reports</a></div>
+                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = "periodend" }, new { @class = "govuk-link" })
             </li>
             <li>
                 <a href="#" class="govuk-link">History</a>
