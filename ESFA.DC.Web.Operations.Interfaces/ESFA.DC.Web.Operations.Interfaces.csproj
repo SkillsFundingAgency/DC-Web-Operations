@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
   </ItemGroup>
 

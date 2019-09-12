@@ -18,6 +18,7 @@
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.9-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="1.0.0" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />

@@ -8,12 +8,12 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
     [Route(AreaNames.PeriodEnd + "/PeriodEndDistributionList")]
     public class PeriodEndDistributionListController : Controller
     {
-        private readonly IMailingListService _mailingListService;
+        private readonly IEmailDistributionService _emailDistributionService;
 
         public PeriodEndDistributionListController(
-            IMailingListService mailingListService)
+            IEmailDistributionService emailDistributionService)
         {
-            _mailingListService = mailingListService;
+            _emailDistributionService = emailDistributionService;
         }
 
         public IActionResult Index()
