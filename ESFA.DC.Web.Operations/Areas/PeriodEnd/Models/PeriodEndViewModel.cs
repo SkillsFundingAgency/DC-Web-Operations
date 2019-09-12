@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.Web.Operations.ViewModels
+﻿namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {
     public class PeriodEndViewModel
     {

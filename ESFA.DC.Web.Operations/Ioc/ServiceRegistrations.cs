@@ -28,6 +28,7 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
+            builder.RegisterType<MailingListService>().As<IMailingListService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
 

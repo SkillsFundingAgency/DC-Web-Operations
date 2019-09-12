@@ -287,7 +287,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Areas\PeriodEnd\Models\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>
 
