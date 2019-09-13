@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ESFA.DC.PeriodEnd.Models.EmailDistribution.RecipientGroup>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1 class="govuk-heading-xl">Manage distribution list</h1>
+
+
+<div class="flex space-between">
+    <p>
+        <a class="govuk-button govuk-button--secondary" href="/emaildistribution/group">Add a new list</a>&nbsp; &nbsp; &nbsp;
+        <a class="govuk-button govuk-button--secondary" href="/emaildistribution/recipient">Add a new recipient</a>&nbsp; &nbsp; &nbsp;
+        <a class="govuk-button govuk-button--secondary" href="manage-emails">Manage emails</a>
+    </p>
+    <div>
+
+        <!-- <a class="govuk-link govuk-!-font-size-19" href="manage-mailing-list">Manage lists</a> -->
+    </div>
+</div>
+
+<!-- <h2 class="govuk-heading-m">DCT mailing list</h2> -->
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col"></th>
+                <th class="govuk-table__header" scope="col"></th>
+                <th class="" scope=""></th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body" id="referenceDataContainer">
+        
+        @foreach (var group in Model)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@group.GroupName</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="DCT-mail-list">
+                        Manage list<span class="govuk-visually-hidden"> Manage DCT list</span>
+                    </a>
+                </td>
+            </tr>
+        }
+        
+        </tbody>
+</table>
+
+

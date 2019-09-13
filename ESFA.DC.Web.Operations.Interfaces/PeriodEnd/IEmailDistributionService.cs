@@ -9,5 +9,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
     {
         Task<List<RecipientGroup>> GetEmailRecipientGroups(
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

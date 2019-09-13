@@ -4,10 +4,10 @@ using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers.EmailDistribution
+namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
-    [Area(AreaNames.PeriodEnd)]
-    [Route(AreaNames.PeriodEnd + "/distribution/recipient")]
+    [Area(AreaNames.EmailDistribution)]
+    [Route(AreaNames.EmailDistribution + "/recipient")]
     [Authorize]
     public class RecipientController : Controller
     {

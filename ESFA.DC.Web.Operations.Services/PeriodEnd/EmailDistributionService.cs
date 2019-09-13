@@ -20,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             ApiSettings apiSettings)
             : base(jsonSerializationService, httpClient)
         {
-            _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}api/period-end/email-distribution";
+            _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}api/email-distribution";
         }
 
         public async Task<List<RecipientGroup>> GetEmailRecipientGroups(CancellationToken cancellationToken = default(CancellationToken))
@@ -32,7 +32,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
                result = _jsonSerializationService.Deserialize<List<RecipientGroup>>(data);
             }
 
-            return result.Where(x => x.Enabled).ToList();
+            return result;
+        }
+
+        public async Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = new List<RecipientGroup>();
+            await SendDataAsync(_baseUrl + "/groups", groupName);
+
+            return true;
         }
     }
 }

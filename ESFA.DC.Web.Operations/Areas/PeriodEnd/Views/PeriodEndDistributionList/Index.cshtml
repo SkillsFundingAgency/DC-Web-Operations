@@ -23,8 +23,8 @@
                     {
                         <tr>
                             <td>@recipientGroup.GroupName</td>
-                            <td>@Html.ActionLink("Edit", "EditMailingList", new { Id = recipientGroup.GroupId })</td>
-                            <td>@Html.ActionLink("Remove", "DeleteMailingList", new { Id = recipientGroup.GroupId })</td>
+                            <td>@Html.ActionLink("Edit", "EditMailingList", new { Id = recipientGroup.RecipientGroupId })</td>
+                            <td>@Html.ActionLink("Remove", "DeleteMailingList", new { Id = recipientGroup.RecipientGroupId})</td>
                         </tr>
                     }
                 }
