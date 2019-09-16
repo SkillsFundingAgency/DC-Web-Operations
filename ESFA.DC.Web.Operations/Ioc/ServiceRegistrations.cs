@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using Autofac;
 using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -28,15 +29,19 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
+            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<HubEventBase>().As<IHubEventBase>().SingleInstance();
 
-            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().SingleInstance();
+            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
 
             builder.RegisterType<JobQueueDataContext>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpClient>().SingleInstance();
+            builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
 
             builder.Register(context =>
                 {

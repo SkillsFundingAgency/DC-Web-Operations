@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1 class="govuk-heading-xl">Enter the recipient's email address</h1>
+<form asp-controller="RecipientController" asp-action="Submit" method="post" id="choiceform">
+
+    <div class="govuk-form-group">
+        <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="text">
+    </div>
+
+
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+            <span id="waste-hint" class="govuk-hint">
+                Select which lists you'd like the recipient added to.
+            </span>
+            <div class="govuk-checkboxes">
+
+                @foreach (var group in Model)
+                {
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" name="groups" type="checkbox" value="@group.RecipientGroupId">
+                        <label class="govuk-label govuk-checkboxes__label" for="@group.RecipientGroupId">
+                            @group.GroupName
+                        </label>
+                    </div>
+                }
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="waste-4" name="groups" type="checkbox" value="0">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-4">
+                        All
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <button class="govuk-button">
+        Add recipient
+    </button>
+
+</form>
