@@ -1,4 +1,6 @@
-﻿@model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndPrepViewModel
+﻿@using ESFA.DC.Web.Operations.Utils
+@using ESFA.DC.Web.Operations.Areas.EmailDistribution
+@model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndPrepViewModel
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -15,7 +17,7 @@
                 <a href="#" class="govuk-link">Application version</a>
             </li>
             <li>
-                @Html.ActionLink("Email Distribution", "Index", "PeriodEndDistributionList", new {area = "periodend"}, new {@class="govuk-link"})
+                @Html.ActionLink("Email Distribution", "Index", "List", new {area = AreaNames.EmailDistribution}, new {@class="govuk-link"})
             </li>
             <li>
                 @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = "periodend" }, new { @class = "govuk-link" })

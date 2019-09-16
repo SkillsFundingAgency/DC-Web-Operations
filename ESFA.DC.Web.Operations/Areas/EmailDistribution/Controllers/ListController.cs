@@ -11,8 +11,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
     [Area(AreaNames.EmailDistribution)]
     [Route(AreaNames.EmailDistribution)]
-    [Authorize]
-    public class ListController : Controller
+    public class ListController : BaseDistributionController
     {
         private readonly IEmailDistributionService _emailDistributionService;
 
