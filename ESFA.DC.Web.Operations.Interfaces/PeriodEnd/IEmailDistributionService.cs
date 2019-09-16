@@ -16,5 +16,11 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<bool> IsDuplicateGroupName(string groupName,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<bool> SaveEmailTemplate(EmailTemplate template, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<List<EmailTemplate>> GetEmailTemplates(CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<EmailTemplate> GetEmailTemplate(int emailId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -36,16 +36,43 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return result;
         }
 
-        public async Task<bool> IsDuplicateGroupName(string groupName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<EmailTemplate> GetEmailTemplate(int emailId, CancellationToken cancellationToken = default)
         {
-            var result = new List<RecipientGroup>();
-            string data = await GetDataAsync(_baseUrl + "/groups", cancellationToken);
+            var result = new EmailTemplate();
+            string data = await GetDataAsync($"{_baseUrl}/template/{emailId}", cancellationToken);
             if (!string.IsNullOrEmpty(data))
             {
-                result = _jsonSerializationService.Deserialize<List<RecipientGroup>>(data);
+                result = _jsonSerializationService.Deserialize<EmailTemplate>(data);
             }
 
+            return result;
+        }
+
+        public async Task<List<EmailTemplate>> GetEmailTemplates(CancellationToken cancellationToken = default)
+        {
+            var result = new List<EmailTemplate>();
+            string data = await GetDataAsync(_baseUrl + "/template", cancellationToken);
+            if (!string.IsNullOrEmpty(data))
+            {
+                result = _jsonSerializationService.Deserialize<List<EmailTemplate>>(data);
+            }
+
+            return result;
+        }
+
+        public async Task<bool> IsDuplicateGroupName(string groupName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = await GetEmailRecipientGroups(cancellationToken);
+
             return result.Any(x => x.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public async Task<bool> SaveEmailTemplate(EmailTemplate template, CancellationToken cancellationToken = default)
+        {
+            var result = new List<RecipientGroup>();
+            await SendDataAsync(_baseUrl + "/template", template);
+
+            return true;
         }
 
         public async Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken))
