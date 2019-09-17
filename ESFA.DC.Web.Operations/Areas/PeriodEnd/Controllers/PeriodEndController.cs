@@ -5,7 +5,6 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
-using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
@@ -17,15 +16,18 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IEmailService _emailService;
 
         public PeriodEndController(
             IPeriodService periodService,
             IPeriodEndService periodEndService,
-            IJsonSerializationService jsonSerializationService)
+            IJsonSerializationService jsonSerializationService,
+            IEmailService emailService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
             _jsonSerializationService = jsonSerializationService;
+            _emailService = emailService;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
@@ -66,6 +68,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         {
             await _periodEndService.PublishReports(collectionYear, period);
 
+            await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period);
+
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
@@ -73,6 +77,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         public async Task<IActionResult> StartPeriodEnd(int collectionYear, int period)
         {
             await _periodEndService.StartPeriodEnd(collectionYear, period);
+
+            await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }
