@@ -35,9 +35,7 @@
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@group.GroupName</td>
                 <td class="govuk-table__cell">
-                    <a class="govuk-link" href="DCT-mail-list">
-                        Manage list<span class="govuk-visually-hidden"> Manage DCT list</span>
-                    </a>
+                    @Html.ActionLink("Manage list","DisplayGroupRecipients","Group", new {group.RecipientGroupId})
                 </td>
             </tr>
         }

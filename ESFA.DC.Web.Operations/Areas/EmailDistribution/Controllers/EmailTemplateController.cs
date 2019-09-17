@@ -43,17 +43,34 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                     Text = a.GroupName,
                 }).ToList();
 
+            items.Add(new SelectListItem()
+            {
+                Text = "Please select",
+                Value = "0",
+                Selected = true
+            });
+
             ViewData["groups"] = items;
 
             var data = await _emailDistributionService.GetEmailTemplate(emailId);
-            return View(data);
+            return View("Edit", data);
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(EmailTemplate template)
         {
+            if (template.RecipientGroup.RecipientGroupId < 1)
+            {
+                AddError(ErrorMessageKeys.Submission_FileFieldKey, "Please select a valid mailing list");
+                AddError(ErrorMessageKeys.ErrorSummaryKey, "Please select a valid mailing list");
+
+                _logger.LogWarning($"invalid template group name : {template.RecipientGroup.RecipientGroupId}");
+
+                return await Edit(template.EmailId);
+            }
+
             var data = await _emailDistributionService.SaveEmailTemplate(template);
-            return View("Index");
+            return RedirectToAction("Index");
         }
     }
 }

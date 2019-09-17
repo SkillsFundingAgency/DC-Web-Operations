@@ -26,7 +26,8 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             return View();
         }
 
-        public async Task<IActionResult> DisplayGroupRecipients()
+        [HttpGet("details/{recipientGroupId}")]
+        public async Task<IActionResult> DisplayGroupRecipients(int recipientGroupId)
         {
             return View("GroupRecipients");
         }

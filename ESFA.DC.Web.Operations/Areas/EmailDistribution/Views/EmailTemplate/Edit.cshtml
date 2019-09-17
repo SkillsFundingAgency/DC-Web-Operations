@@ -10,25 +10,28 @@
 <h1 class="govuk-heading-xl">@Model.TemplateName</h1>
 
 <form asp-controller="EmailTemplate" asp-action="Save" method="post" id="choiceform">
+
+    <input type="hidden" asp-for="EmailId" value="@Model.EmailId"/>
+
     <div class="govuk-form-group">
         <label class="govuk-label" for="event-name">
             Template ID
         </label>
-        <input  class="govuk-input govuk-input--width-20" asp-for="TemplateId" class="form-control" disabled="disabled" value="@Model.TemplateId"/>
+        <input class="govuk-input govuk-input--width-20" asp-for="TemplateId" class="form-control" disabled="disabled" value="@Model.TemplateId"/>
     </div>
 
     <div class="govuk-form-group">
         <label class="govuk-label" for="event-name">
             Template Name
         </label>
-        <input class="govuk-input govuk-input--width-20" asp-for="TemplateId" class="form-control" disabled="disabled" value="@Model.TemplateName" />
+        <input class="govuk-input govuk-input--width-20" asp-for="TemplateName" class="form-control" disabled="disabled" value="@Model.TemplateName"/>
     </div>
 
     <div class="govuk-form-group">
         <label class="govuk-label" for="event-name">
             Trigger Point
         </label>
-        <input class="govuk-input govuk-input--width-20" asp-for="TemplateId" class="form-control" disabled="disabled" value="@Model.TriggerPointName" />
+        <input class="govuk-input govuk-input--width-20" asp-for="TriggerPointName" class="form-control" disabled="disabled" value="@Model.TriggerPointName"/>
     </div>
 
 
@@ -37,14 +40,13 @@
         <label class="govuk-label" for="sort">
             Select mailing list
         </label>
-        <select class="govuk-select govuk-input govuk-input--width-20" asp-for="@Model.RecipientGroup" class="form-control" asp-items=@groups>
-        </select>
+            <select class="govuk-select govuk-input--width-20" asp-for="@Model.RecipientGroup.RecipientGroupId" class="form-control" asp-items=@groups></select>
 
-        
+
     </div>
-    
+
     <button class="govuk-button">
         Save and continue
     </button>
 
-    </form>
+</form>
