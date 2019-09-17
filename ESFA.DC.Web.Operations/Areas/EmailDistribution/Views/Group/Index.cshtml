@@ -1,15 +1,18 @@
-﻿
+﻿@using ESFA.DC.Web.Operations.Constants
+
 @{
     ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
-    <h1 class="govuk-heading-xl">Name your new mailing list</h1>
+
+<h1 class="govuk-heading-xl">Name your new mailing list</h1>
 
 <form asp-controller="Group" asp-action="Submit" method="post" id="choiceform">
-        <div class="govuk-form-group">
+    <div class="govuk-form-group">
 
-            <input class="govuk-input govuk-input--width-20" id="groupName" name="groupName" type="text">
-        </div>
+        <input class="govuk-input govuk-input--width-20" id="groupName" name="groupName" type="text">
+    </div>
 
     <button class="govuk-button">
         Add

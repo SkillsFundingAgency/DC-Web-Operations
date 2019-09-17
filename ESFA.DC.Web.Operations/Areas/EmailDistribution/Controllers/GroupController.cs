@@ -36,8 +36,17 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         [HttpPost("remove-group")]
         public async Task<IActionResult> RemoveRecipientGroup([FromForm] int recipientGroupId)
         {
-            await _emailDistributionService.RemoveGroup(recipientGroupId);
-            return RedirectToAction("Index", "List");
+            var result = await _emailDistributionService.RemoveGroup(recipientGroupId);
+
+            if (result)
+            {
+                return RedirectToAction("Index", "List");
+            }
+
+            AddError(ErrorMessageKeys.Submission_FileFieldKey, "This group can not be deleted because it is used by an email template");
+            AddError(ErrorMessageKeys.ErrorSummaryKey, "This group can not be deleted because it is used by an email template");
+
+            return await DisplayGroupRecipients(recipientGroupId);
         }
 
         [HttpPost]

@@ -9,7 +9,7 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
-namespace ESFA.DC.Web.Operations.Services.PeriodEnd
+namespace ESFA.DC.Web.Operations.Services
 {
     public class EmailDistributionService : BaseHttpClientService, IEmailDistributionService
     {
@@ -100,9 +100,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<bool> RemoveGroup(int recipientGroupId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId);
-
-            return true;
+            try
+            {
+                await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken))

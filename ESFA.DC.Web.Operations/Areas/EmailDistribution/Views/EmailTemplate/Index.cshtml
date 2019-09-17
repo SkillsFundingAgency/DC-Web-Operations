@@ -1,22 +1,24 @@
-﻿@model List<ESFA.DC.EmailDistribution.Models.EmailTemplate>
+﻿@using ESFA.DC.Web.Operations.Constants
+@model List<ESFA.DC.EmailDistribution.Models.EmailTemplate>
 @{
     ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
-    
-    <h1 class="govuk-heading-xl">Manage emails</h1>
-    
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Email template</th>
-                <th class="govuk-table__header" scope="col">Trigger point</th>
-                <th class="govuk-table__header" scope="col">Mailing list</th>
-                <th class="govuk-table__header" scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody class="govuk-table__body" id="templates">
-        
+
+<h1 class="govuk-heading-xl">Manage emails</h1>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Email template</th>
+            <th class="govuk-table__header" scope="col">Trigger point</th>
+            <th class="govuk-table__header" scope="col">Mailing list</th>
+            <th class="govuk-table__header" scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body" id="templates">
+
         @foreach (var template in Model)
         {
             <tr class="govuk-table__row">
@@ -24,10 +26,10 @@
                 <td class="govuk-table__cell">@template.TriggerPointName</td>
                 <td class="govuk-table__cell">@(template.RecipientGroup == null ? string.Empty : template.RecipientGroup.GroupName)</td>
                 <td class="govuk-table__cell">
-                    @Html.ActionLink("Edit", "Edit", new {emailId = template.EmailId})
+                    @Html.ActionLink("Edit", "Edit", new { emailId = template.EmailId })
                 </td>
             </tr>
         }
-        
-        </tbody>
-    </table>
+
+    </tbody>
+</table>

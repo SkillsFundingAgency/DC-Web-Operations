@@ -1,6 +1,8 @@
-﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
+﻿@using ESFA.DC.Web.Operations.Constants
+@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
 @{
     ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
 
