@@ -9,6 +9,7 @@ using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2.HPack;
 using Serilog.Core;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
@@ -29,14 +30,39 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         public async Task<IActionResult> Index()
         {
             var data = await _emailDistributionService.GetEmailRecipientGroups();
-            return View(data);
+            return View("Index", data);
+        }
+
+        [HttpPost("remove-recipient")]
+        public async Task<IActionResult> Remove()
+        {
+            ViewData["email"] = Request.Form["email"];
+            int.TryParse(Request.Form["recipientId"], out var recipientId);
+            int.TryParse(Request.Form["recipientGroupId"], out var recipientGroupId);
+
+            await _emailDistributionService.RemoveRecipient(recipientId, recipientGroupId);
+            return View("ConfirmRemove");
+        }
+
+        [HttpGet("/ask-remove/{recipientId}/{recipientGroupId}")]
+        public async Task<IActionResult> AskRemove(int recipientId, int recipientGroupId)
+        {
+            var group = await _emailDistributionService.GetGroup(recipientGroupId);
+            var recipients = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
+
+            ViewData["email"] = recipients.Single(x => x.RecipientId == recipientId).EmailAddress;
+            ViewData["group"] = group.GroupName;
+            ViewData["recipientId"] = recipientId;
+            ViewData["recipientGroupId"] = recipientGroupId;
+
+            return View("AskRemove");
         }
 
         [HttpPost]
         public async Task<IActionResult> Submit()
         {
             var email = Request.Form["email"];
-            var groups = Request.Form["groups"];
+            var selectedGroups = Request.Form["groups"];
 
             if (string.IsNullOrEmpty(email))
             {
@@ -49,7 +75,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 return View("Index", data);
             }
 
-            if (!groups.Any())
+            if (!selectedGroups.Any())
             {
                 AddError(ErrorMessageKeys.Submission_FileFieldKey, "Please select at least one group");
                 AddError(ErrorMessageKeys.ErrorSummaryKey, "Please select at least one group");
@@ -62,9 +88,18 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 
             var recipient = new Recipient()
             {
-                Email = email,
-                RecipientGroupIds = groups.ToList().Select(x => int.Parse(x)).ToList(),
+                EmailAddress = email,
             };
+
+            if (selectedGroups.Any(x => int.Parse(x) == 0))
+            {
+                var groups = await _emailDistributionService.GetEmailRecipientGroups();
+                recipient.RecipientGroupIds = groups.ToList().Select(x => x.RecipientGroupId).ToList();
+            }
+            else
+            {
+                recipient.RecipientGroupIds = selectedGroups.ToList().Select(x => int.Parse(x)).ToList();
+            }
 
             await _emailDistributionService.SaveRecipient(recipient);
 

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="1.0.3" />
+    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>

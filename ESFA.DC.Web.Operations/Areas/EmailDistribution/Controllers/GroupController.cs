@@ -29,7 +29,15 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         [HttpGet("details/{recipientGroupId}")]
         public async Task<IActionResult> DisplayGroupRecipients(int recipientGroupId)
         {
-            return View("GroupRecipients");
+            var data = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
+            return View("GroupRecipients", data);
+        }
+
+        [HttpPost("remove-group")]
+        public async Task<IActionResult> RemoveRecipientGroup([FromForm] int recipientGroupId)
+        {
+            await _emailDistributionService.RemoveGroup(recipientGroupId);
+            return RedirectToAction("Index", "List");
         }
 
         [HttpPost]

@@ -1,61 +1,41 @@
-﻿
+﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.Recipient>
 @{
     ViewData["Title"] = "GroupRecipients";
+    var recipientGroupId = ViewContext.RouteData.Values["recipientGroupId"];
 }
 
 
     <h1 class="govuk-heading-xl">DCT mailing list</h1>
 
     
+<table class="govuk-table">
+   
+    <tbody class="govuk-table__body" id="recipients">
+        
+    @foreach (var recipient in Model)
+    {
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@recipient.EmailAddress</td>
+            <td class="govuk-table__cell">
+                @Html.ActionLink("Remove", "AskRemove","Recipient", new { recipientId = recipient.RecipientId, recipientGroupId })
 
 
-<dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
-            <dd class="govuk-summary-list__value">
-                <a href="edit-recipient">name.surname@education.gov.uk</a>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="remove-recipient">
-                    Remove<span class="govuk-visually-hidden"> email</span>
-                </a>
-            </dd>
-        </div>
+            </td>
+        </tr>
+    }
 
-        <div class="govuk-summary-list__row">
-            <dd class="govuk-summary-list__value">
-                <a href="#">ian.tress@education.gov.uk</a>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                    Remove<span class="govuk-visually-hidden"> email</span>
-                </a>
-            </dd>
-        </div>
+        
+    </tbody>
+</table>
 
-        <div class="govuk-summary-list__row">
-            <dd class="govuk-summary-list__value">
-                <a href="#">karyn.reidy@education.gov.uk</a>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                    Remove<span class="govuk-visually-hidden"> email</span>
-                </a>
-            </dd>
-        </div>
-
-        <div class="govuk-summary-list__row">
-            <dd class="govuk-summary-list__value">
-                <a href="#">lynne.burdon@education.gov.uk</a>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                    Remove<span class="govuk-visually-hidden"> email</span>
-                </a>
-            </dd>
-        </div>
-
-
-    </dl>
-
-    <a href="#" class="govuk-button govuk-button--warning">Delete mailing list</a>
+@*@Html.ActionLink("Edit", "Edit", new {emailId = template.EmailId})*@
+<div>
+    <form asp-controller="Group" asp-action="RemoveRecipientGroup" method="post" id="choiceform">
+        <input type="hidden" name="recipientGroupId" id="recipientGroupId" value="@recipientGroupId" />
+        <button class="govuk-button govuk-button--warning" style="margin-left: 0px">
+            Delete mailing list
+        </button>
+        
+    </form>
+</div>
 

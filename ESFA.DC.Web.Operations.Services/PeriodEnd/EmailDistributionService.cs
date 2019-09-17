@@ -36,10 +36,22 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return result;
         }
 
+        public async Task<RecipientGroup> GetGroup(int recipientGroupId, CancellationToken cancellationToken = default)
+        {
+            var result = new RecipientGroup();
+            string data = await GetDataAsync($"{_baseUrl}/groups/{recipientGroupId}", cancellationToken);
+            if (!string.IsNullOrEmpty(data))
+            {
+                result = _jsonSerializationService.Deserialize<RecipientGroup>(data);
+            }
+
+            return result;
+        }
+
         public async Task<EmailTemplate> GetEmailTemplate(int emailId, CancellationToken cancellationToken = default)
         {
             var result = new EmailTemplate();
-            string data = await GetDataAsync($"{_baseUrl}/template/{emailId}", cancellationToken);
+            string data = await GetDataAsync($"{_baseUrl}/templates/{emailId}", cancellationToken);
             if (!string.IsNullOrEmpty(data))
             {
                 result = _jsonSerializationService.Deserialize<EmailTemplate>(data);
@@ -51,10 +63,22 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task<List<EmailTemplate>> GetEmailTemplates(CancellationToken cancellationToken = default)
         {
             var result = new List<EmailTemplate>();
-            string data = await GetDataAsync(_baseUrl + "/template", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + "/templates", cancellationToken);
             if (!string.IsNullOrEmpty(data))
             {
                 result = _jsonSerializationService.Deserialize<List<EmailTemplate>>(data);
+            }
+
+            return result;
+        }
+
+        public async Task<List<Recipient>> GetGroupRecipients(int recipientGroupId, CancellationToken cancellationToken = default)
+        {
+            var result = new List<Recipient>();
+            string data = await GetDataAsync($"{_baseUrl}/recipients/{recipientGroupId}", cancellationToken);
+            if (!string.IsNullOrEmpty(data))
+            {
+                result = _jsonSerializationService.Deserialize<List<Recipient>>(data);
             }
 
             return result;
@@ -69,15 +93,20 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<bool> SaveEmailTemplate(EmailTemplate template, CancellationToken cancellationToken = default)
         {
-            var result = new List<RecipientGroup>();
-            await SendDataAsync(_baseUrl + "/template", template);
+            await SendDataAsync(_baseUrl + "/templates", template);
+
+            return true;
+        }
+
+        public async Task<bool> RemoveGroup(int recipientGroupId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId);
 
             return true;
         }
 
         public async Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = new List<RecipientGroup>();
             await SendDataAsync(_baseUrl + "/groups", groupName);
 
             return true;
@@ -85,9 +114,14 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<bool> SaveRecipient(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = new List<RecipientGroup>();
             await SendDataAsync(_baseUrl + "/recipients", recipient);
 
+            return true;
+        }
+
+        public async Task<bool> RemoveRecipient(int recipientId, int recipientGroupId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendDataAsync($"{_baseUrl}/recipients/remove/{recipientId}/{recipientGroupId}", string.Empty);
             return true;
         }
     }
