@@ -1,13 +1,11 @@
-﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.Recipient>
+﻿@using ESFA.DC.Web.Operations.Constants
+@model IEnumerable<ESFA.DC.EmailDistribution.Models.Recipient>
 @{
     ViewData["Title"] = "GroupRecipients";
     var recipientGroupId = ViewContext.RouteData.Values["recipientGroupId"];
+    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
-
-<a id="backlink" href="/emaildistribution" class="govuk-back-link">Back</a>
-<br />
-<br />
 
 <h1 class="govuk-heading-xl">DCT mailing list</h1>
 
