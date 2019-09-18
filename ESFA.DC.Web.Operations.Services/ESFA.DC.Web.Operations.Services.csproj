@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.2.9-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="1.0.4" />
+    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.12-beta0001" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.9-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
