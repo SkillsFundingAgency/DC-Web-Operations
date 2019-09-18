@@ -39,7 +39,7 @@ function isJobComplete(jobStatus) {
 function renderProceed(pathItem, enabled, collectionYear, period) {
     const node = 
         `<span style="display:inline-block;" >
-            <form method='post' action='/periodEnd/proceed'>
+            <form method='post' action='/periodEnd/periodEnd/proceed'>
                 <input type="hidden" name="collectionYear" value="${collectionYear}" />
                 <input type="hidden" name="period" value="${period}" />
                 <input type="submit" value="Proceed" style="margin-left:20px;" ${enabled ? "" : "disabled"} /> 
@@ -64,6 +64,7 @@ function renderPathItem(path, pathItem, subItemList, collectionYear, period){
     let enableProceed = true;
 
     let item = document.createElement("li");
+    item.className += "app-task-list__item";
     item.textContent = pathItem.name;
 
     let jobItems = pathItem.pathItemJobs;
@@ -77,6 +78,12 @@ function renderPathItem(path, pathItem, subItemList, collectionYear, period){
         });
 
         item.appendChild(jobList);
+    }
+
+    if ((pathItem.ordinal < path.position - 1 || 
+            (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === totalPathItems)) 
+        && (jobItems == undefined || jobItems.length === 0)) {
+        item.textContent += " - Status : Completed";
     }
 
     if (currentItem) {
@@ -135,11 +142,18 @@ function renderPaths(pathString) {
             pathItems.sort(pathItemCompare);
 
             let li = document.createElement("li");
-            li.textContent = path.name;
+
+            let title = document.createElement("h2");
+            title.textContent = path.name;
+            li.appendChild(title);
 
             let subItemList = document.createElement("ul");
+            subItemList.className += "app-task-list__items";
+
             pathItems.forEach(function(pathItem) {
-                renderPathItem(path, pathItem, subItemList, collectionYear, period);
+                if (pathItem.name != undefined && pathItem.name !== "") {
+                    renderPathItem(path, pathItem, subItemList, collectionYear, period);
+                }
             });
 
             li.appendChild(subItemList);

@@ -42,6 +42,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobQueueDataContext>().InstancePerLifetimeScope();
             builder.RegisterType<HttpClient>().SingleInstance();
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
 
             builder.Register(context =>
                 {
