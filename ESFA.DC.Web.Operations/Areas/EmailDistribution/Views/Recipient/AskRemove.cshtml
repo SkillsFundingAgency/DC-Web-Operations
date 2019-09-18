@@ -1,7 +1,9 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using ESFA.DC.Web.Operations.Constants
+@using Microsoft.AspNetCore.Http
 
 @{
     ViewData["Title"] = "ConfirmRemove";
+    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
 <h1 class="govuk-heading-xl">Remove recipient</h1>
