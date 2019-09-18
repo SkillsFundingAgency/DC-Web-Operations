@@ -1,11 +1,13 @@
-﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
+﻿@using ESFA.DC.Web.Operations.Constants
+@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
 @{
     ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
 
 <h1 class="govuk-heading-xl">Enter the recipient's email address</h1>
-<form asp-controller="RecipientController" asp-action="Submit" method="post" id="choiceform">
+<form asp-controller="Recipient" asp-action="Submit" method="post" id="choiceform">
 
     <div class="govuk-form-group">
         <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="text">

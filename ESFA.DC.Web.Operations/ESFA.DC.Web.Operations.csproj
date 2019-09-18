@@ -245,7 +245,7 @@
     <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.11-beta0001" />
+    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.12-beta0001" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />

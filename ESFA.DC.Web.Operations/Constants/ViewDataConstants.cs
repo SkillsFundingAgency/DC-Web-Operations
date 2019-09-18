@@ -12,5 +12,6 @@
         public const string FundingClaimsCollection = "FundingClaimsCollection";
         public const string IsReadOnly = "IsReadOnly";
         public const string Is16To19ContractOnly = "Is16To19ContractOnly";
+        public const string BackLink = "BackLink";
     }
 }

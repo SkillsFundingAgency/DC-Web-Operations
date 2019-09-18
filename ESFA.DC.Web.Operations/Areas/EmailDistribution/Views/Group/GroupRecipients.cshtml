@@ -1,7 +1,45 @@
-﻿
+﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.Recipient>
 @{
     ViewData["Title"] = "GroupRecipients";
+    var recipientGroupId = ViewContext.RouteData.Values["recipientGroupId"];
 }
 
-<h1>GroupRecipients</h1>
+
+<a id="backlink" href="/emaildistribution" class="govuk-back-link">Back</a>
+<br />
+<br />
+
+<h1 class="govuk-heading-xl">DCT mailing list</h1>
+
+
+<table class="govuk-table">
+
+    <tbody class="govuk-table__body" id="recipients">
+
+        @foreach (var recipient in Model)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@recipient.EmailAddress</td>
+                <td class="govuk-table__cell">
+                    @Html.ActionLink("Remove", "AskRemove", "Recipient", new { recipientId = recipient.RecipientId, recipientGroupId })
+
+
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+
+@*@Html.ActionLink("Edit", "Edit", new {emailId = template.EmailId})*@
+<div>
+    <form asp-controller="Group" asp-action="RemoveRecipientGroup" method="post" id="choiceform">
+        <input type="hidden" name="recipientGroupId" id="recipientGroupId" value="@recipientGroupId" />
+        <button class="govuk-button govuk-button--warning" style="margin-left: 0px">
+            Delete mailing list
+        </button>
+
+    </form>
+</div>
 
