@@ -21,7 +21,7 @@ namespace ESFA.DC.Web.Operations.Services
             ApiSettings apiSettings)
             : base(jsonSerializationService, httpClient)
         {
-            _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}api/email-distribution";
+            _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/email-distribution";
         }
 
         public async Task<List<RecipientGroup>> GetEmailRecipientGroups(CancellationToken cancellationToken = default(CancellationToken))
