@@ -40,9 +40,14 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await SendDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{pause}", cancellationToken);
         }
 
-        public async Task PublishReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + $"/api/period-end/reports/{year}/{period}/publish", cancellationToken);
+            await SendDataAsync(_baseUrl + $"/api/period-end/provider-reports/{year}/{period}/publish", cancellationToken);
+        }
+
+        public async Task PublishMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendDataAsync(_baseUrl + $"/api/period-end/mca-reports/{year}/{period}/publish", cancellationToken);
         }
 
         public async Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken))

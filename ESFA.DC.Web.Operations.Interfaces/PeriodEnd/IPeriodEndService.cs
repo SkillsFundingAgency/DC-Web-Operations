@@ -15,7 +15,9 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task ToggleReferenceDataJobs(bool pause, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task PublishReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task PublishMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task ClosePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 

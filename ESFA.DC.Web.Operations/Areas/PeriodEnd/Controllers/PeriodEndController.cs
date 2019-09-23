@@ -63,12 +63,20 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
-        [HttpPost("publishReports")]
-        public async Task<IActionResult> PublishReports(int collectionYear, int period)
+        [HttpPost("publishProviderReports")]
+        public async Task<IActionResult> PublishProviderReports(int collectionYear, int period)
         {
-            await _periodEndService.PublishReports(collectionYear, period);
+            await _periodEndService.PublishProviderReports(collectionYear, period);
 
             await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period);
+
+            return RedirectToAction("Index", new { collectionYear, period });
+        }
+
+        [HttpPost("publishMcaReports")]
+        public async Task<IActionResult> PublishMcaReports(int collectionYear, int period)
+        {
+            await _periodEndService.PublishMcaReports(collectionYear, period);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }
