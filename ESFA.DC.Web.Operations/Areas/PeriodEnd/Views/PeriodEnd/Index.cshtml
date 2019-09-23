@@ -20,8 +20,7 @@
             <input type="hidden" name="period" value="@Model.Period" />
             <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Start Period End"
                    onclick="window.startPeriodEnd(@Model.Year, @Model.Period); return false;"
-                   @*@(Model.Closed ? string.Empty : "disabled" )*@ 
-                   />
+                   @*@(Model.Closed ? string.Empty : "disabled" )*@ />
         }
 
         <br />
@@ -34,13 +33,23 @@
         <br />
         <br />
 
-        @*@if (Model != null && Model.Period == Model.CurrentPeriod)
-        {*@
-        @using (Html.BeginForm("PublishReports", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
+        @using (Html.BeginForm("PublishMcaReports", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="publishReports" value="Publish Reports">
+            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="publishReports" value="Publish MCA Reports">
+        }
+
+        <br />
+        <br />
+
+        @*@if (Model != null && Model.Period == Model.CurrentPeriod)
+        {*@
+        @using (Html.BeginForm("PublishProviderReports", "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
+        {
+            <input type="hidden" name="collectionYear" value="@Model.Year" />
+            <input type="hidden" name="period" value="@Model.Period" />
+            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="publishReports" value="Publish Provider Reports">
         }
         @*}*@
 
