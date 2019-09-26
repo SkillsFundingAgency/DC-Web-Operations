@@ -18,9 +18,9 @@ class periodEndHub {
         const pathController = new PathController();
         const classScope = this;
 
-        this.connection.on("ReceiveMessage", pathController.renderPaths.bind(classScope));
+        this.connection.on("ReceiveMessage", pathController.renderPaths.bind(pathController));
 
-        this.connection.on("DisableStartPeriodEnd", pathController.disableStart.bind(classScope));
+        this.connection.on("DisableStartPeriodEnd", pathController.disableStart.bind(pathController));
 
         this.connection.start().then(() => {
             setTimeout(function() {

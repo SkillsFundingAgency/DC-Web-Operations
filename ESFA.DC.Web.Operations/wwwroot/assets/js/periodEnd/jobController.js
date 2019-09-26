@@ -1,4 +1,6 @@
-﻿class jobController {
+﻿import Client from '/assets/js/periodEnd/client.js';
+
+class jobController {
 
     renderJobs(referenceJobs, failedJobs) {
         this.renderFailedJobs(failedJobs);
@@ -61,30 +63,31 @@
 
         const classScope = this;
         if (jobs != null && jobs.length > 0) {
+            
             jobs.forEach(function(job) {
                 let provider = job.ukprn + " - " + job.organisationName;
 
                 let date = classScope.formatDate(job.dateTimeSubmitted);
                 let jobDom =
                     `<div class="main-card">
-				<div class="flex govuk-!-margin-bottom-2">
-					<strong class="govuk-link govuk-!-font-size-19 provider-title ">${provider}</strong>
-				</div>
-				<div class="govuk-body card-wrapper ilr">
-					<div class="flex space-between govuk-!-margin-bottom-2">
-						<span class="wrong-file-name">${job.collectionName}</span>
-						<div class="submit-and-clear">
-							<button type="submit" name="jobId" value="${job.jobId
-                        }" onclick="window">Submit Again</button>
-						</div>
-					</div>
-					<div class="flex space-between">
-						<span class="govuk-!-font-size-16">${job.fileName}</span>
-						<span class="govuk-!-font-size-16">${date}</span>
-					</div>
-				</div>
-				<hr class="main-divider">
-			</div>`;
+				        <div class="flex govuk-!-margin-bottom-2">
+					        <strong class="govuk-link govuk-!-font-size-19 provider-title ">${provider}</strong>
+				        </div>
+				        <div class="govuk-body card-wrapper ilr">
+					        <div class="flex space-between govuk-!-margin-bottom-2">
+						        <span class="wrong-file-name">${job.collectionName}</span>
+						        <div class="submit-and-clear">
+							        <button type="submit" name="jobId" Id="jobButton${job.jobId}"
+                                        onclick="window.prepClient.resubmitJob(${job.jobId}).bind(window.prepClient); return false;">Submit Again</button>
+						        </div>
+					        </div>
+					        <div class="flex space-between">
+						        <span class="govuk-!-font-size-16">${job.fileName}</span>
+						        <span class="govuk-!-font-size-16">${date}</span>
+					        </div>
+				        </div>
+				        <hr class="main-divider">
+			        </div>`;
                 container.insertAdjacentHTML("beforeend", jobDom);
             });
         } else {
@@ -103,6 +106,13 @@
         let dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
         return new Date(dateString).toLocaleDateString("en-GB", dateOptions);
+    }
+
+    disableJobReSubmit(jobId) {
+        const reSubmitButton = document.getElementById("jobButton"+jobId);
+        if (reSubmitButton != null) {
+            reSubmitButton.disabled = true;
+        }
     }
 }
 

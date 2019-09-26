@@ -10,9 +10,9 @@
             .catch(err => console.error(err.toString()));
     }
 
-    resubmitJob(collectionYear, period, jobId) {
+    resubmitJob(jobId) {
         this.connection
-            .invoke("ReSubmitJob", collectionYear, period, jobId)
+            .invoke("ReSubmitJob", jobId)
             .catch(err => console.error(err.toString()));
     }
 }
