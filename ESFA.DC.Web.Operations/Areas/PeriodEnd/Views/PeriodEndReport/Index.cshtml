@@ -1,4 +1,10 @@
-﻿@model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndReportViewModel
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndReportViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -46,25 +52,25 @@
 
         <table class="govuk-table">
             <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Report name</th>
-                <th class="govuk-table__header" scope="col">Download</th>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Report name</th>
+                    <th class="govuk-table__header" scope="col">Download</th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @if (Model != null && Model.SampleReports.Any())
-            {
-                foreach (var reportDetail in Model.SampleReports)
+                @if (Model != null && Model.SampleReports.Any())
                 {
-                    var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@reportDetail.DisplayName</td>
-                        <td class="govuk-table__cell">
-                            @Html.ActionLink(fileDisplayName, "GetReportFile", new {collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url})
-                        </td>
-                    </tr>
+                    foreach (var reportDetail in Model.SampleReports)
+                    {
+                        var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                            <td class="govuk-table__cell">
+                                @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url })
+                            </td>
+                        </tr>
+                    }
                 }
-            }
             </tbody>
         </table>
     </div>
