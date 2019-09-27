@@ -36,12 +36,13 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         [HttpPost("remove-recipient")]
         public async Task<IActionResult> Remove()
         {
-            ViewData["email"] = Request.Form["email"];
+            var email = Request.Form["email"];
             int.TryParse(Request.Form["recipientId"], out var recipientId);
             int.TryParse(Request.Form["recipientGroupId"], out var recipientGroupId);
 
             await _emailDistributionService.RemoveRecipient(recipientId, recipientGroupId);
-            return View("ConfirmRemove");
+
+            return View("ConfirmRemove", new Recipient() { EmailAddress = email });
         }
 
         [HttpGet("/ask-remove/{recipientId}/{recipientGroupId}")]
@@ -102,8 +103,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             }
 
             await _emailDistributionService.SaveRecipient(recipient);
-
-            return RedirectToAction("Index", "List");
+            return View("ConfirmAdd", recipient);
         }
     }
 }
