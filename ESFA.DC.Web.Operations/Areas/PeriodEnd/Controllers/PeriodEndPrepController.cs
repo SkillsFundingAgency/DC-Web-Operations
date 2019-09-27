@@ -2,7 +2,6 @@
 using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
-using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers

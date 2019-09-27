@@ -275,10 +275,10 @@
     <Content Update="appsettings.salman.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\hubs\periodEndPrep.js">
+    <Content Update="wwwroot\assets\js\hubs\periodEndPrepHub.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\hubs\periodEnd.js">
+    <Content Update="wwwroot\assets\js\hubs\periodEndHub.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\assets\js\signalr\dist\browser\signalr.js">
