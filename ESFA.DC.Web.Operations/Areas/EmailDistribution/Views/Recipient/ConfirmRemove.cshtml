@@ -1,23 +1,23 @@
-﻿
+﻿@model ESFA.DC.EmailDistribution.Models.Recipient
 @{
     ViewData["Title"] = "ConfirmRemove";
 }
 
 
 
-    <div class="govuk-panel govuk-panel--confirmation">
+<div class="govuk-panel govuk-panel--confirmation">
 
-        <div class="govuk-panel__body govuk-!-font-size-36">
-            You've removed <br><strong> @ViewData["email"] </strong> They'll no longer receive DCT emails.
-        </div>
+    <div class="govuk-panel__body govuk-!-font-size-36">
+        You've removed <br><strong> @Model.EmailAddress </strong> <br />They'll no longer receive DCT emails.
     </div>
+</div>
 
 
 
-    <p class="govuk-body">
-        <a href="/emaildistribution" class="govuk-link">Manage email distribution lists</a>
-    </p>
-    @*<p class="govuk-body">
-        <a href="period-end" class="govuk-link">Period end</a>
-    </p>*@
+<p class="govuk-body">
+    <a href="/emaildistribution" class="govuk-link">Manage email distribution lists</a>
+</p>
+<p class="govuk-body">
+    <a href="/periodend/periodEndPreparation" class="govuk-link">Period end</a>
+</p>
 
