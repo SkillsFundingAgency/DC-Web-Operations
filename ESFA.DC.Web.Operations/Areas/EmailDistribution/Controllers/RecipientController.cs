@@ -102,8 +102,8 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             }
 
             await _emailDistributionService.SaveRecipient(recipient);
-
-            return RedirectToAction("Index", "List");
+            ViewData["email"] = email;
+            return View("ConfirmAdd");
         }
     }
 }
