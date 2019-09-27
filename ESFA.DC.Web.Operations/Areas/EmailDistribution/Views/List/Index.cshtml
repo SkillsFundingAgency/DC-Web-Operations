@@ -1,6 +1,8 @@
-﻿@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
+﻿@using ESFA.DC.Web.Operations.Constants
+@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
 @{
     ViewData["Title"] = "Manage distribution list";
+    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
 }
 
 
@@ -20,27 +22,27 @@
 </div>
 
 <!-- <h2 class="govuk-heading-m">DCT mailing list</h2> -->
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col"></th>
-                <th class="govuk-table__header" scope="col"></th>
-                <th class="" scope=""></th>
-            </tr>
-        </thead>
-        <tbody class="govuk-table__body" id="referenceDataContainer">
-        
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col"></th>
+            <th class="govuk-table__header" scope="col"></th>
+            <th class="" scope=""></th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body" id="referenceDataContainer">
+
         @foreach (var group in Model)
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@group.GroupName</td>
                 <td class="govuk-table__cell">
-                    @Html.ActionLink("Manage list","DisplayGroupRecipients","Group", new {group.RecipientGroupId})
+                    @Html.ActionLink("Manage list", "DisplayGroupRecipients", "Group", new { group.RecipientGroupId })
                 </td>
             </tr>
         }
-        
-        </tbody>
+
+    </tbody>
 </table>
 
 

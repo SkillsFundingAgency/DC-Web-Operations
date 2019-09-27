@@ -11,6 +11,9 @@
     <a id="5" class="govuk-heading-s @(requestPath.Value.Contains("/serviceFabric") ? "active" : string.Empty)" href="/serviceFabric" >Service Fabric</a>
 </div>
 
-<a id="backlink" href="@(ViewData.ContainsKey(ViewDataConstants.BackLink) ? ViewData[ViewDataConstants.BackLink].ToString() : "#")" class="govuk-back-link">Back</a>
+@if (!ViewData.ContainsKey(ViewDataConstants.DashBoard))
+{
+    <a id="backlink" href="@(ViewData.ContainsKey(ViewDataConstants.BackLink) ? ViewData[ViewDataConstants.BackLink].ToString() : "#")" class="govuk-back-link">Back</a>
+}
 <br />
 <br />

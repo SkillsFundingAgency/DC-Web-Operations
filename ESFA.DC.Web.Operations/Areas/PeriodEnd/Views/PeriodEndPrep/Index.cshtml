@@ -1,6 +1,12 @@
 ﻿@using ESFA.DC.Web.Operations.Utils
 @using ESFA.DC.Web.Operations.Areas.EmailDistribution
+@using ESFA.DC.Web.Operations.Constants
 @model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndPrepViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -17,7 +23,7 @@
                 <a href="#" class="govuk-link">Application version</a>
             </li>
             <li>
-                @Html.ActionLink("Email Distribution", "Index", "List", new {area = AreaNames.EmailDistribution}, new {@class="govuk-link"})
+                @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
             </li>
             <li>
                 @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = "periodend" }, new { @class = "govuk-link" })
@@ -36,13 +42,7 @@
                 <h2 class="govuk-heading-m">Failed submissions</h2>
             </div>
 
-            @using (Html.BeginForm("ReSubmitJob", "PeriodEndPrep", FormMethod.Post, new { @id = "failedJobForm", @class = "app-task-list__section" }))
-            {
-                <input type="hidden" name="collectionYear" value="@Model.Year" />
-                <input type="hidden" name="period" value="@Model.Period" />
-
-                <div id="failedJobContainer"></div>
-            }
+            <div id="failedJobContainer"></div>
         }
 
         <br />
@@ -52,36 +52,30 @@
         {
             <h2 class="govuk-heading-m">Reference data jobs</h2>
 
-            @using (Html.BeginForm("PauseReferenceJobs", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
-            {
-                <input type="hidden" name="collectionYear" value="@Model.Year" />
-                <input type="hidden" name="period" value="@Model.Period" />
+            <a href="#" class="govuk-button" id="pause-all-jobs">
+                Pause reference data jobs
+            </a>
 
-                <a href="#" class="govuk-button" id="pause-all-jobs">
-                    Pause reference data jobs
-                </a>
+            <div class="confirm-pause" id="confirm-pause" style="display: none;">
+                <h3 class="govuk-heading-s">Are you sure?</h3>
 
-                <div class="confirm-pause" id="confirm-pause" style="display: none;">
-                    <h3 class="govuk-heading-s">Are you sure?</h3>
+                <p>These reference data jobs can’t be resumed until the period end process is complete.</p>
 
-                    <p>These reference data jobs can’t be resumed until the period end process is complete.</p>
+                <p>
+                    <input type="submit" class="govuk-button yes-pause" style="margin-left: 0;" id="pauseReferenceData" value="Yes, pause jobs."
+                           onclick="return true;">
+                    &nbsp; &nbsp; &nbsp;
+                    <a href="#" class="govuk-link cancel-pause" id="cancel-pause">Cancel</a>
+                </p>
 
-                    <p>
-                        <input type="submit" class="govuk-button yes-pause" style="margin-left: 0;" id="pauseReferenceData" value="Yes, pause jobs."
-                               onclick="return true;">
-                        &nbsp; &nbsp; &nbsp;
-                        <a href="#" class="govuk-link cancel-pause" id="cancel-pause">Cancel</a>
-                    </p>
+            </div>
 
-                </div>
-
-                <div class="govuk-panel govuk-panel--confirmation pause-confirmation" id="pause-confirmation" style="display: none;">
-                    <h1 class="govuk-panel__title govuk-!-font-size-27">
-                        All reference data jobs have been paused
-                    </h1>
-                </div>
-            }
-
+            <div class="govuk-panel govuk-panel--confirmation pause-confirmation" id="pause-confirmation" style="display: none;">
+                <h1 class="govuk-panel__title govuk-!-font-size-27">
+                    All reference data jobs have been paused
+                </h1>
+            </div>
+            
             <table class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -107,19 +101,29 @@
 
 @section PageScripts
 {
-    <script src="~/assets/js/periodEnd/renderJobs.js"></script>
-    <script src="~/assets/js/periodEnd/confirmPause.js"></script>
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/assets/js/hubs/periodEndPrep.js"></script>
-    
-    <script>
+
+    <script type="module">
+        import JobController from "/assets/js/periodEnd/jobController.js";
+        import Confirm from '/assets/js/periodEnd/confirmationController.js';
+        import Hub from '/assets/js/hubs/periodEndPrepHub.js';
+        import Client from '/assets/js/periodEnd/client.js';
+        
+        const hub = new Hub();
+        hub.startHub();
+        
+        window.prepClient = new Client(hub.getConnection());
+
         (function() {
-            let referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';
-            let failedJobs = '@Html.Raw(Model?.FailedJobs)';
-
-            initialiseConfirmation(referenceJobs);
-
-            renderJobs(referenceJobs, failedJobs);
+            const referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';
+            const failedJobs = '@Html.Raw(Model?.FailedJobs)';
+            
+            const confirm = new Confirm();
+            confirm.initialiseConfirmation(referenceJobs);
+            
+            const jobController = new JobController();
+            jobController.renderJobs(referenceJobs, failedJobs);
         })();
+    
     </script>
 }
