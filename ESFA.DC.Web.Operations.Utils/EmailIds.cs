@@ -12,5 +12,7 @@
         public const int MonthEndSampleEmail = 8;
         public const int DataWarehouse2Email = 9;
         public const int ReportsPublishedEmail = 10;
+        public const int ReferenceDataCompletedEmail = 11;
+        public const int FCSTeamHandoverEmail = 12;
     }
 }
