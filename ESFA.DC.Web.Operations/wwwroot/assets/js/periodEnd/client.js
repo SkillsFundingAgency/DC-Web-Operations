@@ -15,6 +15,12 @@
             .invoke("ReSubmitJob", jobId)
             .catch(err => console.error(err.toString()));
     }
+
+    proceed(collectionYear, period, pathId, pathItemId) {
+        this.connection
+            .invoke("Proceed", collectionYear, period, pathId, pathItemId)
+            .catch(err => console.error(err.toString()));
+    }
 }
 
 export default client;

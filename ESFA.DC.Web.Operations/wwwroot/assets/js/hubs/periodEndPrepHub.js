@@ -20,7 +20,9 @@ class periodEndPrepHub {
 
         this.connection.on("ReceiveMessage", jobController.renderJobs.bind(jobController));
 
-        this.connection.on("DisableJobReSubmit", (jobId) => { jobController.disableJobReSubmit(jobId).bind(jobController); });
+        this.connection.on("DisableJobReSubmit", (jobId) => {
+            jobController.disableJobReSubmit.call(jobController, jobId);
+        });
 
         this.connection.start().then(() => {
             setTimeout(function() {

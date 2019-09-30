@@ -22,6 +22,12 @@ class periodEndHub {
 
         this.connection.on("DisableStartPeriodEnd", pathController.disableStart.bind(pathController));
 
+        this.connection.on("DisablePathItemProceed", 
+            (pathItemId) => { 
+                pathController.disableProceed.call(pathController, pathItemId);
+            }
+        );
+
         this.connection.start().then(() => {
             setTimeout(function() {
                 classScope.connection.invoke("ReceiveMessage").catch(err => console.error(err.toString()));
