@@ -1,4 +1,6 @@
-﻿class pathController {
+﻿import {disabledProceedButtons} from '/assets/js/periodEnd/state.js';
+
+class pathController {
 
     pathItemCompare( a, b ) {
         if (a.ordinal < b.ordinal) {
@@ -38,16 +40,17 @@
         return false;
     }
 
-    renderProceed(pathItem, enabled, collectionYear, period) {
+    renderProceed(pathId, pathItemId, htmlItem, enabled, collectionYear, period) {
+        const proceedEnabled = enabled && !disabledProceedButtons.includes(pathItemId);
+
         const node =
             `<span style="display:inline-block;" >
-            <form method='post' action='/periodEnd/periodEnd/proceed'>
-                <input type="hidden" name="collectionYear" value="${collectionYear}" />
-                <input type="hidden" name="period" value="${period}" />
-                <input type="submit" value="Proceed" style="margin-left:20px;" ${enabled ? "" : "disabled"} /> 
-            </form>
-        </span>`;
-        pathItem.insertAdjacentHTML('beforeend', node);
+                <button type="submit" style="margin-left:20px;" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
+                    onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
+                    Proceed
+                </button>
+            </span>`;
+        htmlItem.insertAdjacentHTML('beforeend', node);
     }
 
     renderJob(job, jobList) {
@@ -92,7 +95,7 @@
 
         if (currentItem) {
             if (pathItem.ordinal + 1 !== totalPathItems) {
-                this.renderProceed(item, enableProceed, collectionYear, period);
+                this.renderProceed(path.pathId, pathItem.pathItemId, item, enableProceed, collectionYear, period);
             }
 
             let bold = document.createElement("b");
@@ -107,9 +110,17 @@
     }
 
     disableStart() {
-        let startButton = document.getElementById("startPeriodEnd");
+        const startButton = document.getElementById("startPeriodEnd");
         if (startButton != null) {
             startButton.disabled = true;
+        }
+    }
+
+    disableProceed(pathItemId) {
+        const button = document.getElementById("proceed_"+pathItemId);
+        if (button != null) {
+            disabledProceedButtons.push(pathItemId);
+            button.disabled = true;
         }
     }
 

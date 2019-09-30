@@ -36,5 +36,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
             await _periodEndService.StartPeriodEnd(collectionYear, period);
         }
+
+        public async Task Proceed(int collectionYear, int period, int pathId, int pathItemId)
+        {
+            await _hubContext.Clients.All.SendAsync("DisablePathItemProceed", pathItemId);
+            await _periodEndService.Proceed(collectionYear, period, pathId);
+        }
     }
 }

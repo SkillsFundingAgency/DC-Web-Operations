@@ -1,6 +1,4 @@
-﻿import Client from '/assets/js/periodEnd/client.js';
-
-class jobController {
+﻿class jobController {
 
     renderJobs(referenceJobs, failedJobs) {
         this.renderFailedJobs(failedJobs);
@@ -78,7 +76,7 @@ class jobController {
 						        <span class="wrong-file-name">${job.collectionName}</span>
 						        <div class="submit-and-clear">
 							        <button type="submit" name="jobId" Id="jobButton${job.jobId}"
-                                        onclick="window.prepClient.resubmitJob(${job.jobId}).bind(window.prepClient); return false;">Submit Again</button>
+                                        onclick="window.prepClient.resubmitJob.call(window.prepClient, ${job.jobId}); return false;">Submit Again</button>
 						        </div>
 					        </div>
 					        <div class="flex space-between">

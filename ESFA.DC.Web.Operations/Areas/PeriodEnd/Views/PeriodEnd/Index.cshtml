@@ -21,7 +21,7 @@
 
         <button type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd"
                 onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period);return false;"
-                @*@(Model.Closed ? string.Empty : "disabled" )*@>
+                @(Model.Closed ? string.Empty : "disabled" )>
             Start Period End
         </button>
 
@@ -93,14 +93,10 @@
             
             @if (Model != null && Model.Closed)
             {
-                Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';");
-                Html.Raw("const hub = new Hub();");
-                Html.Raw("hub.startHub();");
-                Html.Raw("window.periodEndClient = new Client(hub.getConnection());");
-            }
-            else
-            {
-                Html.Raw("window.periodEndClient.startPeriodEnd = function() { return false; };");
+                @Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';");
+                @Html.Raw("const hub = new Hub();");
+                @Html.Raw("hub.startHub();");
+                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());");
             }
 
             (function() {
