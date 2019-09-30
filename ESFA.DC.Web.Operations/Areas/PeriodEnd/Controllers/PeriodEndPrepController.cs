@@ -12,13 +12,16 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
+        private readonly IEmailService _emailService;
 
         public PeriodEndPrepController(
             IPeriodService periodService,
-            IPeriodEndService periodEndService)
+            IPeriodEndService periodEndService,
+            IEmailService emailService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
+            _emailService = emailService;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
@@ -72,6 +75,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         [HttpPost("startPeriodEnd")]
         public IActionResult StartPeriodEnd(int collectionYear, int period)
         {
+            _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
+
             return RedirectToAction("Index", "PeriodEnd", new { collectionYear, period });
         }
 
