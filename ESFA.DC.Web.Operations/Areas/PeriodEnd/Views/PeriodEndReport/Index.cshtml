@@ -16,6 +16,41 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Collection Stats</h2>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Collection</th>
+                    <th class="govuk-table__header" scope="col">Successful</th>
+                    <th class="govuk-table__header" scope="col">Failed</th>
+                    <th class="govuk-table__header" scope="col">Total</th>
+                    <th class="govuk-table__header" scope="col">Successful %</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @if (Model != null && Model.CollectionStats.Any())
+                {
+                    foreach (var collectionStat in Model.CollectionStats)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@collectionStat.CollectionName</td>
+                            <td class="govuk-table__cell">@collectionStat.CountOfComplete</td>
+                            <td class="govuk-table__cell">@collectionStat.CountOfFail</td>
+                            <td class="govuk-table__cell">@collectionStat.Total</td>
+                            <td class="govuk-table__cell">@collectionStat.Percent</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m">Internal Reports</h2>
         <table class="govuk-table">
             <thead class="govuk-table__head">
