@@ -84,6 +84,14 @@ class pathController {
                 }
             });
 
+            let jobItemSummary = pathItem.pathItemJobSummary;
+            if (jobItemSummary != undefined) {
+                let jobSummary = document.createElement("li");
+                jobSummary.className += "app-task-list__item";
+                jobSummary.textContent = `${jobItemSummary.numberOfWaitingJobs} Waiting, ${jobItemSummary.numberOfRunningJobs} Running, ${jobItemSummary.numberOfFailedJobs} Failed, ${jobItemSummary.numberOfCompleteJobs} Complete`;
+                jobList.appendChild(jobSummary);
+            }
+
             item.appendChild(jobList);
         }
 
