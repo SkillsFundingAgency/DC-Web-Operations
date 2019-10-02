@@ -81,24 +81,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
-        [HttpPost("startPeriodEnd")]
-        public async Task<IActionResult> StartPeriodEnd(int collectionYear, int period)
-        {
-            await _periodEndService.StartPeriodEnd(collectionYear, period);
-
-            await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
-        [HttpPost("proceed")]
-        public async Task<IActionResult> Proceed(int collectionYear, int period)
-        {
-            await _periodEndService.Proceed(collectionYear, period);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
         [HttpPost("closePeriodEnd")]
         public async Task<IActionResult> ClosePeriodEnd(int collectionYear, int period)
         {
