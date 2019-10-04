@@ -101,6 +101,11 @@ class pathController {
             item.textContent += " - Status : Completed";
         }
 
+        let summary = pathItem.pathItemJobSummary;
+        if (summary != undefined) {
+            enableProceed = summary.numberOfWaitingJobs + summary.numberOfRunningJobs + summary.numberOfFailedJobs === 0;
+        }
+
         if (currentItem) {
             if (pathItem.ordinal + 1 !== totalPathItems) {
                 this.renderProceed(path.pathId, pathItem.pathItemId, item, enableProceed, collectionYear, period);
