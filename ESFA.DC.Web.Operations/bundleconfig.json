@@ -26,8 +26,8 @@
   {
     "outputFileName": "wwwroot/assets/minified/hub.min.js",
     "inputFiles": [
-      "wwwroot/assets/js/hubs/operations.js",
-      "wwwroot/assets/js/hubs/periodEnd.js"
+      "wwwroot/assets/js/hubs/periodEndPrepHub.js",
+      "wwwroot/assets/js/hubs/periodEndHub.js"
     ],
     "minify": {
       "enabled": true
