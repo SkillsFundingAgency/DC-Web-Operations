@@ -22,16 +22,5 @@
       "enabled": true
     },
     "sourceMap": false
-  },
-  {
-    "outputFileName": "wwwroot/assets/minified/hub.min.js",
-    "inputFiles": [
-      "wwwroot/assets/js/hubs/operations.js",
-      "wwwroot/assets/js/hubs/periodEnd.js"
-    ],
-    "minify": {
-      "enabled": true
-    },
-    "sourceMap": false
   }
 ]
