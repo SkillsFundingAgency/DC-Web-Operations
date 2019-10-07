@@ -5,8 +5,8 @@ class periodEndPrepHub {
     constructor() {
         this.connection = new signalR
             .HubConnectionBuilder()
-            .configureLogging(signalR.LogLevel.Information)
             .withUrl("/periodEndPrepHub", { transport: signalR.HttpTransportType.WebSockets }) 
+            .withAutomaticReconnect()
             .build();
     }
 
@@ -16,19 +16,52 @@ class periodEndPrepHub {
 
     startHub() {
         const jobController = new JobController();
-        const classScope = this;
 
         this.connection.on("ReceiveMessage", jobController.renderJobs.bind(jobController));
-
+        
         this.connection.on("DisableJobReSubmit", (jobId) => {
             jobController.disableJobReSubmit.call(jobController, jobId);
         });
 
-        this.connection.start().then(() => {
-            setTimeout(function() {
-                classScope.connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
-            }, 30*1000);
+        this.connection.onreconnecting((error) => {
+            console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
+            console.log("Reconnecting - " + error);
+            jobController.displayConnectionState("Reconnecting");
         });
+
+        this.connection.onreconnected((connectionId) => {
+            console.assert(this.connection.state === signalR.HubConnectionState.Connected);
+            console.log("Connected - " + connectionId);
+            jobController.displayConnectionState("Connected");
+        });
+
+        this.connection.onclose((error) => {
+            console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
+            console.log("Closed - " + error);
+            jobController.displayConnectionState("Closed");
+        });
+
+        this.startConnection(jobController);
+    }
+
+    startConnection(jobController) {
+        const classScope = this;
+
+        try {
+            this.connection.start().then(() => {
+                clearTimeout(this.timerId);
+                this.timerId = setTimeout(function() {
+                    classScope.connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
+                }, 5*1000);
+                console.assert(this.connection.state === signalR.HubConnectionState.Connected);
+                console.log("connected");
+                jobController.displayConnectionState("Connected");
+            });
+        } catch (err) {
+            console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
+            console.log(err);
+            setTimeout(() => this.startConnection(), 1000);
+        }
     }
 }
 
