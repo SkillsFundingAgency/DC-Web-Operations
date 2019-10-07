@@ -124,10 +124,6 @@ namespace ESFA.DC.Web.Operations
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<OperationsHub>("/operationsHub", options =>
-                {
-                    options.Transports = HttpTransportType.WebSockets;
-                });
                 routes.MapHub<PeriodEndHub>("/periodEndHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;

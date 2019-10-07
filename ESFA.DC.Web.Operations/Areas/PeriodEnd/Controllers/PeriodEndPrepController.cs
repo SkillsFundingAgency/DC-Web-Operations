@@ -64,14 +64,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             return RedirectToAction("Index", new { collectionYear, period });
         }
 
-        [HttpPost("pauseReferenceData")]
-        public async Task<IActionResult> PauseReferenceJobs(int collectionYear, int period)
-        {
-            await _periodEndService.ToggleReferenceDataJobs(true);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
         [HttpPost("startPeriodEnd")]
         public IActionResult StartPeriodEnd(int collectionYear, int period)
         {

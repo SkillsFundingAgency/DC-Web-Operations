@@ -40,6 +40,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
         }
 
+        public async Task PauseReferenceDataJobs()
+        {
+            await _periodEndService.ToggleReferenceDataJobs(true);
+        }
+
         public async Task ReSubmitJob(int jobId)
         {
             await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
