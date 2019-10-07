@@ -31,6 +31,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _eventBase.TriggerPeriodEndPrep();
         }
 
+        public async Task PauseReferenceDataJobs()
+        {
+            await _periodEndService.ToggleReferenceDataJobs(true);
+        }
+
         public async Task ReSubmitJob(int jobId)
         {
             await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
