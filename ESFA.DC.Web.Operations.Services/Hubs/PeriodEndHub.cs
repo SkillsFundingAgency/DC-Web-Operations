@@ -30,7 +30,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
         }
 
-        public void ReceiveMessage()
+        public async Task ReceiveMessage()
         {
             _eventBase.TriggerPeriodEnd();
         }
