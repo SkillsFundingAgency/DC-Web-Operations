@@ -67,8 +67,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         [HttpPost("startPeriodEnd")]
         public IActionResult StartPeriodEnd(int collectionYear, int period)
         {
-            _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
-
             return RedirectToAction("Index", "PeriodEnd", new { collectionYear, period });
         }
 
