@@ -16,6 +16,12 @@
             .catch(err => console.error(err.toString()));
     }
 
+    collectionClosedEmail(period) {
+        this.connection
+            .invoke("SendCollectionClosedEmail", period)
+            .catch(err => console.error(err.toString()));
+    }
+
     proceed(collectionYear, period, pathId, pathItemId) {
         this.connection
             .invoke("Proceed", collectionYear, period, pathId, pathItemId)

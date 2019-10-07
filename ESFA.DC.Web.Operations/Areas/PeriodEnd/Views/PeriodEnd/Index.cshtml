@@ -11,7 +11,7 @@
     </div>
 
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Period end</h1>
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
         <br />
         <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
 
@@ -19,7 +19,7 @@
         <br />
         <br />
 
-        <button type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd"
+        <button type="submit" class="govuk-button customised" id="startPeriodEnd"
                 onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period);return false;"
                 @(Model.Closed ? string.Empty : "disabled" )>
             Start Period End
@@ -51,7 +51,7 @@
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="publishReports" value="Publish Provider Reports">
+            <input type="submit" class="govuk-button customised" id="publishReports" value="Publish Provider Reports">
         }
         @*}*@
 
@@ -64,7 +64,7 @@
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="publishReports" value="Close Period End">
+            <input type="submit" class="govuk-button customised" id="publishReports" value="Close Period End">
         }
         @*}*@
 
@@ -75,7 +75,7 @@
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="resumeReferenceData" value="Resume Reference Data Jobs">
+            <input type="submit" class="govuk-button customised" id="resumeReferenceData" value="Resume Reference Data Jobs">
         }
     </div>
 </div>

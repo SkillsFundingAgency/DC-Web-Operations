@@ -9,7 +9,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Period end</h1>
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
         <br />
         <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
     </div>
@@ -61,7 +61,7 @@
                 <p>These reference data jobs can’t be resumed until the period end process is complete.</p>
 
                 <p>
-                    <input type="submit" class="govuk-button yes-pause" style="margin-left: 0;" id="pauseReferenceData" value="Yes, pause jobs."
+                    <input type="submit" class="govuk-button yes-pause" id="pauseReferenceData" value="Yes, pause jobs."
                            onclick="return true;">
                     &nbsp; &nbsp; &nbsp;
                     <a href="#" class="govuk-link cancel-pause" id="cancel-pause">Cancel</a>
@@ -88,12 +88,20 @@
 
         <br />
         <br />
+        
+        <button class="govuk-button customised" id="collectionClosed"
+                onclick="window.prepClient.collectionClosedEmail(@Model.Period);">
+            Send Collection Closed Email
+        </button>
+
+        <br />
+        <br />
 
         @using (Html.BeginForm("StartPeriodEnd", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" style="margin-left: 0;" id="startPeriodEnd" value="Continue">
+            <input type="submit" class="govuk-button customised" id="startPeriodEnd" value="Continue">
         }
     </div>
 </div>
