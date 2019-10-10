@@ -78,13 +78,13 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task ReSubmitFailedJob(long jobId)
         {
             var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
-            await SendDataAsync(_baseUrl + $"/api/job/{JobStatusType.Ready}", jobStatusDto);
+            await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto);
         }
 
         public async Task<IEnumerable<ReportDetails>> GetPeriodEndReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
-                await GetDataAsync(_baseUrl + $"/api/period-end/reports/{year}/{period}", cancellationToken));
+                await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}", cancellationToken));
 
             return data;
         }
@@ -92,7 +92,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task<IEnumerable<ReportDetails>> GetMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
-                await GetDataAsync(_baseUrl + $"/api/period-end/mca-reports/{year}/{period}", cancellationToken));
+                await GetDataAsync($"{_baseUrl}/api/period-end/mca-reports/{year}/{period}", cancellationToken));
 
             return data;
         }
@@ -100,7 +100,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionStats>>(
-                await GetDataAsync(_baseUrl + $"/api/period-end/collectionstats/{year}/{period}", cancellationToken));
+                await GetDataAsync($"{_baseUrl}/api/period-end/collectionstats/{year}/{period}", cancellationToken));
 
             return data;
         }
@@ -108,7 +108,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task<IEnumerable<ReportDetails>> GetSampleReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
-                await GetDataAsync(_baseUrl + $"/api/period-end/reports/{year}/{period}/samples", cancellationToken));
+                await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}/samples", cancellationToken));
 
             return data;
         }
