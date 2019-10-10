@@ -52,10 +52,12 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             var reportDetails = await _periodEndService.GetPeriodEndReports(model.Year, model.Period);
             var sampleReports = await _periodEndService.GetSampleReports(model.Year, model.Period, CancellationToken.None);
             var collectionStats = await _periodEndService.GetCollectionStats(model.Year, model.Period);
+            var mcaReports = await _periodEndService.GetMcaReports(model.Year, model.Period);
 
             model.ReportDetails = reportDetails;
             model.SampleReports = sampleReports;
             model.CollectionStats = collectionStats;
+            model.McaReports = mcaReports;
 
             return View(model);
         }
