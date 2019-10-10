@@ -18,6 +18,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 
         public IEnumerable<ReportDetails> SampleReports { get; set; }
 
+        public IEnumerable<ReportDetails> McaReports { get; set; }
+
         public IEnumerable<CollectionStats> CollectionStats { get; set; }
     }
 }

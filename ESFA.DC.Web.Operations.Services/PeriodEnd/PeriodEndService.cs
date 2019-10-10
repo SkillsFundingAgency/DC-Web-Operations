@@ -89,6 +89,14 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
+        public async Task<IEnumerable<ReportDetails>> GetMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
+                await GetDataAsync(_baseUrl + $"/api/period-end/mca-reports/{year}/{period}", cancellationToken));
+
+            return data;
+        }
+
         public async Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionStats>>(
