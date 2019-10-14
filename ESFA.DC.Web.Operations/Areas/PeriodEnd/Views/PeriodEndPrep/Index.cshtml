@@ -25,10 +25,10 @@
                 @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
             </li>
             <li>
-                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = "periodend" }, new { @class = "govuk-link" })
+                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
             </li>
             <li>
-                <a href="#" class="govuk-link">History</a>
+                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
             </li>
         </ul>
     </div>
