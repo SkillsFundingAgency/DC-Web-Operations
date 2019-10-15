@@ -6,8 +6,8 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-        Path summary goes here
+    <div class="govuk-grid-column-one-third sticky scrolling-summary">
+        <div id="summaryContainer"></div>
     </div>
 
     <div class="govuk-grid-column-two-thirds">
@@ -93,6 +93,8 @@
 
 @section PageScripts
 {
+
+
     @if (Model != null && Model.Closed)
     {
         <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
