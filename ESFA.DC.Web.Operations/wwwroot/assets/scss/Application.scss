@@ -824,3 +824,31 @@ html {
     clear: both;
     margin-left: 15px;
 }
+
+.compact-list-item{
+    padding: 0;
+    margin: 0 !important;
+}
+
+.small-link {
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+}
+
+.scrolling-summary{
+    overflow-y : scroll;
+    height: 600px;
+}
+
+.active{
+    font-weight: bold;
+}
+
+.triangle-right {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-left: 20px solid black;
+    border-bottom: 10px solid transparent;
+}

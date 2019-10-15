@@ -61,6 +61,28 @@ class pathController {
         return this.isJobComplete(job.status);
     }
 
+    renderSummaryItem(container, path, pathItem) {
+        let currentItem = pathItem.ordinal === path.position - 1;
+
+        let item = document.createElement("li");
+        item.className += "compact-list-item";
+        
+        if (currentItem) {
+            let arrow = document.createElement("div");
+            arrow.className += "triangle-right";
+            container.appendChild(arrow);
+        }
+
+        let anchor = document.createElement("a");
+        anchor.className += currentItem ? "govuk-link small-link active" : "govuk-link small-link";
+        anchor.textContent = pathItem.name;
+        anchor.href = "#" + pathItem.name;
+
+        item.appendChild(anchor);
+
+        container.appendChild(item);
+    }
+
     renderPathItem(path, pathItem, subItemList, collectionYear, period) {
         let classScope = this;
 
@@ -73,6 +95,10 @@ class pathController {
         let item = document.createElement("li");
         item.className += "app-task-list__item";
         item.textContent = pathItem.name;
+
+        let itemLink = document.createElement("a");
+        itemLink.id = pathItem.name;
+        item.appendChild(itemLink);
 
         let jobItems = pathItem.pathItemJobs;
         if (jobItems != undefined && jobItems.length > 0) {
@@ -174,6 +200,11 @@ class pathController {
             pathContainer.removeChild(pathContainer.firstChild);
         }
 
+        let summaryContainer = document.getElementById("summaryContainer");
+        while (summaryContainer.firstChild) {
+            summaryContainer.removeChild(summaryContainer.firstChild);
+        }
+
         let classScope = this;
         paths.forEach(function(path) {
             //if (path.position >= 0) {
@@ -184,6 +215,16 @@ class pathController {
             let collectionYear = path.collectionYear;
 
             let pathItems = path.pathItems;
+
+            let pathSummaryTitle = document.createElement("span");
+            pathSummaryTitle.className += "govuk-heading-s";
+            pathSummaryTitle.textContent = path.name;
+            summaryContainer.appendChild(pathSummaryTitle);
+
+            let pathSummary = document.createElement("span");
+            pathSummary.className += "nav";
+            let pathSummaryList = document.createElement("ul");
+            pathSummaryList.className += "govuk-list";
 
             if (pathItems != undefined && pathItems.length > 0) {
                 pathItems.sort(classScope.pathItemCompare);
@@ -200,8 +241,12 @@ class pathController {
                 pathItems.forEach(function(pathItem) {
                     if (pathItem.name != undefined && pathItem.name !== "") {
                         classScope.renderPathItem(path, pathItem, subItemList, collectionYear, period);
+                        classScope.renderSummaryItem(pathSummaryList, path, pathItem);
                     }
                 });
+
+                pathSummary.appendChild(pathSummaryList);
+                summaryContainer.appendChild(pathSummary);
 
                 li.appendChild(subItemList);
 
