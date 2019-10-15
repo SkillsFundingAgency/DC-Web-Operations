@@ -20,10 +20,17 @@
         @using (Html.BeginForm("Index", "History", FormMethod.Post))
         {
             <label class="govuk-label">Select a collection year</label>
-            <select class="govuk-select" name="CollectionYears" onchange="this.form.submit();">
+            <select class="govuk-select" name="collectionYear" onchange="this.form.submit();">
                 @foreach (var year in Model.CollectionYears)
                 {
-                    <option value="@year">@year</option>
+                    if (Model.Year == year)
+                    {
+                        <option value="@year" selected>@year</option>
+                    }
+                    else
+                    {
+                        <option value="@year">@year</option>
+                    }
                 }
             </select>
         }
