@@ -43,6 +43,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<HttpClient>().SingleInstance();
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
+            builder.RegisterType<HistoryService>().As<IHistoryService>().InstancePerLifetimeScope();
 
             builder.Register(context =>
                 {
