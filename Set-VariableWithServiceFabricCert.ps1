@@ -1,0 +1,24 @@
+﻿
+#Login-AzureRmAccount
+#Get-AzureRmSubscription | Out-GridView -PassThru | Set-AzureRmContext
+#Get-AzureRmContext
+
+#Requires -Version 3.0
+Param(
+
+    [Parameter(Mandatory=$false)] [string] $Organization = 'sfa-gov-uk',
+    [Parameter(Mandatory=$false)] [string] $Service = 'ZZ',
+    [Parameter(Mandatory=$false)] [string] $Environment = 'PC1',
+    [Parameter(Mandatory=$false)] [string] $RegionCode = 'WEU',
+
+    [Parameter(Mandatory=$false)] [string] $CertificateName = "ServiceFabricCertificate"
+)
+
+$KeyValutName = "$($Service)-$($Environment)-KeyVault-$($RegionCode)"
+
+$ResourceGroupName ="$($Service)-$($Environment)-$($RoleType)-$($RegionCode)"
+
+$AzureKeyVaultSecret=(Get-AzureKeyVaultSecret -VaultName $KeyValutName -Name $CertificateName -ErrorAction SilentlyContinue).SecretValueText
+
+Write-Host "##vso[task.setvariable variable=ServiceFabricCertificateAsString]$($AzureKeyVaultSecret)";
+
