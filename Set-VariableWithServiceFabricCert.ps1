@@ -22,5 +22,9 @@ Write-Output "CertificateName : $($CertificateName)"
 
 $AzureKeyVaultSecret=(Get-AzureKeyVaultSecret -VaultName $KeyValutName -Name $CertificateName -ErrorAction SilentlyContinue).SecretValueText
 
+Write-Output "Secret : $($Secret)"
+
+
+Write-Host "##vso[task.setvariable variable=ServiceFabricCertificateAsString123]AHHHHHHHHHHHH";
 Write-Host "##vso[task.setvariable variable=ServiceFabricCertificateAsString]$($AzureKeyVaultSecret)";
 
