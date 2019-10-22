@@ -48,7 +48,8 @@ namespace ESFA.DC.Web.Operations.Controllers
 
         public string GetData(string url)
         {
-            X509Certificate2 cert = new X509Certificate2(Convert.FromBase64String(_apiSettings.Certificate));
+            //X509Certificate2 cert = new X509Certificate2(Convert.FromBase64String(_apiSettings.Certificate));
+            X509Certificate2 cert = new X509Certificate2(Convert.FromBase64String(_apiSettings.Certificate), string.Empty, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
 
             // create HTTP web request with proper content type
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
