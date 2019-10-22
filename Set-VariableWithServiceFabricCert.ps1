@@ -5,8 +5,6 @@
 
 #Requires -Version 3.0
 Param(
-
-    [Parameter(Mandatory=$false)] [string] $Organization = 'sfa-gov-uk',
     [Parameter(Mandatory=$false)] [string] $Service = 'ZZ',
     [Parameter(Mandatory=$false)] [string] $Environment = 'PC1',
     [Parameter(Mandatory=$false)] [string] $RegionCode = 'WEU',
@@ -16,7 +14,11 @@ Param(
 
 $KeyValutName = "$($Service)-$($Environment)-KeyVault-$($RegionCode)"
 
-$ResourceGroupName ="$($Service)-$($Environment)-$($RoleType)-$($RegionCode)"
+#$ResourceGroupName ="$($Service)-$($Environment)-KeyVault-$($RegionCode)"
+#Write-Output "ResourceGroupName : $($ResourceGroupName)"
+
+Write-Output "KeyValutName : $($KeyValutName)"
+Write-Output "CertificateName : $($CertificateName)"
 
 $AzureKeyVaultSecret=(Get-AzureKeyVaultSecret -VaultName $KeyValutName -Name $CertificateName -ErrorAction SilentlyContinue).SecretValueText
 
