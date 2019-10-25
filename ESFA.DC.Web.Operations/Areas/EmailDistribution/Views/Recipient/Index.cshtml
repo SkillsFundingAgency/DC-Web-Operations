@@ -1,4 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
 @model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
 @{
     ViewData["Title"] = "Add a new recipient";
@@ -9,8 +10,11 @@
 <h1 class="govuk-heading-xl">Enter the recipient's email address</h1>
 <form asp-controller="Recipient" asp-action="Submit" method="post" id="choiceform">
 
-    <div class="govuk-form-group">
-        <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="text">
+    <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_EmailFieldKey)" id="controls">
+        <div class="govuk-form-group">
+            <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="text">
+        </div>
+        <div error-field-name="@ErrorMessageKeys.Recipient_EmailFieldKey"></div>
     </div>
 
 
@@ -19,6 +23,7 @@
             <span id="waste-hint" class="govuk-hint">
                 Select which lists you'd like the recipient added to.
             </span>
+            <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_GroupsKey)" id="controls">
             <div class="govuk-checkboxes">
 
                 @foreach (var group in Model)
@@ -36,6 +41,8 @@
                         All
                     </label>
                 </div>
+            </div>
+                <div error-field-name="@ErrorMessageKeys.Recipient_GroupsKey"></div>
             </div>
         </fieldset>
     </div>

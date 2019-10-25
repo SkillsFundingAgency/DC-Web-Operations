@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Logging.Interfaces;
@@ -18,6 +19,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
     [Route(AreaNames.EmailDistribution + "/recipient")]
     public class RecipientController : BaseDistributionController
     {
+        private const string EmailRegEx = @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
         private readonly IEmailDistributionService _emailDistributionService;
         private readonly ILogger _logger;
 
@@ -65,9 +67,9 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             var email = Request.Form["email"];
             var selectedGroups = Request.Form["groups"];
 
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email) || !Regex.IsMatch(email, EmailRegEx))
             {
-                AddError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid email address");
+                AddError(ErrorMessageKeys.Recipient_EmailFieldKey, "Please enter valid email address");
                 AddError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid email address");
 
                 _logger.LogWarning($"invalid email address : {email}");
@@ -78,7 +80,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 
             if (!selectedGroups.Any())
             {
-                AddError(ErrorMessageKeys.Submission_FileFieldKey, "Please select at least one group");
+                AddError(ErrorMessageKeys.Recipient_GroupsKey, "Please select at least one group");
                 AddError(ErrorMessageKeys.ErrorSummaryKey, "Please select at least one group");
 
                 _logger.LogWarning($"no groups selected for email address : {email}");
