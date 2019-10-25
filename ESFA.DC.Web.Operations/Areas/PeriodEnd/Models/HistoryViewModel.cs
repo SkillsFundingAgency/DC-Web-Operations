@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
+using ESFA.DC.PeriodEnd.Models;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {
@@ -9,6 +9,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 
         public IEnumerable<int> CollectionYears { get; set; }
 
-        public IEnumerable<HistoryDetails> PeriodHistories { get; set; }
+        public IEnumerable<HistoryDetail> PeriodHistories { get; set; }
     }
 }

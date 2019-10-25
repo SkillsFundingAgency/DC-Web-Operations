@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
+using ESFA.DC.PeriodEnd.Models;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IHistoryService
     {
-        Task<IEnumerable<HistoryDetails>> GetHistoryDetails(int year, CancellationToken cancellationToken = default);
+        Task<IEnumerable<HistoryDetail>> GetHistoryDetails(int year, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<int>> GetCollectionYears(CancellationToken cancellationToken = default);
     }

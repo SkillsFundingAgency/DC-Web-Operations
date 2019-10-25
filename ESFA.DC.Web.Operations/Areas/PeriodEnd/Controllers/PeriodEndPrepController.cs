@@ -12,22 +12,23 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
-        private readonly IEmailService _emailService;
+        private readonly IStateService _stateService;
 
         public PeriodEndPrepController(
             IPeriodService periodService,
             IPeriodEndService periodEndService,
-            IEmailService emailService)
+            IStateService stateService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
-            _emailService = emailService;
+            _stateService = stateService;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
+            currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndPrepViewModel();
 
             if (collectionYear != null && period != null)
@@ -37,7 +38,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             }
             else
             {
-                model.Year = currentYearPeriod.Year;
+                model.Year = currentYearPeriod.Year.Value;
                 model.Period = currentYearPeriod.Period;
             }
 
@@ -46,6 +47,9 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 
             model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
             model.ReferenceDataJobs = await GetReferenceDataJobs();
+
+            var pathItemStates = await _periodEndService.GetPathItemStates(model.Year, model.Period);
+            model.CollectionClosedEmailSent = _stateService.CollectionClosedEmailSent(pathItemStates);
 
             return View(model);
         }

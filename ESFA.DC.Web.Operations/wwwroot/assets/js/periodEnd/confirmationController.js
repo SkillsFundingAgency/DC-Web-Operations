@@ -1,4 +1,6 @@
-﻿class confirmationController {
+﻿import JobController from '/assets/js/periodEnd/jobController.js';
+
+class confirmationController {
 
     constructor() {
         const classScope = this;
@@ -13,7 +15,7 @@
         this._cancelButton.addEventListener("click", classScope.cancelPause.bind(classScope));
     }
 
-    initialiseConfirmation(referenceDataJobs) {
+    initialiseConfirmation(referenceDataJobs, periodClosed, collectionClosedEmailSent) {
         let paused = true;
         const jobs = JSON.parse(referenceDataJobs);
 
@@ -22,11 +24,19 @@
                 paused = false;
             }
         });
-
+        
+        const jobController = new JobController();
         if (paused === true) {
+
+            jobController.setCollectionClosedEmailButtonState(periodClosed && !collectionClosedEmailSent);
+            jobController.setContinueButtonState(periodClosed && collectionClosedEmailSent);
+
             this._pauseButton.style.display = "none";
             this._confirmedContainer.style.display = "block";
+        } else {
+            jobController.setPauseRefJobsButtonState(true);
         }
+
     }
 
     showConfirmation() {

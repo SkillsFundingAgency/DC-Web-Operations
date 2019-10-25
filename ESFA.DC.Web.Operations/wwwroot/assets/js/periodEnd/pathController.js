@@ -207,10 +207,6 @@ class pathController {
 
         let classScope = this;
         paths.forEach(function(path) {
-            //if (path.position >= 0) {
-            //    disableStart();
-            //}
-
             let period = path.period;
             let collectionYear = path.collectionYear;
 

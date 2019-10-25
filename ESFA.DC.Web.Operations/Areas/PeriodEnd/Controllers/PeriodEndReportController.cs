@@ -6,7 +6,6 @@ using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
-using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
@@ -36,6 +35,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
+            currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndReportViewModel();
 
             if (collectionYear != null && period != null)
@@ -45,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             }
             else
             {
-                model.Year = currentYearPeriod.Year;
+                model.Year = currentYearPeriod.Year.Value;
                 model.Period = currentYearPeriod.Period;
             }
 

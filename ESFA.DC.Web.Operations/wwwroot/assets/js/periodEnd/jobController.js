@@ -115,6 +115,27 @@
         }
     }
 
+    setPauseRefJobsButtonState(enabled) {
+        const button = document.getElementById("pause-all-jobs");
+        if (button != null) {
+            button.disabled = !enabled;
+        }
+    }
+
+    setCollectionClosedEmailButtonState(enabled) {
+        const button = document.getElementById("collectionClosed");
+        if (button != null) {
+            button.disabled = !enabled;
+        }
+    }
+
+    setContinueButtonState(enabled) {
+        const button = document.getElementById("startPeriodEnd");
+        if (button != null) {
+            button.disabled = !enabled;
+        }
+    }
+
     updateSync() {
         let date = new Date();
         let day = this.padLeft(date.getDate(), "0", 2);

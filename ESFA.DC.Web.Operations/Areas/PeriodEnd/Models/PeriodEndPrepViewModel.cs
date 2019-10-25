@@ -11,5 +11,7 @@
         public string FailedJobs { get; set; }
 
         public bool Closed { get; set; }
+
+        public bool CollectionClosedEmailSent { get; set; }
     }
 }

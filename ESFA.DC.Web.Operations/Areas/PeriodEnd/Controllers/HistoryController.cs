@@ -26,7 +26,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             var currentYearPeriod = await _periodService.ReturnPeriod();
             var model = new HistoryViewModel
             {
-                Year = collectionYear ?? currentYearPeriod.Year
+                Year = collectionYear ?? currentYearPeriod.Year ?? 0
             };
 
             model.PeriodHistories = await _historyService.GetHistoryDetails(model.Year);

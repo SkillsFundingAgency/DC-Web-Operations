@@ -34,6 +34,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
+            currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             PeriodEndViewModel model;
 
             if (collectionYear != null && period != null)
@@ -44,8 +45,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             }
             else
             {
-                model = await ShowPath(currentYearPeriod.Year, currentYearPeriod.Period);
-                model.Year = currentYearPeriod.Year;
+                model = await ShowPath(currentYearPeriod.Year.Value, currentYearPeriod.Period);
+                model.Year = currentYearPeriod.Year.Value;
                 model.Period = currentYearPeriod.Period;
             }
 

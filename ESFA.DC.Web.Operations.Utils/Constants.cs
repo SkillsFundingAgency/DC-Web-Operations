@@ -7,5 +7,7 @@
 
         public const string CollectionYearToken = "{collectionYear}";
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
+
+        public const string ReferenceDataJobPausedState = "Paused";
     }
 }
