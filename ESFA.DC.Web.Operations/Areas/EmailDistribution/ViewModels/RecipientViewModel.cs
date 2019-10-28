@@ -19,7 +19,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrEmpty(Email) || !Regex.IsMatch(Email, EmailRegEx))
+            if (!IsValidEmail(Email))
             {
                 yield return new ValidationResult($"Please enter valid email address", new[] { ErrorMessageKeys.Recipient_EmailFieldKey, ErrorMessageKeys.ErrorSummaryKey });
             }
@@ -28,6 +28,11 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels
             {
                 yield return new ValidationResult($"Please select at least one group", new[] { ErrorMessageKeys.Recipient_GroupsKey, ErrorMessageKeys.ErrorSummaryKey });
             }
+        }
+
+        public bool IsValidEmail(string email)
+        {
+            return !string.IsNullOrEmpty(email) && Regex.IsMatch(email, EmailRegEx);
         }
     }
 }
