@@ -1,6 +1,7 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
-@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
+@*@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>*@
+@model ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels.RecipientViewModel
 @{
     ViewData["Title"] = "Add a new recipient";
     ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
@@ -12,7 +13,7 @@
 
     <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_EmailFieldKey)" id="controls">
         <div class="govuk-form-group">
-            <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="text">
+            <input class="govuk-input govuk-!-width-two-thirds" id="email" name="Email" value="@Model.Email" type="text">
         </div>
         <div error-field-name="@ErrorMessageKeys.Recipient_EmailFieldKey"></div>
     </div>
@@ -26,17 +27,17 @@
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_GroupsKey)" id="controls">
             <div class="govuk-checkboxes">
 
-                @foreach (var group in Model)
+                @foreach (var group in Model.RecipientGroups)
                 {
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" name="groups" type="checkbox" value="@group.RecipientGroupId">
+                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" name="SelectedGroupIds" type="checkbox" value="@group.RecipientGroupId">
                         <label class="govuk-label govuk-checkboxes__label" for="@group.RecipientGroupId">
                             @group.GroupName
                         </label>
                     </div>
                 }
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="waste-4" name="groups" type="checkbox" value="0">
+                    <input class="govuk-checkboxes__input" id="waste-4" name="SelectedGroupIds" type="checkbox" value="0">
                     <label class="govuk-label govuk-checkboxes__label" for="waste-4">
                         All
                     </label>
