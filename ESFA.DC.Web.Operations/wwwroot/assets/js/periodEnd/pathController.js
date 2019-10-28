@@ -44,8 +44,8 @@ class pathController {
         const proceedEnabled = enabled && !disabledProceedButtons.includes(pathItemId);
 
         const node =
-            `<span style="display:inline-block;" >
-                <button type="submit" style="margin-left:20px;" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
+            `<span class="inline" >
+                <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
                     onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
                     Proceed
                 </button>
@@ -215,8 +215,7 @@ class pathController {
             let pathSummaryTitle = document.createElement("span");
             pathSummaryTitle.className += "govuk-heading-s";
             pathSummaryTitle.textContent = path.name;
-            summaryContainer.appendChild(pathSummaryTitle);
-
+            
             let pathSummary = document.createElement("span");
             pathSummary.className += "nav";
             let pathSummaryList = document.createElement("ul");
@@ -242,6 +241,8 @@ class pathController {
                 });
 
                 pathSummary.appendChild(pathSummaryList);
+
+                summaryContainer.appendChild(pathSummaryTitle);
                 summaryContainer.appendChild(pathSummary);
 
                 li.appendChild(subItemList);

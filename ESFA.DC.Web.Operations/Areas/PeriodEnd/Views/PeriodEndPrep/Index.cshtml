@@ -19,7 +19,7 @@
     <div class="govuk-grid-column-one-third">
         <ul class="govuk-list">
             <li>
-                <a href="#" class="govuk-link">Application version</a>
+                @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
             </li>
             <li>
                 @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
@@ -61,7 +61,7 @@
                 <p>These reference data jobs can’t be resumed until the period end process is complete.</p>
 
                 <p>
-                    <button type="submit" class="govuk-button yes-pause" style="margin-left: 0;" id="pauseReferenceData"
+                    <button type="submit" class="govuk-button yes-pause no-left-margin" id="pauseReferenceData"
                             onclick="window.prepClient.pauseReferenceDataJobs(@Model.Year, @Model.Period);">
                         Yes, pause jobs.
                     </button>

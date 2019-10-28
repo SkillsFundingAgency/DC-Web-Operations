@@ -855,3 +855,15 @@ html {
     border-left: 12px solid black;
     border-bottom: 6px solid transparent;
 }
+
+.inline {
+    display: inline-block;
+}
+
+.proceed {
+    margin-left: 20px;
+}
+
+.no-left-margin {
+    margin-left: 0;
+}
