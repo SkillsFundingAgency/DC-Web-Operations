@@ -18,6 +18,8 @@ class confirmationController {
     initialiseConfirmation(referenceDataJobs, periodClosed, collectionClosedEmailSent) {
         let paused = true;
         const jobs = JSON.parse(referenceDataJobs);
+        const closed = periodClosed === "False" ? false : true;
+        const emailSent = collectionClosedEmailSent === "False" ? false : true;
 
         jobs.forEach(function(job) {
             if (job.status !== "Paused") {
@@ -28,8 +30,8 @@ class confirmationController {
         const jobController = new JobController();
         if (paused === true) {
 
-            jobController.setCollectionClosedEmailButtonState(periodClosed && !collectionClosedEmailSent);
-            jobController.setContinueButtonState(periodClosed && collectionClosedEmailSent);
+            jobController.setCollectionClosedEmailButtonState(closed && !emailSent);
+            jobController.setContinueButtonState(closed && emailSent);
 
             this._pauseButton.style.display = "none";
             this._confirmedContainer.style.display = "block";

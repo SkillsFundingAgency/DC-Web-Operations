@@ -45,9 +45,20 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             var collectionClosedEmailEnabled = period.PeriodClosed && !pauseEnabled && !_stateService.CollectionClosedEmailSent(pathStates);
             var continueEnabled = !pauseEnabled && !collectionClosedEmailEnabled && period.PeriodClosed;
 
-            await _hubContext.Clients.All.SendAsync("ReferenceJobsButtonState", pauseEnabled, cancellationToken);
-            await _hubContext.Clients.All.SendAsync("CollectionClosedEmailButtonState", collectionClosedEmailEnabled, cancellationToken);
-            await _hubContext.Clients.All.SendAsync("ContinueButtonState", continueEnabled, cancellationToken);
+            if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)
+            {
+                await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, pauseEnabled, cancellationToken);
+            }
+
+            if (PeriodEndState.CurrentAction != Constants.Action_CollectionClosedEmailButton)
+            {
+                await _hubContext.Clients.All.SendAsync(Constants.Action_CollectionClosedEmailButton, collectionClosedEmailEnabled, cancellationToken);
+            }
+
+            if (PeriodEndState.CurrentAction != Constants.Action_ContinueButton)
+            {
+                await _hubContext.Clients.All.SendAsync(Constants.Action_ContinueButton, continueEnabled, cancellationToken);
+            }
         }
 
         public async Task ReceiveMessage()
@@ -57,12 +68,18 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 
         public async Task SendCollectionClosedEmail(int year, int period)
         {
+            PeriodEndState.CurrentAction = Constants.Action_CollectionClosedEmailButton;
+            await _hubContext.Clients.All.SendAsync(Constants.Action_CollectionClosedEmailButton, false);
+
             await _periodEndService.CollectionClosedEmailSent(year, period);
             await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
         }
 
         public async Task PauseReferenceDataJobs(int year, int period)
         {
+            PeriodEndState.CurrentAction = Constants.Action_ReferenceJobsButton;
+            await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, false);
+
             await _periodEndService.InitialisePeriodEnd(year, period);
             await _periodEndService.ToggleReferenceDataJobs(true);
         }

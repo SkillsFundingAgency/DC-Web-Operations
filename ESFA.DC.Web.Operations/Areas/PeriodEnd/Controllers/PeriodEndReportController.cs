@@ -35,7 +35,11 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
-            currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
+            if (currentYearPeriod.Year == null)
+            {
+                throw new Exception($"Return period {currentYearPeriod.Period} has no year.");
+            }
+
             var model = new PeriodEndReportViewModel();
 
             if (collectionYear != null && period != null)

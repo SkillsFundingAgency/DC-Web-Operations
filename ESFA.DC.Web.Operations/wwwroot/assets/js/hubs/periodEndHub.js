@@ -19,8 +19,6 @@ class periodEndHub {
 
         this.connection.on("ReceiveMessage", pathController.renderPaths.bind(pathController));
 
-        this.connection.on("ReceiveMessage", pathController.renderPaths.bind(pathController));
-
         this.connection.on("DisablePathItemProceed", 
             (pathItemId) => { 
                 pathController.disableProceed.call(pathController, pathItemId);

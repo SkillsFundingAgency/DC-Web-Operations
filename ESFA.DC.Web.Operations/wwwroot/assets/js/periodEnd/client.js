@@ -5,6 +5,7 @@ class client {
     
     constructor(connection) {
         this.connection = connection;
+        this.jobController = new JobController();
     }
 
     startPeriodEnd(collectionYear, period) {
@@ -20,9 +21,7 @@ class client {
     }
 
     collectionClosedEmail(collectionYear, period) {
-        this.jobController = new JobController();
         this.jobController.setCollectionClosedEmailButtonState(false);
-        this.jobController.setContinueButtonState(true);
 
         this.connection
             .invoke("SendCollectionClosedEmail", collectionYear, period)
@@ -30,9 +29,7 @@ class client {
     }
 
     pauseReferenceDataJobs(collectionYear, period) {
-        this.jobController = new JobController();
         this.jobController.setPauseRefJobsButtonState(false);
-        this.jobController.setCollectionClosedEmailButtonState(true);
 
         this.connection
             .invoke("PauseReferenceDataJobs", collectionYear, period)

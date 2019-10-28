@@ -29,9 +29,8 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public bool CollectionClosedEmailSent(string pathItemStates)
         {
-            var states = _serializationService.Deserialize<IEnumerable<PathPathItemsModel>>(pathItemStates);
-
-            return states.First().CollectionClosedEmailSent;
+            var states = _serializationService.Deserialize<IEnumerable<PathPathItemsModel>>(pathItemStates).ToList();
+            return states.FirstOrDefault() != null && states.First().CollectionClosedEmailSent;
         }
     }
 }
