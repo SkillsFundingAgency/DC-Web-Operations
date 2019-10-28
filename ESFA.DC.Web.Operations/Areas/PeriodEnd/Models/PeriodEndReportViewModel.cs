@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
+using ESFA.DC.PeriodEnd.Models;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {

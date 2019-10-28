@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
@@ -25,9 +25,19 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
+        public async Task InitialisePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendDataAsync($"{_baseUrl}/api/period-end/{year}/{period}/initialise", cancellationToken);
+        }
+
         public async Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendDataAsync($"{_baseUrl}/api/period-end/{year}/{period}/start", cancellationToken);
+        }
+
+        public async Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendDataAsync($"{_baseUrl}/api/period-end/{year}/{period}/collection-closed", cancellationToken);
         }
 
         public async Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))

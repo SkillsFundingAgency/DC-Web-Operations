@@ -1,7 +1,11 @@
-﻿class client {
+﻿import PathController from '/assets/js/periodEnd/pathController.js';
+import JobController from '/assets/js/periodEnd/jobController.js';
+
+class client {
     
     constructor(connection) {
         this.connection = connection;
+        this.jobController = new JobController();
     }
 
     startPeriodEnd(collectionYear, period) {
@@ -16,15 +20,19 @@
             .catch(err => console.error(err.toString()));
     }
 
-    collectionClosedEmail(period) {
+    collectionClosedEmail(collectionYear, period) {
+        this.jobController.setCollectionClosedEmailButtonState(false);
+
         this.connection
-            .invoke("SendCollectionClosedEmail", period)
+            .invoke("SendCollectionClosedEmail", collectionYear, period)
             .catch(err => console.error(err.toString()));
     }
 
-    pauseReferenceDataJobs() {
+    pauseReferenceDataJobs(collectionYear, period) {
+        this.jobController.setPauseRefJobsButtonState(false);
+
         this.connection
-            .invoke("PauseReferenceDataJobs")
+            .invoke("PauseReferenceDataJobs", collectionYear, period)
             .catch(err => console.error(err.toString()));
     }
 
