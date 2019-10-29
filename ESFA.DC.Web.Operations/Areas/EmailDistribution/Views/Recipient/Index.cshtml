@@ -1,5 +1,7 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
+@using ESFA.DC.Web.Operations.Extensions
+@*@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>*@
+@model ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels.RecipientViewModel
 @{
     ViewData["Title"] = "Add a new recipient";
     ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
@@ -9,8 +11,11 @@
 <h1 class="govuk-heading-xl">Enter the recipient's email address</h1>
 <form asp-controller="Recipient" asp-action="Submit" method="post" id="choiceform">
 
-    <div class="govuk-form-group">
-        <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="text">
+    <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_EmailFieldKey)" id="controls">
+        <div class="govuk-form-group">
+            <input class="govuk-input govuk-!-width-two-thirds" id="email" name="Email" value="@Model.Email" type="text">
+        </div>
+        <div error-field-name="@ErrorMessageKeys.Recipient_EmailFieldKey"></div>
     </div>
 
 
@@ -19,23 +24,26 @@
             <span id="waste-hint" class="govuk-hint">
                 Select which lists you'd like the recipient added to.
             </span>
+            <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_GroupsKey)" id="controls">
             <div class="govuk-checkboxes">
 
-                @foreach (var group in Model)
+                @foreach (var group in Model.RecipientGroups)
                 {
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" name="groups" type="checkbox" value="@group.RecipientGroupId">
+                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" name="SelectedGroupIds" type="checkbox" value="@group.RecipientGroupId">
                         <label class="govuk-label govuk-checkboxes__label" for="@group.RecipientGroupId">
                             @group.GroupName
                         </label>
                     </div>
                 }
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="waste-4" name="groups" type="checkbox" value="0">
+                    <input class="govuk-checkboxes__input" id="waste-4" name="SelectedGroupIds" type="checkbox" value="0">
                     <label class="govuk-label govuk-checkboxes__label" for="waste-4">
                         All
                     </label>
                 </div>
+            </div>
+                <div error-field-name="@ErrorMessageKeys.Recipient_GroupsKey"></div>
             </div>
         </fieldset>
     </div>

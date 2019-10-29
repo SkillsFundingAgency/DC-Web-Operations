@@ -1,12 +1,16 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 
 
 @{
     Layout = null;
-    
+
     var errorMessage = ViewData.ModelState.ContainsKey("Summary") ?
         ViewData.ModelState["Summary"]?.Errors?.First()?.ErrorMessage :
         string.Empty;
+
+    var errorMessages = ViewData.ModelState.ContainsKey("Summary") ? ViewData.ModelState["Summary"]?.Errors?.Select(x => x.ErrorMessage) : new List<string>();
+
 
 }
 
@@ -18,9 +22,12 @@
         </h2>
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
-                <li>
-                    <a href="#controls">@errorMessage</a>
-                </li>
+                @foreach (var error in errorMessages)
+                {
+                    <li>
+                        <a href="#controls">@error</a>
+                    </li>
+                }
             </ul>
         </div>
     </div>
