@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
@@ -118,11 +119,12 @@ namespace ESFA.DC.Web.Operations.Services
             return true;
         }
 
-        public async Task<bool> SaveRecipient(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpResponseMessage> SaveRecipient(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + "/recipients", recipient);
-
-            return true;
+            var json = _jsonSerializationService.Serialize(recipient);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_baseUrl + "/recipients", content);
+            return response;
         }
 
         public async Task<bool> RemoveRecipient(int recipientId, int recipientGroupId, CancellationToken cancellationToken = default(CancellationToken))

@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -79,7 +81,16 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 recipient.RecipientGroupIds = model.SelectedGroupIds.ToList();
             }
 
-            await _emailDistributionService.SaveRecipient(recipient);
+            var httpResponseMessage = await _emailDistributionService.SaveRecipient(recipient);
+
+            if (httpResponseMessage.StatusCode == HttpStatusCode.Conflict)
+            {
+                AddError(ErrorMessageKeys.Recipient_EmailFieldKey, "Email already exists in the distribution group");
+                AddError(ErrorMessageKeys.ErrorSummaryKey, "Email already exists in the distribution group");
+                model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
+                return View("Index", model);
+            }
+
             return View("ConfirmAdd", recipient);
         }
     }
