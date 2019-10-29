@@ -12,6 +12,7 @@ namespace ESFA.DC.Web.Operations.Tests.EmailDistribution
         [InlineData("js@abc..com", false)]
         [InlineData("abcd@abc.com", true)]
         [InlineData("d.j@server1.company.com", true)]
+        [InlineData("Test.User@education.gov.uk", true)]
         public void EmailValidationTest(string email, bool expectation)
         {
             RecipientViewModel model = new RecipientViewModel();
