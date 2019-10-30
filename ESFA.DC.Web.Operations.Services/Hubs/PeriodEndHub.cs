@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.SignalR;
@@ -14,6 +16,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
         private readonly IPeriodService _periodService;
+        private readonly ILogger _logger;
 
         public PeriodEndHub(
             IHubEventBase eventBase,
@@ -21,7 +24,8 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             IPeriodEndService periodEndService,
             IEmailService emailService,
             IStateService stateService,
-            IPeriodService periodService)
+            IPeriodService periodService,
+            ILogger logger)
         {
             _eventBase = eventBase;
             _hubContext = hubContext;
@@ -29,6 +33,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _emailService = emailService;
             _stateService = stateService;
             _periodService = periodService;
+            _logger = logger;
         }
 
         public async Task SendMessage(string paths, CancellationToken cancellationToken)
@@ -79,21 +84,45 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 
         public async Task ReceiveMessage()
         {
-            _eventBase.TriggerPeriodEnd();
+            try
+            {
+                _eventBase.TriggerPeriodEnd();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
         }
 
         public async Task StartPeriodEnd(int collectionYear, int period)
         {
-            await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
-            await _periodEndService.StartPeriodEnd(collectionYear, period);
+            try
+            {
+                await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
+                await _periodEndService.StartPeriodEnd(collectionYear, period);
 
-            await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
+                await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
         }
 
         public async Task Proceed(int collectionYear, int period, int pathId, int pathItemId)
         {
-            await _hubContext.Clients.All.SendAsync("DisablePathItemProceed", pathItemId);
-            await _periodEndService.Proceed(collectionYear, period, pathId);
+            try
+            {
+                await _hubContext.Clients.All.SendAsync("DisablePathItemProceed", pathItemId);
+                await _periodEndService.Proceed(collectionYear, period, pathId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
         }
     }
 }
