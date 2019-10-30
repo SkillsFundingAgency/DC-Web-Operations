@@ -60,7 +60,10 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         private string GetData(string url)
         {
             string result;
-            using (var cert = new X509Certificate2(Convert.FromBase64String(_apiSettings.Certificate)))
+            using (var cert = new X509Certificate2(
+                Convert.FromBase64String(_apiSettings.Certificate),
+                string.Empty,
+                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable))
             {
                 var request = WebRequest.Create(url) as HttpWebRequest;
 
