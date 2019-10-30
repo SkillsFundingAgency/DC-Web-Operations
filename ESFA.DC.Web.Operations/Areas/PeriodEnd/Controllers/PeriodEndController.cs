@@ -51,7 +51,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             }
 
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
-            model.Closed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
+            model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return View(model);
         }
@@ -59,7 +59,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         [HttpPost("unPauseReferenceData")]
         public async Task<IActionResult> UnPauseReferenceJobs(int collectionYear, int period)
         {
-            await _periodEndService.ToggleReferenceDataJobs(false);
+            await _periodEndService.ToggleReferenceDataJobs(collectionYear, period, false);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }
@@ -94,15 +94,21 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         {
             var paths = await _periodEndService.GetPathItemStates(collectionYear, period);
 
-            var model = _jsonSerializationService.Deserialize<List<PeriodEndViewModel>>(paths).FirstOrDefault();
+            var model = _jsonSerializationService.Deserialize<List<PeriodEndViewModel>>(paths).First();
 
             var pathModel = new PeriodEndViewModel
             {
                 Period = period,
                 Year = collectionYear,
                 Paths = paths,
-                Closed = model?.Closed ?? false,
-                ReportsPublished = model?.ReportsPublished ?? false
+                CollectionClosed = model.CollectionClosed,
+                PeriodEndStarted = model.PeriodEndStarted,
+                McaReportsReady = model.McaReportsReady,
+                McaReportsPublished = model.McaReportsPublished,
+                ProviderReportsReady = model.ProviderReportsReady,
+                ProviderReportsPublished = model.ProviderReportsPublished,
+                PeriodEndFinished = model.PeriodEndFinished,
+                ReferenceDataJobsPaused = model.ReferenceDataJobsPaused
             };
 
             return pathModel;

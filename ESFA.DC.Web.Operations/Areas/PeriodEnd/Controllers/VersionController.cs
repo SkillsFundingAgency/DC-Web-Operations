@@ -33,9 +33,18 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 
         public IActionResult Index()
         {
-            var data = GetData($"{_apiSettings.ServiceFabricUrl}/Applications?api-version=6.4");
-            RootObject root = JsonConvert.DeserializeObject<RootObject>(data);
-            root.NodeItems = GetNodes();
+            RootObject root;
+            try
+            {
+                var data = GetData($"{_apiSettings.ServiceFabricUrl}/Applications?api-version=6.4");
+                root = JsonConvert.DeserializeObject<RootObject>(data);
+                root.NodeItems = GetNodes();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
 
             return View(root);
         }

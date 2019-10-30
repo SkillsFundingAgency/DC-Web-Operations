@@ -2,7 +2,7 @@
 
 class pathController {
 
-    pathItemCompare( a, b ) {
+    pathItemCompare(a, b) {
         if (a.ordinal < b.ordinal) {
             return -1;
         }
@@ -34,7 +34,7 @@ class pathController {
         }
     }
 
-   isJobComplete(jobStatus) {
+    isJobComplete(jobStatus) {
         if (jobStatus === 4)
             return true;
         return false;
@@ -148,13 +148,13 @@ class pathController {
         }
     }
 
-    disableStart() {
-        const startButton = document.getElementById("startPeriodEnd");
-        if (startButton != null) {
-            startButton.disabled = true;
+    setButtonState(enabled, buttonId) {
+        const button = document.getElementById(buttonId);
+        if (button != null) {
+            button.disabled = !enabled;
         }
     }
-
+    
     disableProceed(pathItemId) {
         const button = document.getElementById("proceed_"+pathItemId);
         if (button != null) {
@@ -250,6 +250,22 @@ class pathController {
                 pathContainer.appendChild(li);
             }
         });
+    }
+
+    initialiseState(state) {
+        const periodClosed = state.collectionClosed === "True";
+        const mcaEnabled = periodClosed && state.mcaReportsReady === "True" && !(state.mcaReportsPublished === "True");
+        const providerEnabled = periodClosed && state.providerReportsReady === "True" && !(state.providerReportsPublished === "True")
+        const reportsFinished = !mcaEnabled &&
+            !providerEnabled &&
+            state.mcaReportsReady === "True" &&
+            state.providerReportsReady === "True";
+
+        this.setButtonState(periodClosed && !(state.periodEndStarted === "True"), "startPeriodEnd");
+        this.setButtonState(mcaEnabled, "publishMcaReports");
+        this.setButtonState(providerEnabled, "publishProviderReports");
+        this.setButtonState(periodClosed && reportsFinished && !(state.periodEndFinished === "True"), "closePeriodEnd");
+        this.setButtonState(periodClosed && state.periodEndFinished === "True" && state.referenceDataJobsPaused === "True", "resumeReferenceData");
     }
 }
 

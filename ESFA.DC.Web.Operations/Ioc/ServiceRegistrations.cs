@@ -46,6 +46,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<HistoryService>().As<IHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
 
+            builder.RegisterType<PeriodEndStateFactory>().As<IPeriodEndStateFactory>().InstancePerLifetimeScope();
+
             builder.Register(context =>
                 {
                     var config = context.Resolve<ConnectionStrings>();

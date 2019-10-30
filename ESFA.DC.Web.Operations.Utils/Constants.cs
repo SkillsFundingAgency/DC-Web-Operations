@@ -13,5 +13,10 @@
         public const string Action_ReferenceJobsButton = "ReferenceJobsButtonState";
         public const string Action_CollectionClosedEmailButton = "CollectionClosedEmailButtonState";
         public const string Action_ContinueButton = "ContinueButtonState";
+
+        public const string Action_StartPeriodEndButton = "StartPeriodEndState";
+        public const string Action_MCAReportsButton = "MCAReportsState";
+        public const string Action_ProviderReportsButton = "ProviderReportsState";
+        public const string Action_PeriodClosedButton = "PeriodClosedState";
     }
 }

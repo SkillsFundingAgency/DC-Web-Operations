@@ -19,6 +19,21 @@ class periodEndHub {
 
         this.connection.on("ReceiveMessage", pathController.renderPaths.bind(pathController));
 
+        this.connection.on("StartPeriodEndState",
+            (enabled) => { pathController.setButtonState.call(pathController, enabled, "startPeriodEnd") });
+
+        this.connection.on("MCAReportsState",
+            (enabled) => { pathController.setButtonState.call(pathController, enabled, "publishMcaReports") });
+
+        this.connection.on("ProviderReportsState",
+            (enabled) => { pathController.setButtonState.call(pathController, enabled, "publishProviderReports") });
+
+        this.connection.on("PeriodClosedState",
+            (enabled) => { pathController.setButtonState.call(pathController, enabled, "closePeriodEnd") });
+
+        this.connection.on("ReferenceJobsButtonState",
+            (enabled) => { pathController.setButtonState.call(pathController, enabled, "resumeReferenceData") });
+
         this.connection.on("DisablePathItemProceed", 
             (pathItemId) => { 
                 pathController.disableProceed.call(pathController, pathItemId);
