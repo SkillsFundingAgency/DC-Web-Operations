@@ -132,6 +132,10 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+                routes.MapHub<ProviderSearchHub>("/providerSearchHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -172,6 +176,7 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<PeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<PeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

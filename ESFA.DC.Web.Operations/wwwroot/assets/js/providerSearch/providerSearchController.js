@@ -6,7 +6,7 @@
 
         let container = document.getElementById("providerSearchInput");
 
-        
+
     }
 }
 

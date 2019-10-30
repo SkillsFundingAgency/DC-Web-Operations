@@ -6,23 +6,18 @@
     ViewData[ViewDataConstants.BackLink] = "/";
 }
 
-@*<div class="app-masthead">
+<div class="app-masthead">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
             <form class="govuk-form-group" action="provider-record">
                 <div id="tt-overlay" class="autocomplete-wrapper"></div>
-                <button id="searchProviders" type="search" class="govuk-button">
-                    <img src="~/images/autocomplete-search-button.png" />
-                </button>
             </form>
         </div>
         <div class="govuk-grid-column-one-third">
         </div>
     </div>
-</div>*@
-
-@await Component.InvokeAsync("ProviderSearch")
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -83,13 +78,26 @@
 
         window.searchClient = new Client(hub.getConnection());
 
+        function inputValueTemplate(result) {
+            return result && result.providerName
+        }
+
+        function suggestionTemplate(result) {
+            return result && '<strong>' + result.providerName + '</strong>' +
+                ' ,' + result.ukprn + ' ,' + result.upin
+        }
+
         var element = document.querySelector('#tt-overlay');
         var id = 'autocomplete-minLength';
         accessibleAutocomplete({
             element: element,
             id: id,
             minLength: 2,
-            source: window.searchClient.providerSearch.bind(window.searchClient)
+            source: window.searchClient.providerSearch.bind(window.searchClient),
+            templates: {
+                inputValue: inputValueTemplate,
+                suggestion: suggestionTemplate
+            }
         });
 
     </script>

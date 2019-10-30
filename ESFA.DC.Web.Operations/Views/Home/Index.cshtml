@@ -1,5 +1,18 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Utils
 @{
     ViewData["Title"] = "Index";
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
 }
+
+<div class="app-masthead">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
+
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div>@Html.ActionLink("Add a new provider", "AddNew", "AddNew", new { area = AreaNames.Provider })</div>
+        </div>
+    </div>
+</div>
