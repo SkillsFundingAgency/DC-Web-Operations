@@ -36,9 +36,15 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             RootObject root;
             try
             {
-                var data = GetData($"{_apiSettings.ServiceFabricUrl}/Applications?api-version=6.4");
-                root = JsonConvert.DeserializeObject<RootObject>(data);
-                root.NodeItems = GetNodes();
+                using (var cert = new X509Certificate2(
+                    Convert.FromBase64String(_apiSettings.Certificate),
+                    string.Empty,
+                    X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable))
+                {
+                    var data = GetData($"{_apiSettings.ServiceFabricUrl}/Applications?api-version=6.4", cert);
+                    root = JsonConvert.DeserializeObject<RootObject>(data);
+                    root.NodeItems = GetNodes(cert);
+                }
             }
             catch (Exception e)
             {
@@ -49,45 +55,40 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             return View(root);
         }
 
-        private List<NodeInfo> GetNodes()
+        private List<NodeInfo> GetNodes(X509Certificate2 cert)
         {
-            var data = GetData($"{_apiSettings.ServiceFabricUrl}/Nodes?api-version=6.4");
+            var data = GetData($"{_apiSettings.ServiceFabricUrl}/Nodes?api-version=6.4", cert);
             var items = JsonConvert.DeserializeObject<NodeInfoList>(data);
 
             return items.Items.ToList();
         }
 
-        private string GetData(string url)
+        private string GetData(string url, X509Certificate2 cert)
         {
             string result;
-            using (var cert = new X509Certificate2(
-                Convert.FromBase64String(_apiSettings.Certificate),
-                string.Empty,
-                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable))
-            {
-                var request = WebRequest.Create(url) as HttpWebRequest;
 
-                if (request == null)
+            var request = WebRequest.Create(url) as HttpWebRequest;
+
+            if (request == null)
+            {
+                return null;
+            }
+
+            request.ContentType = "application/json;charset=UTF8";
+            request.ClientCertificates.Add(cert);
+            request.PreAuthenticate = true;
+            request.ServerCertificateValidationCallback = ServerCertificateValidationCallback;
+
+            using (var responseStream = request.GetResponse().GetResponseStream())
+            {
+                if (responseStream == null)
                 {
                     return null;
                 }
 
-                request.ContentType = "application/json;charset=UTF8";
-                request.ClientCertificates.Add(cert);
-                request.PreAuthenticate = true;
-                request.ServerCertificateValidationCallback = ServerCertificateValidationCallback;
-
-                using (var responseStream = request.GetResponse().GetResponseStream())
+                using (var reader = new StreamReader(responseStream, Encoding.UTF8))
                 {
-                    if (responseStream == null)
-                    {
-                        return null;
-                    }
-
-                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))
-                    {
-                        result = reader.ReadToEnd();
-                    }
+                    result = reader.ReadToEnd();
                 }
             }
 
