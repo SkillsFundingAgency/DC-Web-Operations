@@ -81,7 +81,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, false);
 
             await _periodEndService.InitialisePeriodEnd(year, period);
-            await _periodEndService.ToggleReferenceDataJobs(true);
+            await _periodEndService.ToggleReferenceDataJobs(year, period, true);
         }
 
         public async Task ReSubmitJob(int jobId)

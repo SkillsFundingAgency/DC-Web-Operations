@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ToggleReferenceDataJobs(bool pause, CancellationToken cancellationToken = default(CancellationToken));
+        Task ToggleReferenceDataJobs(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken));
 
         Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 

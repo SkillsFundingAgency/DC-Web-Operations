@@ -45,9 +45,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await SendDataAsync(_baseUrl + $"/api/period-end/{year}/{period}/{path}/proceed", cancellationToken);
         }
 
-        public async Task ToggleReferenceDataJobs(bool pause, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ToggleReferenceDataJobs(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{pause}", cancellationToken);
+            await SendDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{year}/{period}/{pause}", cancellationToken);
         }
 
         public async Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
