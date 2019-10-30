@@ -8,5 +8,8 @@
         public const string Submission_CheckboxFieldKey = "CheckBox";
         public const string HelpDesk_SearchProvider = "Input";
         public const string CollectionOptions_OptionsFieldKey = "CollectionOptions";
+
+        public const string Recipient_EmailFieldKey = "Email";
+        public const string Recipient_GroupsKey = "RecepientGroups";
     }
 }

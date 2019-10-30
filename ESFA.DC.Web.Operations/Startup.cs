@@ -36,7 +36,7 @@ namespace ESFA.DC.Web.Operations
         {
             var builder = new ConfigurationBuilder();
 
-            builder.SetBasePath(Directory.GetCurrentDirectory());
+            builder.SetBasePath(env.ContentRootPath);
 
             if (env.IsDevelopment())
             {
