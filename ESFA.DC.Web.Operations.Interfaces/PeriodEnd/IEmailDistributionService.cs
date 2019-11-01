@@ -13,7 +13,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<HttpResponseMessage> SaveRecipient(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> IsDuplicateGroupName(string groupName,
             CancellationToken cancellationToken = default(CancellationToken));

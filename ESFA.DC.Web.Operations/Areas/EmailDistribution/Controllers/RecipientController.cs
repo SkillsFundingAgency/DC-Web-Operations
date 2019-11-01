@@ -86,7 +86,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 recipient.RecipientGroupIds = model.SelectedGroupIds.ToList();
             }
 
-            HttpResponseMessage httpResponseMessage = await _emailDistributionService.SaveRecipient(recipient);
+            HttpResponseMessage httpResponseMessage = await _emailDistributionService.SaveRecipientAsync(recipient);
 
             if (httpResponseMessage.StatusCode == HttpStatusCode.Conflict)
             {

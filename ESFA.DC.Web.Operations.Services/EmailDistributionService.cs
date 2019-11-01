@@ -119,7 +119,7 @@ namespace ESFA.DC.Web.Operations.Services
             return true;
         }
 
-        public async Task<HttpResponseMessage> SaveRecipient(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpResponseMessage> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
             var json = _jsonSerializationService.Serialize(recipient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
