@@ -22,7 +22,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels
 
         public List<RecipientGroup> RecipientGroups { get; set; }
 
-        public List<int> SelectedGroupIds { get; set; }
+        public IEnumerable<int> SelectedGroupIds { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
