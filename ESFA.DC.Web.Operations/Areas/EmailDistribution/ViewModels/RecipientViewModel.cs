@@ -13,11 +13,16 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels
     {
         private const string EmailRegEx = @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
 
+        public RecipientViewModel()
+        {
+            SelectedGroupIds = new List<int>();
+        }
+
         public string Email { get; set; }
 
         public List<RecipientGroup> RecipientGroups { get; set; }
 
-        public List<int> SelectedGroupIds { get; set; }
+        public IEnumerable<int> SelectedGroupIds { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

@@ -1,8 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +20,13 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
     {
         private readonly IEmailDistributionService _emailDistributionService;
         private readonly ILogger _logger;
+        private readonly IJsonSerializationService _jsonSerializationService;
 
-        public RecipientController(IEmailDistributionService emailDistributionService, ILogger logger)
+        public RecipientController(IEmailDistributionService emailDistributionService, ILogger logger, IJsonSerializationService jsonSerializationService)
         {
             _emailDistributionService = emailDistributionService;
             _logger = logger;
+            _jsonSerializationService = jsonSerializationService;
         }
 
         public async Task<IActionResult> Index()
@@ -79,7 +86,26 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 recipient.RecipientGroupIds = model.SelectedGroupIds.ToList();
             }
 
-            await _emailDistributionService.SaveRecipient(recipient);
+            HttpResponseMessage httpResponseMessage = await _emailDistributionService.SaveRecipientAsync(recipient);
+
+            if (httpResponseMessage.StatusCode == HttpStatusCode.Conflict)
+            {
+                var data = await httpResponseMessage.Content.ReadAsStringAsync();
+                var recipientGroups = _jsonSerializationService.Deserialize<List<RecipientGroup>>(data);
+                if (recipient.RecipientGroupIds.All(x => recipientGroups.Select(y => y.RecipientGroupId).Contains(x)))
+                {
+                    AddError(ErrorMessageKeys.Recipient_EmailFieldKey, "Email already exists in the selected distribution groups");
+                    AddError(ErrorMessageKeys.ErrorSummaryKey, "Email already exists in the selected distribution groups");
+                }
+                else
+                {
+                    AddError(ErrorMessageKeys.WarningSummaryKey, "Email already associated to some of the distribution groups selected. Non-associated have been successfully added.");
+                }
+
+                model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
+                return View("Index", model);
+            }
+
             return View("ConfirmAdd", recipient);
         }
     }

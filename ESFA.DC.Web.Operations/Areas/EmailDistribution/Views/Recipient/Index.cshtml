@@ -30,14 +30,14 @@
                 @foreach (var group in Model.RecipientGroups)
                 {
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" name="SelectedGroupIds" type="checkbox" value="@group.RecipientGroupId">
+                        <input class="govuk-checkboxes__input" id="@group.RecipientGroupId" @(Model.SelectedGroupIds.Contains(group.RecipientGroupId) ? "checked" : string.Empty ) name="SelectedGroupIds" type="checkbox" value="@group.RecipientGroupId">
                         <label class="govuk-label govuk-checkboxes__label" for="@group.RecipientGroupId">
                             @group.GroupName
                         </label>
                     </div>
                 }
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="waste-4" name="SelectedGroupIds" type="checkbox" value="0">
+                    <input class="govuk-checkboxes__input" id="waste-4" name="SelectedGroupIds"  @(Model.SelectedGroupIds.Contains(0) ? "checked" : string.Empty ) type="checkbox" value="0">
                     <label class="govuk-label govuk-checkboxes__label" for="waste-4">
                         All
                     </label>
