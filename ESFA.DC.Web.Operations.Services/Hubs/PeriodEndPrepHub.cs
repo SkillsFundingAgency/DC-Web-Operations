@@ -91,6 +91,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
                 PeriodEndState.CurrentAction = Constants.Action_CollectionClosedEmailButton;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_CollectionClosedEmailButton, false);
 
+                await _periodEndService.InitialisePeriodEnd(year, period);
                 await _periodEndService.CollectionClosedEmailSent(year, period);
                 await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
             }
@@ -108,7 +109,6 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
                 PeriodEndState.CurrentAction = Constants.Action_ReferenceJobsButton;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, false);
 
-                await _periodEndService.InitialisePeriodEnd(year, period);
                 await _periodEndService.ToggleReferenceDataJobs(year, period, true);
             }
             catch (Exception e)
