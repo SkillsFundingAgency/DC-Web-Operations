@@ -12,8 +12,8 @@ namespace ESFA.DC.Web.Operations.Services
             {
                 McaReportsPublished = pathModel.McaReportsPublished,
                 ProviderReportsPublished = pathModel.ProviderReportsPublished,
-                PeriodEndClosed = pathModel.Closed,
-                PeriodEndStarted = pathModel.Started,
+                PeriodEndClosed = pathModel.PeriodEndFinished,
+                PeriodEndStarted = pathModel.PeriodEndStarted,
                 ReferenceDataJobsPaused = pathModel.ReferenceDataJobsPaused
             };
 
