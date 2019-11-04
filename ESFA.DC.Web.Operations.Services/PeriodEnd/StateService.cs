@@ -41,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             var state = _serializationService
                 .Deserialize<IEnumerable<PathPathItemsModel>>(pathItemStates)
-                .First(path => path.PathId == Constants.CriticalPathHubId);
+                .Single(path => path.PathId == Constants.CriticalPathHubId);
             var periodEndState = _periodEndStateFactory.GetPeriodEndState(state);
 
             return periodEndState;
