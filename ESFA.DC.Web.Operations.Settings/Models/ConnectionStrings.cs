@@ -13,5 +13,8 @@ namespace ESFA.DC.Web.Operations.Settings.Models
 
         [JsonRequired]
         public string JobManagement { get; set; }
+
+        [JsonRequired]
+        public string Org { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<string> GetFailedJobs(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ReSubmitFailedJob(long jobId);
+        Task ReSubmitFailedJob(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<ReportDetails>> GetPeriodEndReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 

@@ -258,8 +258,11 @@
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.16-beta0001" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />
+    <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
+    <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.3.0-pullrequest1069-0852" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -268,7 +271,7 @@
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.2.0" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Client.Http" Version="2.0.0-preview13" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
   </ItemGroup>
 
 

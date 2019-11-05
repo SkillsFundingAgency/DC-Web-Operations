@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Models.Provider;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
@@ -9,39 +10,17 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
     public class ProviderSearchHub : Hub
     {
         private readonly IHubContext<ProviderSearchHub> _hubContext;
+        private readonly IAddNewProviderService _providerSearchService;
 
-        public ProviderSearchHub(IHubContext<ProviderSearchHub> hubContext)
+        public ProviderSearchHub(IHubContext<ProviderSearchHub> hubContext, IAddNewProviderService providerSearchService)
         {
             _hubContext = hubContext;
+            _providerSearchService = providerSearchService;
         }
 
         public async Task<IEnumerable<ProviderSearchResult>> ProviderSearch(string query)
         {
-            var returnValue = new []
-            {
-                new ProviderSearchResult("Provider 1", 123, 456),
-                new ProviderSearchResult("Provider 2", 891, 312),
-                new ProviderSearchResult("Provider 3", 111, 222),
-                new ProviderSearchResult("Another Provider 1", 222, 333),
-                new ProviderSearchResult("A new Provider", 444, 555)
-            };
-            return returnValue;
+            return await _providerSearchService.GetProviderSearchResults(query);
         }
-    }
-
-    public class ProviderSearchResult
-    {
-        public ProviderSearchResult(string providerName, int ukprn, int upin)
-        {
-            ProviderName = providerName;
-            UKPRN = ukprn;
-            UPIN = upin;
-        }
-
-        public string ProviderName { get; set; }
-
-        public int UKPRN { get; set; }
-
-        public int UPIN { get; set; }
     }
 }

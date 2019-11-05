@@ -93,7 +93,7 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<bool> SaveEmailTemplate(EmailTemplate template, CancellationToken cancellationToken = default)
         {
-            await SendDataAsync(_baseUrl + "/templates", template);
+            await SendDataAsync(_baseUrl + "/templates", template, cancellationToken);
 
             return true;
         }
@@ -102,7 +102,7 @@ namespace ESFA.DC.Web.Operations.Services
         {
             try
             {
-                await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId);
+                await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId, cancellationToken);
                 return true;
             }
             catch (Exception e)
@@ -113,21 +113,21 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + "/groups", groupName);
+            await SendDataAsync(_baseUrl + "/groups", groupName, cancellationToken);
 
             return true;
         }
 
         public async Task<bool> SaveRecipient(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + "/recipients", recipient);
+            await SendDataAsync(_baseUrl + "/recipients", recipient, cancellationToken);
 
             return true;
         }
 
         public async Task<bool> RemoveRecipient(int recipientId, int recipientGroupId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync($"{_baseUrl}/recipients/remove/{recipientId}/{recipientGroupId}", string.Empty);
+            await SendDataAsync($"{_baseUrl}/recipients/remove/{recipientId}/{recipientGroupId}", string.Empty, cancellationToken);
             return true;
         }
     }

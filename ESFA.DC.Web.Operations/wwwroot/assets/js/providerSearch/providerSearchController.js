@@ -1,12 +1,7 @@
 ﻿class providerSearchController {
-    updateSearchResults(searchResults) {
-        if (searchResults === "" || searchResults === undefined) {
-            return
-        }
-
-        let container = document.getElementById("providerSearchInput");
-
-
+    displayConnectionState(state) {
+        const stateLabel = document.getElementById("state");
+        stateLabel.textContent = `Status: ${state}`;
     }
 }
 
