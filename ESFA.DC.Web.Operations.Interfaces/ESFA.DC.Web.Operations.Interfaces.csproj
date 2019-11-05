@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.3.0-pullrequest1069-0852" />
-    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.3.0-alpha0897" />
+    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.21-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.21-beta0001" />
   </ItemGroup>
 
   <ItemGroup>

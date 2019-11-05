@@ -14,7 +14,10 @@ namespace ESFA.DC.Web.Operations.Services
                 ProviderReportsPublished = pathModel.ProviderReportsPublished,
                 PeriodEndClosed = pathModel.PeriodEndFinished,
                 PeriodEndStarted = pathModel.PeriodEndStarted,
-                ReferenceDataJobsPaused = pathModel.ReferenceDataJobsPaused
+                ReferenceDataJobsPaused = pathModel.ReferenceDataJobsPaused,
+                McaReportsReady = pathModel.McaReportsReady,
+                ProviderReportsReady = pathModel.ProviderReportsReady,
+                CollectionClosedEmailSent = pathModel.CollectionClosedEmailSent
             };
 
             return state;
