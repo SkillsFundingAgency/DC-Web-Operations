@@ -27,7 +27,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task InitialisePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync($"{_baseUrl}/api/period-end/{year}/{period}/initialise", cancellationToken);
+            await SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/initialise", cancellationToken);
         }
 
         public async Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
@@ -37,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync($"{_baseUrl}/api/period-end/{year}/{period}/collection-closed", cancellationToken);
+            await SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/collection-closed", cancellationToken);
         }
 
         public async Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
@@ -47,7 +47,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task ToggleReferenceDataJobs(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{year}/{period}/{pause}", cancellationToken);
+            await SendAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{year}/{period}/{pause}", cancellationToken);
         }
 
         public async Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services
@@ -119,11 +120,11 @@ namespace ESFA.DC.Web.Operations.Services
             return true;
         }
 
-        public async Task<HttpResponseMessage> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpRawResponse> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
             var json = _jsonSerializationService.Serialize(recipient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(_baseUrl + "/recipients", content);
+            var response = await SendDataAsyncRawResponse(_baseUrl + "/recipients", content, cancellationToken);
             return response;
         }
 

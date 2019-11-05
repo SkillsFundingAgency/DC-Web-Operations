@@ -63,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 return View("Index", model);
             }
 
-            var response = await _addNewProviderService.SaveProvider(model.ProviderName, model.Ukprn, model.Upin, model.IsMca, CancellationToken.None);
+            var response = await _addNewProviderService.SaveProvider(model.ProviderName, model.Ukprn.Value, model.Upin, model.IsMca, CancellationToken.None);
 
             if (response.StatusCode == 409)
             {
