@@ -1,66 +1,76 @@
-﻿@using Microsoft.ServiceFabric.Common
+﻿@using ESFA.DC.Web.Operations.Constants
+@using Microsoft.ServiceFabric.Common
 @model ESFA.DC.Web.Operations.Models.ServiceFabric.RootObject
 @{
     ViewData["Title"] = "ServiceFabric";
+    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
 }
 
-<h2>ServiceFabric Applications</h2>
 
-<table class="table">
-    <thead>
-    <tr>
-        <td>Name</td>
-        <td>Version</td>
-        <td>HealthState</td>
-        <td>Status</td>
-    </tr>
-    </thead>
-    @foreach (var data in Model.Items)
-    {
-        <tr>
-            <td>
-                @data.TypeName
-            </td>
-            <td>
-                @data.TypeVersion
-            </td>
-            <td>
-                @data.HealthState
-            </td>
-            <td>
-                @data.Status
-            </td>
-        </tr>
-    }
-</table>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">ServiceFabric Applications</h2>
 
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__header">Name</td>
+                <td class="govuk-table__header">Version</td>
+                <td class="govuk-table__header">HealthState</td>
+                <td class="govuk-table__header">Status</td>
+            </tr>
+            </thead>
+            @foreach (var data in Model.Items)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        @data.TypeName
+                    </td>
+                    <td class="govuk-table__cell">
+                        @data.TypeVersion
+                    </td>
+                    <td class="govuk-table__cell">
+                        @data.HealthState
+                    </td>
+                    <td class="govuk-table__cell">
+                        @data.Status
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
 
-<h2>ServiceFabric Nodes</h2>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">ServiceFabric Nodes</h2>
 
-<table class="table">
-    <thead>
-    <tr>
-        <td>Node Type</td>
-        <td>Count</td>
-        <td>Healthy</td>
-        <td>Bad</td>
-    </tr>
-    </thead>
-    @foreach (var nodeGroup in @Model.NodeItems.GroupBy(x => x.Type).Select(y => new {y.Key, NodeCount = y.Count()}))
-    {
-        <tr>
-            <td>
-                @nodeGroup.Key
-            </td>
-            <td>
-                @nodeGroup.NodeCount
-            </td>
-            <td>
-                @Model.NodeItems.Count(x => x.HealthState.HasValue && x.HealthState == HealthState.Ok && x.Type.Equals(nodeGroup.Key))
-            </td>
-            <td>
-                @Model.NodeItems.Count(x => (!x.HealthState.HasValue || x.HealthState != HealthState.Ok) && x.Type.Equals(nodeGroup.Key))
-            </td>
-        </tr>
-    }
-</table>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__header">Node Type</td>
+                    <td class="govuk-table__header">Count</td>
+                    <td class="govuk-table__header">Healthy</td>
+                    <td class="govuk-table__header">Bad</td>
+                </tr>
+            </thead>
+            @foreach (var nodeGroup in @Model.NodeItems.GroupBy(x => x.Type).Select(y => new { y.Key, NodeCount = y.Count() }))
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        @nodeGroup.Key
+                    </td>
+                    <td class="govuk-table__cell">
+                        @nodeGroup.NodeCount
+                    </td>
+                    <td class="govuk-table__cell">
+                        @Model.NodeItems.Count(x => x.HealthState.HasValue && x.HealthState == HealthState.Ok && x.Type.Equals(nodeGroup.Key))
+                    </td>
+                    <td class="govuk-table__cell">
+                        @Model.NodeItems.Count(x => (!x.HealthState.HasValue || x.HealthState != HealthState.Ok) && x.Type.Equals(nodeGroup.Key))
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
