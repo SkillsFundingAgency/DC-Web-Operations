@@ -47,6 +47,9 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<HistoryService>().As<IHistoryService>().InstancePerLifetimeScope();
+            builder.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<PeriodEndStateFactory>().As<IPeriodEndStateFactory>().InstancePerLifetimeScope();
             builder.RegisterType<AddNewProviderService>().As<IAddNewProviderService>().InstancePerLifetimeScope();
 
             // DB Contexts

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2.HPack;
-using Serilog.Core;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
@@ -20,17 +20,20 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
     {
         private readonly IEmailDistributionService _emailDistributionService;
         private readonly ILogger _logger;
+        private readonly IJsonSerializationService _jsonSerializationService;
 
-        public RecipientController(IEmailDistributionService emailDistributionService, ILogger logger)
+        public RecipientController(IEmailDistributionService emailDistributionService, ILogger logger, IJsonSerializationService jsonSerializationService)
         {
             _emailDistributionService = emailDistributionService;
             _logger = logger;
+            _jsonSerializationService = jsonSerializationService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var data = await _emailDistributionService.GetEmailRecipientGroups();
-            return View("Index", data);
+            var model = new RecipientViewModel();
+            model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
+            return View("Index", model);
         }
 
         [HttpPost("remove-recipient")]
@@ -60,49 +63,49 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit()
+        public async Task<IActionResult> Submit(RecipientViewModel model)
         {
-            var email = Request.Form["email"];
-            var selectedGroups = Request.Form["groups"];
-
-            if (string.IsNullOrEmpty(email))
+            if (!ModelState.IsValid)
             {
-                AddError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid email address");
-                AddError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid email address");
-
-                _logger.LogWarning($"invalid email address : {email}");
-
-                var data = await _emailDistributionService.GetEmailRecipientGroups();
-                return View("Index", data);
-            }
-
-            if (!selectedGroups.Any())
-            {
-                AddError(ErrorMessageKeys.Submission_FileFieldKey, "Please select at least one group");
-                AddError(ErrorMessageKeys.ErrorSummaryKey, "Please select at least one group");
-
-                _logger.LogWarning($"no groups selected for email address : {email}");
-
-                var data = await _emailDistributionService.GetEmailRecipientGroups();
-                return View("Index", data);
+                model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
+                return View("Index", model);
             }
 
             var recipient = new Recipient()
             {
-                EmailAddress = email,
+                EmailAddress = model.Email,
             };
 
-            if (selectedGroups.Any(x => int.Parse(x) == 0))
+            if (model.SelectedGroupIds.Any(x => x == 0))
             {
                 var groups = await _emailDistributionService.GetEmailRecipientGroups();
                 recipient.RecipientGroupIds = groups.ToList().Select(x => x.RecipientGroupId).ToList();
             }
             else
             {
-                recipient.RecipientGroupIds = selectedGroups.ToList().Select(x => int.Parse(x)).ToList();
+                recipient.RecipientGroupIds = model.SelectedGroupIds.ToList();
             }
 
-            await _emailDistributionService.SaveRecipient(recipient);
+            HttpResponseMessage httpResponseMessage = await _emailDistributionService.SaveRecipientAsync(recipient);
+
+            if (httpResponseMessage.StatusCode == HttpStatusCode.Conflict)
+            {
+                var data = await httpResponseMessage.Content.ReadAsStringAsync();
+                var recipientGroups = _jsonSerializationService.Deserialize<List<RecipientGroup>>(data);
+                if (recipient.RecipientGroupIds.All(x => recipientGroups.Select(y => y.RecipientGroupId).Contains(x)))
+                {
+                    AddError(ErrorMessageKeys.Recipient_EmailFieldKey, "Email already exists in the selected distribution groups");
+                    AddError(ErrorMessageKeys.ErrorSummaryKey, "Email already exists in the selected distribution groups");
+                }
+                else
+                {
+                    AddError(ErrorMessageKeys.WarningSummaryKey, "Email already associated to some of the distribution groups selected. Non-associated have been successfully added.");
+                }
+
+                model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
+                return View("Index", model);
+            }
+
             return View("ConfirmAdd", recipient);
         }
     }

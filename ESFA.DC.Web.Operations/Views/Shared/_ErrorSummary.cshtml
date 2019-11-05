@@ -1,27 +1,48 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 
 
 @{
     Layout = null;
-    
-    var errorMessage = ViewData.ModelState.ContainsKey("Summary") ?
-        ViewData.ModelState["Summary"]?.Errors?.First()?.ErrorMessage :
-        string.Empty;
+
+    var errorMessages = ViewData.ModelState.ContainsKey("Summary") ? ViewData.ModelState["Summary"]?.Errors?.Select(x => x.ErrorMessage).ToList() : new List<string>();
+
+    var warningMessages = ViewData.ModelState.ContainsKey("WarningSummary") ? ViewData.ModelState["WarningSummary"]?.Errors?.Select(x => x.ErrorMessage).ToList() : new List<string>();
 
 }
 
 @if (!ViewData.ModelState.IsValid)
 {
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There’s a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-                <li>
-                    <a href="#controls">@errorMessage</a>
-                </li>
-            </ul>
+    @if (errorMessages != null && errorMessages.Any())
+    {
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There’s a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    @foreach (var error in errorMessages)
+                    {
+                        <li>
+                            <a href="#controls">@error</a>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
-    </div>
+    }
+    
+    @if (warningMessages != null && warningMessages.Any())
+    {
+        @foreach (var warning in warningMessages)
+        {
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    @warning
+                </strong>
+            </div>
+        }
+    }
 }

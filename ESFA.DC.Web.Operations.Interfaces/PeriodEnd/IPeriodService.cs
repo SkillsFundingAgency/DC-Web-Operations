@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
+using ESFA.DC.PeriodEnd.Models;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {

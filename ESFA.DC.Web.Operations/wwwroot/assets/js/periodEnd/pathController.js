@@ -2,7 +2,7 @@
 
 class pathController {
 
-    pathItemCompare( a, b ) {
+    pathItemCompare(a, b) {
         if (a.ordinal < b.ordinal) {
             return -1;
         }
@@ -34,7 +34,7 @@ class pathController {
         }
     }
 
-   isJobComplete(jobStatus) {
+    isJobComplete(jobStatus) {
         if (jobStatus === 4)
             return true;
         return false;
@@ -44,8 +44,8 @@ class pathController {
         const proceedEnabled = enabled && !disabledProceedButtons.includes(pathItemId);
 
         const node =
-            `<span style="display:inline-block;" >
-                <button type="submit" style="margin-left:20px;" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
+            `<span class="inline" >
+                <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
                     onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
                     Proceed
                 </button>
@@ -148,13 +148,13 @@ class pathController {
         }
     }
 
-    disableStart() {
-        const startButton = document.getElementById("startPeriodEnd");
-        if (startButton != null) {
-            startButton.disabled = true;
+    setButtonState(enabled, buttonId) {
+        const button = document.getElementById(buttonId);
+        if (button != null) {
+            button.disabled = !enabled;
         }
     }
-
+    
     disableProceed(pathItemId) {
         const button = document.getElementById("proceed_"+pathItemId);
         if (button != null) {
@@ -207,10 +207,6 @@ class pathController {
 
         let classScope = this;
         paths.forEach(function(path) {
-            //if (path.position >= 0) {
-            //    disableStart();
-            //}
-
             let period = path.period;
             let collectionYear = path.collectionYear;
 
@@ -219,8 +215,7 @@ class pathController {
             let pathSummaryTitle = document.createElement("span");
             pathSummaryTitle.className += "govuk-heading-s";
             pathSummaryTitle.textContent = path.name;
-            summaryContainer.appendChild(pathSummaryTitle);
-
+            
             let pathSummary = document.createElement("span");
             pathSummary.className += "nav";
             let pathSummaryList = document.createElement("ul");
@@ -246,6 +241,8 @@ class pathController {
                 });
 
                 pathSummary.appendChild(pathSummaryList);
+
+                summaryContainer.appendChild(pathSummaryTitle);
                 summaryContainer.appendChild(pathSummary);
 
                 li.appendChild(subItemList);
@@ -253,6 +250,22 @@ class pathController {
                 pathContainer.appendChild(li);
             }
         });
+    }
+
+    initialiseState(state) {
+        const periodClosed = state.collectionClosed === "True";
+        const mcaEnabled = periodClosed && state.mcaReportsReady === "True" && !(state.mcaReportsPublished === "True");
+        const providerEnabled = periodClosed && state.providerReportsReady === "True" && !(state.providerReportsPublished === "True")
+        const reportsFinished = !mcaEnabled &&
+            !providerEnabled &&
+            state.mcaReportsReady === "True" &&
+            state.providerReportsReady === "True";
+
+        this.setButtonState(periodClosed && !(state.periodEndStarted === "True"), "startPeriodEnd");
+        this.setButtonState(mcaEnabled, "publishMcaReports");
+        this.setButtonState(providerEnabled, "publishProviderReports");
+        this.setButtonState(periodClosed && reportsFinished && !(state.periodEndFinished === "True"), "closePeriodEnd");
+        this.setButtonState(periodClosed && state.periodEndFinished === "True" && state.referenceDataJobsPaused === "True", "resumeReferenceData");
     }
 }
 

@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
+using ESFA.DC.PeriodEnd.Models;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IPeriodEndService
     {
+        Task InitialisePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
         Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ToggleReferenceDataJobs(bool pause, CancellationToken cancellationToken = default(CancellationToken));
+        Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ToggleReferenceDataJobs(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken));
 
         Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 

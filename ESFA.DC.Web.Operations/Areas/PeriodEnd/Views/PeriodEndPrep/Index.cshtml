@@ -19,7 +19,7 @@
     <div class="govuk-grid-column-one-third">
         <ul class="govuk-list">
             <li>
-                <a href="#" class="govuk-link">Application version</a>
+                @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
             </li>
             <li>
                 @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
@@ -51,9 +51,9 @@
         {
             <h2 class="govuk-heading-m">Reference data jobs</h2>
 
-            <a href="#" class="govuk-button" id="pause-all-jobs">
+            <button class="govuk-button" id="pause-all-jobs" disabled>
                 Pause reference data jobs
-            </a>
+            </button>
 
             <div class="confirm-pause" id="confirm-pause" style="display: none;">
                 <h3 class="govuk-heading-s">Are you sure?</h3>
@@ -61,8 +61,8 @@
                 <p>These reference data jobs can’t be resumed until the period end process is complete.</p>
 
                 <p>
-                    <button type="submit" class="govuk-button yes-pause" style="margin-left: 0;" id="pauseReferenceData"
-                            onclick="window.prepClient.pauseReferenceDataJobs();">
+                    <button type="submit" class="govuk-button yes-pause no-left-margin" id="pauseReferenceData"
+                            onclick="window.prepClient.pauseReferenceDataJobs(@Model.Year, @Model.Period);">
                         Yes, pause jobs.
                     </button>
                     &nbsp; &nbsp; &nbsp;
@@ -92,7 +92,7 @@
         <br />
         
         <button class="govuk-button customised" id="collectionClosed"
-                onclick="window.prepClient.collectionClosedEmail(@Model.Period);">
+                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period);" disabled>
             Send Collection Closed Email
         </button>
 
@@ -103,7 +103,7 @@
         {
             <input type="hidden" name="collectionYear" value="@Model.Year" />
             <input type="hidden" name="period" value="@Model.Period" />
-            <input type="submit" class="govuk-button customised" id="startPeriodEnd" value="Continue">
+            <input type="submit" class="govuk-button customised" id="startPeriodEnd" value="Continue" disabled>
         }
     </div>
 </div>
@@ -118,7 +118,6 @@
         <label id="state"></label>
     </div>
 </div>
-
 
 @section PageScripts
 {
@@ -136,11 +135,13 @@
         window.prepClient = new Client(hub.getConnection());
 
         (function() {
+            const periodClosed = '@Html.Raw(Model?.Closed)';
             const referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';
             const failedJobs = '@Html.Raw(Model?.FailedJobs)';
+            const collectionClosedEmailSent = '@Html.Raw(Model?.CollectionClosedEmailSent)';
 
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(referenceJobs);
+            confirm.initialiseConfirmation(referenceJobs, periodClosed, collectionClosedEmailSent);
 
             const jobController = new JobController();
             jobController.renderJobs(referenceJobs, failedJobs);

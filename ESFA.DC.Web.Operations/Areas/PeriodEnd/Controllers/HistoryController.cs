@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
@@ -24,9 +25,14 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         public async Task<IActionResult> Index(int? collectionYear)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
+            if (currentYearPeriod.Year == null)
+            {
+                throw new Exception($"Return period {currentYearPeriod.Period} has no year.");
+            }
+
             var model = new HistoryViewModel
             {
-                Year = collectionYear ?? currentYearPeriod.Year
+                Year = collectionYear ?? currentYearPeriod.Year.Value
             };
 
             model.PeriodHistories = await _historyService.GetHistoryDetails(model.Year);

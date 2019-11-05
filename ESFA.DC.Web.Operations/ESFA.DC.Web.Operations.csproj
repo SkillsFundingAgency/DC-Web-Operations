@@ -256,12 +256,13 @@
     <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.16-beta0001" />
+    <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.3.0-pullrequest1069-0852" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.3.0-pullrequest1069-0852" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.3.0-alpha0897" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
