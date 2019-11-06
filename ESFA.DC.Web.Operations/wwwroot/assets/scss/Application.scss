@@ -867,3 +867,16 @@ html {
 .no-left-margin {
     margin-left: 0;
 }
+
+.grey-background {
+    background-color: govuk-colour("grey-4");
+    // background-color: #f2f2f2;
+    padding-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+
+    a {
+        text-decoration: none;
+    }
+}
