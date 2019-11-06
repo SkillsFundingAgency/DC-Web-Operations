@@ -3,3 +3,121 @@
     ViewData["Title"] = "Index";
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
 }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-m">Data Collections</span>
+            Health check
+        </h1>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="info">
+            <span class="govuk-heading-m no-margin-bottom">Average processing time</span>
+            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">14</span> mins</h2>
+            <span class="govuk-body-s">9:24am</span>
+        </section>
+    </div>
+</div>
+
+<div class="govuk-grid-row grey-background">
+
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="jobs-processing">Jobs processing</a></h2>
+            <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="first" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <g class="circle-chart__info">
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">40</text>
+                    <text  x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Looking good</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="jobs-queued">Jobs queued</a></h2>
+            <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle   stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="second" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <g class="circle-chart__info">
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">50</text>
+                    <text  x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Needs attention</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Submissions</a></h2>
+            <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle   stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="third" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <g class="circle-chart__info">
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">35</text>
+                    <text  x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Urgent attention</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-l">Red zone</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="failed-today">Failed today</a></h2>
+            <span class="govuk-heading-l no-margin-bottom">4</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="slow-files">Slow files</a></h2>
+            <span class="govuk-heading-l no-margin-bottom">16</span>
+            <span class="govuk-body-s">Taking 20% longer than usual</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="concerns">Concerns</a></h2>
+            <span class="govuk-heading-l no-margin-bottom">3</span>
+            <span class="govuk-body-s">Providers with rejected files and no successful submission this period</span>
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-l">Processing in detail</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="#">Today</a></h2>
+            <span class="govuk-heading-l no-margin-bottom">40</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m"><a class="" href="#">Last hour</a></h2>
+            <span class="govuk-heading-l no-margin-bottom">7</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m"><a class="" href="#">Jobs on hold</a></h2>
+            <span class="govuk-heading-l no-margin-bottom">18</span>
+        </div>
+    </div>
+</div>
