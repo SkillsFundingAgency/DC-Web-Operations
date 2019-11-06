@@ -63,11 +63,10 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                     .Include(o => o.OrgDetail)
                     .ThenInclude(x => x.UkprnNavigation.OrgUkprnUpins)
                     .Where(o => o.OrgDetail != null
-                                && o.OrgUkprnUpins.Any(upin => upin.Status.Equals("Active"))
                                 && (o.OrgDetail.Name.Contains(query)
                                     || o.OrgDetail.Name.Contains(alternativeQuery)
                                     || o.OrgDetail.Ukprn.ToString().Contains(query)
-                                    || o.OrgUkprnUpins.Any(up => up.Upin.ToString().Contains(query))))
+                                    || o.OrgUkprnUpins.Any(up => up.Upin.ToString().Contains(query) && up.Status.Equals("Active"))))
                     .Select(o => new ProviderSearchResult(
                         o.OrgDetail.Name,
                         o.Ukprn,
