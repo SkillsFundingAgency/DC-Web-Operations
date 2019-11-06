@@ -1,0 +1,37 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Provider.Models.ProviderViewModel
+
+@{
+    ViewData["Title"] = "Add New Provider";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-x1">Add a single provider or multiple providers?</h1>
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="name"></label>
+            @using (Html.BeginForm())
+            {
+                <div class="govuk-radios govuk-radios--inline">
+                    <div class="govuk-radios__item">
+                        @Html.RadioButtonFor(model => model.IsSingleAddNewProviderChoice, "true", new {@class="govuk-radios__input"})
+                        <label class="govuk-label govuk-radios__label">Add one provider</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        @Html.RadioButtonFor(model => model.IsSingleAddNewProviderChoice, "false", new {@class="govuk-radios__input"})
+                        <label class="govuk-label govuk-radios__label">Add multiple providers</label>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <button type="submit" class="govuk-button" formaction="@Url.Action("AddNewChoiceSubmit")">Continue</button>
+                <br/>
+                <p>
+                    <div class="govuk-link">@Html.ActionLink("Cancel", "Index", "Home", new { area = ""})</div>
+                </p>
+            }
+        </div>
+    </div>
+</div>
+

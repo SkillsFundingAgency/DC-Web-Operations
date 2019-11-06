@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Logging.Interfaces;
@@ -86,12 +85,11 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 recipient.RecipientGroupIds = model.SelectedGroupIds.ToList();
             }
 
-            HttpResponseMessage httpResponseMessage = await _emailDistributionService.SaveRecipientAsync(recipient);
+            var httpRawResponse = await _emailDistributionService.SaveRecipientAsync(recipient);
 
-            if (httpResponseMessage.StatusCode == HttpStatusCode.Conflict)
+            if (httpRawResponse.StatusCode == (int)HttpStatusCode.Conflict)
             {
-                var data = await httpResponseMessage.Content.ReadAsStringAsync();
-                var recipientGroups = _jsonSerializationService.Deserialize<List<RecipientGroup>>(data);
+                var recipientGroups = _jsonSerializationService.Deserialize<List<RecipientGroup>>(httpRawResponse.Content);
                 if (recipient.RecipientGroupIds.All(x => recipientGroups.Select(y => y.RecipientGroupId).Contains(x)))
                 {
                     AddError(ErrorMessageKeys.Recipient_EmailFieldKey, "Email already exists in the selected distribution groups");

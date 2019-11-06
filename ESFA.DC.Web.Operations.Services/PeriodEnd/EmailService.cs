@@ -22,7 +22,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task SendEmail(int hubEmailId, int periodNumber, CancellationToken cancellationToken = default)
         {
-            await SendDataAsync(_baseUrl + $"/{hubEmailId}/{periodNumber}", cancellationToken);
+            await SendAsync(_baseUrl + $"/{hubEmailId}/{periodNumber}", cancellationToken);
         }
     }
 }

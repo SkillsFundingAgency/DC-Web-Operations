@@ -1,0 +1,149 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Provider.Models.ProviderViewModel
+
+@{
+    ViewData["Title"] = "Add New Provider";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+
+<div class="app-masthead">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
+            <form class="govuk-form-group" action="provider-record">
+                <div id="tt-overlay" class="autocomplete-wrapper"></div>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third">
+        </div>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-x1">Provider's Details</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @using (Html.BeginForm("AddSingleProvider","AddNew"))
+        {
+            <div class="govuk-form-group">
+                <label asp-for="ProviderName" class="govuk-label" for="name">Enter the provider's name</label>
+                @Html.TextBoxFor(model => model.ProviderName, new { @class = "govuk-input govuk-input--width-20", id = "providerName" })<br />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="ProviderName"></span>
+                </span>
+            </div>
+            <div class="govuk-form-group">
+                <label asp-for="Ukprn" class="govuk-label" for="name">Enter the provider's UKPRN</label>
+                @Html.TextBoxFor(model => model.Ukprn, new { @class = "govuk-input govuk-input--width-20", id = "ukprn",  @type = "number"})<br />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="Ukprn"></span>
+                </span>
+            </div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="name">Enter the provider's UPIN</label>
+                @Html.TextBoxFor(model => model.Upin, new { @class = "govuk-input govuk-input--width-20", id = "upin", @type = "number" })<br />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="Upin"></span>
+                </span>
+            </div>
+            <div class="govuk-form-group">
+                <div class="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        @Html.CheckBoxFor(model => model.IsMca, new { @class = "govuk-checkboxes__input", id = "isMca", name = "isMca" })
+                        <label class="govuk-label govuk-checkboxes__label" for="isMca">
+                            MCA
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-form-group">
+                <div class="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        @Html.CheckBoxFor(model => model.IsEnabled, new { @class = "govuk-checkboxes__input", id = "isEnabled", name = "isEnabled" })
+                        <label class="govuk-label govuk-checkboxes__label" for="isEnabled">
+                            Enabled
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <button type="submit" class="govuk-button">Save and continue</button>
+            <br />
+            <p>
+                <div class="govuk-link">@Html.ActionLink("Cancel", "Index", "Home", new { area = "" })</div>
+            </p>
+        }
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
+    <script src="~/assets/minified/aspnet-validation.min.js"></script>
+
+    <script type="module">
+        import Client from '/assets/js/providerSearch/client.js';
+        import Hub from '/assets/js/hubs/providerSearchHub.js';
+
+        const hub = new Hub();
+        hub.startHub();
+
+        window.searchClient = new Client(hub.getConnection());
+
+        function populateProviderValues(result) {
+            if (typeof result !== "undefined") {
+                var providerName = document.getElementById('providerName')
+                providerName.value = result.providerName
+
+                var ukPrn = document.getElementById('ukprn')
+                ukPrn.value = result.ukprn
+
+                var upin = document.getElementById('upin')
+                upin.value = result.upin
+            }
+        }
+
+        function inputValueTemplate(result) {
+            return result && result.providerName
+        }
+
+        function suggestionTemplate(result) {
+            return result && '<strong>' + result.providerName + '</strong>' +
+                ', ' + result.ukprn + ', ' + result.upin
+        }
+
+        var element = document.querySelector('#tt-overlay');
+        var id = 'autocomplete-overlay';
+        accessibleAutocomplete({
+            element: element,
+            id: id,
+            minLength: 3,
+            displayMenu: 'overlay',
+            confirmOnBlur: false,
+            onConfirm: populateProviderValues,
+            source: window.searchClient.providerSearch.bind(window.searchClient),
+            templates: {
+                inputValue: inputValueTemplate,
+                suggestion: suggestionTemplate
+            },
+            placeholder: 'e.g Manchester, 12345678 or 098765'
+        });
+
+        var v = new aspnetValidation.ValidationService();
+        v.bootstrap();
+
+    </script>
+}

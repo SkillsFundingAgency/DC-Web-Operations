@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services
@@ -94,7 +95,7 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<bool> SaveEmailTemplate(EmailTemplate template, CancellationToken cancellationToken = default)
         {
-            await SendDataAsync(_baseUrl + "/templates", template);
+            await SendDataAsync(_baseUrl + "/templates", template, cancellationToken);
 
             return true;
         }
@@ -103,7 +104,7 @@ namespace ESFA.DC.Web.Operations.Services
         {
             try
             {
-                await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId);
+                await SendDataAsync(_baseUrl + "/groups/remove", recipientGroupId, cancellationToken);
                 return true;
             }
             catch (Exception e)
@@ -114,22 +115,22 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<bool> SaveGroup(string groupName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync(_baseUrl + "/groups", groupName);
+            await SendDataAsync(_baseUrl + "/groups", groupName, cancellationToken);
 
             return true;
         }
 
-        public async Task<HttpResponseMessage> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpRawResponse> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
             var json = _jsonSerializationService.Serialize(recipient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(_baseUrl + "/recipients", content);
+            var response = await SendDataAsyncRawResponse(_baseUrl + "/recipients", content, cancellationToken);
             return response;
         }
 
         public async Task<bool> RemoveRecipient(int recipientId, int recipientGroupId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendDataAsync($"{_baseUrl}/recipients/remove/{recipientId}/{recipientGroupId}", string.Empty);
+            await SendDataAsync($"{_baseUrl}/recipients/remove/{recipientId}/{recipientGroupId}", string.Empty, cancellationToken);
             return true;
         }
     }
