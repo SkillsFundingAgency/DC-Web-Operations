@@ -25,13 +25,21 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new ProviderViewModel()
+            {
+                IsEnabled = true
+            };
+
+            return View("Index", model);
         }
 
-        public async Task<IActionResult> AddNew()
+        public async Task<IActionResult> AddNewOption()
         {
-            var model = new ProviderViewModel();
-            model.IsSingleAddNewProviderChoice = true;
+            var model = new ProviderViewModel
+            {
+                IsSingleAddNewProviderChoice = true
+            };
+
             return View(model);
         }
 
@@ -63,7 +71,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 return View("Index", model);
             }
 
-            var response = await _addNewProviderService.SaveProvider(model.ProviderName, model.Ukprn.Value, model.Upin, model.IsMca, CancellationToken.None);
+            var response = await _addNewProviderService.AddProvider(
+                new Operations.Models.Provider.Provider(model.ProviderName, model.Ukprn.Value, model.Upin, model.IsMca, model.IsEnabled), CancellationToken.None);
 
             if (response.StatusCode == 409)
             {

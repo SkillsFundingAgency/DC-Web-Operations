@@ -27,29 +27,27 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        @using (Html.BeginForm())
+        @using (Html.BeginForm("AddSingleProvider","AddNew"))
         {
             <div class="govuk-form-group">
-                <label class="govuk-label" for="name">Enter the provider's name</label>
+                <label asp-for="ProviderName" class="govuk-label" for="name">Enter the provider's name</label>
                 @Html.TextBoxFor(model => model.ProviderName, new { @class = "govuk-input govuk-input--width-20", id = "providerName" })<br />
                 <span class="govuk-error-message">
-                    @Html.ValidationMessageFor(model => model.ProviderName)
+                    <span asp-validation-for="ProviderName"></span>
                 </span>
             </div>
             <div class="govuk-form-group">
-                <label class="govuk-label" for="name">Enter the provider's UKPRN</label>
-                @*<input asp-for="Ukprn" class="govuk-input gov-uk-input--width-20" /><br/>*@
-                @Html.TextBoxFor(model => model.Ukprn, new { @class = "govuk-input govuk-input--width-20", id = "ukprn" })<br />
-                <span class="govuk-error-message">    
-                    @*<span asp-validation-for="Ukprn" class="govuk-error-message"></span>*@
-                    @Html.ValidationMessageFor(model => model.Ukprn)
+                <label asp-for="Ukprn" class="govuk-label" for="name">Enter the provider's UKPRN</label>
+                @Html.TextBoxFor(model => model.Ukprn, new { @class = "govuk-input govuk-input--width-20", id = "ukprn",  @type = "number"})<br />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="Ukprn"></span>
                 </span>
             </div>
             <div class="govuk-form-group">
                 <label class="govuk-label" for="name">Enter the provider's UPIN</label>
-                @Html.TextBoxFor(model => model.Upin, new { @class = "govuk-input govuk-input--width-20", id = "upin" })<br />
+                @Html.TextBoxFor(model => model.Upin, new { @class = "govuk-input govuk-input--width-20", id = "upin", @type = "number" })<br />
                 <span class="govuk-error-message">
-                    @Html.ValidationMessageFor(model => model.Upin)
+                    <span asp-validation-for="Upin"></span>
                 </span>
             </div>
             <div class="govuk-form-group">
@@ -57,15 +55,24 @@
                     <div class="govuk-checkboxes__item">
                         @Html.CheckBoxFor(model => model.IsMca, new { @class = "govuk-checkboxes__input", id = "isMca", name = "isMca" })
                         <label class="govuk-label govuk-checkboxes__label" for="isMca">
-                            Is MCA
+                            MCA
                         </label>
                     </div>
-
+                </div>
+            </div>
+            <div class="govuk-form-group">
+                <div class="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        @Html.CheckBoxFor(model => model.IsEnabled, new { @class = "govuk-checkboxes__input", id = "isEnabled", name = "isEnabled" })
+                        <label class="govuk-label govuk-checkboxes__label" for="isEnabled">
+                            Enabled
+                        </label>
+                    </div>
                 </div>
             </div>
             <br />
             <br />
-            <button type="submit" class="govuk-button" formaction="@Url.Action("AddSingleProvider")">Save and continue</button>
+            <button type="submit" class="govuk-button">Save and continue</button>
             <br />
             <p>
                 <div class="govuk-link">@Html.ActionLink("Cancel", "Index", "Home", new { area = "" })</div>
@@ -85,7 +92,6 @@
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
-    <script src="~/assets/minified/promise-polyfill.min.js"></script>
     <script src="~/assets/minified/aspnet-validation.min.js"></script>
 
     <script type="module">

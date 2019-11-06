@@ -6,8 +6,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Models
     {
         public bool IsSingleAddNewProviderChoice { get; set; }
 
-        [Required(ErrorMessage = "The Provider Name field is mandatory")]
-        [StringLength(250, ErrorMessage = "The maximum length of the Providers Name is 250 characters")]
+        [Required(ErrorMessage = "The Provider Name is mandatory")]
+        [StringLength(250, ErrorMessage = "Providers Name must be no more than 250 characters")]
         public string ProviderName { get; set; }
 
         [Required(ErrorMessage = "The UKPRN field is mandatory")]
@@ -18,5 +18,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Models
         public int? Upin { get; set; }
 
         public bool IsMca { get; set; }
+
+        public bool IsEnabled { get; set; }
     }
 }

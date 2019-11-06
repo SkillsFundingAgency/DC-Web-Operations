@@ -5,9 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.JobQueueManager.Data;
-using ESFA.DC.JobQueueManager.Data.Entities;
-using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
@@ -85,9 +82,9 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return results;
         }
 
-        public async Task<HttpRawResponse> SaveProvider(string providerName, long ukprn, int? upin, bool isMca, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken = default)
         {
-            var organisationDto = new Organisation() { Name = providerName, Ukprn = ukprn, IsMca = isMca };
+            var organisationDto = new Organisation() { Name = provider.Name, Ukprn = provider.Ukprn, IsMca = provider.IsMca, IsEnabled = provider.IsEnabled };
             return await SendDataAsyncRawResponse($"{_baseUrl}/api/org/add", organisationDto, cancellationToken);
         }
     }

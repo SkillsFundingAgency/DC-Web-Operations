@@ -10,6 +10,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
     {
         Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query);
 
-        Task<HttpRawResponse> SaveProvider(string providerName, long ukprn, int? upin, bool isMca, CancellationToken cancellationToken);
+        Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken);
     }
 }

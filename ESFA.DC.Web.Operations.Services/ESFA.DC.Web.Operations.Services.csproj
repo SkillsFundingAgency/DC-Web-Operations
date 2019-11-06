@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.3.2" />
+    <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.2.22-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.3.0-pullrequest1069-0852" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />

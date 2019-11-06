@@ -83,7 +83,7 @@ namespace ESFA.DC.Web.Operations
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
 
             services.AddMvc()
-                .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = false);
+                .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
 
             services.AddAndConfigureAuthentication(authSettings);
 
