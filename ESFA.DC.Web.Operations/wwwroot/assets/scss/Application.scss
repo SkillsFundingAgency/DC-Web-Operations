@@ -774,6 +774,13 @@ html {
     @include govuk-clearfix;
 }
 
+.app-task-list__summary {
+    margin-bottom: 0 !important;
+    padding-top: govuk-spacing(2);
+    padding-bottom: govuk-spacing(2);
+    @include govuk-clearfix;
+}
+
 .app-task-list__item:first-child {
     border-top: 1px solid $govuk-border-colour;
 }
