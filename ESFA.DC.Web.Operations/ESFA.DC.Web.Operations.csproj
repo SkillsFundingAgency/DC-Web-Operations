@@ -17,10 +17,6 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
-    <Content Remove="wwwroot\assets\js\sharedComponents\autocomplete.js" />
-    <Content Remove="wwwroot\assets\js\sharedComponents\dropdown-arrow-down.js" />
-    <Content Remove="wwwroot\assets\js\sharedComponents\status.js" />
-    <Content Remove="wwwroot\assets\js\sharedComponents\wrapper.js" />
   </ItemGroup>
 
   <ItemGroup>
