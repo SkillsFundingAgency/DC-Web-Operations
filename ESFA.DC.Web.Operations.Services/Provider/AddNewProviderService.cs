@@ -38,45 +38,48 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         public async Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-
             _logger.LogVerbose("Entered GetProviderSearchResults");
-
-            string alternativeQuery = null;
-            query = query.ToLower();
-
-            if (query.Contains(" ltd"))
-            {
-                alternativeQuery = query.Replace(" ltd", " limited");
-            }
-            else if (query.Contains(" limited"))
-            {
-                alternativeQuery = query.Replace(" limited", " ltd");
-            }
-
             var results = new List<ProviderSearchResult>();
 
-            using (var context = _organisationsFactory())
+            try
             {
-                results = await context.MasterOrganisations
-                    .Include(o => o.OrgDetail)
-                    .ThenInclude(x => x.UkprnNavigation.OrgUkprnUpins)
-                    .Where(o => o.OrgDetail != null
-                                && (o.OrgDetail.Name.Contains(query)
-                                    || o.OrgDetail.Name.Contains(alternativeQuery)
-                                    || o.OrgDetail.Ukprn.ToString().Contains(query)
-                                    || o.OrgUkprnUpins.Any(up => up.Upin.ToString().Contains(query) && up.Status.Equals("Active"))))
-                    .Select(o => new ProviderSearchResult(
-                        o.OrgDetail.Name,
-                        o.Ukprn,
-                        o.OrgUkprnUpins == null ? 0 : o.OrgUkprnUpins.First(p => p.Status.Equals("Active")).Upin))
-                    .Take(10)
-                    .ToListAsync();
+                string alternativeQuery = null;
+                query = query.ToLower();
+
+                if (query.Contains(" ltd"))
+                {
+                    alternativeQuery = query.Replace(" ltd", " limited");
+                }
+                else if (query.Contains(" limited"))
+                {
+                    alternativeQuery = query.Replace(" limited", " ltd");
+                }
+
+                using (var context = _organisationsFactory())
+                {
+                    results = await context.MasterOrganisations
+                        .Include(o => o.OrgDetail)
+                        .ThenInclude(x => x.UkprnNavigation.OrgUkprnUpins)
+                        .Where(o => o.OrgDetail != null
+                                    && (o.OrgDetail.Name.Contains(query)
+                                        || o.OrgDetail.Name.Contains(alternativeQuery)
+                                        || o.OrgDetail.Ukprn.ToString().Contains(query)
+                                        || o.OrgUkprnUpins.Any(up =>
+                                            up.Upin.ToString().Contains(query) && up.Status.Equals("Active"))))
+                        .Select(o => new ProviderSearchResult(
+                            o.OrgDetail.Name,
+                            o.Ukprn,
+                            o.OrgUkprnUpins == null ? 0 : o.OrgUkprnUpins.First(p => p.Status.Equals("Active")).Upin))
+                        .Take(10)
+                        .ToListAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured searching for provider. Error : {ex.Message}", ex);
             }
 
-            sw.Stop();
-            _logger.LogVerbose($"Exit GetProviderSearchResults. Time Taken(ms): {sw.ElapsedMilliseconds}");
+            _logger.LogVerbose($"Exit GetProviderSearchResults");
 
             return results;
         }
