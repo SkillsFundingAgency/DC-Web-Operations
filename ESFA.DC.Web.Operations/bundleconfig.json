@@ -7,7 +7,8 @@
     "inputFiles": [
       "wwwroot/assets/css/docs.css",
       "wwwroot/assets/css/override.css",
-      "wwwroot/assets/css/application.css"
+      "wwwroot/assets/css/application.css",
+      "wwwroot/assets/css/autocomplete.css"
     ],
     "minify": {
       "enabled": true
