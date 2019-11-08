@@ -301,7 +301,4 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-
-  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
-
 </Project>
