@@ -38,7 +38,6 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         public async Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query)
         {
-            _logger.LogVerbose("Entered GetProviderSearchResults");
             var results = new List<ProviderSearchResult>();
 
             try
@@ -69,7 +68,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                         .Select(o => new ProviderSearchResult(
                             o.OrgDetail.Name,
                             o.Ukprn,
-                            o.OrgUkprnUpins == null ? 0 : o.OrgUkprnUpins.First(p => p.Status.Equals("Active")).Upin))
+                           o.OrgUkprnUpins != null && o.OrgUkprnUpins.Any(p => p.Status.Equals("Active")) ? o.OrgUkprnUpins.FirstOrDefault(p => p.Status.Equals("Active")).Upin : 0))
                         .Take(10)
                         .ToListAsync();
                 }
@@ -78,8 +77,6 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             {
                 _logger.LogError($"Error occured searching for provider. Error : {ex.Message}", ex);
             }
-
-            _logger.LogVerbose($"Exit GetProviderSearchResults");
 
             return results;
         }
