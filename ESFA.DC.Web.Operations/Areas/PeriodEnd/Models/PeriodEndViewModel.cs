@@ -4,7 +4,7 @@
     {
         public string Paths { get; set; }
 
-        public int CurrentPeriod { get; set; }
+        public bool IsCurrentPeriod { get; set; }
 
         public int Period { get; set; }
 

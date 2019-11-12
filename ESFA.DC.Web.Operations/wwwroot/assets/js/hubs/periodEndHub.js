@@ -14,7 +14,12 @@ class periodEndHub {
         return this.connection;
     }
 
-    startHub() {
+    startHub(isCurrentPeriod) {
+        
+        if (!isCurrentPeriod) {
+            return;
+        }
+
         const pathController = new PathController();
 
         this.connection.on("ReceiveMessage", pathController.renderPaths.bind(pathController));
@@ -34,12 +39,12 @@ class periodEndHub {
         this.connection.on("ReferenceJobsButtonState",
             (enabled) => { pathController.setButtonState.call(pathController, enabled, "resumeReferenceData") });
 
-        this.connection.on("DisablePathItemProceed", 
-            (pathItemId) => { 
+        this.connection.on("DisablePathItemProceed",
+            (pathItemId) => {
                 pathController.disableProceed.call(pathController, pathItemId);
             }
         );
-
+        
         this.connection.onreconnecting((error) => {
             console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
             console.log("Reconnecting - " + error);
@@ -59,6 +64,7 @@ class periodEndHub {
         });
 
         this.startConnection(pathController);
+
     }
 
     startConnection(pathController) {

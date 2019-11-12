@@ -51,6 +51,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             }
 
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
+            model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return View(model);
