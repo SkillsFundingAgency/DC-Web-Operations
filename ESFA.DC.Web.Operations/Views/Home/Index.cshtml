@@ -9,10 +9,20 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
-
+            <form class="govuk-form-group">
+                <div id="tt-overlay">
+                    <div class="autocomplete__wrapper" role="combobox" aria-expanded="false">
+                        <input aria-owns="autocomplete-overlay__listbox" autocomplete="off" class="autocomplete__input autocomplete__input--default" id="autocomplete-overlay" name="input-autocomplete" placeholder="e.g Manchester, 12345678 or 098765" type="text" role="textbox">
+                    </div>
+                </div>
+                <button id="searchProviders" class="govuk-button"><img src="~/images/autocomplete-search-button.png"></button>
+            </form>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div>@Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })</div>
+            <div>
+                <a href="#">Advanced search</a>
+                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
+            </div>
         </div>
     </div>
 </div>
@@ -45,7 +55,7 @@
                 <circle id="first" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
                     <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">40</text>
-                    <text  x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Looking good</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Looking good</text>
                 </g>
             </svg>
         </section>
@@ -55,11 +65,11 @@
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text"><a href="jobs-queued">Jobs queued</a></h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                <circle   stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="second" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
                     <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">50</text>
-                    <text  x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Needs attention</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Needs attention</text>
                 </g>
             </svg>
         </section>
@@ -69,11 +79,11 @@
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Submissions</a></h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                <circle   stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="third" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
                     <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">35</text>
-                    <text  x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Urgent attention</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Urgent attention</text>
                 </g>
             </svg>
         </section>

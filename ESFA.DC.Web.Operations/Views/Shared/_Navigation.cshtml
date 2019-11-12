@@ -3,16 +3,16 @@
     var requestPath = Context.Request.Path;
 }
 
-<div class="main-nav">
-    <a id="1" class="govuk-heading-s @(requestPath.Value.EndsWith("/home") ? "active" : string.Empty)" href="/home">Home</a>
-    @*<a id="2" class="govuk-heading-s" href="manage-collections">Collections</a>
-        <a id="3" class="govuk-heading-s" href="notifications">Notifications</a>*@
-    <a id="4" class="govuk-heading-s @(requestPath.Value.Contains("/periodEndPreparation") ? "active" : string.Empty)" href="/periodend/periodEndPreparation">Period end</a>
-</div>
+    <div class="main-nav">
+        <a id="1" class="govuk-heading-s @(requestPath.Value.EndsWith("/home") ? "active" : string.Empty)" href="/home">Home</a>
+        <a id="2" class="govuk-heading-s" href="#">Collections</a>
+        <a id="3" class="govuk-heading-s" href="#">Notifications</a>
+        <a id="4" class="govuk-heading-s @(requestPath.Value.Contains("/periodEndPreparation") ? "active" : string.Empty)" href="/periodend/periodEndPreparation">Period end</a>
+        <a id="5" class="govuk-heading-s" href="#">QAR/FRM</a>
+        <a id="6" class="govuk-heading-s" href="#">Rule validation</a>
+    </div>
 
 @if (!ViewData.ContainsKey(ViewDataConstants.DashBoard))
 {
     <a id="backlink" href="@(ViewData.ContainsKey(ViewDataConstants.BackLink) ? ViewData[ViewDataConstants.BackLink].ToString() : "#")" class="govuk-back-link">Back</a>
 }
-<br />
-<br />
