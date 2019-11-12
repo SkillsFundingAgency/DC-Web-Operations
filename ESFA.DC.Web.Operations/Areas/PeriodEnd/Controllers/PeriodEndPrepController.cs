@@ -43,6 +43,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             }
 
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
+
+            model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.Closed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             model.FailedJobs = await GetFailedJobs(model.Year, model.Period);

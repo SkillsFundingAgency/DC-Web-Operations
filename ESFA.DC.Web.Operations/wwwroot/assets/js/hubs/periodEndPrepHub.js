@@ -14,27 +14,36 @@ class periodEndPrepHub {
         return this.connection;
     }
 
-    startHub() {
+    startHub(isCurrentPeriod) {
+        
+        if (isCurrentPeriod) {
+            return;
+        }
+
         const jobController = new JobController();
 
         this.connection.on("ReceiveMessage", jobController.renderJobs.bind(jobController));
+
+        this.connection.on("DisableJobReSubmit",
+            (jobId) => {
+                jobController.disableJobReSubmit.call(jobController, jobId);
+            });
+
+        this.connection.on("ReferenceJobsButtonState",
+            (enabled) => {
+                jobController.setPauseRefJobsButtonState.call(jobController, enabled);
+            });
+
+        this.connection.on("CollectionClosedEmailButtonState",
+            (enabled) => {
+                jobController.setCollectionClosedEmailButtonState.call(jobController, enabled);
+            });
+
+        this.connection.on("ContinueButtonState",
+            (enabled) => {
+                jobController.setContinueButtonState.call(jobController, enabled);
+            });
         
-        this.connection.on("DisableJobReSubmit", (jobId) => {
-            jobController.disableJobReSubmit.call(jobController, jobId);
-        });
-
-        this.connection.on("ReferenceJobsButtonState", (enabled) => {
-            jobController.setPauseRefJobsButtonState.call(jobController, enabled);
-        });
-
-        this.connection.on("CollectionClosedEmailButtonState", (enabled) => {
-            jobController.setCollectionClosedEmailButtonState.call(jobController, enabled);
-        });
-
-        this.connection.on("ContinueButtonState", (enabled) => {
-            jobController.setContinueButtonState.call(jobController, enabled);
-        });
-
         this.connection.onreconnecting((error) => {
             console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
             console.log("Reconnecting - " + error);

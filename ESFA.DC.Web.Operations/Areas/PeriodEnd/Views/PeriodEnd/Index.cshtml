@@ -95,8 +95,6 @@
 
 @section PageScripts
 {
-
-
     @if (Model != null && Model.CollectionClosed)
     {
         <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
@@ -106,13 +104,15 @@
             import PathController from '/assets/js/periodEnd/pathController.js';
             import Client from '/assets/js/periodEnd/client.js'; 
             
+            const isCurrentPeriod = '@Html.Raw(Model?.IsCurrentPeriod)' === 'True';
+
             @if (Model != null && Model.CollectionClosed)
             {
                 @Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';")
                 ;
                 @Html.Raw("const hub = new Hub();")
                 ;
-                @Html.Raw("hub.startHub();")
+                @Html.Raw("hub.startHub(isCurrentPeriod);")
                 ;
                 @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
                 ;
@@ -121,7 +121,7 @@
             (function() {
                 const paths = '@Html.Raw(Model?.Paths)';
                 const pathController = new PathController();
-                
+
                 const state = {
                     collectionClosed : '@Html.Raw(Model?.CollectionClosed)',
                     periodEndStarted : '@Html.Raw(Model?.PeriodEndStarted)',
