@@ -16,7 +16,7 @@ class periodEndPrepHub {
 
     startHub(isCurrentPeriod) {
         
-        if (isCurrentPeriod) {
+        if (!isCurrentPeriod) {
             return;
         }
 
