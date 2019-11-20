@@ -137,8 +137,8 @@
 
         (function() {
             const periodClosed = '@Html.Raw(Model?.Closed)';
-            const referenceJobs = '@Html.Raw(Model?.ReferenceDataJobs)';
-            const failedJobs = '@Html.Raw(Model?.FailedJobs)';
+            const referenceJobs = @Json.Serialize(Model?.ReferenceDataJobs);
+            const failedJobs = @Json.Serialize(Model?.FailedJobs);
             const collectionClosedEmailSent = '@Html.Raw(Model?.CollectionClosedEmailSent)';
 
             const confirm = new Confirm();
