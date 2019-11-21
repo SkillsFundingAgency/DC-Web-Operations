@@ -15,6 +15,8 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         private readonly IJsonSerializationService _serializationService;
         private readonly IPeriodEndStateFactory _periodEndStateFactory;
 
+        private readonly HashSet<string> _pausedStatusLookup = new HashSet<string> { Constants.ReferenceDataJobPausedState, Constants.ReferenceDataJobDisabledState };
+
         public StateService(
             IJsonSerializationService serializationService,
             IPeriodEndStateFactory periodEndStateFactory)
@@ -28,7 +30,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             var referenceJobs = _serializationService.Deserialize<IEnumerable<JobSchedule>>(referenceDataJson);
 
             return referenceJobs
-                .Any(rj => !rj.Status.Equals(Constants.ReferenceDataJobPausedState, StringComparison.OrdinalIgnoreCase));
+                .Any(rj => !_pausedStatusLookup.Contains(rj.Status, StringComparer.OrdinalIgnoreCase));
         }
 
         public bool CollectionClosedEmailSent(string pathItemStates)
