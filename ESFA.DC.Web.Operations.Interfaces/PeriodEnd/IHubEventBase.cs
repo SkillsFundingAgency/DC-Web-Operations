@@ -8,8 +8,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         event EventHandler PeriodEndHubCallback;
 
-        void TriggerPeriodEnd();
+        void TriggerPeriodEnd(string contextConnectionId);
 
-        void TriggerPeriodEndPrep();
+        void TriggerPeriodEndPrep(string contextConnectionId);
     }
 }

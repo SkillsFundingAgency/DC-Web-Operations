@@ -73,7 +73,8 @@ class periodEndHub {
         try {
             this.connection.start().then(() => {
                 clearTimeout(this.timerId);
-                this.timerId = setTimeout(function() {
+                this.timerId = setInterval(function () {
+                    console.log('Attempting to send client handshake as ' + classScope.connection.connectionId);
                     classScope.connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
                 }, 5*1000);
                 console.assert(this.connection.state === signalR.HubConnectionState.Connected);
