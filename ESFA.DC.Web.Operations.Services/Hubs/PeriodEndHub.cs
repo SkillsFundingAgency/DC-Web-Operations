@@ -86,7 +86,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             try
             {
-                _eventBase.TriggerPeriodEnd();
+                _eventBase.TriggerPeriodEnd(Context.ConnectionId);
             }
             catch (Exception e)
             {

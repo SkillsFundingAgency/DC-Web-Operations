@@ -2,50 +2,35 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.PeriodEnd.Models;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Services.Hubs;
+using ESFA.DC.Web.Operations.Services.Event;
 using Microsoft.Extensions.Hosting;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class TimedHostedService : IHostedService, IDisposable
+    public abstract class BaseTimedHostedService : IHostedService, IDisposable
     {
         private const int TimerCadenceMs = 3000;
         private const int SleepAfterMinutes = 5;
-        private readonly IPeriodService _periodService;
+
+        private readonly string _logPrefix;
         private readonly ILogger _logger;
-        private readonly IPeriodEndService _periodEndService;
-        private readonly PeriodEndHub _periodEndHub;
-        private readonly PeriodEndPrepHub _periodEndPrepHub;
         private readonly ManualResetEvent _timerResetEvent = new ManualResetEvent(false);
         private readonly object _timerStopLock = new object();
         private readonly object _timerChangeLock = new object();
-        private Timer _timer;
         private volatile bool _timerStopFlag;
+        private Timer _timer;
         private CancellationTokenSource _cancellationTokenSource;
         private DateTime _lastClientTimestamp = DateTime.MinValue;
 
-        public TimedHostedService(
-            IPeriodService periodService,
-            ILogger logger,
-            IPeriodEndService periodEndService,
-            IHubEventBase eventBase,
-            PeriodEndHub periodEndHub,
-            PeriodEndPrepHub periodEndPrepHub)
+        protected BaseTimedHostedService(string logPrefix, ILogger logger)
         {
-            _periodService = periodService;
+            _logPrefix = logPrefix;
             _logger = logger;
-            _periodEndService = periodEndService;
-            _periodEndHub = periodEndHub;
-            _periodEndPrepHub = periodEndPrepHub;
-            eventBase.PeriodEndHubCallback += RegisterClient;
-            eventBase.PeriodEndHubPrepCallback += RegisterClient;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInfo("Timed SignalR Background Service is starting.");
+            _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service is starting 1");
             lock (_timerStopLock)
             {
                 if (_timerStopFlag)
@@ -53,6 +38,7 @@ namespace ESFA.DC.Web.Operations.Services
                     return Task.CompletedTask;
                 }
 
+                _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service is starting 2");
                 StartTimer();
             }
 
@@ -61,7 +47,7 @@ namespace ESFA.DC.Web.Operations.Services
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInfo("Timed SignalR Background Service is stopping.");
+            _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service is stopping");
             StopTimer();
             return Task.CompletedTask;
         }
@@ -71,8 +57,12 @@ namespace ESFA.DC.Web.Operations.Services
             StopTimer();
         }
 
-        private void RegisterClient(object sender, EventArgs a)
+        protected abstract void DoWork(CancellationToken cancellationToken);
+
+        protected void RegisterClient(object sender, EventArgs eventArgs)
         {
+            SignalrEventArgs signalrEventArgs = eventArgs as SignalrEventArgs;
+            _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service heard from client {signalrEventArgs?.ConnectionId ?? "Unknown"}");
             _lastClientTimestamp = DateTime.UtcNow;
             lock (_timerStopLock)
             {
@@ -81,10 +71,14 @@ namespace ESFA.DC.Web.Operations.Services
                     return;
                 }
 
+                _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service heard from a client {signalrEventArgs?.ConnectionId ?? "Unknown"}, starting timer");
                 StartTimer();
             }
         }
 
+        /// <summary>
+        /// This method is always called within _timerStopLock.
+        /// </summary>
         private void StartTimer()
         {
             lock (_timerChangeLock)
@@ -93,7 +87,7 @@ namespace ESFA.DC.Web.Operations.Services
                 _cancellationTokenSource = new CancellationTokenSource();
                 _timerStopFlag = false;
                 _timerResetEvent.Set();
-                _timer = new Timer(DoWork, null, TimerCadenceMs, Timeout.Infinite);
+                _timer = new Timer(TimerTick, null, TimerCadenceMs, Timeout.Infinite);
             }
         }
 
@@ -104,6 +98,7 @@ namespace ESFA.DC.Web.Operations.Services
                 // Stop and Dispose called together, prevent running method twice.
                 if (_timer == null)
                 {
+                    _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service was stopping and disposing, not continuing");
                     return;
                 }
 
@@ -112,6 +107,7 @@ namespace ESFA.DC.Web.Operations.Services
                     // Make sure we aren't trying to stop because we haven't heard from a client, but then a client message has come in
                     if (!block && !NoActiveClients())
                     {
+                        _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service was stopping, but a listener was detected, so continuing");
                         return;
                     }
 
@@ -123,7 +119,7 @@ namespace ESFA.DC.Web.Operations.Services
 
                 if (block && !_timerResetEvent.WaitOne(TimerCadenceMs * 2))
                 {
-                    _logger.LogWarning("Timed SignalR Background Service did not terminate correctly");
+                    _logger.LogWarning($"{_logPrefix} Timed SignalR Background Service did not terminate correctly");
                 }
 
                 _timer?.Dispose();
@@ -131,13 +127,14 @@ namespace ESFA.DC.Web.Operations.Services
             }
         }
 
-        private async void DoWork(object state)
+        private void TimerTick(object state)
         {
             // If we're told to stop then set block to continue, and exit method.
             lock (_timerStopLock)
             {
                 if (_timerStopFlag)
                 {
+                    _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service blocking in TimerTick");
                     _timerResetEvent.Set();
                     return;
                 }
@@ -146,33 +143,18 @@ namespace ESFA.DC.Web.Operations.Services
             // We haven't received a ping from any clients, so sleep this timer.
             if (NoActiveClients())
             {
+                _logger.LogInfo($"{_logPrefix} Timed SignalR Background Service sleeping in TimerTick as no one listening");
                 StopTimer(false);
                 return;
             }
 
             try
             {
-                PathYearPeriod currentPeriod = await _periodService.ReturnPeriod();
-                if (currentPeriod.Year == null)
-                {
-                    return;
-                }
-
-                // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStates(currentPeriod.Year.Value, currentPeriod.Period, _cancellationTokenSource.Token);
-                string failedJobs = await _periodEndService.GetFailedJobs(
-                    currentPeriod.Year.Value,
-                    currentPeriod.Period,
-                    _cancellationTokenSource.Token);
-                string referenceDataJobs = await _periodEndService.GetReferenceDataJobs(_cancellationTokenSource.Token);
-
-                // Send JSON to clients.
-                await _periodEndHub.SendMessage(pathItemStates, _cancellationTokenSource.Token);
-                await _periodEndPrepHub.SendMessage(referenceDataJobs, failedJobs, pathItemStates, _cancellationTokenSource.Token);
+                DoWork(_cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Timed SignalR Background Service failed to DoWork", ex);
+                _logger.LogError($"{_logPrefix} Timed SignalR Background Service failed to DoWork", ex);
             }
 
             // Set timer to tick in TimerCadenceMs milliseconds.
