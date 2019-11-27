@@ -9,9 +9,11 @@ using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Dashboard;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -177,6 +179,8 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<PeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<PeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<ServiceBusStatsService>().As<IServiceBusStatsService>();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

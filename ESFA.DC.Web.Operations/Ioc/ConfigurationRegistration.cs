@@ -31,6 +31,10 @@ namespace ESFA.DC.Web.Operations.Ioc
                 configuration.GetConfigSection<AzureStorageFileServiceConfiguration>("AzureStorageSection"))
                 .As<IAzureStorageFileServiceConfiguration>().SingleInstance();
 
+            builder.Register(c =>
+                configuration.GetConfigSection<ServiceBusSettings>())
+                .As<ServiceBusSettings>().SingleInstance();
+
             //builder.Register(c =>
             //        configuration.GetConfigSection<FeatureFlags>())
             //    .As<FeatureFlags>().SingleInstance();
