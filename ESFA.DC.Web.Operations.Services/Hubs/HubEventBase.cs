@@ -1,5 +1,6 @@
 ﻿using System;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.Event;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
@@ -9,16 +10,16 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 
         public event EventHandler PeriodEndHubCallback;
 
-        public void TriggerPeriodEnd()
+        public void TriggerPeriodEnd(string contextConnectionId)
         {
             var handler = PeriodEndHubCallback;
-            handler?.Invoke(this, EventArgs.Empty);
+            handler?.Invoke(this, new SignalrEventArgs(contextConnectionId));
         }
 
-        public void TriggerPeriodEndPrep()
+        public void TriggerPeriodEndPrep(string contextConnectionId)
         {
             var handler = PeriodEndHubPrepCallback;
-            handler?.Invoke(this, EventArgs.Empty);
+            handler?.Invoke(this, new SignalrEventArgs(contextConnectionId));
         }
     }
 }
