@@ -15,20 +15,20 @@
             {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">
-                        @Html.RadioButtonFor(model => model.IsSingleAddNewProviderChoice, "true", new {@class="govuk-radios__input"})
+                        <input asp-for="IsSingleAddNewProviderChoice" value="true" class="govuk-radios__input" type="radio"/>
                         <label class="govuk-label govuk-radios__label">Add one provider</label>
                     </div>
                     <div class="govuk-radios__item">
-                        @Html.RadioButtonFor(model => model.IsSingleAddNewProviderChoice, "false", new {@class="govuk-radios__input"})
+                        <input asp-for="IsSingleAddNewProviderChoice" value="false" class="govuk-radios__input" type="radio"/>
                         <label class="govuk-label govuk-radios__label">Add multiple providers</label>
                     </div>
                 </div>
                 <br />
                 <br />
-                <button type="submit" class="govuk-button" formaction="@Url.Action("AddNewChoiceSubmit")">Continue</button>
+                <button type="submit" class="govuk-button" formaction="AddNewChoiceSubmit">Continue</button>
                 <br/>
                 <p>
-                    <div class="govuk-link">@Html.ActionLink("Cancel", "Index", "Home", new { area = ""})</div>
+                    <div class="govuk-link"><a asp-controller="Home" asp-action="Index">Cancel</a></div>
                 </p>
             }
         </div>

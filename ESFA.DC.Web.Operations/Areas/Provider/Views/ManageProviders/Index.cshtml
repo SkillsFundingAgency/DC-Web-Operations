@@ -1,0 +1,57 @@
+﻿@model ESFA.DC.Web.Operations.Areas.Provider.Models.ManageProviderViewModel
+@using ESFA.DC.Web.Operations.Constants
+
+@{
+    ViewData["Title"] = "Manage Providers";
+    ViewData[ViewDataConstants.BackLink] = "/provider/addNew";
+}
+
+<br>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Manage provider</h1>
+        <div class="govuk-link"><a asp-controller="AddNew" asp-action="Index" asp-route-ukprn="@Model.Ukprn">Edit provider details</a></div>
+        <table class="govuk-table">
+            <tbody class="govuk-table__body" id="providerDetails">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">Name</td>
+                    <td class="govuk-table__cell">@Model.ProviderName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">UKPRN</td>
+                    <td class="govuk-table__cell">@Model.Ukprn</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">UPIN</td>
+                    <td class="govuk-table__cell">@Model.Upin</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">Is MCA</td>
+                    <td class="govuk-table__cell"><input asp-for="IsMca" onclick="return false;" type="checkbox" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <h1 class="govuk-heading-xl">Assignments</h1>
+        <div class="govuk-link"><a asp-controller="ManageAssignments" asp-action="Index" asp-route-ukprn="@Model.Ukprn">Edit assignments</a></div>
+        <p class="govuk-heading-s">Active</p>
+        <span id="noActive" class="@("govuk-body " + (Model.CollectionAssignments.Any() ? "hidden" : ""))">No active assignments</span>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body" id="providerDetails">
+                @foreach (var providerAssignment in Model.CollectionAssignments)
+                {
+                    <tr class="govuk-table__row" id="assignments">
+                        <td class="govuk-table__cell">
+                            <p class="govuk-body">
+                                <span>@providerAssignment.Name</span><br>
+                                <span>Start date: @providerAssignment.StartDate.Value.ToString("dd-MM-yyyy")</span><br>
+                                <span>End date: @(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToString("dd-MM-yyyy") : "")</span>
+                            </p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

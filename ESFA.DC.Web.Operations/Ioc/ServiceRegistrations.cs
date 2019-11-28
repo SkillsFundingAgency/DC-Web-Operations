@@ -51,6 +51,8 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<PeriodEndStateFactory>().As<IPeriodEndStateFactory>().InstancePerLifetimeScope();
             builder.RegisterType<AddNewProviderService>().As<IAddNewProviderService>().InstancePerLifetimeScope();
+            builder.RegisterType<ManageProvidersService>().As<IManageProvidersService>().InstancePerLifetimeScope();
+            builder.RegisterType<ManageAssignmentsService>().As<IManageAssignmentsService>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<Topics.Data.JobQueueDataContext>().SingleInstance();

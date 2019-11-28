@@ -27,55 +27,43 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        @using (Html.BeginForm("AddSingleProvider","AddNew"))
+        @using (Html.BeginForm("AddSingleProvider", "AddNew"))
         {
-            <div class="govuk-form-group">
-                <label asp-for="ProviderName" class="govuk-label" for="name">Enter the provider's name</label>
-                @Html.TextBoxFor(model => model.ProviderName, new { @class = "govuk-input govuk-input--width-20", id = "providerName" })<br />
-                <span class="govuk-error-message">
-                    <span asp-validation-for="ProviderName"></span>
-                </span>
-            </div>
-            <div class="govuk-form-group">
-                <label asp-for="Ukprn" class="govuk-label" for="name">Enter the provider's UKPRN</label>
-                @Html.TextBoxFor(model => model.Ukprn, new { @class = "govuk-input govuk-input--width-20", id = "ukprn",  @type = "number"})<br />
-                <span class="govuk-error-message">
-                    <span asp-validation-for="Ukprn"></span>
-                </span>
-            </div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="name">Enter the provider's UPIN</label>
-                @Html.TextBoxFor(model => model.Upin, new { @class = "govuk-input govuk-input--width-20", id = "upin", @type = "number" })<br />
-                <span class="govuk-error-message">
-                    <span asp-validation-for="Upin"></span>
-                </span>
-            </div>
+            <table class="govuk-table" id="providerTable">
+                <tbody class="govuk-table__body" id="providerDetails">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell govuk-!-font-weight-bold">Name</td>
+                        <td class="govuk-table__cell" id="providerNameDisplay">@Model.ProviderName</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell govuk-!-font-weight-bold">UKPRN</td>
+                        <td class="govuk-table__cell" id="ukprnDisplay">@Model.Ukprn</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell govuk-!-font-weight-bold">UPIN</td>
+                        <td class="govuk-table__cell" id="upinDisplay">@Model.Upin</td>
+                    </tr>
+                </tbody>
+            </table>
             <div class="govuk-form-group">
                 <div class="govuk-checkboxes">
                     <div class="govuk-checkboxes__item">
-                        @Html.CheckBoxFor(model => model.IsMca, new { @class = "govuk-checkboxes__input", id = "isMca", name = "isMca" })
+                        <input asp-for="IsMca" class="govuk-checkboxes__input" id="isMca" , name="isMca" type="checkbox" />
                         <label class="govuk-label govuk-checkboxes__label" for="isMca">
                             MCA
                         </label>
                     </div>
                 </div>
             </div>
-            <div class="govuk-form-group">
-                <div class="govuk-checkboxes">
-                    <div class="govuk-checkboxes__item">
-                        @Html.CheckBoxFor(model => model.IsEnabled, new { @class = "govuk-checkboxes__input", id = "isEnabled", name = "isEnabled" })
-                        <label class="govuk-label govuk-checkboxes__label" for="isEnabled">
-                            Enabled
-                        </label>
-                    </div>
-                </div>
-            </div>
             <br />
             <br />
-            <button type="submit" class="govuk-button">Save and continue</button>
+            <input name="ukprn" type="hidden" id="hiddenUkprn" />
+            <input name="providername" type="hidden" id="hiddenProviderName" />
+            <input name="upin" type="hidden" id="hiddenUpin" />
+            <button type="submit" id="submitButton" class="govuk-button" disabled>Save and continue</button>
             <br />
             <p>
-                <div class="govuk-link">@Html.ActionLink("Cancel", "Index", "Home", new { area = "" })</div>
+                <div class="govuk-link"><a asp-controller="Home" asp-action="Index">Cancel</a></div>
             </p>
         }
     </div>
@@ -103,16 +91,46 @@
 
         window.searchClient = new Client(hub.getConnection());
 
+        var providerName = document.getElementById('providerNameDisplay');
+        if (providerName !== "undefined" && providerName.innerHTML !== "") {
+            var submitButton = document.getElementById('submitButton');
+            submitButton.disabled = false;
+
+            var providerNameDisplay = document.getElementById('providerNameDisplay');
+            var providerName = document.getElementById('hiddenProviderName');
+            providerName.value = providerNameDisplay.innerHTML;
+
+            var ukPrnDisplay = document.getElementById('ukprnDisplay');
+            var ukprn = document.getElementById('hiddenUkprn');
+            ukprn.value = ukPrnDisplay.innerHTML;
+
+            var upinDisplay = document.getElementById('upinDisplay');
+            var upin = document.getElementById('hiddenUpin');
+            upin.value = upinDisplay.innerHTML;
+        }
+
         function populateProviderValues(result) {
             if (typeof result !== "undefined") {
-                var providerName = document.getElementById('providerName')
-                providerName.value = result.providerName
+                var providerNameDisplay = document.getElementById('providerNameDisplay');
+                providerNameDisplay.innerHTML = result.providerName;
 
-                var ukPrn = document.getElementById('ukprn')
-                ukPrn.value = result.ukprn
+                var providerName = document.getElementById('hiddenProviderName');
+                providerName.value = result.providerName;
 
-                var upin = document.getElementById('upin')
-                upin.value = result.upin
+                var ukPrnDisplay = document.getElementById('ukprnDisplay');
+                ukPrnDisplay.innerHTML = result.ukprn;
+
+                var ukprn = document.getElementById('hiddenUkprn');
+                ukprn.value = result.ukprn;
+
+                var upinDisplay = document.getElementById('upinDisplay');
+                upinDisplay.innerHTML = result.upin;
+
+                var upin = document.getElementById('hiddenUpin');
+                upin.value = result.upin;
+
+                var submitButton = document.getElementById('submitButton');
+                submitButton.disabled = false;
             }
         }
 
