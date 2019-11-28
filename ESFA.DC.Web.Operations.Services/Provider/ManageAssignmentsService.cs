@@ -41,19 +41,18 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         {
             var collectionYears = new List<int>();
 
-            switch (_dateTimeProvider.GetNowUtc().Month)
+            var nowUtc = _dateTimeProvider.GetNowUtc();
+
+            switch (nowUtc.Month)
             {
                 case int n when n >= 1 && n <= 7:
-                    collectionYears = FormatDateToCollectionYear(new[]
-                        { CollectionYearOption.CurrentYearMinusOne });
+                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYearMinusOne }, nowUtc);
                     break;
                 case int n when n >= 8 && n <= 10:
-                    collectionYears = FormatDateToCollectionYear(new[]
-                        { CollectionYearOption.CurrentYear, CollectionYearOption.CurrentYearMinusOne });
+                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear, CollectionYearOption.CurrentYearMinusOne }, nowUtc);
                     break;
                 case int n when n >= 11 && n <= 12:
-                    collectionYears = FormatDateToCollectionYear(new[]
-                        { CollectionYearOption.CurrentYear });
+                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear }, nowUtc);
                     break;
             }
 
@@ -95,10 +94,10 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             }
         }
 
-        private List<int> FormatDateToCollectionYear(CollectionYearOption[] options)
+        private List<int> FormatDateToCollectionYear(CollectionYearOption[] options, DateTime nowUtc)
         {
-            var currentYearMinusOne = $"{(_dateTimeProvider.GetNowUtc().Year - 1).ToString().Substring(2, 2)}{_dateTimeProvider.GetNowUtc().Year.ToString().Substring(2, 2)}";
-            var currentYear = $"{_dateTimeProvider.GetNowUtc().Year.ToString().Substring(2, 2)}{(_dateTimeProvider.GetNowUtc().Year + 1).ToString().Substring(2, 2)}";
+            var currentYearMinusOne = $"{(nowUtc.Year - 1).ToString().Substring(2, 2)}{nowUtc.Year.ToString().Substring(2, 2)}";
+            var currentYear = $"{nowUtc.Year.ToString().Substring(2, 2)}{(nowUtc.Year + 1).ToString().Substring(2, 2)}";
 
             var years = new List<int>();
 
