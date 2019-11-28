@@ -41,11 +41,11 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(ManageAssignmentsViewModel model)
         {
-            for (var i = 0; i < model.CollectionsAssignments.Count; i++)
+            foreach (var assignment in model.CollectionsAssignments)
             {
-                if (model.CollectionsAssignments[i].EndDate <= model.CollectionsAssignments[i].StartDate)
+                if (assignment.EndDate <= assignment.StartDate)
                 {
-                    ModelState.AddModelError($"Summary", $"{model.CollectionsAssignments[i].Name} - end date should be after start date");
+                    ModelState.AddModelError($"Summary", $"{assignment.Name} - end date should be after start date");
                 }
             }
 

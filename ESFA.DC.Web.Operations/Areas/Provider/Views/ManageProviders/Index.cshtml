@@ -35,7 +35,7 @@
         <h1 class="govuk-heading-xl">Assignments</h1>
         <div class="govuk-link"><a asp-controller="ManageAssignments" asp-action="Index" asp-route-ukprn="@Model.Ukprn">Edit assignments</a></div>
         <p class="govuk-heading-s">Active</p>
-        <span id="noActive" class="@("govuk-body " + (Model.CollectionAssignments.Any() ? "hidden" : ""))">No active assignments</span>
+        <span id="noActive" class="@("govuk-body " + (Model.CollectionAssignments.Any() ? "hidden" : string.Empty))">No active assignments</span>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body" id="providerDetails">
@@ -46,7 +46,7 @@
                             <p class="govuk-body">
                                 <span>@providerAssignment.Name</span><br>
                                 <span>Start date: @providerAssignment.StartDate.Value.ToString("dd-MM-yyyy")</span><br>
-                                <span>End date: @(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToString("dd-MM-yyyy") : "")</span>
+                                <span>End date: @(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToString("dd-MM-yyyy") : string.Empty)</span>
                             </p>
                         </td>
                     </tr>

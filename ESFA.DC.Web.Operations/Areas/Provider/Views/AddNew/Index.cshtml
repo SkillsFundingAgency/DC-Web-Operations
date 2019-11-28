@@ -92,7 +92,7 @@
         window.searchClient = new Client(hub.getConnection());
 
         var providerName = document.getElementById('providerNameDisplay');
-        if (providerName !== "undefined" && providerName.innerHTML !== "") {
+        if (providerName !== null && providerName.innerHTML !== "") {
             var submitButton = document.getElementById('submitButton');
             submitButton.disabled = false;
 

@@ -5,11 +5,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
-using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
-using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Enums;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -23,9 +22,11 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         private readonly string[] _collectionsTypesToExclude = { "REF", "PE" };
         private readonly ILogger _logger;
         private readonly string _baseUrl;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public ManageAssignmentsService(
             ILogger logger,
+            IDateTimeProvider dateTimeProvider,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
@@ -33,13 +34,14 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         {
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IEnumerable<CollectionAssignment>> GetAvailableCollections(CancellationToken cancellationToken = default(CancellationToken))
         {
             var collectionYears = new List<int>();
 
-            switch (DateTime.Now.Month)
+            switch (_dateTimeProvider.GetNowUtc().Month)
             {
                 case int n when n >= 1 && n <= 7:
                     collectionYears = FormatDateToCollectionYear(new[]
@@ -95,8 +97,8 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         private List<int> FormatDateToCollectionYear(CollectionYearOption[] options)
         {
-            var currentYearMinusOne = $"{(DateTime.Now.Year - 1).ToString().Substring(2, 2)}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-            var currentYear = $"{DateTime.Now.Year.ToString().Substring(2, 2)}{(DateTime.Now.Year + 1).ToString().Substring(2, 2)}";
+            var currentYearMinusOne = $"{(_dateTimeProvider.GetNowUtc().Year - 1).ToString().Substring(2, 2)}{_dateTimeProvider.GetNowUtc().Year.ToString().Substring(2, 2)}";
+            var currentYear = $"{_dateTimeProvider.GetNowUtc().Year.ToString().Substring(2, 2)}{(_dateTimeProvider.GetNowUtc().Year + 1).ToString().Substring(2, 2)}";
 
             var years = new List<int>();
 

@@ -8,6 +8,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Models.Collection;
+using ESFA.DC.Web.Operations.Services.Extensions;
 using ESFA.DC.Web.Operations.Settings.Models;
 using MoreLinq;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
@@ -64,9 +65,9 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                     return 3;
                 case CollectionType.FC:
                 {
-                    if (collectionName.Contains("Final"))
+                    if (collectionName.Contains("Final", StringComparison.OrdinalIgnoreCase))
                         return 4;
-                    return collectionName.Contains("YearEnd") ? 5 : 6;
+                    return collectionName.Contains("YearEnd", StringComparison.OrdinalIgnoreCase) ? 5 : 6;
                 }
 
                 case CollectionType.NCS:
