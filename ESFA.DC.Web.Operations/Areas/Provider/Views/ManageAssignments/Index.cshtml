@@ -1,6 +1,58 @@
-﻿@using ESFA.DC.Web.Operations.Constants
+﻿@model ESFA.DC.Web.Operations.Areas.Provider.Models.ManageAssignmentsViewModel
+@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Utils
 
 @{
     ViewData["Title"] = "Manage assignments";
-    ViewData[ViewDataConstants.BackLink] = "/";
+    ViewData[ViewDataConstants.BackLink] = "/provider/ManageProviders?ukprn=" + Model.Ukprn;
 }
+
+<br>
+<form method="post">
+    <input asp-for="Ukprn" type="hidden" />
+    <input asp-for="ProviderName" type="hidden" />
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-caption-xl">@Model.ProviderName</h2>
+            <h1 class="govuk-heading-xl">Manage assignments</h1>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Collection</th>
+                        <th scope="col" class="govuk-table__header">Start date</th>
+                        <th scope="col" class="govuk-table__header">End date</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body" id="assignments">
+                    @for (var i = 0; i < Model.CollectionsAssignments.Count; i++)
+                    {
+                        <input asp-for="CollectionsAssignments[i].CollectionId" type="hidden" />
+                        <input asp-for="CollectionsAssignments[i].Name" type="hidden" />
+                        <input asp-for="CollectionsAssignments[i].DisplayOrder" type="hidden" />
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell table">
+                                @Model.CollectionsAssignments[i].Name
+                            </td>
+                            <td class="govuk-table__cell">
+                                <input asp-for="CollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
+                            </td>
+                            <td class="govuk-table__cell">
+                                <input asp-for="CollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="govuk-border-coloure govuk-!-font-size-14">Null value will default to '2600-07-31'</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <button asp-controller="ManageAssignments" asp-action="Submit" class="govuk-button">Save</button>
+    </div>
+</form>
