@@ -2,7 +2,7 @@
 {
     public class ProviderSearchResult
     {
-        public ProviderSearchResult(string providerName, long ukprn, int upin)
+        public ProviderSearchResult(string providerName, long ukprn, string upin)
         {
             ProviderName = providerName;
             Ukprn = ukprn;
@@ -13,6 +13,6 @@
         
         public long Ukprn { get; set; }
      
-        public int Upin { get; set; }
+        public string Upin { get; set; }
     }
 }

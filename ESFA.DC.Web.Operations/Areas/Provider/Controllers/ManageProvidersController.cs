@@ -28,7 +28,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
             viewModel.ProviderName = provider.Name;
             viewModel.Ukprn = provider.Ukprn;
-            viewModel.Upin = provider.Upin.GetValueOrDefault();
+            viewModel.Upin = provider.Upin;
             viewModel.IsMca = provider.IsMca.GetValueOrDefault();
 
             return View("Index", viewModel);
