@@ -1,4 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
 @{
     ViewData["Title"] = "Index";
     ViewData[ViewDataConstants.BackLink] = "/";
@@ -13,17 +14,17 @@
             {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">
-                        <input asp-for="IsSingleAddNewProviderChoice" value="true" class="govuk-radios__input" type="radio" />
+                        <input asp-for="IsFrmReportChoice" value="false" class="govuk-radios__input" type="radio" />
                         <label class="govuk-label govuk-radios__label">QAR</label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input asp-for="IsSingleAddNewProviderChoice" value="false" class="govuk-radios__input" type="radio" />
+                        <input asp-for="IsFrmReportChoice" value="true" class="govuk-radios__input" type="radio" />
                         <label class="govuk-label govuk-radios__label">FRM</label>
                     </div>
                 </div>
                 <br />
                 <br />
-                <button type="submit" class="govuk-button" formaction="AddNewChoiceSubmit">Continue</button>
+                <button type="submit" class="govuk-button" formaction="ReportChoiceSelection">Continue</button>
                 <br />
                 <p>
                     <div class="govuk-link"><a asp-controller="Home" asp-action="Index">Cancel</a></div>
