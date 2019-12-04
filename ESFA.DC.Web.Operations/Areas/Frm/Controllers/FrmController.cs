@@ -32,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 return RedirectToAction("SelectValidate");
             }
 
-            return RedirectToAction("Index");
+            return View("Index");
         }
     }
 }
