@@ -9,7 +9,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Models
 
         public string ProviderName { get; set; }
 
-        public int Upin { get; set; }
+        public string Upin { get; set; }
 
         public bool IsMca { get; set; }
 

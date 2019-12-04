@@ -10,7 +10,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Models
 
         public long? Ukprn { get; set; }
 
-        public int? Upin { get; set; }
+        public string Upin { get; set; }
 
         public bool IsMca { get; set; }
     }
