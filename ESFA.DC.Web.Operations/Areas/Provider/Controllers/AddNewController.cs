@@ -23,6 +23,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             _addNewProviderService = addNewProviderService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(long? ukprn = null)
         {
             var model = new ProviderViewModel();
@@ -39,6 +40,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             return View("Index", model);
         }
 
+        [HttpGet]
         public async Task<IActionResult> AddNewOption()
         {
             var model = new ProviderViewModel

@@ -1,0 +1,60 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Areas.Collections.Models
+@using MoreLinq
+@using Remotion.Linq.Parsing.Structure.IntermediateModel
+@model ESFA.DC.Web.Operations.Areas.Collections.Models.ManageCollectionsViewModel
+
+@{
+    ViewData["Title"] = "Manage Collections";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Manage collections</h1>
+        <br><br>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <span class="govuk-!-font-size-19"><a class="govuk-button govuk-button--secondary">Add Collection</a></span>
+    </div>
+
+</div>
+
+<div class="govuk-grid-row">
+    <input type="hidden" id="highestYear" value="@(Model.Collections.OrderByDescending(o => o.CollectionYear).First().CollectionYear.ToString())"/>
+    @foreach (var year in Model.Collections.DistinctBy(d => d.CollectionYear).OrderByDescending(o => o.CollectionYear).Select(s => s.CollectionYear))
+    {
+        <details class="govuk-details" data-module="govuk-details" id="@($"summary_{year}")">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    @($"{year.ToString().Substring(0, 2)}/{year.ToString().Substring(2, 2)}")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                @foreach (var collection in Model.Collections.Where(c => c.CollectionYear == year))
+                {
+                    <div class="govuk-grid-column-one-third">
+                        <div class="border-top ">
+                            <h2 class="govuk-heading-m "><a class="govuk-link" asp-controller="ManageCollections" asp-area="Collections" asp-action="Index" asp-route-collectionId="@collection.CollectionId" >@collection.CollectionName</a></h2>
+                            <span class="govuk-body-s">Submissions @(@collection.IsCollectionEnabled ? "enabled" : "closed")</span><br>
+                            <span class="govuk-body-s">@(@collection.IsCollectionEnabled ? "Current period" : "Last period") @collection.CollectionCurrentOrLastPeriod</span><br>
+                            <span class="govuk-body-s">Closing on @collection.CollectionClosedDate.Value.ToString("dd MMMM")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </details>
+    }
+</div>
+
+@section PageScripts
+{
+    <script type="module">
+        var firstYear = document.getElementById('highestYear')
+        var span = document.getElementById('summary_'+firstYear.value);
+        
+        span.setAttribute("open", "");
+    
+    </script>
+}
