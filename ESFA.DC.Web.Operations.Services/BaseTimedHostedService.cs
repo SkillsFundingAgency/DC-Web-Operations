@@ -57,7 +57,7 @@ namespace ESFA.DC.Web.Operations.Services
             StopTimer();
         }
 
-        protected abstract void DoWork(CancellationToken cancellationToken);
+        protected abstract Task DoWork(CancellationToken cancellationToken);
 
         protected void RegisterClient(object sender, EventArgs eventArgs)
         {

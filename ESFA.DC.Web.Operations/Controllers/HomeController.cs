@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Models;
+using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +12,20 @@ namespace ESFA.DC.Web.Operations.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly IDashBoardService _dashBoardService;
         private readonly ILogger _logger;
 
-        public HomeController(ILogger logger)
+        public HomeController(
+            IDashBoardService dashBoardService,
+            ILogger logger)
         {
+            _dashBoardService = dashBoardService;
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //_logger.LogDebug("logger test");
-            return View();
+            return View(await _dashBoardService.ProvideAsync(CancellationToken.None));
         }
 
         public IActionResult Privacy()
