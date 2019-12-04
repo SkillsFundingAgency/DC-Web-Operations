@@ -1,4 +1,5 @@
 ﻿using DC.Web.Authorization.Data.Repository;
+using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Ioc
 {
@@ -48,6 +49,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ManageProvidersService>().As<IManageProvidersService>().InstancePerLifetimeScope();
             builder.RegisterType<ManageAssignmentsService>().As<IManageAssignmentsService>().InstancePerLifetimeScope();
             builder.RegisterType<CollectionsService>().As<ICollectionsService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<Topics.Data.JobQueueDataContext>().SingleInstance();
