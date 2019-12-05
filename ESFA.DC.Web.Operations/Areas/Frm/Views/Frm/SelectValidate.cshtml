@@ -18,7 +18,7 @@
                     <label class="govuk-label" for="FrmYearPeriod">
                         Year of Reports
                     </label>
-                    <input asp-for="FrmDate" class="govuk-input" id="FrmYearPeriod" name="FrmYearPeriod" type="text" pattern="[0-9]*">
+                    <input asp-for="FrmYearPeriod" class="govuk-input" id="FrmYearPeriod" name="FrmYearPeriod" type="text" pattern="[0-9]*">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="FrmYearPeriod">
@@ -27,7 +27,7 @@
                     <input asp-for="FrmDate" type="date" class="form-control" />
                 </div>
                 <br />
-                <button type="submit" class="govuk-button" formaction="ReportChoiceSelection">Validate</button>
+                <button type="submit" class="govuk-button" formaction="SubmitFrm">Validate</button>
                 <br />
                 <p>
                     <div class="govuk-link"><a asp-controller="Home" asp-action="Index">Cancel</a></div>
