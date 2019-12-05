@@ -12,6 +12,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
 
         Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken);
     }
 }
