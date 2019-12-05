@@ -14,50 +14,19 @@
             <label class="govuk-label" for="name"></label>
             @using (Html.BeginForm())
             {
-            <div class="govuk-form-group">
-                <input asp-for="FrmYearPeriod" />
-                <label class="govuk-label" for="FrmYearPeriod">
-                    Year of Reports
-                </label>
-                <input class="govuk-input" id="FrmYearPeriod" name="FrmYearPeriod" type="text">
-            </div>
                 <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" role="group" aria-describedby="hint">
-                        <h2 class="govuk-fieldset__heading=x2">
-                            Date attached to FRM Reports
-                        </h2>
-                        <span id="passport-issued-hint" class="govuk-hint">
-                            For example, 12 11 2007
-                        </span>
-                        <div class="govuk-date-input" id="frmDate">
-                            <input asp-for="FrmDate" />
-                            <div class="govuk-date-input__item">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="frm_day">
-                                        Day
-                                    </label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="frm_day" name="frm_day" type="number" pattern="[0-9]*">
-                                </div>
-                            </div>
-                            <div class="govuk-date-input__item">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="frm_month">
-                                        Month
-                                    </label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="frm_month" name="frm_month" type="number" pattern="[0-9]*">
-                                </div>
-                            </div>
-                            <div class="govuk-date-input__item">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="frm_year">
-                                        Year
-                                    </label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="frm_year" name="frm_year" type="number" pattern="[0-9]*">
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
+                    <label class="govuk-label" for="FrmYearPeriod">
+                        Year of Reports
+                    </label>
+                    <input asp-for="FrmDate" class="govuk-input" id="FrmYearPeriod" name="FrmYearPeriod" type="text" pattern="[0-9]*">
                 </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="FrmYearPeriod">
+                        Date attached to reports
+                    </label>
+                    <input asp-for="FrmDate" type="date" class="form-control" />
+                </div>
+                <br />
                 <button type="submit" class="govuk-button" formaction="ReportChoiceSelection">Validate</button>
                 <br />
                 <p>
