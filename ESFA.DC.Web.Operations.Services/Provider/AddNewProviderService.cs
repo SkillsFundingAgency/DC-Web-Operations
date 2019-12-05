@@ -41,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         public async Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<Jobs.Model.ProviderSearchResult>(
-                await GetDataAsync($"{_baseUrl}/api/org/searchpims/{query}/true", cancellationToken));
+                await GetDataAsync($"{_baseUrl}/api/org/search/new/{query}", cancellationToken));
 
             var results = new List<ProviderSearchResult>();
             data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin)));
