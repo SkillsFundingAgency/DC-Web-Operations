@@ -1,30 +1,29 @@
-﻿using DC.Web.Authorization.Data.Repository;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using Autofac;
+using DC.Web.Authorization.Data.Repository;
+using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Interface;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Serialization.Json;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Collections;
+using ESFA.DC.Web.Operations.Services.Hubs;
+using ESFA.DC.Web.Operations.Services.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.Provider;
+using ESFA.DC.Web.Operations.Services.Storage;
+using ESFA.DC.Web.Operations.Settings.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.Web.Operations.Ioc
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using Autofac;
-    using ESFA.DC.DateTimeProvider.Interface;
-    using ESFA.DC.FileService;
-    using ESFA.DC.FileService.Interface;
-    using ESFA.DC.Serialization.Interfaces;
-    using ESFA.DC.Serialization.Json;
-    using ESFA.DC.Web.Operations.Interfaces.Collections;
-    using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-    using ESFA.DC.Web.Operations.Interfaces.Provider;
-    using ESFA.DC.Web.Operations.Interfaces.Storage;
-    using ESFA.DC.Web.Operations.Services;
-    using ESFA.DC.Web.Operations.Services.Collections;
-    using ESFA.DC.Web.Operations.Services.Hubs;
-    using ESFA.DC.Web.Operations.Services.PeriodEnd;
-    using ESFA.DC.Web.Operations.Services.Provider;
-    using ESFA.DC.Web.Operations.Services.Storage;
-    using ESFA.DC.Web.Operations.Settings.Models;
-    using Microsoft.EntityFrameworkCore;
-
     public class ServiceRegistrations : Module
     {
         protected override void Load(ContainerBuilder builder)

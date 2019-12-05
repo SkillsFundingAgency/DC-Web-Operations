@@ -1,20 +1,18 @@
-﻿using ESFA.DC.DateTimeProvider.Interface;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Models.Collection;
+using ESFA.DC.Web.Operations.Settings.Models;
+using Collection = ESFA.DC.Web.Operations.Models.Collection.Collection;
+using ReturnPeriod = ESFA.DC.Web.Operations.Models.Collection.ReturnPeriod;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using ESFA.DC.CollectionsManagement.Models;
-    using ESFA.DC.Serialization.Interfaces;
-    using ESFA.DC.Web.Operations.Interfaces.Collections;
-    using ESFA.DC.Web.Operations.Models.Collection;
-    using ESFA.DC.Web.Operations.Settings.Models;
-    using Collection = Models.Collection.Collection;
-    using ReturnPeriod = Models.Collection.ReturnPeriod;
-
     public class CollectionsService : BaseHttpClientService, ICollectionsService
     {
         private readonly string _baseUrl;
