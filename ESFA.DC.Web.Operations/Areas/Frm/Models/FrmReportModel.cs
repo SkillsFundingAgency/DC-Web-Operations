@@ -8,5 +8,9 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
     public class FrmReportModel
     {
         public bool IsFrmReportChoice { get; set; }
+
+        public string FrmYearPeriod { get; set; }
+
+        public DateTime FrmDate { get; set; }
     }
 }
