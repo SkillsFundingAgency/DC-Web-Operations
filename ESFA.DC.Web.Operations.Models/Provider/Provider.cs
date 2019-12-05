@@ -11,8 +11,11 @@
         }
 
         public string Name { get; set; }
+
         public long Ukprn { get; set; }
+
         public string Upin { get; set; }
+
         public bool? IsMca { get; set; }
     }
 }

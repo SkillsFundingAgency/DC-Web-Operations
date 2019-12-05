@@ -10,9 +10,9 @@
         }
 
         public string ProviderName { get; set; }
-        
+
         public long Ukprn { get; set; }
-     
+
         public string Upin { get; set; }
     }
 }

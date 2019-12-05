@@ -10,5 +10,9 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
         Task<IEnumerable<int>> GetAvailableCollectionYears(CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
