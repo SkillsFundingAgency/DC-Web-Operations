@@ -1,33 +1,40 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.Collections;
-using ESFA.DC.Web.Operations.Models.Collection;
-using ESFA.DC.Web.Operations.Settings.Models;
-using Collection = ESFA.DC.CollectionsManagement.Models.Collection;
+﻿using ESFA.DC.DateTimeProvider.Interface;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ESFA.DC.CollectionsManagement.Models;
+    using ESFA.DC.Serialization.Interfaces;
+    using ESFA.DC.Web.Operations.Interfaces.Collections;
+    using ESFA.DC.Web.Operations.Models.Collection;
+    using ESFA.DC.Web.Operations.Settings.Models;
+    using Collection = Models.Collection.Collection;
+    using ReturnPeriod = Models.Collection.ReturnPeriod;
+
     public class CollectionsService : BaseHttpClientService, ICollectionsService
     {
         private readonly string _baseUrl;
         private readonly string[] _collectionsTypesToExclude = { "REF", "PE" };
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public CollectionsService(
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider)
             : base(jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<Collection>>(
+            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.Collection>>(
                 await GetDataAsync($"{_baseUrl}/api/collections/for-year/{year}", cancellationToken));
 
             return data.Where(c => !_collectionsTypesToExclude.Contains(c.CollectionType))
@@ -47,6 +54,36 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         {
             return _jsonSerializationService.Deserialize<IEnumerable<int>>(
                 await GetDataAsync($"{_baseUrl}/api/collections/available-years", cancellationToken));
+        }
+
+        public async Task<Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+                await GetDataAsync($"{_baseUrl}/api/collections/byId/{collectionId}", cancellationToken));
+
+            return new Collection()
+            {
+                Name = data.CollectionTitle,
+                Id = data.CollectionId,
+                ProcessingOverride = data.ProcessingOverride
+            };
+        }
+
+        public async Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.ReturnPeriod>>(
+                await GetDataAsync($"{_baseUrl}/api/returnperiod/collectionId/{collectionId}", cancellationToken));
+
+            var now = _dateTimeProvider.GetNowUtc();
+
+            return data
+                .Select(d => new ReturnPeriod(
+                    d.ReturnPeriodId,
+                    $"R{d.PeriodNumber:00}",
+                    d.StartDateTimeUtc,
+                    d.EndDateTimeUtc,
+                    (d.StartDateTimeUtc <= now && d.EndDateTimeUtc >= now) || d.StartDateTimeUtc > now))
+                .ToList();
         }
     }
 }

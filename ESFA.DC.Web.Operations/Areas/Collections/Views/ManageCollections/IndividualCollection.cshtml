@@ -1,0 +1,72 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Collections.Models.ManageCollectionViewModel
+
+@{
+    ViewData["Title"] = "Manage Individual Collection";
+    ViewData[ViewDataConstants.BackLink] = "collections/manageCollections";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Manage @Model.CollectionName</h1>
+    </div>
+</div>
+<br />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m">Current period</h2>
+            <span class="govuk-heading-l no-margin-bottom">@Model.CurrentPeriod</span>
+            <span class="govuk-body-s" days-remaining="@Model.DaysRemaining"></span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m">Closing date</h2>
+            <span class="govuk-heading-l no-margin-bottom">@(@Model.ClosingDate.HasValue ? @Model.ClosingDate.Value.ToString("d MMMM") : string.Empty) </span>
+            <span class="govuk-body-s">@(@Model.ClosingDate.HasValue ? @Model.ClosingDate.Value.ToString("h:mm tt") : string.Empty)</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m">Current status</h2>
+            <span class="govuk-heading-l no-margin-bottom">@Model.ProcessingOverride</span>
+        </div>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <ul class="govuk-list">
+            <li>
+                <a class="govuk-link" asp-area="collections" asp-controller="ManageCollections" asp-action="CollectionOverride">Collection override</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Period</th>
+                    <th class="govuk-table__header" scope="col">Open date</th>
+                    <th class="govuk-table__header" scope="col">Close date</th>
+                    <th class="govuk-table__header" scope="col">Task</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var returnPeriod in @Model.ReturnPeriods)
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">@returnPeriod.Name</th>
+                        <td class="govuk-table__cell">@returnPeriod.OpenDate.ToString("d MMMM")</td>
+                        <td class="govuk-table__cell">@returnPeriod.CloseDate.ToString("d MMMM")</td>
+                        <td class="govuk-table__cell"><a class="govuk-link hidden" is-editable-rp="@returnPeriod.IsLatestOrFuture" is-editable-rpid="@returnPeriod.ReturnPeriodId">Manage</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
