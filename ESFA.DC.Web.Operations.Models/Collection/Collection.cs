@@ -8,6 +8,8 @@ namespace ESFA.DC.Web.Operations.Models.Collection
 
         public string Name { get; set; }
 
+        public bool? ProcessingOverride { get; set; }
+
         public DateTime StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }

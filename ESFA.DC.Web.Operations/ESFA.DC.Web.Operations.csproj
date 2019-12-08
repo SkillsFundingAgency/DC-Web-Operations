@@ -262,6 +262,10 @@
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Client.Http" Version="2.0.0-preview13" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
   </ItemGroup>
 

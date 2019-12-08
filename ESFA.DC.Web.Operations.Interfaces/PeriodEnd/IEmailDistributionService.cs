@@ -15,8 +15,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<HttpRawResponse> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<bool> IsDuplicateGroupName(string groupName,
-            CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> IsDuplicateGroupName(string groupName, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> SaveEmailTemplate(EmailTemplate template, CancellationToken cancellationToken = default(CancellationToken));
 
