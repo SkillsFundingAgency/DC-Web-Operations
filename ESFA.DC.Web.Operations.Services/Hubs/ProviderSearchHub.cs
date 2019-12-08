@@ -10,9 +10,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
     public class ProviderSearchHub : Hub
     {
         private readonly IHubContext<ProviderSearchHub> _hubContext;
-        private readonly IAddNewProviderService _providerSearchService;
+        private readonly ISearchProviderService _providerSearchService;
 
-        public ProviderSearchHub(IHubContext<ProviderSearchHub> hubContext, IAddNewProviderService providerSearchService)
+        public ProviderSearchHub(IHubContext<ProviderSearchHub> hubContext, ISearchProviderService providerSearchService)
         {
             _hubContext = hubContext;
             _providerSearchService = providerSearchService;
@@ -20,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 
         public async Task<IEnumerable<ProviderSearchResult>> ProviderSearch(string query)
         {
-            return await _providerSearchService.GetProviderSearchResults(query);
+            return await _providerSearchService.GetNewProviderSearchResults(query);
         }
 
         public async Task<IEnumerable<ProviderSearchResult>> ProviderSearchExisting(string query)
