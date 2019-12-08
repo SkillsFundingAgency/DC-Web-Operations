@@ -11,12 +11,8 @@
             <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
             <form class="govuk-form-group">
                 <div id="tt-overlay">
-                    @*<div class="autocomplete__wrapper" role="combobox" aria-expanded="false">
-                        <input aria-owns="autocomplete-overlay__listbox" autocomplete="off" class="autocomplete__input autocomplete__input--default" id="autocomplete-overlay" name="input-autocomplete" placeholder="e.g Manchester, 12345678 or 098765" type="text" role="textbox">
-                    </div>*@
                     <div id="tt-overlay" class="autocomplete-wrapper"></div>
                 </div>
-                @*<button id="searchProviders" class="govuk-button"><img src="~/images/autocomplete-search-button.png"></button>*@
             </form>
         </div>
         <div class="govuk-grid-column-one-third">
@@ -171,8 +167,7 @@
 
         function populateProviderValues(result) {   
             var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
-            //window.location.href = url.replace('__ukprn__', result.ukprn);
-            window.open(manageProvidersUrl.replace('__ukprn__', result.ukprn),"_blank");
+            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);            
         }
 
         function inputValueTemplate(result) {
@@ -196,6 +191,7 @@
 
         var element = document.querySelector('#tt-overlay');
         var id = 'autocomplete-overlay';
+
         accessibleAutocomplete({
             element: element,
             id: id,
