@@ -9,16 +9,12 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
-            <form class="govuk-form-group">
-                <div id="tt-overlay">
-                    <div id="tt-overlay" class="autocomplete-wrapper"></div>
-                </div>
-            </form>
+            <vc:provider-search search-type="existing"></vc:provider-search>
         </div>
         <div class="govuk-grid-column-one-third">
             <div>
                 <a href="#">Advanced search</a>
-                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
+                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new {area = AreaNames.Provider})
             </div>
         </div>
     </div>
@@ -152,60 +148,10 @@
 
 @section PageScripts
 {
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
-    <script src="~/assets/minified/aspnet-validation.min.js"></script>
-
-    <script type="module">
-        import Client from '/assets/js/providerSearch/client.js';
-        import Hub from '/assets/js/hubs/providerSearchHub.js';
-
-        const hub = new Hub();
-        hub.startHub();
-
-        window.searchClient = new Client(hub.getConnection());
-
-        function populateProviderValues(result) {   
+    <script>
+        function searchProviderOnConfirm(result) {
             var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
-            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);            
+            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);
         }
-
-        function inputValueTemplate(result) {
-            return result && result.providerName
-        }
-
-        function suggestionTemplate(result) {
-            if (result.tradingName === result.providerName) {
-                return result && result.ukprn +
-                    ', ' + result.upin + ', ' +
-                    '<strong>' + result.providerName + '</strong>'              
-            }
-            else {
-                return result && result.ukprn +
-                    ', ' + result.upin + ', ' +
-                    '<strong>' + result.providerName + '</strong>' + '' +
-                    '<br/> <div class="govuk-!-font-size-14"> <i >' + result.tradingName + '</i>'
-                
-            }
-        }
-
-        var element = document.querySelector('#tt-overlay');
-        var id = 'autocomplete-overlay';
-
-        accessibleAutocomplete({
-            element: element,
-            id: id,
-            minLength: 3,
-            displayMenu: 'overlay',
-            confirmOnBlur: false,
-            onConfirm: populateProviderValues,
-            source: window.searchClient.providerSearchExisting.bind(window.searchClient),
-            templates: {
-                inputValue: inputValueTemplate,
-                suggestion: suggestionTemplate
-            },
-            placeholder: 'e.g Manchester, 12345678 or 098765'
-        });      
-
     </script>
 }

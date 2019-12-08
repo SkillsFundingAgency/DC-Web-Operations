@@ -1,0 +1,67 @@
+﻿@model string
+
+<form class="govuk-form-group">
+    <div id="tt-overlay">
+        <div id="tt-overlay" class="autocomplete-wrapper"></div>
+    </div>
+</form>
+
+
+<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/assets/minified/accessible-autocomplete.min.js"></script>
+<script src="~/assets/minified/aspnet-validation.min.js"></script>
+
+<script type="module">
+        import Client from '/assets/js/providerSearch/client.js';
+        import Hub from '/assets/js/hubs/providerSearchHub.js';
+
+        const hub = new Hub();
+        hub.startHub();
+
+        window.searchClient = new Client(hub.getConnection());
+
+        var element = document.querySelector('#tt-overlay');
+        var id = 'autocomplete-overlay';
+        var searchSource = "";
+
+        @if (Model.ToLower().Equals("existing"))
+        {
+            <text> searchSource = window.searchClient.providerSearchExisting.bind(window.searchClient)</text>
+        }
+        else
+        {
+            <text> searchSource = window.searchClient.providerSearch.bind(window.searchClient)</text>
+        }
+
+        function searchProviderInputValueTemplate(result) {
+            return result && result.providerName;
+        }
+
+        function searchProviderSuggestionTemplate(result) {
+            if (result.tradingName === result.providerName) {
+                return result && result.ukprn + ', ' + result.upin + ', ' +
+                    '<strong>' + result.providerName + '</strong>';
+            }
+            else {
+                return result && result.ukprn + ', ' + result.upin + ', ' +
+                    '<strong>' + result.providerName + '</strong>' + '' + '<br/> <div class="govuk-!-font-size-14"> <i >' +
+                    result.tradingName + '</i>';
+
+            }
+        }
+
+         accessibleAutocomplete({
+                element: element,
+                id: id,
+                minLength: 3,
+                displayMenu: 'overlay',
+                confirmOnBlur: false,
+                onConfirm: searchProviderOnConfirm,
+                source: searchSource,
+                templates: {
+                    inputValue: searchProviderInputValueTemplate,
+                    suggestion: searchProviderSuggestionTemplate
+                },
+                placeholder: 'e.g Manchester, 12345678 or 098765'
+         });    
+</script>

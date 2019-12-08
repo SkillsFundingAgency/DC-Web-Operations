@@ -44,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 await GetDataAsync($"{_baseUrl}/api/org/search/new/{query}", cancellationToken));
 
             var results = new List<ProviderSearchResult>();
-            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin)));
+            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName)));
 
             return results;
         }
