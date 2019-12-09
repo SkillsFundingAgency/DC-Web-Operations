@@ -24,7 +24,7 @@
         var id = 'autocomplete-overlay';
         var searchSource = "";
 
-        @if (Model.ToLower().Equals("existing"))
+        @if (Model.Equals("existing", StringComparison.OrdinalIgnoreCase))
         {
             <text> searchSource = window.searchClient.providerSearchExisting.bind(window.searchClient)</text>
         }
