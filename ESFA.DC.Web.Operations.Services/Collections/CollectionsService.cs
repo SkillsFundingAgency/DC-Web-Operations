@@ -16,7 +16,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
     public class CollectionsService : BaseHttpClientService, ICollectionsService
     {
         private readonly string _baseUrl;
-        private readonly string[] _collectionsTypesToExclude = { "REF", "PE" };
+        private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM" };
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public CollectionsService(
@@ -82,6 +82,30 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                     d.EndDateTimeUtc,
                     (d.StartDateTimeUtc <= now && d.EndDateTimeUtc >= now) || d.StartDateTimeUtc > now))
                 .ToList();
+        }
+
+        public async Task<ReturnPeriod> GetReturnPeriod(int id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.ReturnPeriod>(
+                await GetDataAsync($"{_baseUrl}/api/returnperiod/{id}", cancellationToken));
+
+            return new ReturnPeriod(data.ReturnPeriodId, $"R{data.PeriodNumber:00}", data.StartDateTimeUtc, data.EndDateTimeUtc)
+            {
+                CollectionName = data.CollectionName,
+                CollectionId = data.CollectionId
+            };
+        }
+
+        public async Task<bool> UpdateReturnPeriod(ReturnPeriod returnPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var returnPeriodDto = new CollectionsManagement.Models.ReturnPeriod()
+            {
+                ReturnPeriodId = returnPeriod.ReturnPeriodId,
+                StartDateTimeUtc = returnPeriod.OpenDate,
+                EndDateTimeUtc = returnPeriod.CloseDate
+            };
+
+            return (await SendDataAsyncRawResponse($"{_baseUrl}/api/returnperiod/update", returnPeriodDto, cancellationToken)).IsSuccess;
         }
     }
 }

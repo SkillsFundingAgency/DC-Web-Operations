@@ -42,6 +42,7 @@ namespace ESFA.DC.Web.Operations.Services
             var rawResponse = new HttpRawResponse()
             {
                 StatusCode = (int)response.StatusCode,
+                IsSuccess = response.IsSuccessStatusCode,
                 Content = await response.Content.ReadAsStringAsync()
             };
 

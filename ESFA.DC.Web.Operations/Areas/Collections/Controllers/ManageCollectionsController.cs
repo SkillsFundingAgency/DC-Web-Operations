@@ -80,13 +80,49 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
         [HttpGet("returnperiod/{id}")]
         public async Task<IActionResult> ManageReturnPeriod(int id)
         {
-            throw new NotImplementedException();
+            var returnPeriod = await _collectionsService.GetReturnPeriod(id);
+
+            var model = new ManageReturnPeriodViewModel()
+            {
+                ReturnPeriodId = id,
+                CollectionName = returnPeriod.CollectionName,
+                CollectionId = returnPeriod.CollectionId,
+                PeriodName = returnPeriod.Name,
+                OpeningDate = returnPeriod.OpenDate,
+                OpeningTime = returnPeriod.OpenDate.ToString("HH:mm"),
+                ClosingDate = returnPeriod.CloseDate,
+                ClosingTime = returnPeriod.CloseDate.ToString("HH:mm")
+            };
+
+            return View("IndividualPeriod", model);
         }
 
         [HttpGet]
         public async Task<IActionResult> CollectionOverride()
         {
             throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> IndividualCollectionsSubmit(ManageReturnPeriodViewModel model)
+        {
+            var startTimeSpan = TimeSpan.Parse(model.OpeningTime);
+            var endTimeSpan = TimeSpan.Parse(model.ClosingTime);
+
+            var returnPeriod = new ReturnPeriod()
+            {
+                ReturnPeriodId = model.ReturnPeriodId,
+                OpenDate = model.OpeningDate.Add(startTimeSpan),
+                CloseDate = model.ClosingDate.Add(endTimeSpan)
+            };
+
+            if (!await _collectionsService.UpdateReturnPeriod(returnPeriod))
+            {
+                ModelState.AddModelError("Summary", "Error updating return period.");
+                return View("IndividualPeriod", model);
+            }
+
+            return RedirectToAction("Index", new { collectionId = model.CollectionId });
         }
 
         private string SetOverrideValue(bool? processingOverride)

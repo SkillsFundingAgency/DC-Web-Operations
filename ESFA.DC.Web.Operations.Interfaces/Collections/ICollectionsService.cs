@@ -14,5 +14,9 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
         Task<Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReturnPeriod> GetReturnPeriod(int id, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<bool> UpdateReturnPeriod(ReturnPeriod returnPeriod, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

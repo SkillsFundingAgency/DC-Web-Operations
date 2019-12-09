@@ -1,0 +1,74 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Collections.Models.ManageReturnPeriodViewModel
+
+@{
+    ViewData["Title"] = "Manage Individual Collection";
+    ViewData[ViewDataConstants.BackLink] = "/" + @Model.CollectionId;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Manage @Model.CollectionName @Model.PeriodName</h1>
+    </div>
+</div>
+<br />
+
+<form asp-area="Collections" asp-controller="ManageCollections" asp-action="IndividualCollectionsSubmit" method="post">
+    <input asp-for="CollectionId" type="hidden" />
+    <input asp-for="ReturnPeriodId" type="hidden" />
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <div class="border-top ">
+                <h2 class="govuk-heading-m">Opening date</h2>
+                <input asp-for="OpeningDate" class="govuk-input" type="date" />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="OpeningDate" />
+                </span>
+            </div>
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <div class="border-top">
+                <h2 class="govuk-heading-m">Opening time</h2>
+                <input asp-for="OpeningTime" class="govuk-input" type="text" />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="OpeningTime" />
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <div class="border-top ">
+                <h2 class="govuk-heading-m">Closing date</h2>
+                <input asp-for="ClosingDate" class="govuk-input" type="date" />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="ClosingDate" />
+                </span>
+            </div>
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <div class="border-top">
+                <h2 class="govuk-heading-m">Closing time</h2>
+                <input asp-for="ClosingTime" class="govuk-input" type="text" />
+                <span class="govuk-error-message">
+                    <span asp-validation-for="ClosingTime" />
+                </span>
+            </div>
+        </div>
+    </div>
+    <br />
+    <button type="submit" id="submitButton" class="govuk-button">Save</button>
+</form>
+
+@section PageScripts
+{
+    <script src="~/assets/minified/aspnet-validation.min.js"></script>
+
+    <script type="module">
+        var v = new aspnetValidation.ValidationService();
+        v.bootstrap();
+
+    </script>
+}
