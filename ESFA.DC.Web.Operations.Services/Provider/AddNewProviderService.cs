@@ -38,17 +38,6 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, null);
         }
 
-        public async Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var data = _jsonSerializationService.Deserialize<Jobs.Model.ProviderSearchResult>(
-                await GetDataAsync($"{_baseUrl}/api/org/search/new/{query}", cancellationToken));
-
-            var results = new List<ProviderSearchResult>();
-            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin)));
-
-            return results;
-        }
-
         public async Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken = default)
         {
             var organisationDto = new Organisation() { Name = provider.Name, Ukprn = provider.Ukprn, IsMca = provider.IsMca.GetValueOrDefault() };
