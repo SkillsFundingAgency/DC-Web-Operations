@@ -9,10 +9,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
 {
     public interface ISearchProviderService
     {
+        Task<IEnumerable<ProviderSearchResult>> GetNewProviderSearchAsync(string query, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<ProviderSearchResult>> GetNewProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchAsync(string query, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

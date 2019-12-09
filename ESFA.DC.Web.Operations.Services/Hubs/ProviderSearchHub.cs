@@ -20,12 +20,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 
         public async Task<IEnumerable<ProviderSearchResult>> ProviderSearch(string query)
         {
-            return await _providerSearchService.GetNewProviderSearchResults(query);
+            return await _providerSearchService.GetNewProviderSearchAsync(query);
         }
 
         public async Task<IEnumerable<ProviderSearchResult>> ProviderSearchExisting(string query)
         {
-            return await _providerSearchService.GetExistingProviderSearchResults(query);
+            return await _providerSearchService.GetExistingProviderSearchAsync(query);
         }
     }
 }

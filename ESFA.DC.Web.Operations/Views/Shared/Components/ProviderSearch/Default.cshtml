@@ -38,7 +38,7 @@
         }
 
         function searchProviderSuggestionTemplate(result) {
-            if (result.tradingName === result.providerName) {
+            if (result.tradingName.trim() === result.providerName.trim()) {
                 return result && result.ukprn + ', ' + result.upin + ', ' +
                     '<strong>' + result.providerName + '</strong>';
             }

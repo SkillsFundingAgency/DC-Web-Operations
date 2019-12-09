@@ -29,7 +29,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<IEnumerable<ProviderSearchResult>> GetNewProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ProviderSearchResult>> GetNewProviderSearchAsync(string query, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<Jobs.Model.ProviderSearchResult>(
                 await GetDataAsync($"{_baseUrl}/api/org/search/new/{query}", cancellationToken));
@@ -40,7 +40,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return results;
         }
 
-        public async Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchResults(string query, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchAsync(string query, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<Jobs.Model.ProviderSearchResult>(
                 await GetDataAsync($"{_baseUrl}/api/org/search/existing/{query}", cancellationToken));
