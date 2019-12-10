@@ -6,148 +6,170 @@
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
 }
 
-        <div class="app-masthead">
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
-                    <form class="govuk-form-group">
-                        <div id="tt-overlay">
-                            <div class="autocomplete__wrapper" role="combobox" aria-expanded="false">
-                                <input aria-owns="autocomplete-overlay__listbox" autocomplete="off" class="autocomplete__input autocomplete__input--default" id="autocomplete-overlay" name="input-autocomplete" placeholder="e.g Manchester, 12345678 or 098765" type="text" role="textbox">
-                            </div>
-                        </div>
-                        <button id="searchProviders" class="govuk-button"><img src="~/images/autocomplete-search-button.png"></button>
-                    </form>
-                </div>
-                <div class="govuk-grid-column-one-third">
-                    <div>
-                        <a href="#">Advanced search</a>
-                        @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
+<div class="app-masthead">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
+            <form class="govuk-form-group">
+                <div id="tt-overlay">
+                    <div class="autocomplete__wrapper" role="combobox" aria-expanded="false">
+                        <input aria-owns="autocomplete-overlay__listbox" autocomplete="off" class="autocomplete__input autocomplete__input--default" id="autocomplete-overlay" name="input-autocomplete" placeholder="e.g Manchester, 12345678 or 098765" type="text" role="textbox">
                     </div>
                 </div>
+                <button id="searchProviders" class="govuk-button"><img src="~/images/autocomplete-search-button.png"></button>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div>
+                <a href="#">Advanced search</a>
+                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-xl">
-                    <span class="govuk-caption-m">Data Collections</span>
-                    Health check
-                </h1>
-            </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-m">Data Collections</span>
+            Health check
+        </h1>
+    </div>
 
-            <div class="govuk-grid-column-one-third">
-                <section class="info">
-                    <span class="govuk-heading-m no-margin-bottom">Average processing time</span>
-                    <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">Waiting...</span></h2>
-                    <span class="govuk-body-s" id="lastTime">Waiting...</span>
-                </section>
-            </div>
+    <div class="govuk-grid-column-one-third">
+        <section class="info">
+            <span class="govuk-heading-m no-margin-bottom">Average processing time</span>
+            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">Waiting...</span></h2>
+            <span class="govuk-body-s" id="lastTime">Waiting...</span>
+        </section>
+    </div>
+</div>
+
+<div class="govuk-grid-row grey-background">
+
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="jobs-processing">Jobs processing</a></h2>
+            <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <g class="circle-chart__info">
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">40</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Looking good</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="jobs-queued">Jobs queued</a></h2>
+            <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="secondCircle" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <g class="circle-chart__info">
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">50</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Feeling happy</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Submissions</a></h2>
+            <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="thirdCircle" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <g class="circle-chart__info">
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">35</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Super excited</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Queues</a></h2>
+            <canvas id="queueSystem" width="200" height="200"></canvas>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Topics</a></h2>
+            <canvas id="queueTopics" width="200" height="200"></canvas>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">ILR</a></h2>
+            <canvas id="queueIlr" width="200" height="200"></canvas>
+        </section>
+    </div>
+
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-l">Red zone</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="failed-today">Failed today</a></h2>
+            <span id="failedToday" class="govuk-heading-l no-margin-bottom">4</span>
         </div>
+    </div>
 
-        <div class="govuk-grid-row grey-background">
-
-
-            <div class="govuk-grid-column-one-third">
-                <section class="margin-bottom">
-                    <h2 class="govuk-heading-m centre-text"><a href="jobs-processing">Jobs processing</a></h2>
-                    <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                        <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                        <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                        <g class="circle-chart__info">
-                            <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">40</text>
-                            <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Looking good</text>
-                        </g>
-                    </svg>
-                </section>
-            </div>
-
-            <div class="govuk-grid-column-one-third">
-                <section class="margin-bottom">
-                    <h2 class="govuk-heading-m centre-text"><a href="jobs-queued">Jobs queued</a></h2>
-                    <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                        <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                        <circle id="secondCircle" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                        <g class="circle-chart__info">
-                            <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">50</text>
-                            <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Feeling happy</text>
-                        </g>
-                    </svg>
-                </section>
-            </div>
-
-            <div class="govuk-grid-column-one-third">
-                <section class="margin-bottom">
-                    <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Submissions</a></h2>
-                    <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                        <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                        <circle id="thirdCircle" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                        <g class="circle-chart__info">
-                            <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">35</text>
-                            <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Super excited</text>
-                        </g>
-                    </svg>
-                </section>
-            </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="slow-files">Slow files</a></h2>
+            <span id="slowFiles" class="govuk-heading-l no-margin-bottom">16</span>
+            <span class="govuk-body-s">Taking 20% longer than usual</span>
         </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-l">Red zone</h2>
-            </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="concerns">Concerns</a></h2>
+            <span id="concerns" class="govuk-heading-l no-margin-bottom">3</span>
+            <span class="govuk-body-s">Providers with rejected files and no successful submission this period</span>
         </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-third">
-                <div class="border-top">
-                    <h2 class="govuk-heading-m"><a class="" href="failed-today">Failed today</a></h2>
-                    <span id="failedToday" class="govuk-heading-l no-margin-bottom">4</span>
-                </div>
-            </div>
-
-            <div class="govuk-grid-column-one-third">
-                <div class="border-top">
-                    <h2 class="govuk-heading-m"><a class="" href="slow-files">Slow files</a></h2>
-                    <span id="slowFiles" class="govuk-heading-l no-margin-bottom">16</span>
-                    <span class="govuk-body-s">Taking 20% longer than usual</span>
-                </div>
-            </div>
-
-            <div class="govuk-grid-column-one-third">
-                <div class="border-top">
-                    <h2 class="govuk-heading-m"><a class="" href="concerns">Concerns</a></h2>
-                    <span id="concerns" class="govuk-heading-l no-margin-bottom">3</span>
-                    <span class="govuk-body-s">Providers with rejected files and no successful submission this period</span>
-                </div>
-            </div>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-l">Processing in detail</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m"><a class="" href="#">Current period</a></h2>
+            <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">40</span>
         </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-l">Processing in detail</h2>
-            </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m"><a class="" href="#">Last hour</a></h2>
+            <span id="lastHour" class="govuk-heading-l no-margin-bottom">7</span>
         </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-third">
-                <div class="border-top">
-                    <h2 class="govuk-heading-m"><a class="" href="#">Today</a></h2>
-                    <span id="today" class="govuk-heading-l no-margin-bottom">40</span>
-                </div>
-            </div>
+    </div>
 
-            <div class="govuk-grid-column-one-third">
-                <div class="border-top ">
-                    <h2 class="govuk-heading-m"><a class="" href="#">Last hour</a></h2>
-                    <span id="lastHour" class="govuk-heading-l no-margin-bottom">7</span>
-                </div>
-            </div>
-
-            <div class="govuk-grid-column-one-third">
-                <div class="border-top ">
-                    <h2 class="govuk-heading-m"><a class="" href="#">Last 5 minutes</a></h2>
-                    <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">18</span>
-                </div>
-            </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m"><a class="" href="#">Last 5 minutes</a></h2>
+            <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">18</span>
         </div>
+    </div>
+</div>
 
-        <br />
+<br />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
@@ -161,6 +183,7 @@
 @section PageScripts
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
     <script type="module">
         import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
@@ -179,7 +202,9 @@
                 jobStats: @Json.Serialize(Model.JobStats)
             };
 
-            dashBoardController.updatePage(data);
+            dashBoardController.updatePage(data);            
         })();
+
+
     </script>
 }

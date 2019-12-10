@@ -1,19 +1,16 @@
-﻿namespace ESFA.DC.Web.Operations.Models.Dashboard
+﻿using System.Collections.Generic;
+using ESFA.DC.Web.Operations.Models.Dashboard.Job;
+
+namespace ESFA.DC.Web.Operations.Models.Dashboard
 {
     public sealed class JobStatsModel
     {
-        public string AverageProcessingTime { get; set; }
+        public TodayStatsModel TodayStatsModel { get; set; }
 
-        public int JobsProcessing { get; set; }
+        public SlowFilesComparedToThreePreviousModel SlowFilesComparedToThreePreviousModel { get; set; }
 
-        public int JobsQueued { get; set; }
+        public IEnumerable<JobsCurrentPeriodModel> JobsCurrentPeriodModels { get; set; }
 
-        public int Submissions { get; set; }
-
-        public int FailedToday { get; set; }
-
-        public int SlowFiles { get; set; }
-
-        public int Concerns { get; set; }
+        public ConcernsModel ConcernsModel { get; set; }
     }
 }

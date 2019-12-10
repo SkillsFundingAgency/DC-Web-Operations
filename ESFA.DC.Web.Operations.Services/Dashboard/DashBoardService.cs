@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Models.Dashboard;
@@ -21,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.Dashboard
 
         public async Task<DashBoardModel> ProvideAsync(CancellationToken cancellationToken)
         {
-            Task<IEnumerable<ServiceBusStatusModel>> serviceBusStats = _serviceBusStatsService.ProvideAsync(cancellationToken);
+            Task<ServiceBusStatusModel> serviceBusStats = _serviceBusStatsService.ProvideAsync(cancellationToken);
             Task<JobStatsModel> jobStats = _jobService.ProvideAsync(cancellationToken);
 
             await Task.WhenAll(serviceBusStats, jobStats);

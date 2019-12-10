@@ -1,13 +1,14 @@
-﻿namespace ESFA.DC.Web.Operations.Models.Dashboard
+﻿using System.Collections.Generic;
+using ESFA.DC.Web.Operations.Models.Dashboard.ServiceBus;
+
+namespace ESFA.DC.Web.Operations.Models.Dashboard
 {
     public sealed class ServiceBusStatusModel
     {
-        public string Name { get; set; }
+        public IEnumerable<ServiceBusEntity> Queues { get; set; }
 
-        public long MessageCount { get; set; }
+        public IEnumerable<ServiceBusEntity> Topics { get; set; }
 
-        public long DeadLetterMessageCount { get; set; }
-
-        public long TransferCount { get; set; }
+        public IEnumerable<ServiceBusEntity> Ilr { get; set; }
     }
 }

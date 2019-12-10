@@ -6057,42 +6057,6 @@ html {
   .grid {
     grid-template-columns: repeat(2, 1fr); } }
 
-#firstCircle {
-    stroke: #28a197;
-}
-
-#firstCircle.warning {
-    stroke: #f47738;
-}
-
-#firstCircle.danger {
-    stroke: #b10e1e;
-}
-
-#secondCircle {
-    stroke: #28a197;
-}
-
-#secondCircle.warning {
-    stroke: #f47738;
-}
-
-#secondCircle.danger {
-    stroke: #b10e1e;
-}
-
-#thirdCircle {
-    stroke: #28a197;
-}
-
-#thirdCircle.warning {
-    stroke: #f47738;
-}
-
-#thirdCircle.danger {
-    stroke: #b10e1e;
-}
-
 .align-right {
   position: absolute;
   right: 50px; }

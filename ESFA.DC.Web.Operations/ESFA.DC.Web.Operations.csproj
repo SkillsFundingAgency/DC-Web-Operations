@@ -293,6 +293,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>
 
