@@ -51,8 +51,8 @@
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th class="govuk-table__header" scope="col">Period</th>
-                    <th class="govuk-table__header" scope="col">Open date</th>
-                    <th class="govuk-table__header" scope="col">Close date</th>
+                    <th class="govuk-table__header" scope="col">Open date/time</th>
+                    <th class="govuk-table__header" scope="col">Close date/time</th>
                     <th class="govuk-table__header" scope="col">Task</th>
                 </tr>
             </thead>
@@ -61,8 +61,8 @@
                 {
                     <tr class="govuk-table__row">
                         <th class="govuk-table__header" scope="row">@returnPeriod.Name</th>
-                        <td class="govuk-table__cell">@returnPeriod.OpenDate.ToString("d MMMM")</td>
-                        <td class="govuk-table__cell">@returnPeriod.CloseDate.ToString("d MMMM")</td>
+                        <td class="govuk-table__cell">@returnPeriod.OpenDate.ToString("d MMMM HH:mm")</td>
+                        <td class="govuk-table__cell">@returnPeriod.CloseDate.ToString("d MMMM HH:mm")</td>
                         <td class="govuk-table__cell"><a class="govuk-link hidden" is-editable-rp="@returnPeriod.IsLatestOrFuture" is-editable-rpid="@returnPeriod.ReturnPeriodId">Manage</a></td>
                     </tr>
                 }
