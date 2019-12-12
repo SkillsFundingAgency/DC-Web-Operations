@@ -37,9 +37,9 @@
                     <div class="govuk-grid-column-one-third">
                         <div class="border-top ">
                             <h2 class="govuk-heading-m "><a class="govuk-link" asp-controller="ManageCollections" asp-area="Collections" asp-action="Index" asp-route-collectionId="@collection.CollectionId" >@collection.CollectionName</a></h2>
-                            <span class="govuk-body-s">Submissions @(@collection.IsCollectionEnabled ? "enabled" : "closed")</span><br>
+                            <span class="govuk-body-s">Submissions @(@collection.IsCollectionEnabled ? "open" : "closed")</span><br>
                             <span class="govuk-body-s">@(@collection.IsCollectionEnabled ? "Current period" : "Last period") @collection.CollectionCurrentOrLastPeriod</span><br>
-                            <span class="govuk-body-s">Closing on @collection.CollectionClosedDate.Value.ToString("dd MMMM")</span>
+                            <span class="govuk-body-s">@(@collection.IsCollectionEnabled ? "Closing on" : "Closed on") @collection.CollectionClosedDate.Value.ToString("dd MMMM")</span>
                         </div>
                     </div>
                 }
