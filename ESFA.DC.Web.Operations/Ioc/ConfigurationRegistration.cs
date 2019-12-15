@@ -28,6 +28,10 @@ namespace ESFA.DC.Web.Operations.Ioc
                 .As<ApiSettings>().SingleInstance();
 
             builder.Register(c =>
+                    configuration.GetConfigSection<CloudStorageSettings>())
+                .As<CloudStorageSettings>().SingleInstance();
+
+            builder.Register(c =>
                 configuration.GetConfigSection<AzureStorageFileServiceConfiguration>("AzureStorageSection"))
                 .As<IAzureStorageFileServiceConfiguration>().SingleInstance();
 

@@ -13,5 +13,11 @@ namespace ESFA.DC.Web.Operations.Models.Collection
         public DateTime StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
+        public string ContainerName { get; set; }
+
+        public bool IsOpen { get; set; }
+
+        public int CollectionYear { get; set; }
     }
 }

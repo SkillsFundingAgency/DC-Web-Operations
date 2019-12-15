@@ -67,6 +67,22 @@ namespace ESFA.DC.Web.Operations.Services.Collections
             };
         }
 
+        public async Task<Collection> GetCollectionAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+                await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
+
+            return new Collection()
+            {
+                Name = data.CollectionTitle,
+                Id = data.CollectionId,
+                ProcessingOverride = data.ProcessingOverride,
+                ContainerName = data.StorageReference,
+                IsOpen = data.IsOpen,
+                CollectionYear = data.CollectionYear
+            };
+        }
+
         public async Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.ReturnPeriod>>(

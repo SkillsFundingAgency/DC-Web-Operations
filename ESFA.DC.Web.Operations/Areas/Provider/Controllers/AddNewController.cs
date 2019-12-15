@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
+using ESFA.DC.Web.Operations.Constants;
+using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Job;
+using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
@@ -15,11 +24,18 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
     public class AddNewController : Controller
     {
         private readonly ILogger _logger;
+        private readonly ICollectionsService _collectionService;
+        private readonly IStorageService _storageService;
+        private readonly CloudStorageSettings _cloudStorageSettings;
+        private readonly IStreamableKeyValuePersistenceService _keyValuePersistenceService;
         private readonly IAddNewProviderService _addNewProviderService;
 
-        public AddNewController(ILogger logger, IAddNewProviderService addNewProviderService)
+        public AddNewController(ILogger logger, IAddNewProviderService addNewProviderService, ICollectionsService collectionService, IStorageService storageService, CloudStorageSettings cloudStorageSettings)
         {
             _logger = logger;
+            _collectionService = collectionService;
+            _storageService = storageService;
+            _cloudStorageSettings = cloudStorageSettings;
             _addNewProviderService = addNewProviderService;
         }
 
@@ -51,9 +67,60 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> LoadBulk()
+        public async Task<IActionResult> BulkUpload()
         {
-            return View("Index");
+            return View("BulkUpload");
+        }
+
+        [HttpPost]
+        [RequestSizeLimit(524_288_000)]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> BulkUpload(string collectionName, IFormFile file)
+        {
+            var fileName = Path.GetFileName(file?.FileName);
+            //var validationResult = await _fileNameValidationService.ValidateFileNameAsync(collectionName, fileName?.ToUpper(), file?.Length, Ukprn);
+
+            //if (validationResult.ValidationResult != FileNameValidationResult.Valid)
+            //{
+            //    AddError(ErrorMessageKeys.Submission_FileFieldKey, validationResult.FieldError);
+            //    AddError(ErrorMessageKeys.ErrorSummaryKey, validationResult.SummaryError);
+
+            //    Logger.LogWarning($"User uploaded invalid file with name :{fileName}");
+            //    var lastSubmission = await GetLastSubmission(collectionName);
+            //    return View(lastSubmission);
+            //}
+
+            long jobId;
+
+            var collection = await _collectionService.GetCollectionAsync(collectionName);
+            if (collection == null || !collection.IsOpen)
+            {
+                _logger.LogWarning($"collection {collectionName} is not open/available, but file is being uploaded");
+                throw new ArgumentOutOfRangeException(collectionName);
+            }
+
+            // do we need a period?
+            var period = 0; // await GetCurrentPeriodAsync(collectionName);
+
+            // push file to Storage
+            await (await _storageService.GetAzureStorageReferenceService(_cloudStorageSettings.ConnectionString, collection.ContainerName)).SaveAsync(fileName, file?.OpenReadStream());
+
+            // add to the queue
+            jobId = await _addNewProviderService.SubmitJob(new Job
+            {
+                CollectionName = collectionName,
+                Ukprn = 1,
+                FileName = fileName,
+                FileSizeBytes = file.Length,
+                SubmittedBy = User.Name(),
+                Period = period,
+                NotifyEmail = User.Email(),
+                StorageReference = collection.ContainerName,
+                CollectionYear = collection.CollectionYear,
+                TermsAccepted = true
+            });
+
+            return RedirectToAction("BulkUpload");
         }
 
         [HttpPost]
@@ -64,7 +131,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                return RedirectToAction("Index");
            }
 
-           return RedirectToAction("LoadBulk");
+           return RedirectToAction("BulkUpload");
         }
 
         [HttpPost]
