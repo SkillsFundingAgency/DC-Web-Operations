@@ -49,14 +49,28 @@
             }
         }
 
-         accessibleAutocomplete({
+         function debounce(fn, delay) {
+              var timer = null;
+              return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                  fn.apply(context, args);
+                }, delay);
+              };
+        }
+
+             accessibleAutocomplete({
                 element: element,
                 id: id,
                 minLength: 3,
                 displayMenu: 'overlay',
-                confirmOnBlur: false,
+                 confirmOnBlur: false,
+                showNoOptionsFound: false,
                 onConfirm: searchProviderOnConfirm,
-                source: searchSource,
+                source: debounce(function (query, populateResults) {
+                searchSource(query, populateResults)
+            },200),
                 templates: {
                     inputValue: searchProviderInputValueTemplate,
                     suggestion: searchProviderSuggestionTemplate
