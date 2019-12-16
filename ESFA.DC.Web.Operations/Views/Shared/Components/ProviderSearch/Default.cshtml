@@ -60,7 +60,7 @@
               };
         }
 
-         accessibleAutocomplete({
+     accessibleAutocomplete({
             element: element,
             id: id,
             minLength: 3,
@@ -68,13 +68,11 @@
             confirmOnBlur: false,
             showNoOptionsFound: false,
             onConfirm: searchProviderOnConfirm,
-            source: debounce(function (query, populateResults) {
-            searchSource(query, populateResults)
-        },200),
+            source: debounce(searchSource, 200),
             templates: {
                 inputValue: searchProviderInputValueTemplate,
                 suggestion: searchProviderSuggestionTemplate
             },
             placeholder: 'e.g Manchester, 12345678 or 098765'
-        });
+     });       
 </script>
