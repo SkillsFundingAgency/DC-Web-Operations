@@ -5,5 +5,6 @@
         public const string ILR = "ILR";
         public const string EAS = "EAS";
         public const string ESF = "ESF";
+        public const string FRM = "FRM";
     }
 }
