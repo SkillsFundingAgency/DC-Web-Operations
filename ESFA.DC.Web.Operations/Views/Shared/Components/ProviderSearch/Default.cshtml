@@ -60,19 +60,19 @@
               };
         }
 
-     accessibleAutocomplete({
-            element: element,
-            id: id,
-            minLength: 3,
-            displayMenu: 'overlay',
-            confirmOnBlur: false,
-            showNoOptionsFound: false,
-            onConfirm: searchProviderOnConfirm,
-            source: debounce(searchSource, 200),
-            templates: {
-                inputValue: searchProviderInputValueTemplate,
-                suggestion: searchProviderSuggestionTemplate
-            },
-            placeholder: 'e.g Manchester, 12345678 or 098765'
-     });       
+         accessibleAutocomplete({
+                element: element,
+                id: id,
+                minLength: 3,
+                displayMenu: 'overlay',
+                confirmOnBlur: false,
+                showNoOptionsFound: false,
+                onConfirm: searchProviderOnConfirm,
+                source: debounce(searchSource, 200),
+                templates: {
+                    inputValue: searchProviderInputValueTemplate,
+                    suggestion: searchProviderSuggestionTemplate
+                },
+                placeholder: 'e.g Manchester, 12345678 or 098765'
+         });       
 </script>
