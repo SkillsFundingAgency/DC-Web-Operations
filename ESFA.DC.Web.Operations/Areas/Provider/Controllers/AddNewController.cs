@@ -15,27 +15,38 @@ using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
     public class AddNewController : Controller
     {
+        private const string TemplatesPath = @"\\templates";
+        private const string BulkUploadFileName = @"MultipleProviderAssignmentsTemplate.xlsx";
         private readonly ILogger _logger;
         private readonly ICollectionsService _collectionService;
         private readonly IStorageService _storageService;
         private readonly CloudStorageSettings _cloudStorageSettings;
-        private readonly IStreamableKeyValuePersistenceService _keyValuePersistenceService;
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IAddNewProviderService _addNewProviderService;
 
-        public AddNewController(ILogger logger, IAddNewProviderService addNewProviderService, ICollectionsService collectionService, IStorageService storageService, CloudStorageSettings cloudStorageSettings)
+        public AddNewController(
+            ILogger logger,
+            IAddNewProviderService addNewProviderService,
+            ICollectionsService collectionService,
+            IStorageService storageService,
+            CloudStorageSettings cloudStorageSettings,
+            IHostingEnvironment hostingEnvironment)
         {
             _logger = logger;
             _collectionService = collectionService;
             _storageService = storageService;
             _cloudStorageSettings = cloudStorageSettings;
+            _hostingEnvironment = hostingEnvironment;
             _addNewProviderService = addNewProviderService;
         }
 
@@ -121,6 +132,17 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             });
 
             return RedirectToAction("BulkUpload");
+        }
+
+        public FileResult DownloadTemplate()
+        {
+            string templatesPath = _hostingEnvironment.WebRootPath + TemplatesPath;
+            IFileProvider provider = new PhysicalFileProvider(templatesPath);
+            IFileInfo fileInfo = provider.GetFileInfo(BulkUploadFileName);
+            var readStream = fileInfo.CreateReadStream();
+            var mimeType = "application/vnd.ms-excel";
+
+            return File(readStream, mimeType, BulkUploadFileName);
         }
 
         [HttpPost]
