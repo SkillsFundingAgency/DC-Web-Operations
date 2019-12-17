@@ -7,41 +7,31 @@
 
 }
 
-<div class="govuk-grid-row">
-    <fieldset class="govuk-fieldset" aria-describedby="citizenship-conditional-hint">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-x1">Do you want to Validate your FRM reports?</h1>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="name"></label>
-                @using (Html.BeginForm())
-                {
-                    <div class="govuk-form-group">
-                        <label class="govuk-label" for="FrmYearPeriod">
-                            Year of Reports
-                        </label>
-                        @Html.TextBoxFor(model => model.FrmYearPeriod, new { @class = "govuk-input govuk-input--width-4", id = "frm", @type = "text" })
-                        <span class="govuk-error-message">
-                            <span asp-validation-for="FrmYearPeriod"></span>
-                        </span>
-                        <label class="govuk-label">
-                            Start date
-                        </label>
-                        @Html.TextBoxFor(model => model.FrmDate, "{0:yyyy-MM-dd}", new { @class = "govuk-input govuk-!-width-one-third", id = "FrmDate", @type = "date", placeholder = "DD/MM/YYYY" })
-                        <span class="govuk-error-message">
-                            <span asp-validation-for="FrmDate"></span>
-                        </span>
-                    </div>
 
-                    <button type="submit" class="govuk-button" formaction="SubmitFrm">Validate</button>
+    <div class="govuk-grid-row">
+        <label class="govuk-label" for="FrmYearPeriod">
+            Year of Reports
+        </label>
+        @Html.TextBoxFor(model => model.FrmYearPeriod, new { @class = "govuk-input govuk-input--width-4", id = "frm", @type = "text" })
+        <span class="govuk-error-message">
+            <span asp-validation-for="FrmYearPeriod"></span>
+        </span>
+        <label class="govuk-label">
+            Start date
+        </label>
+        @Html.TextBoxFor(model => model.FrmDate, "{0:yyyy-MM-dd}", new { @class = "govuk-input govuk-!-width-one-third", id = "FrmDate", @type = "date", placeholder = "DD/MM/YYYY" })
+        <span class="govuk-error-message">
+            <span asp-validation-for="FrmDate"></span>
+        </span>
+    </div>
+    <br />
+    <button type="submit" id="submitButton" class="govuk-button" formaction="FrmSubmit">Validate</button>
 
-                }
 
-            </div>
 
-        </div>
-    </fieldset>
 
-</div>
+
+
 
 <p>
     <div class="govuk-link"><a asp-action="Index">Cancel</a></div>
@@ -55,4 +45,4 @@
         var v = new aspnetValidation.ValidationService();
         v.bootstrap();
     </script>
-        }
+}

@@ -24,14 +24,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return View("SelectValidate");
         }
 
+        [HttpPost]
         public async Task<IActionResult> SubmitFrm(FrmReportModel model)
         {
-            if (ModelState.IsValid)
-            {
-                return View("HoldingPage");
-            }
-
-            return View("Index");
+            Console.WriteLine("huh");
+            return View("HoldingPage");
         }
 
         [HttpPost]
