@@ -127,8 +127,8 @@
 <script language="javascript">
 
     function changePeriodButton() {
-        var yearValue = document.getElementById("year");
-        var periodValue = document.getElementById("period");
+        var yearValue = document.getElementById("year").value;
+        var periodValue = document.getElementById("period").value;
 
         window.location.href = "/reports/Index/" + reportValue + "/" + yearValue + "/" + periodValue;
         event.preventDefault();
