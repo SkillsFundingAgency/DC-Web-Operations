@@ -1,0 +1,148 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Utils
+
+@model ESFA.DC.Web.Operations.Areas.Reports.Models.ReportsViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/Home";
+}
+
+<form>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
+            <br />
+            <h2 class="govuk-heading-l">Period: @Model.CollectionYear R@(Model?.CollectionPeriod.ToString().PadLeft(2, '0'))</h2>
+            <input type="hidden" name="year" id="year" value=@Model.CollectionYear />
+            <input type="hidden" name="period" id="period" value=@Model.CollectionPeriod />
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            Change period to:
+                            <select asp-for="CollectionYear">
+                                <option value="1920">1920</option>
+                            </select>
+
+                            <select asp-for="CollectionPeriod">
+                                <option value="1">R01</option>
+                                <option value="2">R02</option>
+                                <option value="3">R03</option>
+                                <option value="4">R04</option>
+                                <option value="5">R05</option>
+                                <option value="6">R06</option>
+                                <option value="7">R07</option>
+                                <option value="8">R08</option>
+                                <option value="9">R09</option>
+                                <option value="10">R10</option>
+                                <option value="11">R11</option>
+                                <option value="12">R12</option>
+                            </select>
+
+                            @*<input type="hidden" name="ReportAction" id="ReportAction" value=@ReportActions.ChangeReportPeriod />*@
+                            <button id="changePeriod" onclick="changePeriodButton()">Change period</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Internal Reports</h2>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="col">Report name</th>
+                        <th class="govuk-table__header" scope="col">Download</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @if (Model?.Reports != null && Model.Reports.Any())
+                    {
+                        foreach (var reportDetail in Model.Reports.Where(rd => !string.IsNullOrEmpty(rd.Url)))
+                        {
+                            if (!string.IsNullOrEmpty(reportDetail?.DisplayName)
+                                && !string.IsNullOrEmpty(reportDetail?.Url))
+                            {
+                                var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                                    <td class="govuk-table__cell">
+                                        @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.CollectionYear, fileName = reportDetail.Url })
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(@ViewBag.Error))
+    {
+        <div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h4 class="govuk-error-message">The following error occured during processing: <br /><br />@ViewBag.Error</h4>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            Create new report for:
+                            <select asp-for="ReportType">
+                                <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
+                                <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
+                                <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
+                                <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
+                                <option value="InternalDataMatchReport">Internal Data Match Report</option>
+                                <option value="ACTCountReport">ACT Count Report</option>
+                            </select>
+
+                            <button id="createReport" onclick="createReportButton();">Create report</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+<script language="javascript">
+
+    function changePeriodButton() {
+        var yearValue = document.getElementById("year");
+        var periodValue = document.getElementById("period");
+
+        window.location.href = "/reports/Index/" + reportValue + "/" + yearValue + "/" + periodValue;
+        event.preventDefault();
+        return false;
+    }
+
+    function createReportButton() {
+        var reportValue = document.getElementById("ReportType").value;
+        var yearValue = document.getElementById("year").value;
+        var periodValue = document.getElementById("period").value;
+
+        window.location.href = "/reports/RunReport/" + reportValue + "/" + yearValue + "/" + periodValue;
+        event.preventDefault();
+        return false;
+    }
+</script>
+

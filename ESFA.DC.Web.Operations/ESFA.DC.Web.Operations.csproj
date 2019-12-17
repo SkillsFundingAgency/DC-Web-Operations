@@ -284,6 +284,9 @@
     <Content Update="appsettings.salman.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="appsettings.administrator.administrator.json">
+      <DependentUpon>appsettings.administrator.json</DependentUpon>
+    </Content>
     <Content Update="wwwroot\assets\js\hubs\periodEndPrepHub.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

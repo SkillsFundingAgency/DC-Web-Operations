@@ -1,0 +1,33 @@
+﻿@model ESFA.DC.Web.Operations.Areas.Reports.Models.ReportsViewModel
+
+<meta http-equiv="refresh" content="5">
+
+@{
+    ViewData["Title"] = "Processing Report";
+}
+
+
+<h1 class="govuk-heading-xl">
+    Processing report
+</h1>
+
+<div class="govuk-panel__body govuk-!-font-size-18">
+    Creating @Model.ReportType for collection period: @Model.CollectionYear R@(Model?.CollectionPeriod.ToString().PadLeft(2, '0'))
+</div>
+<br />
+<br />
+<br />
+
+<div class="govuk-heading-m centre-text">
+    <img src="~/assets/images/loading-spinner.gif" width="80px" alt="loading" />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+

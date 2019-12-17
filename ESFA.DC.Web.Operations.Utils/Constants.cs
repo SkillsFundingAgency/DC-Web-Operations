@@ -17,5 +17,6 @@
         public const string Action_PeriodClosedButton = "PeriodClosedState";
 
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
+        public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
     }
 }
