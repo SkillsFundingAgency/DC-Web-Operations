@@ -50,8 +50,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         {
             if (!jobId.HasValue)
             {
-                string errorMessage = ErrorMessageHelper.CreateErrorMessage($"Missing 'jobId' parameter");
-                throw new Exception(errorMessage);
+                throw new Exception("Missing 'jobId' parameter");
             }
 
             string url = $"{_baseUrl}/api/job/{jobId}/status";

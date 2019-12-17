@@ -106,7 +106,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return RedirectToAction("ProcessingReport", "Reports", new { area = AreaNames.Reports, ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod, JobId = jobId });
         }
 
-        [HttpGet("GetReportFile/{collectionYear}/{*fileName}")]
+        [HttpGet("GetReportFile/{collectionYear}/{*fileName}/{downloadName?}")]
         public async Task<FileResult> GetReportFile(int collectionYear, string fileName, string downloadName = "")
         {
             try
