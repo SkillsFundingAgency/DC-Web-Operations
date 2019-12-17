@@ -41,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             ReportsViewModel reportsViewModel = new ReportsViewModel();
 
             // validate parameters
-            if (collectionYear.HasValue && collectionYear.Value == 1920 && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 12)
+            if (collectionYear.HasValue && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 14)
             {
                 reportsViewModel.CollectionYear = collectionYear.Value;
                 reportsViewModel.CollectionPeriod = collectionPeriod.Value;
