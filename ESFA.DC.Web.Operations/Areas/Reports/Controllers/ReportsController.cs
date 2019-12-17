@@ -53,14 +53,14 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 
                 if (currentYearPeriod == null)
                 {
-                    string errorMessage = ErrorMessageHelper.CreateErrorMessage($"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}");
+                    string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                     _logger.LogError(errorMessage);
                     throw new Exception(errorMessage);
                 }
 
                 if (!currentYearPeriod.Year.HasValue)
                 {
-                    string errorMessage = ErrorMessageHelper.CreateErrorMessage($"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}");
+                    string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
 
                     _logger.LogError(errorMessage);
                     throw new Exception(errorMessage);
@@ -90,7 +90,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 var currentYearPeriod = await _periodService.ReturnPeriod();
                 if (currentYearPeriod?.Year == null)
                 {
-                    string errorMessage = ErrorMessageHelper.CreateErrorMessage($"Call to get current return period failed in request {reportType} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}");
+                    string errorMessage = $"Call to get current return period failed in request {reportType} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                     _logger.LogError(errorMessage);
                     throw new Exception(errorMessage);
                 }
@@ -106,7 +106,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return RedirectToAction("ProcessingReport", "Reports", new { area = AreaNames.Reports, ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod, JobId = jobId });
         }
 
-        [HttpGet("GetReportFile/{collectionYear}/{*fileName}/{downloadName?}")]
+        [HttpGet("GetReportFile/{collectionYear}/{fileName}/{downloadName?}")]
         public async Task<FileResult> GetReportFile(int collectionYear, string fileName, string downloadName = "")
         {
             try
@@ -131,7 +131,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         {
             if (string.IsNullOrEmpty(reportAction))
             {
-                string errorMessage = ErrorMessageHelper.CreateErrorMessage($"Missing 'reportAction' parameter for 'reportAction' in request {reportType} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}");
+                string errorMessage = $"Missing 'reportAction' parameter for 'reportAction' in request {reportType} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                 _logger.LogError(errorMessage);
                 throw new Exception(errorMessage);
             }
@@ -155,7 +155,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                     {
                         case JobStatusType.Failed:
                         case JobStatusType.FailedRetry:
-                            string errorMessage = ErrorMessageHelper.CreateErrorMessage($"GetReportStatus returned jobStatusType = '{reportViewModel.ReportStatus}' for job '{jobId}'");
+                            string errorMessage = $"The report status was '{reportViewModel.ReportStatus}' for job '{jobId}'";
                             _logger.LogError(errorMessage);
                             TempData["Error"] = errorMessage;
 
