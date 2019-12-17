@@ -79,7 +79,8 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 ProcessingOverride = data.ProcessingOverride,
                 ContainerName = data.StorageReference,
                 IsOpen = data.IsOpen,
-                CollectionYear = data.CollectionYear
+                CollectionYear = data.CollectionYear,
+                FileNameRegex = data.FileNameRegex
             };
         }
 

@@ -11,7 +11,5 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
         Task<Models.Provider.Provider> GetProvider(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken);
-
-        Task<long> SubmitJob(Models.Job.Job submittedJob, CancellationToken cancellationToken = default);
     }
 }

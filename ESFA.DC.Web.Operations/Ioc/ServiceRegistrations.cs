@@ -8,6 +8,7 @@ using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
@@ -49,6 +50,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ManageProvidersService>().As<IManageProvidersService>().InstancePerLifetimeScope();
             builder.RegisterType<ManageAssignmentsService>().As<IManageAssignmentsService>().InstancePerLifetimeScope();
             builder.RegisterType<CollectionsService>().As<ICollectionsService>().InstancePerLifetimeScope();
+            builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
+            builder.RegisterType<FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().InstancePerLifetimeScope();
 

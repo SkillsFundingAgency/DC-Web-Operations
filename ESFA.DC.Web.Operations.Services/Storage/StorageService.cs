@@ -50,7 +50,7 @@ namespace ESFA.DC.Web.Operations.Services.Storage
 
         public async Task<IStreamableKeyValuePersistenceService> GetAzureStorageReferenceService(string connectionString, string containerName)
         {
-            var config = new CloudStorageSettings
+            var config = new OpsDataLoadServiceConfigSettings
             {
                 ConnectionString = connectionString,
                 ContainerName = containerName,

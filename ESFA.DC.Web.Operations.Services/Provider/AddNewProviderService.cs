@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
-using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Settings.Models;
-using MoreLinq;
 using Organisation = ESFA.DC.CollectionsManagement.Models.Organisation;
-using ProviderSearchResult = ESFA.DC.Web.Operations.Models.Provider.ProviderSearchResult;
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {
@@ -44,35 +39,6 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         {
             var organisationDto = new Organisation() { Name = provider.Name, Ukprn = provider.Ukprn, IsMca = provider.IsMca.GetValueOrDefault() };
             return await SendDataAsyncRawResponse($"{_baseUrl}/api/org/add", organisationDto, cancellationToken);
-        }
-
-        public async Task<long> SubmitJob(Models.Job.Job submittedJob, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(submittedJob?.FileName))
-            {
-                throw new ArgumentException("submission message should have file name");
-            }
-
-            var job = new FileUploadJob()
-            {
-                Ukprn = submittedJob.Ukprn,
-                Priority = 1,
-                Status = JobStatusType.Ready,
-                CreatedBy = submittedJob.SubmittedBy,
-                FileName = submittedJob.FileName,
-                IsFirstStage = true,
-                StorageReference = submittedJob.StorageReference,
-                FileSize = submittedJob.FileSizeBytes,
-                CollectionName = submittedJob.CollectionName,
-                PeriodNumber = submittedJob.Period,
-                NotifyEmail = submittedJob.NotifyEmail,
-                TermsAccepted = submittedJob.TermsAccepted,
-            };
-
-            var response = await SendDataAsync($"{_baseUrl}/job", job, cancellationToken);
-            long.TryParse(response, out var result);
-
-            return result;
         }
     }
 }

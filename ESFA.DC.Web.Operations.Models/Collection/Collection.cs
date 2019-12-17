@@ -19,5 +19,7 @@ namespace ESFA.DC.Web.Operations.Models.Collection
         public bool IsOpen { get; set; }
 
         public int CollectionYear { get; set; }
+
+        public string FileNameRegex { get; set; }
     }
 }
