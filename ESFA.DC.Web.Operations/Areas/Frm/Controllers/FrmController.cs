@@ -28,7 +28,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             if (ModelState.IsValid)
             {
-                return View("Index");
+                return View("HoldingPage");
             }
 
             return View("Index");
