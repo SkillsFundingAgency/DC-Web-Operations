@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
@@ -130,13 +132,12 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
         public FileResult DownloadTemplate()
         {
-            string templatesPath = _hostingEnvironment.WebRootPath + TemplatesPath;
-            IFileProvider provider = new PhysicalFileProvider(templatesPath);
-            IFileInfo fileInfo = provider.GetFileInfo(BulkUploadFileName);
-            var readStream = fileInfo.CreateReadStream();
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(BulkUploadFileName));
+            var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
             var mimeType = "application/vnd.ms-excel";
 
-            return File(readStream, mimeType, BulkUploadFileName);
+            return File(manifestResourceStream, mimeType, BulkUploadFileName);
         }
 
         [HttpPost]

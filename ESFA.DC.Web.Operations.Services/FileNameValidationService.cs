@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -58,32 +59,32 @@ namespace ESFA.DC.Web.Operations.Services
 
         public FileNameValidationResultModel ValidateExtension(string extension, string errorMessage)
         {
-            if (!FileNameExtensions.Contains(extension.ToUpperInvariant()))
+            if (FileNameExtensions.Contains(extension.ToUpperInvariant(), StringComparer.OrdinalIgnoreCase))
             {
-                return new FileNameValidationResultModel()
-                {
-                    ValidationResult = FileNameValidationResult.InvalidFileExtension,
-                    FieldError = errorMessage,
-                    SummaryError = errorMessage
-                };
+                return null;
             }
 
-            return null;
+            return new FileNameValidationResultModel()
+            {
+                ValidationResult = FileNameValidationResult.InvalidFileExtension,
+                FieldError = errorMessage,
+                SummaryError = errorMessage
+            };
         }
 
         public FileNameValidationResultModel ValidateRegex(string filenameRegex, string fileName, string errorMessage)
         {
-            if (!Regex.IsMatch(fileName, filenameRegex))
+            if (Regex.IsMatch(fileName, filenameRegex))
             {
-                return new FileNameValidationResultModel()
-                {
-                    ValidationResult = FileNameValidationResult.InvalidFileExtension,
-                    FieldError = errorMessage,
-                    SummaryError = errorMessage
-                };
+                return null;
             }
 
-            return null;
+            return new FileNameValidationResultModel()
+            {
+                ValidationResult = FileNameValidationResult.InvalidFileExtension,
+                FieldError = errorMessage,
+                SummaryError = errorMessage
+            };
         }
     }
 }
