@@ -27,27 +27,27 @@ namespace ESFA.DC.Web.Operations.Services
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<long> SubmitJob(Models.Job.Job submittedJob, CancellationToken cancellationToken = default)
+        public async Task<long> SubmitJob(Models.Job.JobSubmission submittedJobSubmission, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(submittedJob?.FileName))
+            if (string.IsNullOrEmpty(submittedJobSubmission?.FileName))
             {
                 throw new ArgumentException("submission message should have file name");
             }
 
             var job = new FileUploadJob()
             {
-                Ukprn = submittedJob.Ukprn,
+                Ukprn = submittedJobSubmission.Ukprn,
                 Priority = 1,
                 Status = JobStatusType.Ready,
-                CreatedBy = submittedJob.SubmittedBy,
-                FileName = submittedJob.FileName,
+                CreatedBy = submittedJobSubmission.SubmittedBy,
+                FileName = submittedJobSubmission.FileName,
                 IsFirstStage = true,
-                StorageReference = submittedJob.StorageReference,
-                FileSize = submittedJob.FileSizeBytes,
-                CollectionName = submittedJob.CollectionName,
-                PeriodNumber = submittedJob.Period,
-                NotifyEmail = submittedJob.NotifyEmail,
-                TermsAccepted = submittedJob.TermsAccepted,
+                StorageReference = submittedJobSubmission.StorageReference,
+                FileSize = submittedJobSubmission.FileSizeBytes,
+                CollectionName = submittedJobSubmission.CollectionName,
+                PeriodNumber = submittedJobSubmission.Period,
+                NotifyEmail = submittedJobSubmission.NotifyEmail,
+                TermsAccepted = submittedJobSubmission.TermsAccepted,
             };
 
             var response = await SendDataAsync($"{_baseUrl}/api/job", job, cancellationToken);

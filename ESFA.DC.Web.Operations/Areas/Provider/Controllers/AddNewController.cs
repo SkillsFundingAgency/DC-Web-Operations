@@ -117,7 +117,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
             await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.ContainerName)).SaveAsync(fileName, file?.OpenReadStream());
 
-            await _jobService.SubmitJob(new Job
+            await _jobService.SubmitJob(new JobSubmission
             {
                 CollectionName = ProvidersUploadCollectionName,
                 FileName = fileName,

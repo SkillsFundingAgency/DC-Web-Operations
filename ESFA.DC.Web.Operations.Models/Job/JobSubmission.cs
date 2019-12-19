@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ESFA.DC.Web.Operations.Models.Job
 {
-    public class Job
+    public class JobSubmission
     {
         public string CollectionName { get; set; }
 
