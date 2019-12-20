@@ -195,7 +195,7 @@
         const dashBoardController = new DashBoardController();
 
         (function() {
-            const data = @Html.Raw(Model);
+            const data = '@Html.Raw(Model)';
 
             dashBoardController.updatePage(data);            
         })();

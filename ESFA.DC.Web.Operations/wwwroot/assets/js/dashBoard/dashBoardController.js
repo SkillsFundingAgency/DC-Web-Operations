@@ -26,6 +26,8 @@
     }
 
     updatePage(data) {
+        data = JSON.parse(data);
+
         this.updateSync();
         this.updateServiceBusStats(data.serviceBusStats);
         this.updateJobStats(data.jobStats);
@@ -152,26 +154,26 @@
 
         if (this._queuesSystem == null) {
             ctx = document.getElementById('queueSystem').getContext('2d');
-            this._queuesSystem = buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
+            this._queuesSystem = this.buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
         }
         else {
-            updateChart(this._queuesSystem, labelQueue, dataQueue, dataQueueDeadLetter);
+            this.updateChart(this._queuesSystem, labelQueue, dataQueue, dataQueueDeadLetter);
         }
 
         if (this._queuesTopics == null) {
             ctx = document.getElementById('queueTopics').getContext('2d');
-            this._queuesTopics = buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
+            this._queuesTopics = this.buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
         }
         else {
-            updateChart(this._queuesTopics, labelTopic, dataTopic, dataTopicDeadLetter);
+            this.updateChart(this._queuesTopics, labelTopic, dataTopic, dataTopicDeadLetter);
         }
 
         if (this._queuesIlr == null) {
             ctx = document.getElementById('queueIlr').getContext('2d');
-            this._queuesIlr = buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
+            this._queuesIlr = this.buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
         }
         else {
-            updateChart(this._queuesIlr, labelIlr, dataIlr, dataIlrDeadLetter);
+            this.updateChart(this._queuesIlr, labelIlr, dataIlr, dataIlrDeadLetter);
         }
     }
 
