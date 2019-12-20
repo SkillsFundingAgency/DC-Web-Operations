@@ -30,7 +30,7 @@ namespace ESFA.DC.Web.Operations.Services
         {
             try
             {
-                await _dashboardHub.SendMessage(await _dashBoardService.ProvideAsync(cancellationToken));
+                await _dashboardHub.SendMessage(await _dashBoardService.GetStatsAsync(cancellationToken));
             }
             catch (Exception ex)
             {

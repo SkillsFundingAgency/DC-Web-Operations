@@ -1,6 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Utils
-@model ESFA.DC.Web.Operations.Models.Dashboard.DashBoardModel
+@model string
 @{
     ViewData["Title"] = "Index";
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
@@ -194,17 +194,10 @@
 
         const dashBoardController = new DashBoardController();
 
-        //window.client = new Client(hub.getConnection());
-
         (function() {
-            const data = {
-                serviceBusStats: @Json.Serialize(Model.ServiceBusStats),
-                jobStats: @Json.Serialize(Model.JobStats)
-            };
+            const data = @Html.Raw(Model);
 
             dashBoardController.updatePage(data);            
         })();
-
-
     </script>
 }

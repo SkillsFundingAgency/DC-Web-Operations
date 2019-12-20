@@ -16,7 +16,7 @@ using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Services;
-using ESFA.DC.Web.Operations.Services.Dashboard;
+using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Provider;
@@ -43,9 +43,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<PeriodEndHubEventBase>().As<IPeriodEndHubEventBase>().SingleInstance();
             builder.RegisterType<DashBoardHubEventBase>().As<IDashBoardHubEventBase>().SingleInstance();
 
-            builder.RegisterType<DashBoardService>().As<IDashBoardService>().SingleInstance();
-            builder.RegisterType<ServiceBusStatsService>().As<IServiceBusStatsService>().SingleInstance();
-            builder.RegisterType<JobService>().As<IJobService>().SingleInstance();
+            builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
