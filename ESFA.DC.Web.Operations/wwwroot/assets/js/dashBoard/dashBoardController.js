@@ -52,8 +52,7 @@
             b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
         };
         return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
-        // or output as hex if preferred
-    } 
+    }
 
     updateJobStats(jobStats) {
         if (this._averageLabel.textContent !== jobStats.todayStatsModel.averageProcessingTime) {
@@ -131,7 +130,7 @@
         let dataQueue = [], dataTopic = [], dataIlr = [];
         let dataQueueDeadLetter = [], dataTopicDeadLetter = [], dataIlrDeadLetter = [];
         let lenQueue = serviceBusStats.queues.length, lenTopics = serviceBusStats.topics.length, lenIlr = serviceBusStats.ilr.length;
-        let i = 0;
+        let i = 0, ctx = null;
 
         for (i = 0; i < lenQueue; i++) {
             labelQueue.push(serviceBusStats.queues[i].name);
@@ -152,159 +151,79 @@
         }
 
         if (this._queuesSystem == null) {
-            var ctx = document.getElementById('queueSystem').getContext('2d');
-            this._queuesSystem = new Chart(ctx,
-                {
-                    type: 'bar',
-                    data: {
-                        labels: labelQueue,
-                        datasets: [
-                            {
-                                label: '# of Messages',
-                                data: dataQueue,
-                                backgroundColor: 'rgb(0,255,0)',
-                                borderWidth: 1
-                            },
-                            {
-                                label: '# of Dead Letters',
-                                data: dataQueueDeadLetter,
-                                backgroundColor: 'rgb(255,-12240,0)',
-                                borderWidth: 1
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            xAxes: [
-                                {
-                                    stacked: true,
-                                    afterFit: (scale) => {
-                                        scale.height = 75;
-                                    }
-                                }
-                            ],
-                            yAxes: [
-                                {
-                                    stacked: true,
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                });
+            ctx = document.getElementById('queueSystem').getContext('2d');
+            this._queuesSystem = buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
         }
-        else
-        {
-            this._queuesSystem.data.labels = labelQueue;
-            this._queuesSystem.data.datasets[0].data = dataQueue;
-            this._queuesSystem.data.datasets[1].data = dataQueueDeadLetter;
-            this._queuesSystem.update();
+        else {
+            updateChart(this._queuesSystem, labelQueue, dataQueue, dataQueueDeadLetter);
         }
 
         if (this._queuesTopics == null) {
-            var ctx = document.getElementById('queueTopics').getContext('2d');
-            this._queuesTopics = new Chart(ctx,
-                {
-                    type: 'bar',
-                    data: {
-                        labels: labelTopic,
-                        datasets: [
-                            {
-                                label: '# of Messages',
-                                data: dataTopic,
-                                backgroundColor: 'rgb(0,255,0)',
-                                borderWidth: 1
-                            },
-                            {
-                                label: '# of Dead Letters',
-                                data: dataTopicDeadLetter,
-                                backgroundColor: 'rgb(255,-12240,0)',
-                                borderWidth: 1
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            xAxes: [
-                                {
-                                    stacked: true,
-                                    afterFit: (scale) => {
-                                        scale.height = 75;
-                                    }
-                                }
-                            ],
-                            yAxes: [
-                                {
-                                    stacked: true,
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                });
+            ctx = document.getElementById('queueTopics').getContext('2d');
+            this._queuesTopics = buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
         }
-        else
-        {
-            this._queuesTopics.data.labels = labelTopic;
-            this._queuesTopics.data.datasets[0].data = dataTopic;
-            this._queuesTopics.data.datasets[1].data = dataTopicDeadLetter;
-            this._queuesTopics.update();
+        else {
+            updateChart(this._queuesTopics, labelTopic, dataTopic, dataTopicDeadLetter);
         }
 
         if (this._queuesIlr == null) {
-            var ctx = document.getElementById('queueIlr').getContext('2d');
-            this._queuesIlr = new Chart(ctx,
-                {
-                    type: 'bar',
-                    data: {
-                        labels: labelIlr,
-                        datasets: [
-                            {
-                                label: '# of Messages',
-                                data: dataIlr,
-                                backgroundColor: 'rgb(0,255,0)',
-                                borderWidth: 1
-                            },
-                            {
-                                label: '# of Dead Letters',
-                                data: dataIlrDeadLetter,
-                                backgroundColor: 'rgb(255,-12240,0)',
-                                borderWidth: 1
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            xAxes: [
-                                {
-                                    stacked: true,
-                                    afterFit: (scale) => {
-                                        scale.height = 75;
-                                    }
-                                }
-                            ],
-                            yAxes: [
-                                {
-                                    stacked: true,
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                });
+            ctx = document.getElementById('queueIlr').getContext('2d');
+            this._queuesIlr = buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
         }
         else {
-            this._queuesIlr.data.labels = labelIlr;
-            this._queuesIlr.data.datasets[0].data = dataIlr;
-            this._queuesIlr.data.datasets[1].data = dataIlrDeadLetter;
-            this._queuesIlr.update();
+            updateChart(this._queuesIlr, labelIlr, dataIlr, dataIlrDeadLetter);
         }
+    }
+
+    buildChart(ctx, labels, messages, deadLetters) {
+        return new Chart(ctx,
+            {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '# of Messages',
+                            data: messages,
+                            backgroundColor: 'rgb(0,255,0)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '# of Dead Letters',
+                            data: deadLetters,
+                            backgroundColor: 'rgb(255,-12240,0)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        xAxes: [
+                            {
+                                stacked: true,
+                                afterFit: (scale) => {
+                                    scale.height = 75;
+                                }
+                            }
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true,
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+    }
+
+    updateChart(chart, labels, messages, deadLetters) {
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = messages;
+        chart.data.datasets[1].data = deadLetters;
+        chart.update();
     }
 
     updateSync() {
