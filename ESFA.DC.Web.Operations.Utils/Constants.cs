@@ -16,6 +16,13 @@
         public const string Action_ProviderReportsButton = "ProviderReportsState";
         public const string Action_PeriodClosedButton = "PeriodClosedState";
 
+        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report1920";
+        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report1920";
+        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report1920";
+        public const string PeriodEndDataExtractReportCollectionName = @"PE-DataExtract-Report1920";
+        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport1920";
+        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report1920";
+
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
     }

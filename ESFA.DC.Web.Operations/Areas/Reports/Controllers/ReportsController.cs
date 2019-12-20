@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
@@ -106,13 +107,17 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return RedirectToAction("ProcessingReport", "Reports", new { area = AreaNames.Reports, ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod, JobId = jobId });
         }
 
-        [HttpGet("GetReportFile/{collectionYear}/{fileName}/{downloadName?}")]
-        public async Task<FileResult> GetReportFile(int collectionYear, string fileName, string downloadName = "")
+        [HttpGet("GetReportFile/{collectionYear}/{collectionPeriod}/{fileName}/{downloadName?}")]
+        public async Task<FileResult> GetReportFile(int collectionYear, int collectionPeriod, string fileName, string downloadName = "")
         {
             try
             {
-                fileName = fileName.Replace("%2F", "/");
-                var blobStream = await _storageService.GetFile(collectionYear, fileName, CancellationToken.None);
+                var containerName = Utils.Constants.ReportsBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
+
+                fileName = HttpUtility.HtmlDecode(fileName);
+                fileName = "R" + collectionPeriod.ToString().PadLeft(2, '0') + "/" + fileName;
+
+                var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {
