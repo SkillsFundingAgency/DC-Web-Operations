@@ -114,8 +114,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             {
                 var containerName = Utils.Constants.ReportsBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
 
-                fileName = HttpUtility.HtmlDecode(fileName);
-                fileName = "R" + collectionPeriod.ToString().PadLeft(2, '0') + "/" + fileName;
+                fileName = $"R{collectionPeriod.ToString("D2")}/{HttpUtility.HtmlDecode(fileName)}";
 
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
