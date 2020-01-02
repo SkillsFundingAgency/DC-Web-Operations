@@ -6057,6 +6057,33 @@ html {
   .grid {
     grid-template-columns: repeat(2, 1fr); } }
 
+#first {
+  stroke: #28a197; }
+
+#first.warning {
+  stroke: #f47738; }
+
+#first.danger {
+  stroke: #b10e1e; }
+
+#second {
+  stroke: #28a197; }
+
+#second.warning {
+  stroke: #f47738; }
+
+#second.danger {
+  stroke: #b10e1e; }
+
+#third {
+  stroke: #28a197; }
+
+#third.warning {
+  stroke: #f47738; }
+
+#third.danger {
+  stroke: #b10e1e; }
+
 .align-right {
   position: absolute;
   right: 50px; }

@@ -15,7 +15,7 @@
         <div class="govuk-grid-column-one-third">
             <div>
                 <a href="#">Advanced search</a>
-                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new {area = AreaNames.Provider})
+                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-m">Data Collections</span>
+            <span class="govuk-caption-m">Data Collections <season></season></span>
             Health check
         </h1>
     </div>
@@ -32,8 +32,8 @@
     <div class="govuk-grid-column-one-third">
         <section class="info">
             <span class="govuk-heading-m no-margin-bottom">Average processing time</span>
-            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">Waiting...</span></h2>
-            <span class="govuk-body-s" id="lastTime">Waiting...</span>
+            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">Waiting...</span><text id="averageSymbol" style="color: red;font-size: 20px"></text></h2>
+            🕑<span class="govuk-body-s" id="lastTime">Waiting...</span>
         </section>
     </div>
 </div>
@@ -190,13 +190,10 @@
         (function() {
             const data = '@Html.Raw(Model)';
 
-            dashBoardController.updatePage(data);            
+            dashBoardController.updatePage(data);
         })();
     </script>
-}
 
-@section PageScripts
-{
     <script>
         function searchProviderOnConfirm(result) {
             var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';

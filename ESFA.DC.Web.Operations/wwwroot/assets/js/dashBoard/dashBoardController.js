@@ -1,6 +1,7 @@
 ﻿class DashBoardController {
     constructor() {
         this._averageLabel = document.getElementById("average");
+        this._averageSymbolLabel = document.getElementById("averageSymbol");
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
         this._secondDonut = document.getElementById("secondDonut");
@@ -17,6 +18,8 @@
         this._queuesSystem = null;
         this._queuesTopics = null;
         this._queuesIlr = null;
+
+        this._averageTimeToday = 0;
 
         this._percentColors = [
             { pct: 1, color: { r: 0x00, g: 0xff, b: 0 } },
@@ -57,9 +60,25 @@
     }
 
     updateJobStats(jobStats) {
+
         if (this._averageLabel.textContent !== jobStats.todayStatsModel.averageProcessingTime) {
             this._averageLabel.textContent = `${jobStats.todayStatsModel.averageProcessingTime}`;
         }
+
+        if (this._averageTimeToday < jobStats.todayStatsModel.averageTimeToday) {
+            this._averageSymbolLabel.textContent = '▲';
+            this._averageSymbolLabel.setAttribute("style", "color: red;font-size: 20px");
+        }
+        else if (this._averageTimeToday > jobStats.todayStatsModel.averageTimeToday) {
+            this._averageSymbolLabel.textContent = '▼';
+            this._averageSymbolLabel.setAttribute("style", "color: green;font-size: 20px");
+        }
+        else {
+            this._averageSymbolLabel.textContent = '⟷';
+            this._averageSymbolLabel.setAttribute("style", "color: orange;font-size: 20px");
+        }
+
+        this._averageTimeToday = jobStats.todayStatsModel.averageTimeToday;
 
         if (this._firstDonut.textContent !== jobStats.todayStatsModel.jobsProcessing.toString()) {
             this._firstDonut.textContent = `${jobStats.todayStatsModel.jobsProcessing}`;
