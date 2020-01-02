@@ -34,21 +34,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.Register(c =>
                 configuration.GetConfigSection<ServiceBusSettings>())
                 .As<ServiceBusSettings>().SingleInstance();
-
-            //builder.Register(c =>
-            //        configuration.GetConfigSection<FeatureFlags>())
-            //    .As<FeatureFlags>().SingleInstance();
-
-            //builder.Register(c => configuration.GetConfigSection<CloudStorageSettings>("EsfCloudStorageSettings"))
-            //    .Keyed<IAzureStorageKeyValuePersistenceServiceConfig>(EnumJobType.EsfSubmission).SingleInstance();
-            //builder.Register(c => configuration.GetConfigSection<CloudStorageSettings>("EsfR2CloudStorageSettings"))
-            //    .Keyed<IAzureStorageKeyValuePersistenceServiceConfig>(EnumJobType.Esf2Submission).SingleInstance();
-            //builder.Register(c => configuration.GetConfigSection<CloudStorageSettings>("IlrCloudStorageSettings"))
-            //    .Keyed<IAzureStorageKeyValuePersistenceServiceConfig>(EnumJobType.IlrSubmission).SingleInstance();
-            //builder.Register(c => configuration.GetConfigSection<CloudStorageSettings>("EasCloudStorageSettings"))
-            //    .Keyed<IAzureStorageKeyValuePersistenceServiceConfig>(EnumJobType.EasSubmission).SingleInstance();
-
-            //builder.Register(c => configuration.GetConfigSection<CrossLoadingQueueConfiguration>()).As<IQueueConfiguration>().SingleInstance();
         }
     }
 }
