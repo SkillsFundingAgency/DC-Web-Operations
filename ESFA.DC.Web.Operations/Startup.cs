@@ -91,6 +91,7 @@ namespace ESFA.DC.Web.Operations
             services.AddSignalR();
 
             services.AddHostedService<PeriodEndTimedHostedService>();
+            services.AddHostedService<DashboardTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
@@ -141,6 +142,10 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+                routes.MapHub<DashBoardHub>("/dashBoardHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -181,12 +186,16 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<PeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<PeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
+
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<DashBoardHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
 
             _logger.LogDebug("End of ConfigureAutofac");
+
             return new AutofacServiceProvider(_applicationContainer);
         }
     }
