@@ -8,7 +8,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
 {
     public interface IAddNewProviderService
     {
-        Task<IEnumerable<ProviderSearchResult>> GetProviderSearchResults(string query);
+        Task<Models.Provider.Provider> GetProvider(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken);
     }
