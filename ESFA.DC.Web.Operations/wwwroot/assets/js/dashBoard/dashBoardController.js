@@ -60,7 +60,6 @@
     }
 
     updateJobStats(jobStats) {
-
         if (this._averageLabel.textContent !== jobStats.todayStatsModel.averageProcessingTime) {
             this._averageLabel.textContent = `${jobStats.todayStatsModel.averageProcessingTime}`;
         }
