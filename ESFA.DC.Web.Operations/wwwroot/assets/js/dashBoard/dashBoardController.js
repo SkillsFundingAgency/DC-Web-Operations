@@ -4,8 +4,10 @@
         this._averageSymbolLabel = document.getElementById("averageSymbol");
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
+        this._firstLabel = document.getElementById("firstLabel");
         this._secondDonut = document.getElementById("secondDonut");
         this._secondCircle = document.getElementById("secondCircle");
+        this._secondLabel = document.getElementById("secondLabel");
         this._thirdDonut = document.getElementById("thirdDonut");
         this._thirdCircle = document.getElementById("thirdCircle");
         this._failedToday = document.getElementById("failedToday");
@@ -82,13 +84,27 @@
         if (this._firstDonut.textContent !== jobStats.todayStatsModel.jobsProcessing.toString()) {
             this._firstDonut.textContent = `${jobStats.todayStatsModel.jobsProcessing}`;
             this._firstCircle.setAttribute("stroke-dasharray", `${jobStats.todayStatsModel.jobsProcessing},125`);
-            this._firstCircle.setAttribute("style", "stroke:" + this.getColorForPercentage((jobStats.todayStatsModel.jobsProcessing / 125) * 100));
+            let percentage = (jobStats.todayStatsModel.jobsProcessing / 125) * 100;
+            this._firstCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
+            this._firstLabel.textContent = this.getMessageForPercentage(percentage,
+                [
+                    { value: 85, label: 'Really busy!' },
+                    { value: 60, label: 'Busy' },
+                    { value: 0, label: 'Looking Good' }
+                ]);
         }
 
         if (this._secondDonut.textContent !== jobStats.todayStatsModel.jobsQueued.toString()) {
             this._secondDonut.textContent = `${jobStats.todayStatsModel.jobsQueued}`;
             this._secondCircle.setAttribute("stroke-dasharray", `${jobStats.todayStatsModel.jobsQueued},100`);
-            this._secondCircle.setAttribute("style", "stroke:" + this.getColorForPercentage((jobStats.todayStatsModel.jobsQueued / 100) * 100));
+            let percentage = (jobStats.todayStatsModel.jobsQueued / 100) * 100;
+            this._secondCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
+            this._secondLabel.textContent = this.getMessageForPercentage(percentage,
+                [
+                    { value: 50, label: 'Urgent Attention' },
+                    { value: 25, label: 'Needs Attention' },
+                    { value: 0, label: 'Looking Good' }
+                ]);
         }
 
         if (this._thirdDonut.textContent !== jobStats.todayStatsModel.submissionsToday.toString()) {
@@ -244,6 +260,17 @@
         chart.data.datasets[0].data = messages;
         chart.data.datasets[1].data = deadLetters;
         chart.update();
+    }
+
+    getMessageForPercentage(percentage, options) {
+        let i = 0, len = options.length;
+        for (; i < len; i++) {
+            if (options[i].value <= percentage) {
+                return options[i].label;
+            }
+        }
+
+        return options[0].label;
     }
 
     updateSync() {
