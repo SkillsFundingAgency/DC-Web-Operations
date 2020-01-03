@@ -10,6 +10,7 @@
         this._secondLabel = document.getElementById("secondLabel");
         this._thirdDonut = document.getElementById("thirdDonut");
         this._thirdCircle = document.getElementById("thirdCircle");
+        this._thirdLabel = document.getElementById("thirdLabel");
         this._failedToday = document.getElementById("failedToday");
         this._slowFiles = document.getElementById("slowFiles");
         this._concerns = document.getElementById("concerns");
@@ -101,7 +102,7 @@
             this._secondCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
             this._secondLabel.textContent = this.getMessageForPercentage(percentage,
                 [
-                    { value: 50, label: 'Urgent Attention' },
+                    { value: 50, label: 'Urgent Attention!' },
                     { value: 25, label: 'Needs Attention' },
                     { value: 0, label: 'Looking Good' }
                 ]);
@@ -109,13 +110,19 @@
 
         if (this._thirdDonut.textContent !== jobStats.todayStatsModel.submissionsToday.toString()) {
             this._thirdDonut.textContent = `${jobStats.todayStatsModel.submissionsToday}`;
-            let value = 2500;
+            let percentage = 100;
             if (jobStats.todayStatsModel.submissionsToday < 2500) {
-                value = (jobStats.todayStatsModel.submissionsToday / 2500) * 100;
+                percentage = (jobStats.todayStatsModel.submissionsToday / 2500) * 100;
             }
 
-            this._thirdCircle.setAttribute("stroke-dasharray", `${value},100`);
-            this._thirdCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(value));
+            this._thirdCircle.setAttribute("stroke-dasharray", `${percentage},100`);
+            this._thirdCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
+            this._thirdLabel.textContent = this.getMessageForPercentage(percentage,
+                [
+                    { value: 75, label: 'Super excited!' },
+                    { value: 50, label: 'Feeling happy' },
+                    { value: 0, label: 'Looking Good' }
+                ]);
         }
 
         if (this._failedToday.textContent !== jobStats.todayStatsModel.failedToday.toString()) {
