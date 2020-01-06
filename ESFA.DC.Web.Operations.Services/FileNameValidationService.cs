@@ -59,7 +59,7 @@ namespace ESFA.DC.Web.Operations.Services
 
         public FileNameValidationResultModel ValidateExtension(string extension, string errorMessage)
         {
-            if (FileNameExtensions.Contains(extension.ToUpperInvariant(), StringComparer.OrdinalIgnoreCase))
+            if (FileNameExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
             {
                 return null;
             }
