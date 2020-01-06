@@ -25,8 +25,7 @@ namespace ESFA.DC.Web.Operations.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //return View((object)await _dashBoardService.GetStatsAsync());
-            return View();
+            return View((object)await _dashBoardService.GetStatsAsync());
         }
 
         public IActionResult Privacy()
