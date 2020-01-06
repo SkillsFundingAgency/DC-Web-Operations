@@ -71,7 +71,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         {
             try
             {
-                var blobStream = await _storageService.GetFile(collectionYear, fileName, CancellationToken.None);
+                var containerName = Utils.Constants.PeriodEndBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
+                var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {

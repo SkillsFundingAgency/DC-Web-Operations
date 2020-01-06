@@ -36,7 +36,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var data = _jsonSerializationService.Deserialize<ProviderDetail>(
                 await GetDataAsync($"{_baseUrl}/api/org/{ukprn}", cancellationToken));
 
-            return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, null);
+            return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, data.IsMCA);
         }
 
         public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignments(long ukprn, CancellationToken cancellationToken = default(CancellationToken))

@@ -1,5 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Utils
+@model string
 @{
     ViewData["Title"] = "Index";
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
@@ -14,7 +15,7 @@
         <div class="govuk-grid-column-one-third">
             <div>
                 <a href="#">Advanced search</a>
-                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new {area = AreaNames.Provider})
+                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
             </div>
         </div>
     </div>
@@ -23,7 +24,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-m">Data Collections</span>
+            <span class="govuk-caption-m">Data Collections <season></season></span>
             Health check
         </h1>
     </div>
@@ -31,8 +32,8 @@
     <div class="govuk-grid-column-one-third">
         <section class="info">
             <span class="govuk-heading-m no-margin-bottom">Average processing time</span>
-            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">14</span> mins</h2>
-            <span class="govuk-body-s">9:24am</span>
+            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">Waiting...</span><text id="averageSymbol" style="color: red;font-size: 20px"></text></h2>
+            🕑<span class="govuk-body-s" id="lastTime">Waiting...</span>
         </section>
     </div>
 </div>
@@ -45,10 +46,10 @@
             <h2 class="govuk-heading-m centre-text"><a href="jobs-processing">Jobs processing</a></h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                <circle id="first" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
                     <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">40</text>
-                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Looking good</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2" id="firstLabel">Waiting...</text>
                 </g>
             </svg>
         </section>
@@ -59,10 +60,10 @@
             <h2 class="govuk-heading-m centre-text"><a href="jobs-queued">Jobs queued</a></h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                <circle id="second" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="secondCircle" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
                     <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">50</text>
-                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Needs attention</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2" id="secondLabel">Waiting...</text>
                 </g>
             </svg>
         </section>
@@ -73,14 +74,36 @@
             <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Submissions</a></h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
-                <circle id="third" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
+                <circle id="thirdCircle" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
                     <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">35</text>
-                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Urgent attention</text>
+                    <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2" id="thirdLabel">Waiting...</text>
                 </g>
             </svg>
         </section>
     </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Queues</a></h2>
+            <canvas id="queueSystem" width="200" height="200"></canvas>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Topics</a></h2>
+            <canvas id="queueTopics" width="200" height="200"></canvas>
+        </section>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">ILR</a></h2>
+            <canvas id="queueIlr" width="200" height="200"></canvas>
+        </section>
+    </div>
+
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -91,14 +114,14 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m"><a class="" href="failed-today">Failed today</a></h2>
-            <span class="govuk-heading-l no-margin-bottom">4</span>
+            <span id="failedToday" class="govuk-heading-l no-margin-bottom">4</span>
         </div>
     </div>
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m"><a class="" href="slow-files">Slow files</a></h2>
-            <span class="govuk-heading-l no-margin-bottom">16</span>
+            <span id="slowFiles" class="govuk-heading-l no-margin-bottom">16</span>
             <span class="govuk-body-s">Taking 20% longer than usual</span>
         </div>
     </div>
@@ -106,7 +129,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m"><a class="" href="concerns">Concerns</a></h2>
-            <span class="govuk-heading-l no-margin-bottom">3</span>
+            <span id="concerns" class="govuk-heading-l no-margin-bottom">3</span>
             <span class="govuk-body-s">Providers with rejected files and no successful submission this period</span>
         </div>
     </div>
@@ -119,35 +142,58 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
-            <h2 class="govuk-heading-m"><a class="" href="#">Today</a></h2>
-            <span class="govuk-heading-l no-margin-bottom">40</span>
+            <h2 class="govuk-heading-m"><a class="" href="#">Current period</a></h2>
+            <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">40</span>
         </div>
     </div>
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m"><a class="" href="#">Last hour</a></h2>
-            <span class="govuk-heading-l no-margin-bottom">7</span>
+            <span id="lastHour" class="govuk-heading-l no-margin-bottom">7</span>
         </div>
     </div>
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
-            <h2 class="govuk-heading-m"><a class="" href="#">Jobs on hold</a></h2>
-            <span class="govuk-heading-l no-margin-bottom">18</span>
+            <h2 class="govuk-heading-m"><a class="" href="#">Last 5 minutes</a></h2>
+            <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">18</span>
         </div>
     </div>
 </div>
 
+<br />
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
+        <label id="lastSync"></label>
+
         <label id="state"></label>
     </div>
 </div>
 
 @section PageScripts
 {
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
+
+    <script type="module">
+        import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
+        import Hub from '/assets/js/hubs/dashBoardHub.js';
+
+        const hub = new Hub();
+        hub.startHub();
+
+        const dashBoardController = new DashBoardController();
+
+        (function() {
+            const data = '@Html.Raw(Model)';
+
+            dashBoardController.updatePage(data);
+        })();
+    </script>
+
     <script>
         function searchProviderOnConfirm(result) {
             var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';

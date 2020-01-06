@@ -33,6 +33,9 @@
   },
   "OpsDataLoadServiceConfigSettings": {
     "ConnectionString": ""
+  },
+  "ServiceBusSettings": {
+    "ServiceBusManagementConnectionString":  "" 
   }
 
 

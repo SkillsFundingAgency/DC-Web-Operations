@@ -10,7 +10,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class PeriodEndHub : Hub
     {
-        private readonly IHubEventBase _eventBase;
+        private readonly IPeriodEndHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
@@ -19,7 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private readonly ILogger _logger;
 
         public PeriodEndHub(
-            IHubEventBase eventBase,
+            IPeriodEndHubEventBase eventBase,
             IHubContext<PeriodEndHub> hubContext,
             IPeriodEndService periodEndService,
             IEmailService emailService,

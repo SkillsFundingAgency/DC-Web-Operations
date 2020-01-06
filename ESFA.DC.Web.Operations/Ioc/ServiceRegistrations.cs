@@ -6,22 +6,29 @@ using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.JobQueueManager.Data;
+using ESFA.DC.ReferenceData.Organisations.Model;
+using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Collections;
+using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Provider;
 using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.TagHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using JobQueueDataContext = ESFA.DC.Web.Operations.Topics.Data.JobQueueDataContext;
 
 namespace ESFA.DC.Web.Operations.Ioc
 {
@@ -37,7 +44,13 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
-            builder.RegisterType<HubEventBase>().As<IHubEventBase>().SingleInstance();
+
+            builder.RegisterType<PeriodEndHubEventBase>().As<IPeriodEndHubEventBase>().SingleInstance();
+            builder.RegisterType<DashBoardHubEventBase>().As<IDashBoardHubEventBase>().SingleInstance();
+
+            builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
             builder.RegisterType<HttpClient>().SingleInstance();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
@@ -55,20 +68,50 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
+            builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
+
             // DB Contexts
-            builder.RegisterType<Topics.Data.JobQueueDataContext>().SingleInstance();
+            builder.RegisterType<JobQueueDataContext>().SingleInstance();
+            builder.RegisterType<JobQueueManager.Data.JobQueueDataContext>().As<IJobQueueDataContext>().ExternallyOwned();
+            builder.RegisterType<OrganisationsContext>().As<IOrganisationsContext>().ExternallyOwned();
 
             builder.Register(context =>
                 {
                     var config = context.Resolve<ConnectionStrings>();
-                    var optionsBuilder = new DbContextOptionsBuilder<Topics.Data.JobQueueDataContext>();
+                    var optionsBuilder = new DbContextOptionsBuilder<JobQueueDataContext>();
                     optionsBuilder.UseSqlServer(
                         config.JobManagement,
                         options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
 
                     return optionsBuilder.Options;
                 })
-                .As<DbContextOptions<Topics.Data.JobQueueDataContext>>()
+                .As<DbContextOptions<JobQueueDataContext>>()
+                .SingleInstance();
+
+            builder.Register(context =>
+                {
+                    var config = context.Resolve<ConnectionStrings>();
+                    var optionsBuilder = new DbContextOptionsBuilder<JobQueueManager.Data.JobQueueDataContext>();
+                    optionsBuilder.UseSqlServer(
+                        config.JobManagement,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<JobQueueManager.Data.JobQueueDataContext>>()
+                .SingleInstance();
+
+            builder.Register(context =>
+                {
+                    var config = context.Resolve<ConnectionStrings>();
+                    var optionsBuilder = new DbContextOptionsBuilder<OrganisationsContext>();
+                    optionsBuilder.UseSqlServer(
+                        config.Org,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<OrganisationsContext>>()
                 .SingleInstance();
         }
     }

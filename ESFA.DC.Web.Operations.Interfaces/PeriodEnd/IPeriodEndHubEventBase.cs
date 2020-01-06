@@ -2,7 +2,7 @@
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
-    public interface IHubEventBase
+    public interface IPeriodEndHubEventBase
     {
         event EventHandler PeriodEndHubPrepCallback;
 
