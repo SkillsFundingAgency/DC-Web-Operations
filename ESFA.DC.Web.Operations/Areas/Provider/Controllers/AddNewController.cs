@@ -101,7 +101,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             if (collection == null || !collection.IsOpen)
             {
                 _logger.LogWarning($"collection {ProvidersUploadCollectionName} is not open/available, but file is being uploaded");
-                throw new ArgumentOutOfRangeException(ProvidersUploadCollectionName);
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, $"collection {ProvidersUploadCollectionName} is not open/available.");
+                return View();
             }
 
             var validationResult = await _fileNameValidationService.ValidateFileNameAsync(ProvidersUploadCollectionName, collection.FileNameRegex, fileName?.ToUpper(), file?.Length);
