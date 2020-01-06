@@ -115,7 +115,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 return View();
             }
 
-            await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.ContainerName)).SaveAsync(fileName, file?.OpenReadStream());
+            await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
 
             await _jobService.SubmitJob(new JobSubmission
             {
@@ -124,7 +124,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 FileSizeBytes = file.Length,
                 SubmittedBy = User.Name(),
                 NotifyEmail = User.Email(),
-                StorageReference = collection.ContainerName
+                StorageReference = collection.StorageReference
             });
 
             return RedirectToAction("BulkUpload");
