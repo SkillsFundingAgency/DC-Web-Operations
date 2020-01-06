@@ -61,8 +61,8 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
 
             var model = new ManageCollectionViewModel()
             {
-                CollectionId = collection.Id,
-                CollectionName = collection.Name,
+                CollectionId = collection.CollectionId,
+                CollectionName = collection.CollectionTitle,
                 ClosingDate = currentPeriod?.CloseDate,
                 CurrentPeriod = currentPeriod?.Name,
                 ProcessingOverride = SetOverrideValue(collection.ProcessingOverride),
