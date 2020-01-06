@@ -31,7 +31,12 @@
   "AzureStorageSection": {
     "ConnectionString": ""
   },
+  "OpsDataLoadServiceConfigSettings": {
+    "ConnectionString": ""
+  },
   "ServiceBusSettings": {
     "ServiceBusManagementConnectionString":  "" 
   }
+
+
 }

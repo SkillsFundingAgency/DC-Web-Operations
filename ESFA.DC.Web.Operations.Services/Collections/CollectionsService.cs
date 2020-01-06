@@ -8,7 +8,6 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Settings.Models;
-using Collection = ESFA.DC.Web.Operations.Models.Collection.Collection;
 using ReturnPeriod = ESFA.DC.Web.Operations.Models.Collection.ReturnPeriod;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
@@ -54,17 +53,16 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 await GetDataAsync($"{_baseUrl}/api/collections/available-years", cancellationToken));
         }
 
-        public async Task<Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<CollectionsManagement.Models.Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+          return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
                 await GetDataAsync($"{_baseUrl}/api/collections/byId/{collectionId}", cancellationToken));
+        }
 
-            return new Collection()
-            {
-                Name = data.CollectionTitle,
-                Id = data.CollectionId,
-                ProcessingOverride = data.ProcessingOverride
-            };
+        public async Task<CollectionsManagement.Models.Collection> GetCollectionAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+           return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+                await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
         }
 
         public async Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken))

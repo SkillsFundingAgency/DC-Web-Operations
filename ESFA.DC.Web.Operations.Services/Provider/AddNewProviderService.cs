@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
@@ -8,9 +7,7 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Settings.Models;
-using MoreLinq;
 using Organisation = ESFA.DC.CollectionsManagement.Models.Organisation;
-using ProviderSearchResult = ESFA.DC.Web.Operations.Models.Provider.ProviderSearchResult;
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {

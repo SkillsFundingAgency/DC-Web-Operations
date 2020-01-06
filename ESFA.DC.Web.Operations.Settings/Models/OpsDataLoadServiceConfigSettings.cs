@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace ESFA.DC.Web.Operations.Settings.Models
 {
-    public class CloudStorageSettings : ISettings, IAzureStorageKeyValuePersistenceServiceConfig
+    public class OpsDataLoadServiceConfigSettings : ISettings, IAzureStorageKeyValuePersistenceServiceConfig
     {
         [JsonRequired]
         public string ConnectionString { get; set; }

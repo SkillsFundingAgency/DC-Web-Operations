@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Templates\MultipleProvidersTemplate.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="node_modules\govuk-frontend\assets\fonts\bold-f38c792ac2-v1.woff" />
     <Content Include="node_modules\govuk-frontend\assets\fonts\bold-fb2676462a-v1.eot" />
     <Content Include="node_modules\govuk-frontend\assets\fonts\bold-tabular-357fdfbcc3-v1.eot" />
@@ -42,6 +46,10 @@
     <Content Include="node_modules\govuk-frontend\assets\images\icon-pointer-2x.png" />
     <Content Include="node_modules\govuk-frontend\assets\images\icon-pointer.png" />
     <Content Include="node_modules\govuk-frontend\package.json" />
+    <EmbeddedResource Include="Templates\MultipleProvidersTemplate.xlsx">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
