@@ -127,7 +127,7 @@ namespace ESFA.DC.Web.Operations.Services
             }
         }
 
-        private void TimerTick(object state)
+        private async void TimerTick(object state)
         {
             // If we're told to stop then set block to continue, and exit method.
             lock (_timerStopLock)
@@ -150,7 +150,7 @@ namespace ESFA.DC.Web.Operations.Services
 
             try
             {
-                DoWork(_cancellationTokenSource.Token);
+                await DoWork(_cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {
