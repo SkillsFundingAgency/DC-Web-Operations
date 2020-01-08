@@ -1,0 +1,20 @@
+﻿@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+@using ESFA.DC.Web.Operations.Constants
+
+@{
+    ViewData["Title"] = "FRM Validation Successful";
+    ViewData[ViewDataConstants.BackLink] = "/";
+
+}
+
+
+<h1 class="govuk-heading-xl">
+    Validation Successful
+</h1>
+<div class="govuk-panel__body govuk-!-font-size-19">
+    The FRM Reports have been successfully validated. Please Check CSV for violation report.
+</div>
+<br />
+<form>
+    <button type="submit" class="govuk-button" formaction="PublishFrm">Publish</button>
+</form>

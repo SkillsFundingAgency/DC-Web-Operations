@@ -2,12 +2,13 @@
 @using ESFA.DC.Web.Operations.Constants
 
 @{
-    ViewData["Title"] = "SelectValidate";
+    ViewData["Title"] = "FRM Validation";
     ViewData[ViewDataConstants.BackLink] = "/";
-
 }
+<h1 class="govuk-heading-x1">
+Enter FRM Details</h1>
 
-
+<form asp-area="Frm" asp-action="ValidateFrm" method="post">
     <div class="govuk-grid-row">
         <label class="govuk-label" for="FrmYearPeriod">
             Year of Reports
@@ -23,19 +24,17 @@
         <span class="govuk-error-message">
             <span asp-validation-for="FrmDate"></span>
         </span>
+        <input id="FrmJobType" name="FrmJobType" type="hidden" value="Validation" />
     </div>
     <br />
-    <button type="submit" id="submitButton" class="govuk-button" formaction="FrmSubmit">Validate</button>
-
-
-
-
-
-
+    <button type="submit" class="govuk-button" formaction="ValidateFrm">Continue</button>
+</form>
 
 <p>
     <div class="govuk-link"><a asp-action="Index">Cancel</a></div>
 </p>
+
+
 
 @section PageScripts
     {

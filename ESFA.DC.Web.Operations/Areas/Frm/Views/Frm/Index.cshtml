@@ -1,13 +1,15 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "FRM Validation";
     ViewData[ViewDataConstants.BackLink] = "/";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-x1">Upload QAR or FRM Reports?</h1>
+        <h1 class="govuk-heading-x1">
+            Which reports do you want to publish? 
+        </h1>
         <div class="govuk-form-group">
             <label class="govuk-label" for="name"></label>
             @using (Html.BeginForm())
