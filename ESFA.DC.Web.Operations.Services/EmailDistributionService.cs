@@ -122,9 +122,7 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<HttpRawResponse> SaveRecipientAsync(Recipient recipient, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var json = _jsonSerializationService.Serialize(recipient);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await SendDataAsyncRawResponse(_baseUrl + "/recipients", content, cancellationToken);
+            var response = await SendDataAsyncRawResponse(_baseUrl + "/recipients", recipient, cancellationToken);
             return response;
         }
 
