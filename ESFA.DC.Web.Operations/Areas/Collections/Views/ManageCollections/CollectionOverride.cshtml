@@ -1,0 +1,44 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Collections.Models.ManageCollectionsCollectionOverrideViewModel
+
+@{
+    ViewData["Title"] = "Collection Override";
+    ViewData[ViewDataConstants.BackLink] = "collections/manageCollections";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-x1">Collection override</h1>
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="name"></label>
+            <form asp-action="SaveCollectionOverride" method="post">
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input asp-for="ProcessingOverride" value="1" class="govuk-radios__input" type="radio" />
+                        <label class="govuk-label govuk-radios__label">Automatic (use calendar dates)</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input asp-for="ProcessingOverride" value="2" class="govuk-radios__input" type="radio" />
+                        <label class="govuk-label govuk-radios__label">Force file processing</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input asp-for="ProcessingOverride" value="3" class="govuk-radios__input" type="radio" />
+                        <label class="govuk-label govuk-radios__label">Stop processing</label>
+                    </div>
+                </div>
+                <input type="hidden" name="CollectionName" id="CollectionName" value=@Model.CollectionName />
+                <input type="hidden" name="CollectionId" id="CollectionId" value=@Model.CollectionId />
+                <br />
+                <br />
+                <button type="submit" class="govuk-button">Save</button>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+            </form>
+        </div>
+    </div>
+</div>
