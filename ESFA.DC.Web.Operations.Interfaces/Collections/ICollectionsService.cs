@@ -15,7 +15,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
 
         Task<CollectionsManagement.Models.Collection> GetCollectionAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<CollectionsManagement.Models.Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken));
 

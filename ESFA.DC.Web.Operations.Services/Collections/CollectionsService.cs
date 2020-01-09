@@ -65,15 +65,15 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
         }
 
-        public async Task<Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<CollectionsManagement.Models.Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
                 await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
 
-            return new Collection()
+            return new CollectionsManagement.Models.Collection()
             {
-                Name = data.CollectionTitle,
-                Id = data.CollectionId,
+                CollectionTitle = data.CollectionTitle,
+                CollectionId = data.CollectionId,
                 ProcessingOverride = data.ProcessingOverride
             };
         }
