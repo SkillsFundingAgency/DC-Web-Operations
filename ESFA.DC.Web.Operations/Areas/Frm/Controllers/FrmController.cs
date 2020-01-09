@@ -83,7 +83,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             var frmDateString = model.FrmDate.ToString("yyyy-dd-MM");
             var frmPeriodString = $"frm{model.FrmYearPeriod}";
             //TODO: Run Validation Job
-            return RedirectToAction("HoldingPageAsync", new { frmJobType = "Validation" }); //TODO: pass in jobID
+            return View("ValidateSuccess" /*new { frmJobType = "Validation" }*/); //TODO: pass in jobID
         }
 
         [HttpPost]
