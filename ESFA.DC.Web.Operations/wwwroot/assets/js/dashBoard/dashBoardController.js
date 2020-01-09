@@ -84,8 +84,8 @@
 
         if (this._firstDonut.textContent !== jobStats.todayStatsModel.jobsProcessing.toString()) {
             this._firstDonut.textContent = `${jobStats.todayStatsModel.jobsProcessing}`;
-            this._firstCircle.setAttribute("stroke-dasharray", `${jobStats.todayStatsModel.jobsProcessing},125`);
             let percentage = (jobStats.todayStatsModel.jobsProcessing / 125) * 100;
+            this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
             this._firstCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
             this._firstLabel.textContent = this.getMessageForPercentage(percentage,
                 [
