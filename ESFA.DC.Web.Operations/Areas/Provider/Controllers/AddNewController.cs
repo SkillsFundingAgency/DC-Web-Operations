@@ -4,7 +4,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
@@ -20,6 +23,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using Newtonsoft.Json;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
@@ -29,6 +33,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         private const string TemplatesPath = @"\\templates";
         private const string BulkUploadFileName = @"MultipleProvidersTemplate.xlsx";
         private const string ProvidersUploadCollectionName = @"REF-OPS";
+        private readonly string SummaryFileName = "{0}/Summary.json";
+        private readonly string ErrorsFileName = "{0}/Errors.csv";
         private readonly ILogger _logger;
         private readonly ICollectionsService _collectionService;
         private readonly IStorageService _storageService;
@@ -36,6 +42,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IJobService _jobService;
         private readonly IFileNameValidationService _fileNameValidationService;
+        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IAddNewProviderService _addNewProviderService;
 
         public AddNewController(
@@ -46,7 +53,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             OpsDataLoadServiceConfigSettings opsDataLoadServiceConfigSettings,
             IHostingEnvironment hostingEnvironment,
             IJobService jobService,
-            IFileNameValidationService fileNameValidationService)
+            IFileNameValidationService fileNameValidationService,
+            IJsonSerializationService jsonSerializationService)
         {
             _logger = logger;
             _collectionService = collectionService;
@@ -55,6 +63,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             _hostingEnvironment = hostingEnvironment;
             _jobService = jobService;
             _fileNameValidationService = fileNameValidationService;
+            _jsonSerializationService = jsonSerializationService;
             _addNewProviderService = addNewProviderService;
         }
 
@@ -88,6 +97,11 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
         public async Task<IActionResult> BulkUpload()
         {
+            if (TempData["JobFailed"] != null)
+            {
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, TempData["JobFailed"].ToString());
+            }
+
             return View("BulkUpload");
         }
 
@@ -118,7 +132,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
             await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
 
-            await _jobService.SubmitJob(new JobSubmission
+            var jobId = await _jobService.SubmitJob(new JobSubmission
             {
                 CollectionName = ProvidersUploadCollectionName,
                 FileName = fileName,
@@ -128,7 +142,70 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 StorageReference = collection.StorageReference
             });
 
-            return RedirectToAction("BulkUpload");
+            return RedirectToAction("InProgress", new { jobId });
+        }
+
+        public async Task<IActionResult> InProgress(long jobId)
+        {
+            ViewBag.AutoRefresh = true;
+
+            var jobStatus = await _jobService.GetJobStatus(jobId);
+
+            if (jobStatus == JobStatusType.Failed || jobStatus == JobStatusType.FailedRetry)
+            {
+                _logger.LogError($"Loading in progress page for job id : {jobId}, job is in status ; {jobStatus} - user will be sent to service error page");
+                TempData["JobFailed"] = $"Job {jobId} has failed";
+                return RedirectToAction("BulkUpload");
+            }
+
+            if (jobStatus != JobStatusType.Completed)
+            {
+                return View();
+            }
+
+            return RedirectToAction("DownloadResults", new { jobId });
+        }
+
+        public async Task<IActionResult> DownloadResults(long jobId)
+        {
+            var model = new DownloadResultsViewModel();
+            var summaryFileName = string.Format(SummaryFileName, jobId);
+            var errorsFileName = string.Format(ErrorsFileName, jobId);
+            var job = await _jobService.GetJob(0, jobId);
+            model.JobId = job.JobId;
+            model.ContainerName = job.StorageReference;
+
+            // json file
+            var persistenceService = await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, job.StorageReference);
+            var summaryExists = await persistenceService.ContainsAsync(summaryFileName);
+            if (summaryExists)
+            {
+                var data = await persistenceService.GetAsync(summaryFileName);
+                var providersUploadSummary = _jsonSerializationService.Deserialize<ProvidersUploadSummary>(data);
+                model.TotalSuccessful = providersUploadSummary.NumberOfSuccess;
+                model.TotalFailed = providersUploadSummary.NumberOfFail;
+            }
+
+            // errors file
+            var errorsFileExists = await persistenceService.ContainsAsync(errorsFileName);
+            if (errorsFileExists)
+            {
+                model.ErrorFileExists = true;
+            }
+
+            model.ErrorsFileName = errorsFileName;
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DownloadResultsFile(string containerName, string errorsFileName, int jobId)
+        {
+            var blobStream = await _storageService.GetFile(containerName, errorsFileName, CancellationToken.None);
+
+            return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(errorsFileName))
+            {
+                FileDownloadName = $"Errors_{jobId}.csv"
+            };
         }
 
         public FileResult DownloadTemplate()
