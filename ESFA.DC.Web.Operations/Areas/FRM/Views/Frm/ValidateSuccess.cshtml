@@ -28,9 +28,9 @@
         </thead>
         <tbody class="govuk-table__body" style="text-align:center">
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">R05</td>
+                <td class="govuk-table__cell">@Model.FrmPeriod</td>
                 <td class="govuk-table__cell">
-                    @Html.ActionLink($"FrmFailedFiles_{CollectionYear}", "GetReportFile")
+                    @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFile", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv" })
                 </td>
                 <td class="govuk-table__cell">09/01/2020</td>
         </tbody>

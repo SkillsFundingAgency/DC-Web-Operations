@@ -17,6 +17,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
         [Required(ErrorMessage = "A start date is required")]
         public DateTime FrmDate { get; set; }
 
-        public int FrmPeriod { get; set; }
+        public string FrmPeriod { get; set; }
     }
 }

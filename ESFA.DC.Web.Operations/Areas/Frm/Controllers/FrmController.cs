@@ -64,8 +64,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 case JobStatusType.Completed:
                     if (frmJobType == "Validation")
                     {
-                        var currentPeriod = await _periodService.ReturnPeriod();
-                        model.FrmPeriod = currentPeriod.Period;
                         return View("ValidateSuccess");
                     }
 
@@ -85,10 +83,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateFrm(FrmReportModel model)
         {
-            var frmDateString = model.FrmDate.ToString("yyyy-dd-MM");
-            var frmPeriodString = $"frm{model.FrmYearPeriod}";
+            var currentPeriod = await _periodService.ReturnPeriod();
+             model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
+
             //TODO: Run Validation Job
-            return View("ValidateSuccess" /*new { frmJobType = "Validation" }*/); //TODO: pass in jobID
+            return View("ValidateSuccess", model); //TODO: pass in jobID
         }
 
         [HttpPost]
@@ -108,7 +107,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return View("Index");
         }
 
-        public async Task<FileResult> GetReportFile(int collectionYear, int collectionPeriod, string fileName, string downloadName = "")
+        public async Task<FileResult> GetReportFile(string fileName)
         {
             try
             {
@@ -116,13 +115,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
                 var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, currentPeriod.Year.ToString());
 
-                fileName = $"FrmFailedFiles_R{currentPeriod.Period.ToString("D2")}.csv";
                 var x = "9";
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
-                return new FileStreamResult(blobStream, "text/csv")
+                return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {
-                    FileDownloadName = string.IsNullOrEmpty(downloadName) ? fileName : downloadName
+                    FileDownloadName = string.IsNullOrEmpty(fileName) ? fileName : fileName
                 };
             }
             catch (Exception e)
