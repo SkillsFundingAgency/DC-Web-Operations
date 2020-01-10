@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.Frm.Models;
-using ESFA.DC.Web.Operations.Areas.Provider.Models;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Mvc;
-
-namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
+﻿namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web;
+    using ESFA.DC.FileService.Interface;
+    using ESFA.DC.Jobs.Model.Enums;
+    using ESFA.DC.Logging.Interfaces;
+    using ESFA.DC.Web.Operations.Areas.Frm.Models;
+    using ESFA.DC.Web.Operations.Areas.Provider.Models;
+    using ESFA.DC.Web.Operations.Interfaces.Frm;
+    using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+    using ESFA.DC.Web.Operations.Interfaces.Storage;
+    using ESFA.DC.Web.Operations.Settings.Models;
+    using ESFA.DC.Web.Operations.Utils;
+    using Microsoft.AspNetCore.Mvc;
+
     [Area(AreaNames.Frm)]
     public class FrmController : Controller
     {
@@ -24,17 +25,20 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         private readonly ILogger _logger;
         private readonly IPeriodService _periodService;
         private readonly IStorageService _storageService;
+        private readonly IFileService _fileService;
 
         public FrmController(
             ILogger logger,
             IFrmService frmService,
             IPeriodService periodService,
-            IStorageService storageService)
+            IStorageService storageService,
+            IFileService fileService)
         {
             _logger = logger;
             _frmService = frmService;
             _periodService = periodService;
             _storageService = storageService;
+            _fileService = fileService;
         }
 
         public IActionResult Index()
@@ -85,7 +89,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             var currentPeriod = await _periodService.ReturnPeriod();
              model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
-            model.FrmCSVValidDate = _storageService.;
+            model.FrmCSVValidDate = _fileService.GetFileMetaDataAsync();
 
             //TODO: Run Validation Job
             return View("ValidateSuccess", model); //TODO: pass in jobID
