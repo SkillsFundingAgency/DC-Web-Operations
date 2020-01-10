@@ -106,7 +106,8 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
             var model = new ManageCollectionsCollectionOverrideViewModel()
             {
                 CollectionName = collection.CollectionTitle,
-                CollectionId = collection.CollectionId
+                CollectionId = collection.CollectionId,
+                Referer = Request.Headers["Referer"].ToString()
             };
 
             switch (collection.ProcessingOverride)

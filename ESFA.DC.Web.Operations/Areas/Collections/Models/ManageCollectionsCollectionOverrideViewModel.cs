@@ -12,5 +12,7 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Models
         public int CollectionId { get; set; }
 
         public int ProcessingOverride { get; set; }
+
+        public string Referer { get; set; }
     }
 }

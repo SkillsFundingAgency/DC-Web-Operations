@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Collection Override";
-    ViewData[ViewDataConstants.BackLink] = "collections/manageCollections";
+    ViewData[ViewDataConstants.BackLink] = @Model.Referer;
 }
 
 <div class="govuk-grid-row">
@@ -31,14 +31,9 @@
                 <br />
                 <br />
                 <button type="submit" class="govuk-button">Save</button>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+                <br margin-bottom="500px" />
             </form>
         </div>
     </div>
 </div>
+
