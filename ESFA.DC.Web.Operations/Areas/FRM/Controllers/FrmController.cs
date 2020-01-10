@@ -89,7 +89,10 @@
         {
             var currentPeriod = await _periodService.ReturnPeriod();
              model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
-            model.FrmCSVValidDate = _fileService.GetFileMetaDataAsync();
+
+            var collectionYear = "1920";
+            var test = string.Format(Constants.FrmContainerName, collectionYear);
+            var fileMetaData = await _fileService.GetFileMetaDataAsync(test, "FrmFailedFiles_R06.csv", true, CancellationToken.None);
 
             //TODO: Run Validation Job
             return View("ValidateSuccess", model); //TODO: pass in jobID
@@ -120,7 +123,6 @@
 
                 var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, currentPeriod.Year.ToString());
 
-                var x = "9";
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
