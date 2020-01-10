@@ -112,13 +112,15 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             try
             {
-                var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
+                var currentPeriod = await _periodService.ReturnPeriod();
 
-                fileName = $"R{collectionPeriod.ToString("D2")}/{HttpUtility.HtmlDecode(fileName)}";
+                var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, currentPeriod.Year.ToString());
 
+                fileName = $"FrmFailedFiles_R{currentPeriod.Period.ToString("D2")}.csv";
+                var x = "9";
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
-                return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
+                return new FileStreamResult(blobStream, "text/csv")
                 {
                     FileDownloadName = string.IsNullOrEmpty(downloadName) ? fileName : downloadName
                 };
