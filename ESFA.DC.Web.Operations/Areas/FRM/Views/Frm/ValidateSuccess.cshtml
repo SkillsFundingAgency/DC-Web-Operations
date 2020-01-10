@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "FRM Validation Successful";
     ViewData[ViewDataConstants.BackLink] = "/";
-    var CollectionYear = "";
 
 }
 
@@ -32,7 +31,7 @@
                 <td class="govuk-table__cell">
                     @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFile", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv" })
                 </td>
-                <td class="govuk-table__cell">09/01/2020</td>
+                <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
         </tbody>
     </table>
 </form>
