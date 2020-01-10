@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "FRM Validation Successful";
     ViewData[ViewDataConstants.BackLink] = "/";
+    var CollectionYear = "";
 
 }
 
@@ -29,7 +30,7 @@
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">R05</td>
                 <td class="govuk-table__cell">
-                    @Html.ActionLink("DumbFile", "GetReportFile")
+                    @Html.ActionLink($"FrmFailedFiles_{CollectionYear}", "GetReportFile")
                 </td>
                 <td class="govuk-table__cell">09/01/2020</td>
         </tbody>
