@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -22,8 +21,6 @@ using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
-using Newtonsoft.Json;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {

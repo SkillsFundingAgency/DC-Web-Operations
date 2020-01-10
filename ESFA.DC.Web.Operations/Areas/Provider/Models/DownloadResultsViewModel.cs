@@ -10,8 +10,6 @@
 
         public long JobId { get; set; }
 
-        public string CollectionName { get; set; }
-
         public string ErrorsFileName { get; set; }
 
         public string ContainerName { get; set; }
