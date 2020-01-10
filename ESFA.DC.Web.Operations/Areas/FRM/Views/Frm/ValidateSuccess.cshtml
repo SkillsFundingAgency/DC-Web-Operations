@@ -15,7 +15,7 @@
     The FRM Reports have been successfully validated. Please Check CSV for violation report.
 </div>
 <br />
-<form style="background-color:aliceblue">
+<form>
     <table class="govuk-table">
         <caption class="govuk-table__caption", style="padding-bottom:5px; text-align:center">CSV Download</caption>
         <thead class="govuk-table__head">
@@ -28,7 +28,9 @@
         <tbody class="govuk-table__body" style="text-align:center">
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">R05</td>
-                <td class="govuk-table__cell">PLACEHOLDERLINK</td>
+                <td class="govuk-table__cell">
+                    @Html.ActionLink("DumbFile", "GetReportFile")
+                </td>
                 <td class="govuk-table__cell">09/01/2020</td>
         </tbody>
     </table>

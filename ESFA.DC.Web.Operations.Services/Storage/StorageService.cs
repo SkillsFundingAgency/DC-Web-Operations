@@ -17,10 +17,8 @@ namespace ESFA.DC.Web.Operations.Services.Storage
             _fileService = fileService;
         }
 
-        public async Task<Stream> GetFile(int collectionYear, string fileName, CancellationToken cancellationToken)
+        public async Task<Stream> GetFile(string containerName, string fileName, CancellationToken cancellationToken)
         {
-            var containerName = Constants.PeriodEndBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString());
-
             if (!await _fileService.ExistsAsync(fileName, containerName, cancellationToken))
             {
                 return null;

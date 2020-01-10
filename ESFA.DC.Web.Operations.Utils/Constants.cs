@@ -21,5 +21,7 @@
         public const string Action_MCAReportsButton = "MCAReportsState";
         public const string Action_ProviderReportsButton = "ProviderReportsState";
         public const string Action_PeriodClosedButton = "PeriodClosedState";
+
+        public const string FrmBlobContainerName = "frm" + CollectionYearToken + "-files";
     }
 }
