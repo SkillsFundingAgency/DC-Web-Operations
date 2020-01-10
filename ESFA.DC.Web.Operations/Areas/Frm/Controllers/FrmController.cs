@@ -85,6 +85,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             var currentPeriod = await _periodService.ReturnPeriod();
              model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
+            model.FrmCSVValidDate = _storageService.;
 
             //TODO: Run Validation Job
             return View("ValidateSuccess", model); //TODO: pass in jobID
