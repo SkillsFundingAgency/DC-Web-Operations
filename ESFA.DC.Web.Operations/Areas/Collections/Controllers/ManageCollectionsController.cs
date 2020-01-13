@@ -186,9 +186,11 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
             switch (processingOverride)
             {
                 case true:
-                    return "Stop processing";
-                case false:
                     return "Force file processing";
+
+                case false:
+                    return "Stop processing";
+
                 default:
                     return "Automatic";
             }
