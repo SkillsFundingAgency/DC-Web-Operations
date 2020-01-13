@@ -98,9 +98,65 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CollectionOverride()
+        public async Task<IActionResult> CollectionOverride(string collectionName)
         {
-            throw new NotImplementedException();
+            // Get the current override status
+            var collection = await _collectionsService.GetCollectionFromName(collectionName);
+
+            var model = new ManageCollectionsCollectionOverrideViewModel()
+            {
+                CollectionName = collection.CollectionTitle,
+                CollectionId = collection.CollectionId,
+                Referer = Request.Headers["Referer"].ToString()
+            };
+
+            switch (collection.ProcessingOverride)
+            {
+                case true:
+                    // force file processing
+                    model.ProcessingOverride = 2;
+                    break;
+
+                case false:
+                    // stop processing
+                    model.ProcessingOverride = 3;
+                    break;
+
+                default:
+                    // automatic processing
+                    model.ProcessingOverride = 1;
+                    break;
+            }
+
+            return View("CollectionOverride", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveCollectionOverride(ManageCollectionsCollectionOverrideViewModel model)
+        {
+            bool? processingOverride = null;
+
+            if (model != null)
+            {
+                switch (model.ProcessingOverride)
+                {
+                    case 1:
+                        processingOverride = null;
+                        break;
+
+                    case 2:
+                        processingOverride = true;
+                        break;
+
+                    case 3:
+                        processingOverride = false;
+                        break;
+                }
+
+                await _collectionsService.SetCollectionProcessingOverride(model.CollectionId, processingOverride);
+            }
+
+            return RedirectToAction("Index", new { collectionId = model.CollectionId });
         }
 
         [HttpPost]

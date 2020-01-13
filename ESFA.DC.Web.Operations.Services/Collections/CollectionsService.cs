@@ -65,6 +65,25 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
         }
 
+        public async Task<CollectionsManagement.Models.Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+                await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
+
+            return new CollectionsManagement.Models.Collection()
+            {
+                CollectionTitle = data.CollectionTitle,
+                CollectionId = data.CollectionId,
+                ProcessingOverride = data.ProcessingOverride
+            };
+        }
+
+        public async Task<bool> SetCollectionProcessingOverride(int collectionId, bool? collectionProcessingOverrideStatus, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _jsonSerializationService.Deserialize<bool>(
+                await SendAsync($"{_baseUrl}/api/collections/set-collection-processing-override/{collectionId}/{collectionProcessingOverrideStatus}", cancellationToken));
+        }
+
         public async Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.ReturnPeriod>>(

@@ -41,7 +41,7 @@
     <div class="govuk-grid-column-one-third">
         <ul class="govuk-list">
             <li>
-                <a class="govuk-link" asp-area="collections" asp-controller="ManageCollections" asp-action="CollectionOverride">Collection override</a>
+                <a class="govuk-link" asp-area="collections" asp-controller="ManageCollections" asp-action="CollectionOverride" asp-route-collectionName="@Model.CollectionName">Collection override</a>
             </li>
         </ul>
     </div>
