@@ -58,8 +58,14 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<JobStatusType> GetJobStatus(long jobId, CancellationToken cancellationToken = default)
         {
-            var data = await GetDataAsync($"{_baseUrl}/{jobId}/status", cancellationToken);
+            var data = await GetDataAsync($"{_baseUrl}/api/job/{jobId}/status", cancellationToken);
             return _jsonSerializationService.Deserialize<JobStatusType>(data);
+        }
+
+        public async Task<SubmittedJob> GetJob(long ukprn, long jobId, CancellationToken cancellationToken = default)
+        {
+            var data = await GetDataAsync($"{_baseUrl}/api/job/{ukprn}/{jobId}", cancellationToken);
+            return _jsonSerializationService.Deserialize<SubmittedJob>(data);
         }
     }
 }
