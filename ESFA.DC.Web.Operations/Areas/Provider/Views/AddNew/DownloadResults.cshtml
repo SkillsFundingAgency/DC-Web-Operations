@@ -5,7 +5,6 @@
     ViewData[ViewDataConstants.BackLink] = "/BulkUpload";
 }
 
-
 <h1 class="govuk-heading-xl">
     Download Results
 </h1>
@@ -13,7 +12,6 @@
 <p><span class="govuk-!-font-weight-bold">Records Processed successfully</span>: @Model.TotalSuccessful.ToString("N0")</p>
 
 <p><span class="govuk-!-font-weight-bold">Records Rejected</span>: @Model.TotalFailed.ToString("N0")</p>
-
 
 @if (Model.ErrorFileExists)
 {
