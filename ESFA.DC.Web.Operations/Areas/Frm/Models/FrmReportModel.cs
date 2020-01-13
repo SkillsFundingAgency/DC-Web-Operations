@@ -19,6 +19,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
 
         public string FrmPeriod { get; set; }
 
-        public string FrmCSVValidDate { get; set; }
+        public DateTime? FrmCSVValidDate { get; set; }
     }
 }
