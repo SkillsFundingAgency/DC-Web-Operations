@@ -3,7 +3,10 @@
 
 @{
     ViewData["Title"] = "Manage Providers";
-    ViewData[ViewDataConstants.BackLink] = "/provider/addNew";
+    if (!string.IsNullOrWhiteSpace(Model.Referer))
+    {
+        ViewData[ViewDataConstants.BackLink] = @Model.Referer;
+    }
 }
 
 <br>

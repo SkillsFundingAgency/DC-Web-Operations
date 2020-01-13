@@ -30,6 +30,10 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             viewModel.Ukprn = provider.Ukprn;
             viewModel.Upin = provider.Upin;
             viewModel.IsMca = provider.IsMca.GetValueOrDefault();
+            if (Request.Headers["Referer"].ToString().Contains("AddNew"))
+            {
+                viewModel.Referer = $"/provider/AddNew?ukprn={ukprn}";
+            }
 
             return View("Index", viewModel);
         }
