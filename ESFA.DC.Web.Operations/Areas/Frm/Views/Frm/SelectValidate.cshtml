@@ -5,13 +5,11 @@
     ViewData["Title"] = "FRM Validation";
     ViewData[ViewDataConstants.BackLink] = "/";
 }
-<h1 class="govuk-heading-x1">
-Enter FRM Details</h1>
+<h1 class="govuk-heading-x1">Enter FRM Details</h1>
 
 <form asp-area="Frm" asp-action="ValidateFrm" method="post">
-    <div class="govuk-grid-row">
         <label class="govuk-label" for="FrmYearPeriod">
-            Year of Reports
+            Year code of Reports
         </label>
         @Html.TextBoxFor(model => model.FrmYearPeriod, new { @class = "govuk-input govuk-input--width-4", id = "frm", @type = "text" })
         <span class="govuk-error-message">
@@ -25,7 +23,6 @@ Enter FRM Details</h1>
             <span asp-validation-for="FrmDate"></span>
         </span>
         <input id="FrmJobType" name="FrmJobType" type="hidden" value="Validation" />
-    </div>
     <br />
     <button type="submit" class="govuk-button" formaction="ValidateFrm">Continue</button>
 </form>
