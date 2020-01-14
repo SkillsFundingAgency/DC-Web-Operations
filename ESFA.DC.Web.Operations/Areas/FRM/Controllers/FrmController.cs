@@ -1,20 +1,16 @@
 ﻿namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Web;
     using ESFA.DC.FileService.Interface;
     using ESFA.DC.Jobs.Model.Enums;
     using ESFA.DC.Logging.Interfaces;
     using ESFA.DC.Web.Operations.Areas.Frm.Models;
-    using ESFA.DC.Web.Operations.Areas.Provider.Models;
     using ESFA.DC.Web.Operations.Interfaces.Frm;
     using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
     using ESFA.DC.Web.Operations.Interfaces.Storage;
-    using ESFA.DC.Web.Operations.Settings.Models;
     using ESFA.DC.Web.Operations.Utils;
     using Microsoft.AspNetCore.Mvc;
 
@@ -70,12 +66,12 @@
                     {
                         var currentPeriod = await _periodService.ReturnPeriod();
                         model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
+                        var collectionYear = currentPeriod.Year.ToString();
+                        var container = string.Format(Constants.FrmContainerName, collectionYear);
 
-                        var collectionYear = "1920";
-                        var test = string.Format(Constants.FrmContainerName, collectionYear);
-                        var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
+                        var fileMetaData = await _fileService.GetFileMetaDataAsync(container, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
                         model.FrmCSVValidDate = fileMetaData.First().LastModified;
-                        return View("ValidateSuccess");
+                        return View("ValidateSuccess", model);
                     }
 
                     if (frmJobType == "Publish")
@@ -96,10 +92,9 @@
         {
             var currentPeriod = await _periodService.ReturnPeriod();
              model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
+            var containerName = string.Format(Constants.FrmContainerName, currentPeriod.Year.ToString());
 
-            var collectionYear = currentPeriod.Year.ToString();
-            var container = string.Format(Constants.FrmContainerName, collectionYear);
-            var fileMetaData = await _fileService.GetFileMetaDataAsync(container, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
+            var fileMetaData = await _fileService.GetFileMetaDataAsync(containerName, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
             model.FrmCSVValidDate = fileMetaData.First().LastModified;
             // TODO: Run Validation Job
             return View("ValidateSuccess", model); // TODO: pass in jobID
@@ -127,9 +122,7 @@
             try
             {
                 var currentPeriod = await _periodService.ReturnPeriod();
-
-                var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, currentPeriod.Year.ToString());
-
+                var containerName = string.Format(Constants.FrmContainerName, currentPeriod.Year.ToString());
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))

@@ -1,0 +1,42 @@
+﻿@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+@using ESFA.DC.Web.Operations.Constants
+
+@{
+    ViewData["Title"] = "FRM Validation";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+<h1 class="govuk-heading-x1">Enter FRM Details</h1>
+
+<form asp-area="Frm" asp-action="ValidateFrm" method="post">
+        <label class="govuk-label" for="FrmYearPeriod">
+            Year code of Reports
+        </label>
+        @Html.TextBoxFor(model => model.FrmYearPeriod, new { @class = "govuk-input govuk-input--width-4", id = "frm", @type = "text" })
+        <span class="govuk-error-message">
+            <span asp-validation-for="FrmYearPeriod"></span>
+        </span>
+        <label class="govuk-label">
+            Start date
+        </label>
+        @Html.TextBoxFor(model => model.FrmDate, "{0:yyyy-MM-dd}", new { @class = "govuk-input govuk-!-width-one-third", id = "FrmDate", @type = "date", placeholder = "DD/MM/YYYY" })
+        <span class="govuk-error-message">
+            <span asp-validation-for="FrmDate"></span>
+        </span>
+        <input id="FrmJobType" name="FrmJobType" type="hidden" value="Validation" />
+    <br />
+    <button type="submit" class="govuk-button" formaction="ValidateFrm">Continue</button>
+</form>
+
+<p>
+    <div class="govuk-link"><a asp-action="Index">Cancel</a></div>
+</p>
+
+@section PageScripts
+    {
+    <script src="~/assets/minified/aspnet-validation.min.js"></script>
+
+    <script type="module">
+        var v = new aspnetValidation.ValidationService();
+        v.bootstrap();
+    </script>
+}
