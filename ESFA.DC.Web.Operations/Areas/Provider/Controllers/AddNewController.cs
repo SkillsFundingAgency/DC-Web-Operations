@@ -28,7 +28,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
     public class AddNewController : Controller
     {
         private const string TemplatesPath = @"\\templates";
-        private const string BulkUploadFileName = @"MultipleProvidersTemplate.xlsx";
+        private const string BulkUploadFileName = @"MultipleProvidersTemplate.csv";
         private const string ProvidersUploadCollectionName = @"REF-OPS";
         private readonly string SummaryFileName = "{0}/Summary.json";
         private readonly string ErrorsFileName = "{0}/Errors.csv";
@@ -210,7 +210,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(BulkUploadFileName));
             var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
-            var mimeType = "application/vnd.ms-excel";
+            var mimeType = "application/csv";
 
             return File(manifestResourceStream, mimeType, BulkUploadFileName);
         }
