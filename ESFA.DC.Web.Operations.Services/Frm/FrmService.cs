@@ -43,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return result;
         }
 
-        public async Task<long> RunFrm(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunFrm(string stage, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             long jobId = -1;
 
@@ -53,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 CollectionYear = collectionYear,
                 PeriodNumber = collectionPeriod,
                 CollectionName = collectionName,
-                StorageReference = Constants.ReportsBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
+                StorageReference = Constants.FrmContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
                 JobId = 0
             };
