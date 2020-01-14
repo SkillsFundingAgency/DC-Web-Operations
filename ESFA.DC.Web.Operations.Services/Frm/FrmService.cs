@@ -53,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 CollectionYear = collectionYear,
                 PeriodNumber = collectionPeriod,
                 CollectionName = collectionName,
-                StorageReference = Constants.FrmContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
+                StorageReference = string.Format(Constants.FrmContainerName, collectionYear),
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
                 JobId = 0
             };
