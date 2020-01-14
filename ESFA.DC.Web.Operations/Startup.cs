@@ -8,13 +8,13 @@ using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Web.Operations.Extensions;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
-using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
@@ -91,6 +91,7 @@ namespace ESFA.DC.Web.Operations
             services.AddSignalR();
 
             services.AddHostedService<PeriodEndTimedHostedService>();
+            services.AddHostedService<DashboardTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
@@ -100,7 +101,7 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
-            services.AddHttpClient<IFrmService, FrmService>()
+            services.AddHttpClient<IReportsService, ReportsService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
@@ -138,6 +139,10 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
                 routes.MapHub<ProviderSearchHub>("/providerSearchHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+                routes.MapHub<DashBoardHub>("/dashBoardHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
@@ -181,12 +186,16 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<PeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<PeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
+
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<DashBoardHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
 
             _logger.LogDebug("End of ConfigureAutofac");
+
             return new AutofacServiceProvider(_applicationContainer);
         }
     }

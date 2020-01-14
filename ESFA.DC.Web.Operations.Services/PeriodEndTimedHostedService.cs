@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -19,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services
             IPeriodService periodService,
             ILogger logger,
             IPeriodEndService periodEndService,
-            IHubEventBase eventBase,
+            IPeriodEndHubEventBase eventBase,
             PeriodEndHub periodEndHub,
             PeriodEndPrepHub periodEndPrepHub)
         : base("Period End", logger)
@@ -33,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Services
             eventBase.PeriodEndHubPrepCallback += RegisterClient;
         }
 
-        protected override async void DoWork(CancellationToken cancellationToken)
+        protected override async Task DoWork(CancellationToken cancellationToken)
         {
             try
             {

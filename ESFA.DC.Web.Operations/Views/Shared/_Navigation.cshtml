@@ -4,13 +4,14 @@
 }
 
     <div class="main-nav">
-        <a id="1" class="govuk-heading-s @(requestPath.Value.EndsWith("/home") ? "active" : string.Empty)" href="/home">Home</a>
-        <a id="2" class="govuk-heading-s" href="/provider/addNew/addNewOption">Providers</a>
-        <a id="3" class="govuk-heading-s" href="#">Collections</a>
-        <a id="4" class="govuk-heading-s" href="#">Notifications</a>
-        <a id="5" class="govuk-heading-s @(requestPath.Value.Contains("/periodEndPreparation") ? "active" : string.Empty)" href="/periodend/periodEndPreparation">Period end</a>
-        <a id="6" class="govuk-heading-s" href="/FRM/Frm/Index">QAR/FRM</a>
-        <a id="7" class="govuk-heading-s" href="#">Rule validation</a>
+        <a govuk-request-path-search-text="/home" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a govuk-request-path-search-text="/provider" class="govuk-heading-s" asp-area="provider" asp-controller="AddNew" asp-action="AddNewOption">Providers</a>
+        <a govuk-request-path-search-text="/collections" class="govuk-heading-s" asp-area="collections" asp-controller="ManageCollections" asp-action="Index">Collections</a>
+        <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Notifications</a>
+        <a govuk-request-path-search-text="/periodEndPreparation" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEndPrep" asp-action="Index">Period end</a>
+        <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">QAR/FRM</a>
+        <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Rule validation</a>
+        <a govuk-request-path-search-text="reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
     </div>
 
 @if (!ViewData.ContainsKey(ViewDataConstants.DashBoard))

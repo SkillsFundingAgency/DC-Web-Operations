@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Templates\MultipleProvidersTemplate.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="node_modules\govuk-frontend\assets\fonts\bold-f38c792ac2-v1.woff" />
     <Content Include="node_modules\govuk-frontend\assets\fonts\bold-fb2676462a-v1.eot" />
     <Content Include="node_modules\govuk-frontend\assets\fonts\bold-tabular-357fdfbcc3-v1.eot" />
@@ -43,6 +47,10 @@
     <Content Include="node_modules\govuk-frontend\assets\images\icon-pointer-2x.png" />
     <Content Include="node_modules\govuk-frontend\assets\images\icon-pointer.png" />
     <Content Include="node_modules\govuk-frontend\package.json" />
+    <EmbeddedResource Include="Templates\MultipleProvidersTemplate.xlsx">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -250,7 +258,7 @@
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.28-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.27-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
-    <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.2.21-beta0001" />
+    <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.2.28-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.21-beta0001" />
@@ -264,6 +272,10 @@
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Client.Http" Version="2.0.0-preview13" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
   </ItemGroup>
 
@@ -295,6 +307,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>
 

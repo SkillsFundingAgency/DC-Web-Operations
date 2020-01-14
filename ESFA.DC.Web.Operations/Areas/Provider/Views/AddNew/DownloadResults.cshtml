@@ -1,0 +1,27 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Provider.Models.DownloadResultsViewModel
+@{
+    ViewData["Title"] = "Download Results";
+    ViewData[ViewDataConstants.BackLink] = "/BulkUpload";
+}
+
+<h1 class="govuk-heading-xl">
+    Download Results
+</h1>
+
+<p><span class="govuk-!-font-weight-bold">Records Processed successfully</span>: @Model.TotalSuccessful.ToString("N0")</p>
+
+<p><span class="govuk-!-font-weight-bold">Records Rejected</span>: @Model.TotalFailed.ToString("N0")</p>
+
+@if (Model.ErrorFileExists)
+{
+<form asp-controller="AddNew" asp-action="DownloadResultsFile" method="post">
+
+    <input asp-for="ContainerName" type="hidden" />
+    <input asp-for="JobId" type="hidden" />
+    <input asp-for="ErrorsFileName" type="hidden" />
+    <button class="govuk-button" type="submit" data-module="govuk-button">
+        Download CSV
+    </button>
+</form>
+}

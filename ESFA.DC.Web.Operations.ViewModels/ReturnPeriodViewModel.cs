@@ -16,15 +16,15 @@ namespace ESFA.DC.Web.Operations.ViewModels
 
         public int PeriodNumber { get; set; }
 
-        public string PeriodName() => _periodName;
-
-        public string FundingClaimPeriodName() => _fundingClaimPeriodName;
-
         public string NextOpeningDate { get; set; }
 
         public int DaysToClose { get; set; }
 
         public string PeriodCloseDate { get; set; }
+
+        public string FundingClaimPeriodName() => _fundingClaimPeriodName;
+
+        public string PeriodName() => _periodName;
 
         private void SetFundingClaimsPeriod(int periodNumber)
         {
@@ -43,6 +43,4 @@ namespace ESFA.DC.Web.Operations.ViewModels
             //}
         }
     }
-
-    
 }

@@ -10,9 +10,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
-            <form class="govuk-form-group" action="provider-record">
-                <div id="tt-overlay" class="autocomplete-wrapper"></div>
-            </form>
+           <vc:provider-search search-type="new"></vc:provider-search>
         </div>
         <div class="govuk-grid-column-one-third">
         </div>
@@ -78,38 +76,8 @@
 
 @section PageScripts
 {
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
-    <script src="~/assets/minified/aspnet-validation.min.js"></script>
-
-    <script type="module">
-        import Client from '/assets/js/providerSearch/client.js';
-        import Hub from '/assets/js/hubs/providerSearchHub.js';
-
-        const hub = new Hub();
-        hub.startHub();
-
-        window.searchClient = new Client(hub.getConnection());
-
-        var providerName = document.getElementById('providerNameDisplay');
-        if (providerName !== null && providerName.innerHTML !== "") {
-            var submitButton = document.getElementById('submitButton');
-            submitButton.disabled = false;
-
-            var providerNameDisplay = document.getElementById('providerNameDisplay');
-            var providerName = document.getElementById('hiddenProviderName');
-            providerName.value = providerNameDisplay.innerHTML;
-
-            var ukPrnDisplay = document.getElementById('ukprnDisplay');
-            var ukprn = document.getElementById('hiddenUkprn');
-            ukprn.value = ukPrnDisplay.innerHTML;
-
-            var upinDisplay = document.getElementById('upinDisplay');
-            var upin = document.getElementById('hiddenUpin');
-            upin.value = upinDisplay.innerHTML;
-        }
-
-        function populateProviderValues(result) {
+    <script>
+        function searchProviderOnConfirm(result) {
             if (typeof result !== "undefined") {
                 var providerNameDisplay = document.getElementById('providerNameDisplay');
                 providerNameDisplay.innerHTML = result.providerName;
@@ -134,34 +102,7 @@
             }
         }
 
-        function inputValueTemplate(result) {
-            return result && result.providerName
-        }
-
-        function suggestionTemplate(result) {
-            return result && '<strong>' + result.providerName + '</strong>' +
-                ', ' + result.ukprn + ', ' + result.upin
-        }
-
-        var element = document.querySelector('#tt-overlay');
-        var id = 'autocomplete-overlay';
-        accessibleAutocomplete({
-            element: element,
-            id: id,
-            minLength: 3,
-            displayMenu: 'overlay',
-            confirmOnBlur: false,
-            onConfirm: populateProviderValues,
-            source: window.searchClient.providerSearch.bind(window.searchClient),
-            templates: {
-                inputValue: inputValueTemplate,
-                suggestion: suggestionTemplate
-            },
-            placeholder: 'e.g Manchester, 12345678 or 098765'
-        });
-
         var v = new aspnetValidation.ValidationService();
         v.bootstrap();
-
     </script>
 }

@@ -4,7 +4,7 @@ using ESFA.DC.Web.Operations.Services.Event;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
-    public class HubEventBase : IHubEventBase
+    public sealed class PeriodEndHubEventBase : IPeriodEndHubEventBase
     {
         public event EventHandler PeriodEndHubPrepCallback;
 
