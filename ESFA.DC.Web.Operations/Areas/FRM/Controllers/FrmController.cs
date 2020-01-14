@@ -128,7 +128,7 @@
             {
                 var currentPeriod = await _periodService.ReturnPeriod();
 
-                var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, currentPeriod.Year.ToString());
+                var containerName = string.Format(Constants.FrmContainerName, currentPeriod.Year);
 
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
