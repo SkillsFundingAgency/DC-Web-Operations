@@ -13,7 +13,7 @@ namespace ESFA.DC.Web.Operations.Services
 {
     public class FileNameValidationService : IFileNameValidationService
     {
-        protected IEnumerable<string> FileNameExtensions => new List<string>() { ".XLSX" };
+        protected IEnumerable<string> FileNameExtensions => new List<string>() { ".CSV" };
 
         public async Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string filenameRegex, string fileName, long? fileSize, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -24,13 +24,13 @@ namespace ESFA.DC.Web.Operations.Services
             }
 
             string ext = Path.GetExtension(fileName);
-            result = ValidateExtension(ext, "Your file must be in an XML or Zip format");
+            result = ValidateExtension(ext, "Your file must be in a CSV format");
             if (result != null)
             {
                 return result;
             }
 
-            result = ValidateRegex(filenameRegex, fileName, $"File name should use the format PROVIDERS-YYYY-yyyymmdd-hhmmss.XLSX");
+            result = ValidateRegex(filenameRegex, fileName, $"File name should use the format PROVIDERS-yyyymmdd-hhmmss.csv");
             if (result != null)
             {
                 return result;

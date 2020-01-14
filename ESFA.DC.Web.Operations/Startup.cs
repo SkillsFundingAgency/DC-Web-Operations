@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ESFA.DC.Logging;
 using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
@@ -18,6 +21,7 @@ using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Configuration;
@@ -123,6 +127,30 @@ namespace ESFA.DC.Web.Operations
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //log errors
+            app.UseExceptionHandler(handler =>
+            {
+                handler.Run(context =>
+                {
+                    var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+                    if (exception == null)
+                        return Task.CompletedTask;
+
+                    try
+                    {
+                        //log error
+                        handler.ApplicationServices.GetService<ILogger>().LogError(exception.Message, exception);
+                    }
+                    finally
+                    {
+                        //rethrow the exception to show the error page
+                        ExceptionDispatchInfo.Throw(exception);
+                    }
+
+                    return Task.CompletedTask;
+                });
+            });
 
             app.UseAuthentication();
 

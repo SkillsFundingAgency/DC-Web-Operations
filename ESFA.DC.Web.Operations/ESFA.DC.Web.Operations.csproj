@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Templates\MultipleProvidersTemplate.xlsx" />
+    <None Remove="Templates\MultipleProvidersTemplate.csv" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,10 +46,10 @@
     <Content Include="node_modules\govuk-frontend\assets\images\icon-pointer-2x.png" />
     <Content Include="node_modules\govuk-frontend\assets\images\icon-pointer.png" />
     <Content Include="node_modules\govuk-frontend\package.json" />
-    <EmbeddedResource Include="Templates\MultipleProvidersTemplate.xlsx">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\MultipleProvidersTemplate.csv" />
   </ItemGroup>
 
   <ItemGroup>
