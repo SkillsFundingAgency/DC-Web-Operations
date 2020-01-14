@@ -1,4 +1,4 @@
-﻿import {disabledProceedButtons} from '/assets/js/periodEnd/state.js';
+﻿import { disabledProceedButtons } from '/assets/js/periodEnd/state.js';
 
 class pathController {
 
@@ -14,42 +14,51 @@ class pathController {
 
     jobStatusConvertor(status) {
         switch (status) {
-        case 1:
-            return "Ready";
-        case 2:
-            return "Moved For Processing";
-        case 3:
-            return "Processing";
-        case 4:
-            return "Completed";
-        case 5:
-            return "Failed Retry";
-        case 6:
-            return "Failed";
-        case 7:
-            return "Paused";
-        case 8:
-            return "Waiting";
-        default:
+            case 1:
+                return "Ready";
+            case 2:
+                return "Moved For Processing";
+            case 3:
+                return "Processing";
+            case 4:
+                return "Completed";
+            case 5:
+                return "Failed Retry";
+            case 6:
+                return "Failed";
+            case 7:
+                return "Paused";
+            case 8:
+                return "Waiting";
+            default:
         }
     }
 
-    isJobComplete(jobStatus) {
-        if (jobStatus === 4)
-            return true;
-        return false;
+    isJobContinuable(jobStatus) {
+        if (jobStatus === 4) {
+            return 1;
+        }
+
+        if (jobStatus === 5 || jobStatus === 6) {
+            return 2;
+        }
+
+        return 0;
     }
 
-    renderProceed(pathId, pathItemId, htmlItem, enabled, collectionYear, period) {
-        const proceedEnabled = enabled && !disabledProceedButtons.includes(pathItemId);
+    renderProceed(pathId, pathItemId, htmlItem, enabled, hasSubPaths, collectionYear, period) {
+        const proceedEnabled = enabled > 0 && !disabledProceedButtons.includes(pathItemId);
 
         const node =
-            `<span class="inline" >
-                <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
-                    onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
-                    Proceed
-                </button>
-            </span>`;
+            `<li class="app-task-list__item">
+                <span class="inline" >
+                    <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
+                        onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
+                        ${enabled === 2 ? "⚠ Proceed with failed jobs" : "Proceed"} ${hasSubPaths ? "↡" : "▼"}
+                    </button>
+                    <label style="font-size: 10px;">${hasSubPaths ? "Proceed will start sub-path and run next item" : ""}</label>
+                </span>
+            </li>`;
         htmlItem.insertAdjacentHTML('beforeend', node);
     }
 
@@ -58,7 +67,7 @@ class pathController {
         jobItem.textContent = `Job Id : ${job.jobId}, Status : ${this.jobStatusConvertor(job.status)}`;
         jobList.appendChild(jobItem);
 
-        return this.isJobComplete(job.status);
+        return this.isJobContinuable(job.status);
     }
 
     renderSummaryItem(container, path, pathItem) {
@@ -66,7 +75,7 @@ class pathController {
 
         let item = document.createElement("li");
         item.className += "compact-list-item";
-        
+
         if (currentItem) {
             let arrow = document.createElement("div");
             arrow.className += "triangle-right";
@@ -90,25 +99,45 @@ class pathController {
 
         let totalPathItems = path.pathItems.length;
 
-        let enableProceed = true;
+        let enableProceed = 1;
+
+        let jobItems = pathItem.pathItemJobs;
+
+        let itemText = pathItem.name;
+
+        if ((pathItem.ordinal < path.position - 1 ||
+                (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === totalPathItems)) &&
+            (jobItems == undefined || jobItems.length === 0)) {
+            itemText += " - Status : Completed";
+        }
 
         let item = document.createElement("li");
         item.className += "app-task-list__item";
-        item.textContent = pathItem.name;
+        // item.innerHTML = "<b>" + pathItem.name + "</b>";
+
+        if (currentItem) {
+            item.innerHTML = "<b>" + itemText + "</b>";
+        } else {
+            item.textContent = itemText;
+        }
 
         let itemLink = document.createElement("a");
         itemLink.id = pathItem.name;
         item.appendChild(itemLink);
 
-        let jobItems = pathItem.pathItemJobs;
         if (jobItems != undefined && jobItems.length > 0) {
             let jobList = document.createElement("ul");
-            jobItems.forEach(function(job) {
-                let completed = classScope.renderJob(job, jobList);
-                if (!completed) {
-                    enableProceed = false;
+            for (const job of jobItems) {
+                let status = classScope.renderJob(job, jobList);
+                if (status === 0) {
+                    enableProceed = 0;
+                    break;
                 }
-            });
+
+                if (status === 2) {
+                    enableProceed = 2;
+                }
+            }
 
             let jobItemSummary = pathItem.pathItemJobSummary;
             if (jobItemSummary != undefined) {
@@ -121,30 +150,25 @@ class pathController {
             item.appendChild(jobList);
         }
 
-        if ((pathItem.ordinal < path.position - 1 ||
-                (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === totalPathItems)) &&
-            (jobItems == undefined || jobItems.length === 0)) {
-            item.textContent += " - Status : Completed";
-        }
-
         let summary = pathItem.pathItemJobSummary;
         if (summary != undefined) {
-            enableProceed = summary.numberOfWaitingJobs + summary.numberOfRunningJobs + summary.numberOfFailedJobs === 0;
+            if (summary.numberOfWaitingJobs + summary.numberOfRunningJobs > 0) {
+                enableProceed = 0;
+            }
+            else if (summary.numberOfFailedJobs === 0) {
+                enableProceed = 1;
+            } else {
+                enableProceed = 2;
+            }
         }
+
+        subItemList.appendChild(item);
 
         if (currentItem) {
             if (pathItem.ordinal + 1 !== totalPathItems) {
-                this.renderProceed(path.pathId, pathItem.pathItemId, item, enableProceed, collectionYear, period);
+                // debugger;
+                this.renderProceed(path.pathId, pathItem.pathItemId, subItemList, enableProceed, path.pathItems[pathItem.ordinal + 1].subPaths !== null, collectionYear, period);
             }
-
-            let bold = document.createElement("b");
-            subItemList.appendChild(bold);
-
-            bold.appendChild(item);
-
-            subItemList.appendChild(bold);
-        } else {
-            subItemList.appendChild(item);
         }
     }
 
@@ -154,9 +178,9 @@ class pathController {
             button.disabled = !enabled;
         }
     }
-    
+
     disableProceed(pathItemId) {
-        const button = document.getElementById("proceed_"+pathItemId);
+        const button = document.getElementById("proceed_" + pathItemId);
         if (button != null) {
             disabledProceedButtons.push(pathItemId);
             button.disabled = true;
@@ -176,7 +200,7 @@ class pathController {
         dateLabel.textContent = `Last updated: ${day}/${month}/${date.getFullYear()} ${hours}:${minutes}:${seconds}`;
     }
 
-    padLeft (str, padString,  max) {
+    padLeft(str, padString, max) {
         str = str.toString();
         return str.length < max ? this.padLeft(padString + str, padString, max) : str;
     }
@@ -188,7 +212,7 @@ class pathController {
 
     renderPaths(pathString) {
         this.updateSync();
-        
+
         if (pathString === "" || pathString === undefined) {
             return;
         }
@@ -206,7 +230,7 @@ class pathController {
         }
 
         let classScope = this;
-        paths.forEach(function(path) {
+        paths.forEach(function (path) {
             let period = path.period;
             let collectionYear = path.collectionYear;
 
@@ -215,7 +239,7 @@ class pathController {
             let pathSummaryTitle = document.createElement("span");
             pathSummaryTitle.className += "govuk-heading-s";
             pathSummaryTitle.textContent = path.name;
-            
+
             let pathSummary = document.createElement("span");
             pathSummary.className += "nav";
             let pathSummaryList = document.createElement("ul");
@@ -233,7 +257,7 @@ class pathController {
                 let subItemList = document.createElement("ul");
                 subItemList.className += "app-task-list__items";
 
-                pathItems.forEach(function(pathItem) {
+                pathItems.forEach(function (pathItem) {
                     if (pathItem.name != undefined && pathItem.name !== "") {
                         classScope.renderPathItem(path, pathItem, subItemList, collectionYear, period);
                         classScope.renderSummaryItem(pathSummaryList, path, pathItem);
