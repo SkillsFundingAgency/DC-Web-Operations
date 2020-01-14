@@ -1,0 +1,41 @@
+﻿@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+@using ESFA.DC.Web.Operations.Constants
+
+@{
+    ViewData["Title"] = "FRM Validation Successful";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+
+<h1 class="govuk-heading-xl">
+    Validation Successful
+</h1>
+<div class="govuk-panel__body govuk-!-font-size-19">
+    The FRM Reports have been successfully validated. Please Check CSV for violation report.
+</div>
+<br />
+<form>
+    <table class="govuk-table">
+        <caption class="govuk-table__caption", style="padding-bottom:5px; text-align:center">CSV Download</caption>
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row", style="text-align:center">
+                <th scope="col" class="govuk-table__header">Period</th>
+                <th scope="col" class="govuk-table__header">Download</th>
+                <th scope="col" class="govuk-table__header">Last Validated</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body" style="text-align:center">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@Model.FrmPeriod</td>
+                <td class="govuk-table__cell">
+                    @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFile", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv" })
+                </td>
+                <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
+        </tbody>
+    </table>
+</form>
+<form>
+    <br />
+    <br />
+    <br />
+    <button type="submit" class="govuk-button" formaction="PublishFrm">Publish</button>
+</form>
