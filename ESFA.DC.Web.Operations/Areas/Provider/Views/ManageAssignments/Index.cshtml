@@ -55,4 +55,7 @@
     <div class="govuk-grid-row">
         <button asp-controller="ManageAssignments" asp-action="Submit" class="govuk-button">Save</button>
     </div>
+    <div class="govuk-grid-row">
+        <a class="govuk-back-link" href="/provider/ManageProviders?ukprn=@Model.Ukprn">Cancel</a>
+    </div>
 </form>
