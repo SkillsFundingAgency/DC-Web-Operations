@@ -38,7 +38,11 @@
 
     <script>
     if (typeof window.GOVUK === 'undefined')
-        document.body.className = document.body.className.replace('js-enabled', '');
+            document.body.className = document.body.className.replace('js-enabled', '');
+
+        function goBack() {
+            window.history.back();
+        }
     </script>
 
 </body>
