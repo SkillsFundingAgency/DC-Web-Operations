@@ -43,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return result;
         }
 
-        public async Task<long> RunFrm(string stage, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunValidation(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             long jobId = -1;
 

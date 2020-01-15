@@ -94,15 +94,22 @@
         [HttpPost]
         public async Task<IActionResult> ValidateFrm(FrmReportModel model)
         {
-            var currentPeriod = await _periodService.ReturnPeriod();
-             model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
+            var currentYearPeriod = await _periodService.ReturnPeriod();
+            if (currentYearPeriod?.Year == null)
+            {
+                string errorMessage = $"Call to get current return period failed";
+                _logger.LogError(errorMessage);
+                throw new Exception(errorMessage);
+            }
 
-            var collectionYear = "1920";
-            var test = string.Format(Constants.FrmContainerName, collectionYear);
+            var collectionYear = currentYearPeriod.Year.Value;
+            model.FrmPeriod = $"R{currentYearPeriod.Period.ToString("D2")}";
+            var test = string.Format(Constants.FrmContainerName, collectionYear.ToString());
             var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
             model.FrmCSVValidDate = fileMetaData.First().LastModified;
-            //TODO: Run Validation Job
-            return View("ValidateSuccess", model); //TODO: pass in jobID
+
+            model.FrmJobId = await _frmService.RunValidation(collectionYear, currentYearPeriod.Period);
+            return View("ValidateSuccess", model);
         }
 
         [HttpPost]
