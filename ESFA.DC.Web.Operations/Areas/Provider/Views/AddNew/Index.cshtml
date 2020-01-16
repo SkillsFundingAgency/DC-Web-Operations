@@ -63,9 +63,7 @@
             <input asp-for="Upin" type="hidden" id="hiddenUpin"/>                                           
             <button type="submit" id="submitButton" class="govuk-button" disabled>Save and continue</button>
             <br />
-            <p>
-                <div class="govuk-link"><a asp-controller="Home" asp-action="Index" asp-area="">Cancel</a></div>
-            </p>
+            <a class="govuk-back-link" onclick="goBack()">Cancel</a>
         }
     </div>
 </div>
