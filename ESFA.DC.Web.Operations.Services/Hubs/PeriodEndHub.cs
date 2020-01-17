@@ -48,7 +48,8 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             var period = await _periodService.ReturnPeriod(cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string state = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, cancellationToken);
+            var state = _stateService.GetState(stateString);
             var periodEndState = _stateService.GetPeriodEndState(state);
 
             var startEnabled = periodClosed && !periodEndState.PeriodEndStarted;

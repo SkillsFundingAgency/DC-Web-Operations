@@ -6,18 +6,18 @@ namespace ESFA.DC.Web.Operations.Services
 {
     public class PeriodEndStateFactory : IPeriodEndStateFactory
     {
-        public PeriodEndState GetPeriodEndState(PathPathItemsModel pathModel)
+        public PeriodEndState GetPeriodEndState(PeriodEndStateModel stateModel)
         {
             var state = new PeriodEndState
             {
-                McaReportsPublished = pathModel.McaReportsPublished,
-                ProviderReportsPublished = pathModel.ProviderReportsPublished,
-                PeriodEndClosed = pathModel.PeriodEndFinished,
-                PeriodEndStarted = pathModel.PeriodEndStarted,
-                ReferenceDataJobsPaused = pathModel.ReferenceDataJobsPaused,
-                McaReportsReady = pathModel.McaReportsReady,
-                ProviderReportsReady = pathModel.ProviderReportsReady,
-                CollectionClosedEmailSent = pathModel.CollectionClosedEmailSent
+                McaReportsPublished = stateModel.McaReportsPublished,
+                ProviderReportsPublished = stateModel.ProviderReportsPublished,
+                PeriodEndClosed = stateModel.PeriodEndFinished,
+                PeriodEndStarted = stateModel.PeriodEndStarted,
+                ReferenceDataJobsPaused = stateModel.ReferenceDataJobsPaused,
+                McaReportsReady = stateModel.McaReportsReady,
+                ProviderReportsReady = stateModel.ProviderReportsReady,
+                CollectionClosedEmailSent = stateModel.CollectionClosedEmailSent
             };
 
             return state;

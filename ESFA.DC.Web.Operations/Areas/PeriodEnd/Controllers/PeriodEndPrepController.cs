@@ -45,13 +45,15 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
 
             model.IsCurrentPeriod = isCurrentPeriodSelected;
-            model.Closed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
+            model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
             model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
             model.ReferenceDataJobs = await GetReferenceDataJobs();
 
             var pathItemStates = await _periodEndService.GetPathItemStates(model.Year, model.Period);
-            model.CollectionClosedEmailSent = _stateService.CollectionClosedEmailSent(pathItemStates);
+            var state = _stateService.GetState(pathItemStates);
+            model.CollectionClosedEmailSent = _stateService.CollectionClosedEmailSent(state);
+            model.IsPeriodEndClosed = state.PeriodEndFinished;
 
             return View(model);
         }

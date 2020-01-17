@@ -127,14 +127,13 @@ class pathController {
 
         if (jobItems != undefined && jobItems.length > 0) {
             let jobList = document.createElement("ul");
-            for (const job of jobItems) {
+            for (let job of jobItems) {
                 let status = classScope.renderJob(job, jobList);
                 if (status === 0) {
                     enableProceed = 0;
-                    break;
                 }
 
-                if (status === 2) {
+                if (enableProceed !== 0 && status === 2) {
                     enableProceed = 2;
                 }
             }
@@ -217,7 +216,7 @@ class pathController {
             return;
         }
 
-        const paths = JSON.parse(pathString);
+        const state = JSON.parse(pathString);
 
         let pathContainer = document.getElementById("pathContainer");
         while (pathContainer.firstChild) {
@@ -230,7 +229,7 @@ class pathController {
         }
 
         let classScope = this;
-        paths.forEach(function (path) {
+        state.paths.forEach(function (path) {
             let period = path.period;
             let collectionYear = path.collectionYear;
 

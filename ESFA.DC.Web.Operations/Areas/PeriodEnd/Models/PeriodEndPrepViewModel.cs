@@ -15,5 +15,7 @@
         public bool CollectionClosedEmailSent { get; set; }
 
         public bool IsCurrentPeriod { get; set; }
+
+        public bool IsPeriodEndClosed { get; set; }
     }
 }

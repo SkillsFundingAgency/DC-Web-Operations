@@ -15,7 +15,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         private readonly IJsonSerializationService _serializationService;
         private readonly IPeriodEndStateFactory _periodEndStateFactory;
 
-        private readonly HashSet<string> _pausedStatusLookup = new HashSet<string> { Constants.ReferenceDataJobPausedState, Constants.ReferenceDataJobDisabledState };
+        private readonly HashSet<string> _pausedStatusLookup = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { Constants.ReferenceDataJobPausedState, Constants.ReferenceDataJobDisabledState };
 
         public StateService(
             IJsonSerializationService serializationService,
@@ -28,24 +28,22 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public bool PauseReferenceDataIsEnabled(string referenceDataJson)
         {
             var referenceJobs = _serializationService.Deserialize<IEnumerable<JobSchedule>>(referenceDataJson);
-
-            return referenceJobs
-                .Any(rj => !_pausedStatusLookup.Contains(rj.Status, StringComparer.OrdinalIgnoreCase));
+            return referenceJobs.Any(rj => !_pausedStatusLookup.Contains(rj.Status));
         }
 
-        public bool CollectionClosedEmailSent(string pathItemStates)
+        public PeriodEndStateModel GetState(string pathItemStates)
         {
-            var states = _serializationService.Deserialize<IEnumerable<PathPathItemsModel>>(pathItemStates).ToList();
-            return states.FirstOrDefault() != null && states.First().CollectionClosedEmailSent;
+            return _serializationService.Deserialize<PeriodEndStateModel>(pathItemStates);
         }
 
-        public PeriodEndState GetPeriodEndState(string pathItemStates)
+        public bool CollectionClosedEmailSent(PeriodEndStateModel periodEndStateModel)
         {
-            var state = _serializationService
-                .Deserialize<IEnumerable<PathPathItemsModel>>(pathItemStates)
-                .Single(path => path.PathId == Constants.CriticalPathHubId);
-            var periodEndState = _periodEndStateFactory.GetPeriodEndState(state);
+            return periodEndStateModel.CollectionClosedEmailSent;
+        }
 
+        public PeriodEndState GetPeriodEndState(PeriodEndStateModel periodEndStateModel)
+        {
+            var periodEndState = _periodEndStateFactory.GetPeriodEndState(periodEndStateModel);
             return periodEndState;
         }
     }

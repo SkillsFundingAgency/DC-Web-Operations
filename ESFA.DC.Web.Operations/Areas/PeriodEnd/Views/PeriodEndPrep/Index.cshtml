@@ -140,12 +140,18 @@
             const referenceJobs = @Json.Serialize(Model?.ReferenceDataJobs);
             const failedJobs = @Json.Serialize(Model?.FailedJobs);
             const collectionClosedEmailSent = '@Html.Raw(Model?.CollectionClosedEmailSent)';
+            const periodEndFinished = '@Html.Raw(Model?.IsPeriodEndClosed)';
 
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(referenceJobs, periodClosed, collectionClosedEmailSent);
+            confirm.initialiseConfirmation(referenceJobs, periodClosed, collectionClosedEmailSent, periodEndFinished);
 
             const jobController = new JobController();
             jobController.renderJobs(referenceJobs, failedJobs);
+
+            if (!isCurrentPeriod) {
+                const dateLabel = document.getElementById("lastSync");
+                dateLabel.textContent = `Updates disabled as historical period end`;
+            }
         })();
 
     </script>

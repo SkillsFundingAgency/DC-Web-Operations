@@ -5,6 +5,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IPeriodEndStateFactory
     {
-        PeriodEndState GetPeriodEndState(PathPathItemsModel pathModel);
+        PeriodEndState GetPeriodEndState(PeriodEndStateModel pathModel);
     }
 }

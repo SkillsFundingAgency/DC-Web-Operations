@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ESFA.DC.Serialization.Interfaces;
+﻿using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
@@ -15,19 +12,19 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IEmailService _emailService;
+        private readonly IStateService _stateService;
 
         public PeriodEndController(
             IPeriodService periodService,
             IPeriodEndService periodEndService,
-            IJsonSerializationService jsonSerializationService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IStateService stateService)
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
-            _jsonSerializationService = jsonSerializationService;
             _emailService = emailService;
+            _stateService = stateService;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
@@ -93,23 +90,22 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
-            var paths = await _periodEndService.GetPathItemStates(collectionYear, period);
-
-            var model = _jsonSerializationService.Deserialize<List<PeriodEndViewModel>>(paths).First();
+            var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period);
+            var state = _stateService.GetState(pathItemStates);
 
             var pathModel = new PeriodEndViewModel
             {
                 Period = period,
                 Year = collectionYear,
-                Paths = paths,
-                CollectionClosed = model.CollectionClosed,
-                PeriodEndStarted = model.PeriodEndStarted,
-                McaReportsReady = model.McaReportsReady,
-                McaReportsPublished = model.McaReportsPublished,
-                ProviderReportsReady = model.ProviderReportsReady,
-                ProviderReportsPublished = model.ProviderReportsPublished,
-                PeriodEndFinished = model.PeriodEndFinished,
-                ReferenceDataJobsPaused = model.ReferenceDataJobsPaused
+                Paths = state.Paths,
+                CollectionClosed = state.CollectionClosed,
+                PeriodEndStarted = state.PeriodEndStarted,
+                McaReportsReady = state.McaReportsReady,
+                McaReportsPublished = state.McaReportsPublished,
+                ProviderReportsReady = state.ProviderReportsReady,
+                ProviderReportsPublished = state.ProviderReportsPublished,
+                PeriodEndFinished = state.PeriodEndFinished,
+                ReferenceDataJobsPaused = state.ReferenceDataJobsPaused
             };
 
             return pathModel;

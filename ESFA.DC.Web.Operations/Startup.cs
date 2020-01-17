@@ -90,6 +90,7 @@ namespace ESFA.DC.Web.Operations
 
             services.AddSignalR();
 
+            services.AddHostedService<PeriodEndPrepTimedHostedService>();
             services.AddHostedService<PeriodEndTimedHostedService>();
             services.AddHostedService<DashboardTimedHostedService>();
 

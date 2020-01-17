@@ -10,7 +10,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class PeriodEndPrepHub : Hub
     {
-        private readonly IPeriodEndHubEventBase _eventBase;
+        private readonly IPeriodEndPrepHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndPrepHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
@@ -19,7 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private readonly ILogger _logger;
 
         public PeriodEndPrepHub(
-            IPeriodEndHubEventBase eventBase,
+            IPeriodEndPrepHubEventBase eventBase,
             IHubContext<PeriodEndPrepHub> hubContext,
             IPeriodEndService periodEndService,
             IEmailService emailService,
@@ -51,8 +51,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(referenceJobs);
             var period = await _periodService.ReturnPeriod(cancellationToken);
+            var state = _stateService.GetState(pathStates);
             var collectionClosedEmailEnabled = period.PeriodClosed && !pauseEnabled &&
-                                               !_stateService.CollectionClosedEmailSent(pathStates);
+                                               !_stateService.CollectionClosedEmailSent(state);
             var continueEnabled = !pauseEnabled && !collectionClosedEmailEnabled && period.PeriodClosed;
 
             if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)

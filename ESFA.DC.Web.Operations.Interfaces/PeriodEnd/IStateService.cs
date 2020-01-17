@@ -1,4 +1,5 @@
-﻿using ESFA.DC.Web.Operations.Models;
+﻿using ESFA.DC.PeriodEnd.Models.Dtos;
+using ESFA.DC.Web.Operations.Models;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
@@ -6,8 +7,10 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
     {
         bool PauseReferenceDataIsEnabled(string referenceDataJson);
 
-        bool CollectionClosedEmailSent(string pathItemStates);
+        PeriodEndStateModel GetState(string pathItemStates);
 
-        PeriodEndState GetPeriodEndState(string pathItemStates);
+        bool CollectionClosedEmailSent(PeriodEndStateModel periodEndStateModel);
+
+        PeriodEndState GetPeriodEndState(PeriodEndStateModel periodEndStateModel);
     }
 }
