@@ -48,14 +48,11 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             long jobId = -1;
 
             string collectionName = Constants.FrmReportCollectionName;
-            FileUploadJob job = new FileUploadJob()
+            FrmReportsJobMetaData job = new FrmReportsJobMetaData()
             {
-                CollectionYear = collectionYear,
-                PeriodNumber = collectionPeriod,
-                CollectionName = collectionName,
-                StorageReference = string.Format(Constants.FrmContainerName, collectionYear),
-                Status = Jobs.Model.Enums.JobStatusType.Ready,
-                JobId = 0
+                JobId = 0,
+                SourceContainerName = "test",
+                SourceFolderKey = "test"
             };
 
             string url = $"{_baseUrl}/api/job";

@@ -22,5 +22,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
         public DateTime? FrmCSVValidDate { get; set; }
 
         public long FrmJobId { get; set; }
+
+        public string FrmJobType { get; set; }
     }
 }

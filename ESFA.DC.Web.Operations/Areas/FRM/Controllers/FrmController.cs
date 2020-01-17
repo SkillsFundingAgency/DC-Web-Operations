@@ -53,20 +53,20 @@
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType, long? jobId)
+        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType)
         {
-            var frmStatus = (JobStatusType)await _frmService.GetFrmStatus(jobId);
+            var frmStatus = (JobStatusType)await _frmService.GetFrmStatus(model.FrmJobId);
 
             switch (frmStatus)
             {
                 case JobStatusType.Failed:
                 case JobStatusType.FailedRetry:
-                    string errorMessage = $"The status was '{frmStatus}' for frm job '{jobId}'";
+                    string errorMessage = $"The status was '{frmStatus}' for frm job '{model.FrmJobId}'";
                     _logger.LogError(errorMessage);
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
                 case JobStatusType.Completed:
-                    if (frmJobType == "Validation")
+                    if (model.FrmJobType == "Validation")
                     {
                         var currentPeriod = await _periodService.ReturnPeriod();
                         model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
@@ -78,7 +78,7 @@
                         return View("ValidateSuccess");
                     }
 
-                    if (frmJobType == "Publish")
+                    if (model.FrmJobType == "Publish")
                     {
                         return View("PublishSuccess");
                     }
@@ -107,16 +107,19 @@
             var test = string.Format(Constants.FrmContainerName, collectionYear.ToString());
             var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
             model.FrmCSVValidDate = fileMetaData.First().LastModified;
-
+            model.FrmJobType = "Validation";
             model.FrmJobId = await _frmService.RunValidation(collectionYear, currentYearPeriod.Period);
-            return View("ValidateSuccess", model);
+
+            return RedirectToAction("HoldingPageAsync", model);
         }
 
         [HttpPost]
         public async Task<IActionResult> PublishFrm(FrmReportModel model)
         {
             //TODO: Run Publish job
-            return RedirectToAction("HoldingPageAsync", new { frmJobType = "Publish" }); //TODO: pass in jobID
+            model.FrmJobType = "Validation";
+
+            return RedirectToAction("HoldingPageAsync", model); //TODO: pass in jobID
         }
 
         public async Task<IActionResult> ReportChoiceSelection(FrmReportModel model)
