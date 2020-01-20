@@ -31,7 +31,7 @@ namespace ESFA.DC.Web.Operations.Services
             try
             {
                 // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStates(-1, -1, cancellationToken);
+                string pathItemStates = await _periodEndService.GetPathItemStates(null, null, cancellationToken);
 
                 // Send JSON to clients.
                 await _periodEndHub.SendMessage(pathItemStates, cancellationToken);

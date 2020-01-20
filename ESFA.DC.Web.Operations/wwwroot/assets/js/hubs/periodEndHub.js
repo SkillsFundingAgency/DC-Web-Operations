@@ -14,12 +14,7 @@ class periodEndHub {
         return this.connection;
     }
 
-    startHub(isCurrentPeriod) {
-        
-        if (!isCurrentPeriod) {
-            return;
-        }
-
+    startHub() {
         const pathController = new PathController();
 
         this.connection.on("ReceiveMessage", pathController.renderPaths.bind(pathController));

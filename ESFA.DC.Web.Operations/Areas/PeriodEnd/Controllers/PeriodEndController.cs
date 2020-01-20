@@ -91,7 +91,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
             var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period);
-            var state = _stateService.GetState(pathItemStates);
+            var state = _stateService.GetMainState(pathItemStates);
 
             var pathModel = new PeriodEndViewModel
             {

@@ -38,49 +38,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 
         public async Task SendMessage(string paths, CancellationToken cancellationToken)
         {
-            await SetButtonStates(paths, cancellationToken);
+            await SetButtonStates(cancellationToken);
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
-        }
-
-        public async Task SetButtonStates(string paths, CancellationToken cancellationToken)
-        {
-            var period = await _periodService.ReturnPeriod(cancellationToken);
-            var periodClosed = period.PeriodClosed;
-
-            string stateString = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, cancellationToken);
-            var state = _stateService.GetState(stateString);
-            var periodEndState = _stateService.GetPeriodEndState(state);
-
-            var startEnabled = periodClosed && !periodEndState.PeriodEndStarted;
-            if (PeriodEndState.CurrentAction != Constants.Action_StartPeriodEndButton)
-            {
-                await _hubContext.Clients.All.SendAsync(Constants.Action_StartPeriodEndButton, startEnabled, cancellationToken);
-            }
-
-            if (PeriodEndState.CurrentAction != Constants.Action_MCAReportsButton)
-            {
-                var mcaEnabled = periodClosed && !startEnabled && !periodEndState.McaReportsPublished && periodEndState.McaReportsReady;
-                await _hubContext.Clients.All.SendAsync(Constants.Action_MCAReportsButton, mcaEnabled, cancellationToken);
-            }
-
-            if (PeriodEndState.CurrentAction != Constants.Action_ProviderReportsButton)
-            {
-                var providerEnabled = periodClosed && !periodEndState.ProviderReportsPublished && periodEndState.ProviderReportsReady;
-                await _hubContext.Clients.All.SendAsync(Constants.Action_ProviderReportsButton, providerEnabled, cancellationToken);
-            }
-
-            if (PeriodEndState.CurrentAction != Constants.Action_PeriodClosedButton)
-            {
-                var closeEnabled = periodClosed && !periodEndState.PeriodEndClosed && periodEndState.McaReportsPublished && periodEndState.ProviderReportsPublished;
-                await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
-            }
-
-            if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)
-            {
-                var referenceJobsUnPausedEnabled = periodClosed && periodEndState.PeriodEndClosed && periodEndState.ReferenceDataJobsPaused;
-                await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, referenceJobsUnPausedEnabled, cancellationToken);
-            }
         }
 
         public async Task ReceiveMessage()
@@ -123,6 +83,45 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             {
                 _logger.LogError(e.Message, e);
                 throw;
+            }
+        }
+
+        private async Task SetButtonStates(CancellationToken cancellationToken)
+        {
+            var period = await _periodService.ReturnPeriod(cancellationToken);
+            var periodClosed = period.PeriodClosed;
+
+            string stateString = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, cancellationToken);
+            var state = _stateService.GetMainState(stateString);
+
+            var startEnabled = periodClosed && !state.PeriodEndStarted;
+            if (PeriodEndState.CurrentAction != Constants.Action_StartPeriodEndButton)
+            {
+                await _hubContext.Clients.All.SendAsync(Constants.Action_StartPeriodEndButton, startEnabled, cancellationToken);
+            }
+
+            if (PeriodEndState.CurrentAction != Constants.Action_MCAReportsButton)
+            {
+                var mcaEnabled = periodClosed && !startEnabled && !state.McaReportsPublished && state.McaReportsReady;
+                await _hubContext.Clients.All.SendAsync(Constants.Action_MCAReportsButton, mcaEnabled, cancellationToken);
+            }
+
+            if (PeriodEndState.CurrentAction != Constants.Action_ProviderReportsButton)
+            {
+                var providerEnabled = periodClosed && !state.ProviderReportsPublished && state.ProviderReportsReady;
+                await _hubContext.Clients.All.SendAsync(Constants.Action_ProviderReportsButton, providerEnabled, cancellationToken);
+            }
+
+            if (PeriodEndState.CurrentAction != Constants.Action_PeriodClosedButton)
+            {
+                var closeEnabled = periodClosed && !state.PeriodEndFinished && state.McaReportsPublished && state.ProviderReportsPublished;
+                await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
+            }
+
+            if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)
+            {
+                var referenceJobsUnPausedEnabled = periodClosed && state.PeriodEndFinished && state.ReferenceDataJobsPaused;
+                await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, referenceJobsUnPausedEnabled, cancellationToken);
             }
         }
     }

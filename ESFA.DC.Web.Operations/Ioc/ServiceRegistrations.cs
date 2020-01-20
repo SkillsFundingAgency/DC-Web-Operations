@@ -58,7 +58,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<HistoryService>().As<IHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<PeriodEndStateFactory>().As<IPeriodEndStateFactory>().InstancePerLifetimeScope();
             builder.RegisterType<AddNewProviderService>().As<IAddNewProviderService>().InstancePerLifetimeScope();
             builder.RegisterType<SearchProviderService>().As<ISearchProviderService>().InstancePerLifetimeScope();
             builder.RegisterType<ManageProvidersService>().As<IManageProvidersService>().InstancePerLifetimeScope();

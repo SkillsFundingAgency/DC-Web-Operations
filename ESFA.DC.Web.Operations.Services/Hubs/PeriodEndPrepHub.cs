@@ -37,23 +37,21 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         }
 
         public async Task SendMessage(
-            string referenceJobs,
-            string failedJobs,
-            string pathStates,
+            string state,
             CancellationToken cancellationToken)
         {
-            await SetButtonStates(referenceJobs, pathStates, cancellationToken);
+            await SetButtonStates(state, cancellationToken);
 
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", referenceJobs, failedJobs, cancellationToken);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", state, cancellationToken);
         }
 
-        public async Task SetButtonStates(string referenceJobs, string pathStates, CancellationToken cancellationToken)
+        public async Task SetButtonStates(string state, CancellationToken cancellationToken)
         {
-            var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(referenceJobs);
+            var prepModel = _stateService.GetPrepState(state);
+            var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(prepModel.ReferenceDataJobs);
             var period = await _periodService.ReturnPeriod(cancellationToken);
-            var state = _stateService.GetState(pathStates);
             var collectionClosedEmailEnabled = period.PeriodClosed && !pauseEnabled &&
-                                               !_stateService.CollectionClosedEmailSent(state);
+                                               !_stateService.CollectionClosedEmailSent(prepModel.State);
             var continueEnabled = !pauseEnabled && !collectionClosedEmailEnabled && period.PeriodClosed;
 
             if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)

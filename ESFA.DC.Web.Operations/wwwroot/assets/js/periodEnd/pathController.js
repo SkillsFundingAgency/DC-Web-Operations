@@ -1,62 +1,85 @@
-﻿import { disabledProceedButtons } from '/assets/js/periodEnd/state.js';
+﻿import { disabledProceedButtons, jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
+import { updateSync } from '/assets/js/periodEnd/baseController.js';
 
 class pathController {
+
+    constructor() {
+        this._slowTimer = null;
+    }
 
     pathItemCompare(a, b) {
         if (a.ordinal < b.ordinal) {
             return -1;
         }
+
         if (a.ordinal > b.ordinal) {
             return 1;
         }
+
         return 0;
     }
 
     jobStatusConvertor(status) {
         switch (status) {
-            case 1:
+            case jobStatus.ready:
                 return "Ready";
-            case 2:
+            case jobStatus.movedForProcessing:
                 return "Moved For Processing";
-            case 3:
+            case jobStatus.processing:
                 return "Processing";
-            case 4:
+            case jobStatus.completed:
                 return "Completed";
-            case 5:
+            case jobStatus.failedRetry:
                 return "Failed Retry";
-            case 6:
+            case jobStatus.failed:
                 return "Failed";
-            case 7:
+            case jobStatus.paused:
                 return "Paused";
-            case 8:
+            case jobStatus.waiting:
                 return "Waiting";
             default:
         }
     }
 
-    isJobContinuable(jobStatus) {
-        if (jobStatus === 4) {
-            return 1;
+    isJobContinuable(status) {
+        if (status === jobStatus.completed) {
+            return jobContinuation.allCompleted;
         }
 
-        if (jobStatus === 5 || jobStatus === 6) {
-            return 2;
+        if (status === jobStatus.failedRetry || status === jobStatus.failed) {
+            return jobContinuation.someFailed;
         }
 
-        return 0;
+        return jobContinuation.running;
     }
 
-    renderProceed(pathId, pathItemId, htmlItem, enabled, hasSubPaths, collectionYear, period) {
-        const proceedEnabled = enabled > 0 && !disabledProceedButtons.includes(pathItemId);
+    getProceedInformationText(enabled, previousItemIsSubPath, nextItemIsSubPath) {
+        if (enabled === jobContinuation.running) {
+            return "Can't proceed until jobs complete";
+        }
+
+        if (nextItemIsSubPath) {
+            return "Proceed will start sub-path and run next item";
+        }
+
+        if (previousItemIsSubPath) {
+            return "Can't proceed as jobs haven't started yet";
+        }
+
+        return "";
+    }
+
+    renderProceed(pathId, pathItemId, htmlItem, enabled, previousItemIsSubPath, nextItemIsSubPath, collectionYear, period) {
+        const proceedEnabled = enabled < jobContinuation.running && !disabledProceedButtons.includes(pathItemId) && !previousItemIsSubPath;
 
         const node =
             `<li class="app-task-list__item">
                 <span class="inline" >
                     <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
                         onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
-                        ${enabled === 2 ? "⚠ Proceed with failed jobs" : "Proceed"} ${hasSubPaths ? "↡" : "▼"}
+                        ${enabled === jobContinuation.someFailed ? "⚠ Proceed with failed jobs" : "Proceed"} ${nextItemIsSubPath ? "↡" : "▼"}
                     </button>
-                    <label style="font-size: 10px;">${hasSubPaths ? "Proceed will start sub-path and run next item" : ""}</label>
+                    <label style="font-size: 10px;">${this.getProceedInformationText(enabled, previousItemIsSubPath, nextItemIsSubPath)}</label>
                 </span>
             </li>`;
         htmlItem.insertAdjacentHTML('beforeend', node);
@@ -99,7 +122,7 @@ class pathController {
 
         let totalPathItems = path.pathItems.length;
 
-        let enableProceed = 1;
+        let enableProceed = jobContinuation.allCompleted;
 
         let jobItems = pathItem.pathItemJobs;
 
@@ -113,7 +136,6 @@ class pathController {
 
         let item = document.createElement("li");
         item.className += "app-task-list__item";
-        // item.innerHTML = "<b>" + pathItem.name + "</b>";
 
         if (currentItem) {
             item.innerHTML = "<b>" + itemText + "</b>";
@@ -129,12 +151,12 @@ class pathController {
             let jobList = document.createElement("ul");
             for (let job of jobItems) {
                 let status = classScope.renderJob(job, jobList);
-                if (status === 0) {
-                    enableProceed = 0;
+                if (status === jobContinuation.running) {
+                    enableProceed = jobContinuation.running;
                 }
 
-                if (enableProceed !== 0 && status === 2) {
-                    enableProceed = 2;
+                if (enableProceed !== jobContinuation.running && status === jobContinuation.someFailed) {
+                    enableProceed = jobContinuation.someFailed;
                 }
             }
 
@@ -150,14 +172,14 @@ class pathController {
         }
 
         let summary = pathItem.pathItemJobSummary;
-        if (summary != undefined) {
+        if (summary != undefined && summary != null) {
             if (summary.numberOfWaitingJobs + summary.numberOfRunningJobs > 0) {
-                enableProceed = 0;
+                enableProceed = jobContinuation.running;
             }
             else if (summary.numberOfFailedJobs === 0) {
-                enableProceed = 1;
+                enableProceed = jobContinuation.allCompleted;
             } else {
-                enableProceed = 2;
+                enableProceed = jobContinuation.someFailed;
             }
         }
 
@@ -165,8 +187,7 @@ class pathController {
 
         if (currentItem) {
             if (pathItem.ordinal + 1 !== totalPathItems) {
-                // debugger;
-                this.renderProceed(path.pathId, pathItem.pathItemId, subItemList, enableProceed, path.pathItems[pathItem.ordinal + 1].subPaths !== null, collectionYear, period);
+                this.renderProceed(path.pathId, pathItem.pathItemId, subItemList, enableProceed, pathItem.subPaths !== null, path.pathItems[pathItem.ordinal + 1].subPaths !== null, collectionYear, period);
             }
         }
     }
@@ -185,20 +206,7 @@ class pathController {
             button.disabled = true;
         }
     }
-
-    updateSync() {
-        let date = new Date();
-        let day = this.padLeft(date.getDate(), "0", 2);
-        let month = this.padLeft(date.getMonth() + 1, "0", 2);
-
-        let hours = this.padLeft(date.getHours(), "0", 2);
-        let minutes = this.padLeft(date.getMinutes(), "0", 2);
-        let seconds = this.padLeft(date.getSeconds(), "0", 2);
-
-        const dateLabel = document.getElementById("lastSync");
-        dateLabel.textContent = `Last updated: ${day}/${month}/${date.getFullYear()} ${hours}:${minutes}:${seconds}`;
-    }
-
+    
     padLeft(str, padString, max) {
         str = str.toString();
         return str.length < max ? this.padLeft(padString + str, padString, max) : str;
@@ -210,7 +218,7 @@ class pathController {
     }
 
     renderPaths(pathString) {
-        this.updateSync();
+        updateSync.call(this);
 
         if (pathString === "" || pathString === undefined) {
             return;
@@ -278,7 +286,9 @@ class pathController {
     initialiseState(state) {
         const periodClosed = state.collectionClosed === "True";
         const mcaEnabled = periodClosed && state.mcaReportsReady === "True" && !(state.mcaReportsPublished === "True");
-        const providerEnabled = periodClosed && state.providerReportsReady === "True" && !(state.providerReportsPublished === "True")
+        const providerEnabled = periodClosed &&
+            state.providerReportsReady === "True" &&
+            !(state.providerReportsPublished === "True");
         const reportsFinished = !mcaEnabled &&
             !providerEnabled &&
             state.mcaReportsReady === "True" &&

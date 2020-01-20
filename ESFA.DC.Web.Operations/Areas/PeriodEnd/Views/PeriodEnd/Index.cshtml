@@ -102,11 +102,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-        <label id="lastSync"></label>
-
-        <label id="state"></label>
+            <label id="slowConnection"></label>
+            <label id="lastSync"></label>
+            <label id="state"></label>
+        </div>
     </div>
-</div>
 
 @section PageScripts
 {
@@ -115,12 +115,10 @@
         <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     }
 
-    <script type="module">
-        const isCurrentPeriod = '@Html.Raw(Model?.IsCurrentPeriod)' === 'True';
-
+<script type="module">
         import PathController from '/assets/js/periodEnd/pathController.js';
 
-        @if (Model != null && Model.CollectionClosed)
+        @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
         {
             @Html.Raw("import Client from '/assets/js/periodEnd/client.js';")
             ;
@@ -128,36 +126,25 @@
             ;
             @Html.Raw("const hub = new Hub();")
             ;
-            @Html.Raw("hub.startHub(isCurrentPeriod);")
+            @Html.Raw("hub.startHub();")
             ;
             @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
             ;
         }
 
         (function() {
-            const paths = '@Json.Serialize(Model)';
+            const stateModel = '@Json.Serialize(Model)';
             const pathController = new PathController();
 
-            const state = {
-                collectionClosed : '@Html.Raw(Model?.CollectionClosed)',
-                periodEndStarted : '@Html.Raw(Model?.PeriodEndStarted)',
-                mcaReportsReady : '@Html.Raw(Model?.McaReportsReady)',
-                mcaReportsPublished : '@Html.Raw(Model?.McaReportsPublished)',
-                providerReportsReady : '@Html.Raw(Model?.ProviderReportsReady)',
-                providerReportsPublished : '@Html.Raw(Model?.ProviderReportsPublished)',
-                periodEndFinished : '@Html.Raw(Model?.PeriodEndFinished)',
-                referenceDataJobsPaused : '@Html.Raw(Model?.ReferenceDataJobsPaused)'
-            };
-            
-            pathController.initialiseState(state);
+            pathController.initialiseState(stateModel);
 
-            pathController.renderPaths(paths);
+            pathController.renderPaths(stateModel);
 
-            if (!isCurrentPeriod) {
-                const dateLabel = document.getElementById("lastSync");
-                dateLabel.textContent = `Updates disabled as historical period end`;
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
+                    @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
             }
         })();
-    
-    </script>
+
+</script>
 }

@@ -15,7 +15,7 @@ class confirmationController {
         this._cancelButton.addEventListener("click", classScope.cancelPause.bind(classScope));
     }
 
-    initialiseConfirmation(referenceDataJobs, periodClosed, collectionClosedEmailSent, periodEndFinished) {
+    initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished) {
         const finished = periodEndFinished === "False" ? false : true;
 
         const jobController = new JobController();
@@ -26,9 +26,9 @@ class confirmationController {
         }
 
         let paused = true;
-        const jobs = JSON.parse(referenceDataJobs);
+        const stateModel = JSON.parse(state);
 
-        jobs.forEach(function(job) {
+        stateModel.periodEndPrepModel.referenceDataJobs.forEach(function(job) {
             if (job.status !== "Paused") {
                 paused = false;
             }

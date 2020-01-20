@@ -1,16 +1,17 @@
-﻿using ESFA.DC.PeriodEnd.Models.Dtos;
-using ESFA.DC.Web.Operations.Models;
+﻿using System.Collections.Generic;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.PeriodEnd.Models.Dtos;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IStateService
     {
-        bool PauseReferenceDataIsEnabled(string referenceDataJson);
+        bool PauseReferenceDataIsEnabled(IEnumerable<JobSchedule> referenceDataJson);
 
-        PeriodEndStateModel GetState(string pathItemStates);
+        PeriodEndStateModel GetMainState(string pathItemStates);
 
         bool CollectionClosedEmailSent(PeriodEndStateModel periodEndStateModel);
 
-        PeriodEndState GetPeriodEndState(PeriodEndStateModel periodEndStateModel);
+        PeriodEndPrepModel GetPrepState(string state);
     }
 }
