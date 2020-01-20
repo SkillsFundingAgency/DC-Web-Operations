@@ -60,9 +60,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await SendAsync(_baseUrl + $"/api/period-end/mca-reports/{year}/{period}/publish", cancellationToken);
         }
 
-        public async Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"/api/period-end/states/{year}/{period}", cancellationToken);
+            string data = await GetDataAsync(_baseUrl + $"/api/period-end/states-prep/{year}/{period}", cancellationToken);
+            return data;
+        }
+
+        public async Task<string> GetPathItemStates(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string data = await GetDataAsync(_baseUrl + $"/api/period-end/states-main/{year}/{period}", cancellationToken);
             return data;
         }
 
@@ -74,14 +80,12 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task<string> GetFailedJobs(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + $"/api/job/failedJobs/{year}/{period}", cancellationToken);
-
             return data;
         }
 
         public async Task<string> GetReferenceDataJobs(CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + $"/api/period-end/reference-data-jobs", cancellationToken);
-
             return data;
         }
 

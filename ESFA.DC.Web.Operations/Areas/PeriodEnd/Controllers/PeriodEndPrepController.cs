@@ -45,13 +45,10 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
 
             model.IsCurrentPeriod = isCurrentPeriodSelected;
-            model.Closed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
+            model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
-            model.FailedJobs = await GetFailedJobs(model.Year, model.Period);
-            model.ReferenceDataJobs = await GetReferenceDataJobs();
-
-            var pathItemStates = await _periodEndService.GetPathItemStates(model.Year, model.Period);
-            model.CollectionClosedEmailSent = _stateService.CollectionClosedEmailSent(pathItemStates);
+            string state = await _periodEndService.GetPrepState(model.Year, model.Period);
+            model.PeriodEndPrepModel = _stateService.GetPrepState(state);
 
             return View(model);
         }
@@ -74,20 +71,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         public IActionResult StartPeriodEnd(int collectionYear, int period)
         {
             return RedirectToAction("Index", "PeriodEnd", new { collectionYear, period });
-        }
-
-        private async Task<string> GetReferenceDataJobs()
-        {
-            var data = await _periodEndService.GetReferenceDataJobs();
-
-            return data;
-        }
-
-        private async Task<string> GetFailedJobs(int collectionYear, int period)
-        {
-            var data = await _periodEndService.GetFailedJobs(collectionYear, period);
-
-            return data;
         }
     }
 }

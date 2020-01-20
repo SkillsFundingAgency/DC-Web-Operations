@@ -1,5 +1,4 @@
-﻿import PathController from '/assets/js/periodEnd/pathController.js';
-import JobController from '/assets/js/periodEnd/jobController.js';
+﻿import JobController from '/assets/js/periodEnd/jobController.js';
 
 class client {
     

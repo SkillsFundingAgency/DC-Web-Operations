@@ -113,8 +113,8 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
+        <label id="slowConnection"></label>
         <label id="lastSync"></label>
-
         <label id="state"></label>
     </div>
 </div>
@@ -126,26 +126,37 @@
     <script type="module">
         import JobController from "/assets/js/periodEnd/jobController.js";
         import Confirm from '/assets/js/periodEnd/confirmationController.js';
-        import Hub from '/assets/js/hubs/periodEndPrepHub.js';
-        import Client from '/assets/js/periodEnd/client.js';
-        
-        const isCurrentPeriod = '@Html.Raw(Model?.IsCurrentPeriod)' === 'True';
-        const hub = new Hub();
-        hub.startHub(isCurrentPeriod);
 
-        window.prepClient = new Client(hub.getConnection());
+        @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndPrepModel.State.PeriodEndFinished)
+        {
+            @Html.Raw("import Client from '/assets/js/periodEnd/client.js';")
+            ;
+            @Html.Raw("import Hub from '/assets/js/hubs/periodEndPrepHub.js';")
+            ;
+            @Html.Raw("const hub = new Hub();")
+            ;
+            @Html.Raw("hub.startHub();")
+            ;
+            @Html.Raw("window.prepClient = new Client(hub.getConnection());")
+            ;
+        }
 
         (function() {
-            const periodClosed = '@Html.Raw(Model?.Closed)';
-            const referenceJobs = @Json.Serialize(Model?.ReferenceDataJobs);
-            const failedJobs = @Json.Serialize(Model?.FailedJobs);
-            const collectionClosedEmailSent = '@Html.Raw(Model?.CollectionClosedEmailSent)';
+            const periodClosed = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosed)';
+            const state = @Json.Serialize(Model?.PeriodEndPrepModel);
+            const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
+            const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
 
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(referenceJobs, periodClosed, collectionClosedEmailSent);
+            confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished);
 
             const jobController = new JobController();
-            jobController.renderJobs(referenceJobs, failedJobs);
+            jobController.renderJobs(state);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
+                @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
+            }
         })();
 
     </script>

@@ -1,20 +1,24 @@
-﻿class jobController {
+﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
 
-    renderJobs(referenceJobs, failedJobs) {
+class jobController {
 
-        this.updateSync();
-        this.renderFailedJobs(failedJobs);
-        this.renderReferenceJobs(referenceJobs);
+    constructor() {
+        this._slowTimer = null;
     }
 
-    renderReferenceJobs(jobsString) {
+    renderJobs(state) {
+        updateSync.call(this);
 
-        if (jobsString === "" || jobsString === undefined) {
+        if (state === "" || state === undefined) {
             return;
         }
 
-        const jobs = JSON.parse(jobsString);
+        const stateModel = JSON.parse(state);
+        this.renderFailedJobs(stateModel.periodEndPrepModel.failedJobs);
+        this.renderReferenceJobs(stateModel.periodEndPrepModel.referenceDataJobs);
+    }
 
+    renderReferenceJobs(jobs) {
         let container = document.getElementById("referenceDataContainer");
         this.clearContainer(container);
 
@@ -50,14 +54,7 @@
         }
     }
 
-    renderFailedJobs(jobsString) {
-
-        if (jobsString === "" || jobsString === undefined) {
-            return;
-        }
-
-        const jobs = JSON.parse(jobsString);
-
+    renderFailedJobs(jobs) {
         let container = document.getElementById("failedJobContainer");
         this.clearContainer(container);
 
@@ -134,19 +131,6 @@
         if (button != null) {
             button.disabled = !enabled;
         }
-    }
-
-    updateSync() {
-        let date = new Date();
-        let day = this.padLeft(date.getDate(), "0", 2);
-        let month = this.padLeft(date.getMonth() + 1, "0", 2);
-
-        let hours = this.padLeft(date.getHours(), "0", 2);
-        let minutes = this.padLeft(date.getMinutes(), "0", 2);
-        let seconds = this.padLeft(date.getSeconds(), "0", 2);
-
-        const dateLabel = document.getElementById("lastSync");
-        dateLabel.textContent = `Last updated: ${day}/${month}/${date.getFullYear()} ${hours}:${minutes}:${seconds}`;
     }
 
     displayConnectionState(state) {

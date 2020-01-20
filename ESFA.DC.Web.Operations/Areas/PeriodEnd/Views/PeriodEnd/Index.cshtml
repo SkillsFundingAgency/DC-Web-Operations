@@ -1,5 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 @using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Utils
 @model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndViewModel
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +8,21 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third sticky scrolling-summary">
+    <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
+        <ul class="govuk-list">
+            <li>
+                @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+            </li>
+        </ul>
         <div id="summaryContainer"></div>
     </div>
 
@@ -87,11 +102,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-        <label id="lastSync"></label>
-
-        <label id="state"></label>
+            <label id="slowConnection"></label>
+            <label id="lastSync"></label>
+            <label id="state"></label>
+        </div>
     </div>
-</div>
 
 @section PageScripts
 {
@@ -100,42 +115,36 @@
         <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     }
 
-    <script type="module">
-            import PathController from '/assets/js/periodEnd/pathController.js';
-            import Client from '/assets/js/periodEnd/client.js'; 
-            
-            const isCurrentPeriod = '@Html.Raw(Model?.IsCurrentPeriod)' === 'True';
+<script type="module">
+        import PathController from '/assets/js/periodEnd/pathController.js';
 
-            @if (Model != null && Model.CollectionClosed)
-            {
-                @Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';")
-                ;
-                @Html.Raw("const hub = new Hub();")
-                ;
-                @Html.Raw("hub.startHub(isCurrentPeriod);")
-                ;
-                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
-                ;
+        @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
+        {
+            @Html.Raw("import Client from '/assets/js/periodEnd/client.js';")
+            ;
+            @Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';")
+            ;
+            @Html.Raw("const hub = new Hub();")
+            ;
+            @Html.Raw("hub.startHub();")
+            ;
+            @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
+            ;
+        }
+
+        (function() {
+            const stateModel = '@Json.Serialize(Model)';
+            const pathController = new PathController();
+
+            pathController.initialiseState(stateModel);
+
+            pathController.renderPaths(stateModel);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
+                    @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
             }
+        })();
 
-            (function() {
-                const paths = '@Html.Raw(Model?.Paths)';
-                const pathController = new PathController();
-
-                const state = {
-                    collectionClosed : '@Html.Raw(Model?.CollectionClosed)',
-                    periodEndStarted : '@Html.Raw(Model?.PeriodEndStarted)',
-                    mcaReportsReady : '@Html.Raw(Model?.McaReportsReady)',
-                    mcaReportsPublished : '@Html.Raw(Model?.McaReportsPublished)',
-                    providerReportsReady : '@Html.Raw(Model?.ProviderReportsReady)',
-                    providerReportsPublished : '@Html.Raw(Model?.ProviderReportsPublished)',
-                    periodEndFinished : '@Html.Raw(Model?.PeriodEndFinished)',
-                    referenceDataJobsPaused : '@Html.Raw(Model?.ReferenceDataJobsPaused)'
-                };
-                
-                pathController.initialiseState(state);
-
-                pathController.renderPaths(paths);
-            })();
-    </script>
+</script>
 }

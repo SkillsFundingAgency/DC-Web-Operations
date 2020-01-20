@@ -34,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to {nameof(DoWork)} in {nameof(PeriodEndTimedHostedService)}", ex);
+                _logger.LogError($"Failed to {nameof(DoWork)} in {nameof(DashboardTimedHostedService)}", ex);
             }
         }
     }
