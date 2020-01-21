@@ -43,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return result;
         }
 
-        public async Task<long> RunValidation(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunValidation(string containerName, string folderKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             long jobId = -1;
 
@@ -53,8 +53,8 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 CollectionName = collectionName,
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
                 JobId = 0,
-                SourceContainerName = "test",
-                SourceFolderKey = "test"
+                SourceContainerName = containerName,
+                SourceFolderKey = folderKey
             };
 
             string url = $"{_baseUrl}/api/job/frm/validate";

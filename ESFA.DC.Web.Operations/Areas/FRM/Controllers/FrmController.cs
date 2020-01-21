@@ -65,6 +65,7 @@
                     _logger.LogError(errorMessage);
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
+                case JobStatusType.Waiting:
                 case JobStatusType.Completed:
                     if (model.FrmJobType == "Validation")
                     {
@@ -108,7 +109,7 @@
             var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
             model.FrmCSVValidDate = fileMetaData.First().LastModified;
             model.FrmJobType = "Validation";
-            model.FrmJobId = await _frmService.RunValidation(collectionYear, currentYearPeriod.Period);
+            model.FrmJobId = await _frmService.RunValidation(model.FrmYearPeriod, model.FrmDate.ToString());
 
             return RedirectToAction("HoldingPageAsync", model);
         }
