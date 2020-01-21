@@ -1,10 +1,8 @@
 ﻿@using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
-@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Utils
 @model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndViewModel
 @{
     ViewData["Title"] = "Index";
-    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
 }
 
 <div class="govuk-grid-row">
@@ -102,7 +100,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-            <label id="slowConnection"></label>
+            <label id="slowConnection" alt="Connection is slow at the moment"></label>
             <label id="lastSync"></label>
             <label id="state"></label>
         </div>
@@ -133,7 +131,7 @@
         }
 
         (function() {
-            const stateModel = '@Json.Serialize(Model)';
+            const stateModel = @Json.Serialize(Model);
             const pathController = new PathController();
 
             pathController.initialiseState(stateModel);

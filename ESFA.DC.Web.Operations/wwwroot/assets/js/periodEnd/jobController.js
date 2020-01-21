@@ -13,9 +13,9 @@ class jobController {
             return;
         }
 
-        const stateModel = JSON.parse(state);
-        this.renderFailedJobs(stateModel.periodEndPrepModel.failedJobs);
-        this.renderReferenceJobs(stateModel.periodEndPrepModel.referenceDataJobs);
+        const stateModel = typeof state === 'object' ? state : JSON.parse(state);
+        this.renderFailedJobs(stateModel.failedJobs);
+        this.renderReferenceJobs(stateModel.referenceDataJobs);
     }
 
     renderReferenceJobs(jobs) {

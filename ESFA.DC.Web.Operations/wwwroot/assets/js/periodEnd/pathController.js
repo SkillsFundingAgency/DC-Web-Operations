@@ -217,14 +217,14 @@ class pathController {
         stateLabel.textContent = `Status: ${state}`;
     }
 
-    renderPaths(pathString) {
+    renderPaths(state) {
         updateSync.call(this);
 
-        if (pathString === "" || pathString === undefined) {
+        if (state === "" || state === undefined) {
             return;
         }
 
-        const state = JSON.parse(pathString);
+        const stateModel = typeof state === 'object' ? state : JSON.parse(state);
 
         let pathContainer = document.getElementById("pathContainer");
         while (pathContainer.firstChild) {
@@ -237,7 +237,7 @@ class pathController {
         }
 
         let classScope = this;
-        state.paths.forEach(function (path) {
+        stateModel.paths.forEach(function (path) {
             let period = path.period;
             let collectionYear = path.collectionYear;
 
@@ -284,21 +284,15 @@ class pathController {
     }
 
     initialiseState(state) {
-        const periodClosed = state.collectionClosed === "True";
-        const mcaEnabled = periodClosed && state.mcaReportsReady === "True" && !(state.mcaReportsPublished === "True");
-        const providerEnabled = periodClosed &&
-            state.providerReportsReady === "True" &&
-            !(state.providerReportsPublished === "True");
-        const reportsFinished = !mcaEnabled &&
-            !providerEnabled &&
-            state.mcaReportsReady === "True" &&
-            state.providerReportsReady === "True";
+        const mcaEnabled = state.collectionClosed && state.mcaReportsReady && !state.mcaReportsPublished;
+        const providerEnabled = state.collectionClosed && state.providerReportsReady && !state.providerReportsPublished;
+        const reportsFinished = !mcaEnabled && !providerEnabled && state.mcaReportsReady && state.providerReportsReady;
 
-        this.setButtonState(periodClosed && !(state.periodEndStarted === "True"), "startPeriodEnd");
+        this.setButtonState(state.collectionClosed && !state.periodEndStarted, "startPeriodEnd");
         this.setButtonState(mcaEnabled, "publishMcaReports");
         this.setButtonState(providerEnabled, "publishProviderReports");
-        this.setButtonState(periodClosed && reportsFinished && !(state.periodEndFinished === "True"), "closePeriodEnd");
-        this.setButtonState(periodClosed && state.periodEndFinished === "True" && state.referenceDataJobsPaused === "True", "resumeReferenceData");
+        this.setButtonState(state.collectionClosed && reportsFinished && !state.periodEndFinished, "closePeriodEnd");
+        this.setButtonState(state.collectionClosed && state.periodEndFinished && state.referenceDataJobsPaused, "resumeReferenceData");
     }
 }
 
