@@ -75,7 +75,7 @@
                         var test = string.Format(Constants.FrmContainerName, collectionYear);
                         var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
                         model.FrmCSVValidDate = fileMetaData.First().LastModified;
-                        return View("ValidateSuccess");
+                        return View("ValidateSuccess", model);
                     }
 
                     if (model.FrmJobType == "Publish")
@@ -117,7 +117,8 @@
         public async Task<IActionResult> PublishFrm(FrmReportModel model)
         {
             //TODO: Run Publish job
-            model.FrmJobType = "Validation";
+            model.FrmJobType = "Publish";
+            model.FrmJobId = await _frmService.RunPublish(model.FrmJobId);
 
             return RedirectToAction("HoldingPageAsync", model); //TODO: pass in jobID
         }

@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "FRM Validation Successful";
-    ViewData[ViewDataConstants.BackLink] = "/";
 }
 
 <h1 class="govuk-heading-xl">
@@ -33,9 +32,11 @@
         </tbody>
     </table>
 </form>
-<form>
+<form asp-area="Frm" asp-action="PublishFrm" method="post">
+    >>
     <br />
     <br />
     <br />
+    <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
     <button type="submit" class="govuk-button" formaction="PublishFrm">Publish</button>
 </form>

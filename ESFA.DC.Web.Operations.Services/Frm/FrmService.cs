@@ -48,14 +48,41 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             long jobId = -1;
 
             string collectionName = Constants.FrmReportCollectionName;
-            FrmReportsJobMetaData job = new FrmReportsJobMetaData()
+            FrmReportsJob job = new FrmReportsJob()
             {
+                CollectionName = collectionName,
+                Status = Jobs.Model.Enums.JobStatusType.Ready,
                 JobId = 0,
                 SourceContainerName = "test",
                 SourceFolderKey = "test"
             };
 
-            string url = $"{_baseUrl}/api/job";
+            string url = $"{_baseUrl}/api/job/frm/validate";
+            var json = _jsonSerializationService.Serialize(job);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadAsStringAsync();
+            long.TryParse(result, out jobId);
+
+            return jobId;
+        }
+
+        public async Task<long> RunPublish(long jobId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string collectionName = Constants.FrmReportCollectionName;
+            FrmReportsJob job = new FrmReportsJob()
+            {
+                CollectionName = collectionName,
+                JobId = jobId,
+                Status = Jobs.Model.Enums.JobStatusType.Ready,
+                SourceContainerName = "test",
+                SourceFolderKey = "test"
+            };
+
+            string url = $"{_baseUrl}/api/job/frm/publish";
             var json = _jsonSerializationService.Serialize(job);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
