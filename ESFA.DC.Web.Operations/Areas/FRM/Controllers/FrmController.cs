@@ -53,21 +53,20 @@
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType)
+        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType, long? jobId)
         {
-            var frmStatus = (JobStatusType)await _frmService.GetFrmStatus(model.FrmJobId);
+            var frmStatus = (JobStatusType)await _frmService.GetFrmStatus(jobId);
 
             switch (frmStatus)
             {
                 case JobStatusType.Failed:
                 case JobStatusType.FailedRetry:
-                    string errorMessage = $"The status was '{frmStatus}' for frm job '{model.FrmJobId}'";
+                    string errorMessage = $"The status was '{frmStatus}' for frm job '{jobId}'";
                     _logger.LogError(errorMessage);
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
-                case JobStatusType.Waiting:
                 case JobStatusType.Completed:
-                    if (model.FrmJobType == "Validation")
+                    if (frmJobType == "Validation")
                     {
                         var currentPeriod = await _periodService.ReturnPeriod();
                         model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
@@ -76,10 +75,10 @@
                         var test = string.Format(Constants.FrmContainerName, collectionYear);
                         var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
                         model.FrmCSVValidDate = fileMetaData.First().LastModified;
-                        return View("ValidateSuccess", model);
+                        return View("ValidateSuccess");
                     }
 
-                    if (model.FrmJobType == "Publish")
+                    if (frmJobType == "Publish")
                     {
                         return View("PublishSuccess");
                     }
@@ -95,33 +94,22 @@
         [HttpPost]
         public async Task<IActionResult> ValidateFrm(FrmReportModel model)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod();
-            if (currentYearPeriod?.Year == null)
-            {
-                string errorMessage = $"Call to get current return period failed";
-                _logger.LogError(errorMessage);
-                throw new Exception(errorMessage);
-            }
+            var currentPeriod = await _periodService.ReturnPeriod();
+             model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
 
-            var collectionYear = currentYearPeriod.Year.Value;
-            model.FrmPeriod = $"R{currentYearPeriod.Period.ToString("D2")}";
-            var test = string.Format(Constants.FrmContainerName, collectionYear.ToString());
+            var collectionYear = "1920";
+            var test = string.Format(Constants.FrmContainerName, collectionYear);
             var fileMetaData = await _fileService.GetFileMetaDataAsync(test, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
             model.FrmCSVValidDate = fileMetaData.First().LastModified;
-            model.FrmJobType = "Validation";
-            model.FrmJobId = await _frmService.RunValidation(model.FrmYearPeriod, model.FrmDate.ToString());
-
-            return RedirectToAction("HoldingPageAsync", model);
+            //TODO: Run Validation Job
+            return View("ValidateSuccess", model); //TODO: pass in jobID
         }
 
         [HttpPost]
         public async Task<IActionResult> PublishFrm(FrmReportModel model)
         {
             //TODO: Run Publish job
-            model.FrmJobType = "Publish";
-            model.FrmJobId = await _frmService.RunPublish(model.FrmJobId);
-
-            return RedirectToAction("HoldingPageAsync", model); //TODO: pass in jobID
+            return RedirectToAction("HoldingPageAsync", new { frmJobType = "Publish" }); //TODO: pass in jobID
         }
 
         public async Task<IActionResult> ReportChoiceSelection(FrmReportModel model)
@@ -140,7 +128,7 @@
             {
                 var currentPeriod = await _periodService.ReturnPeriod();
 
-                var containerName = string.Format(Constants.FrmContainerName, currentPeriod.Year);
+                var containerName = Utils.Constants.FrmBlobContainerName.Replace(Utils.Constants.CollectionYearToken, currentPeriod.Year.ToString());
 
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
