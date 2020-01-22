@@ -78,8 +78,8 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 CollectionName = collectionName,
                 JobId = jobId,
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
-                SourceContainerName = "test",
-                SourceFolderKey = "test"
+                SourceContainerName = null,
+                SourceFolderKey = null
             };
 
             string url = $"{_baseUrl}/api/job/frm/publish";
