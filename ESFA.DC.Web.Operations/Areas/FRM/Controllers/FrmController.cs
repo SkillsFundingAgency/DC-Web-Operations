@@ -90,7 +90,9 @@
             }
 
             model.FrmJobType = "Validation";
-            model.FrmJobId = await _frmService.RunValidation(model.FrmYearPeriod, model.FrmDate.ToString());
+            var frmContainerName = $"frm{model.FrmYearPeriod}";
+            var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
+            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
