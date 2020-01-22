@@ -73,24 +73,19 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         public async Task<long> RunPublish(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             string collectionName = Constants.FrmReportCollectionName;
-            FrmReportsJob job = new FrmReportsJob()
+
+            JobStatusDto statusDto = new JobStatusDto()
             {
-                CollectionName = collectionName,
                 JobId = jobId,
-                Status = Jobs.Model.Enums.JobStatusType.Ready,
-                SourceContainerName = null,
-                SourceFolderKey = null
+                JobStatus = 1
             };
 
-            string url = $"{_baseUrl}/api/job/frm/publish";
-            var json = _jsonSerializationService.Serialize(job);
+            string url = $"{_baseUrl}/api/job/1";
+            var json = _jsonSerializationService.Serialize(statusDto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
             response.EnsureSuccessStatusCode();
-
-            var result = await response.Content.ReadAsStringAsync();
-            long.TryParse(result, out jobId);
 
             return jobId;
         }
