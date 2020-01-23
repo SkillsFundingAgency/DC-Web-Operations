@@ -133,6 +133,13 @@ class jobController {
         }
     }
 
+    setStartPeriodEndButtonState(enabled) {
+        const button = document.getElementById("startPeriodEnd");
+        if (button != null) {
+            button.disabled = !enabled;
+        }
+    }
+
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");
         stateLabel.textContent = `Status: ${state}`;

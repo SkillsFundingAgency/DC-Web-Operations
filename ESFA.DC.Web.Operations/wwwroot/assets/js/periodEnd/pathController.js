@@ -5,6 +5,8 @@ class pathController {
 
     constructor() {
         this._slowTimer = null;
+        this._year = 0;
+        this._period = 0;
     }
 
     pathItemCompare(a, b) {
@@ -53,33 +55,33 @@ class pathController {
         return jobContinuation.running;
     }
 
-    getProceedInformationText(enabled, previousItemIsSubPath, nextItemIsSubPath) {
-        if (enabled === jobContinuation.running) {
+    getProceedInformationText(jobState, itemIsSubPath, nextItemIsSubPath) {
+        if (jobState === jobContinuation.running) {
             return "Can't proceed until jobs complete";
         }
 
         if (nextItemIsSubPath) {
-            return "Proceed will start sub-path and run next item";
+            return "Proceed will start sub-path(s) and run next item";
         }
 
-        if (previousItemIsSubPath) {
+        if (itemIsSubPath && jobState === jobContinuation.nothingRunning) {
             return "Can't proceed as jobs haven't started yet";
         }
 
         return "";
     }
 
-    renderProceed(pathId, pathItemId, htmlItem, enabled, previousItemIsSubPath, nextItemIsSubPath, collectionYear, period) {
-        const proceedEnabled = enabled < jobContinuation.running && !disabledProceedButtons.includes(pathItemId) && !previousItemIsSubPath;
+    renderProceed(pathId, pathItemId, htmlItem, jobState, itemIsSubPath, nextItemIsSubPath) {
+        const proceedEnabled = !disabledProceedButtons.includes(pathItemId) && ((!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running));
 
         const node =
             `<li class="app-task-list__item">
                 <span class="inline" >
                     <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
-                        onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${collectionYear}, ${period}, ${pathId}, ${pathItemId}); return false;">
-                        ${enabled === jobContinuation.someFailed ? "⚠ Proceed with failed jobs" : "Proceed"} ${nextItemIsSubPath ? "↡" : "▼"}
+                        onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${this._year}, ${this._period}, ${pathId}, ${pathItemId}); return false;">
+                        ${jobState === jobContinuation.someFailed ? "⚠ Proceed with failed jobs" : "Proceed"} ${nextItemIsSubPath ? "↡" : "▼"}
                     </button>
-                    <label style="font-size: 10px;">${this.getProceedInformationText(enabled, previousItemIsSubPath, nextItemIsSubPath)}</label>
+                    <label style="font-size: 10px;">${this.getProceedInformationText(jobState, itemIsSubPath, nextItemIsSubPath)}</label>
                 </span>
             </li>`;
         htmlItem.insertAdjacentHTML('beforeend', node);
@@ -87,13 +89,28 @@ class pathController {
 
     renderJob(job, jobList) {
         let jobItem = document.createElement("li");
-        jobItem.textContent = `Job Id : ${job.jobId}, Status : ${this.jobStatusConvertor(job.status)}`;
+        jobItem.textContent = this.getJobText(job);
         jobList.appendChild(jobItem);
 
         return this.isJobContinuable(job.status);
     }
 
+    getJobText(job) {
+        let text = `Job Id : ${job.jobId}, `;
+
+        if (job.providerName !== "0") {
+            text += `Provider : ${job.providerName}, `;
+        }
+
+        text += `Status : ${this.jobStatusConvertor(job.status)}`;
+        return text;
+    }
+
     renderSummaryItem(container, path, pathItem) {
+        if ((path.pathId === 0 && (pathItem.ordinal < path.position - 3 || pathItem.ordinal > path.position + 1)) || (path.pathId > 0 && path.position !== -1 && (pathItem.ordinal < path.position - 2 || pathItem.ordinal > path.position))) {
+            return;
+        }
+
         let currentItem = pathItem.ordinal === path.position - 1;
 
         let item = document.createElement("li");
@@ -115,14 +132,14 @@ class pathController {
         container.appendChild(item);
     }
 
-    renderPathItem(path, pathItem, subItemList, collectionYear, period) {
+    renderPathItem(path, pathItem, subItemList) {
         let classScope = this;
 
         let currentItem = pathItem.ordinal === path.position - 1;
 
         let totalPathItems = path.pathItems.length;
 
-        let enableProceed = jobContinuation.allCompleted;
+        let jobStatus = jobContinuation.nothingRunning;
 
         let jobItems = pathItem.pathItemJobs;
 
@@ -137,11 +154,15 @@ class pathController {
         let item = document.createElement("li");
         item.className += "app-task-list__item";
 
-        if (currentItem) {
-            item.innerHTML = "<b>" + itemText + "</b>";
-        } else {
-            item.textContent = itemText;
+        if (pathItem.subPaths !== null) {
+            itemText = `${itemText} <a href="#Path${pathItem.subPaths[0]}">❯</a>`;
         }
+
+        if (currentItem) {
+            itemText = `<b>${itemText}</b>`;
+        }
+
+        item.innerHTML = itemText;
 
         let itemLink = document.createElement("a");
         itemLink.id = pathItem.name;
@@ -152,11 +173,15 @@ class pathController {
             for (let job of jobItems) {
                 let status = classScope.renderJob(job, jobList);
                 if (status === jobContinuation.running) {
-                    enableProceed = jobContinuation.running;
+                    jobStatus = jobContinuation.running;
                 }
 
-                if (enableProceed !== jobContinuation.running && status === jobContinuation.someFailed) {
-                    enableProceed = jobContinuation.someFailed;
+                if (jobStatus !== jobContinuation.running && status === jobContinuation.someFailed) {
+                    jobStatus = jobContinuation.someFailed;
+                }
+
+                if (jobStatus !== jobContinuation.running && jobStatus !== jobContinuation.someFailed && status === jobContinuation.allCompleted) {
+                    jobStatus = jobContinuation.allCompleted;
                 }
             }
 
@@ -174,12 +199,12 @@ class pathController {
         let summary = pathItem.pathItemJobSummary;
         if (summary != undefined && summary != null) {
             if (summary.numberOfWaitingJobs + summary.numberOfRunningJobs > 0) {
-                enableProceed = jobContinuation.running;
+                jobStatus = jobContinuation.running;
             }
             else if (summary.numberOfFailedJobs === 0) {
-                enableProceed = jobContinuation.allCompleted;
+                jobStatus = jobContinuation.allCompleted;
             } else {
-                enableProceed = jobContinuation.someFailed;
+                jobStatus = jobContinuation.someFailed;
             }
         }
 
@@ -187,7 +212,7 @@ class pathController {
 
         if (currentItem) {
             if (pathItem.ordinal + 1 !== totalPathItems) {
-                this.renderProceed(path.pathId, pathItem.pathItemId, subItemList, enableProceed, pathItem.subPaths !== null, path.pathItems[pathItem.ordinal + 1].subPaths !== null, collectionYear, period);
+                this.renderProceed.call(classScope, path.pathId, pathItem.pathItemId, subItemList, jobStatus, pathItem.subPaths !== null, path.pathItems[pathItem.ordinal + 1].subPaths !== null);
             }
         }
     }
@@ -238,14 +263,12 @@ class pathController {
 
         let classScope = this;
         stateModel.paths.forEach(function (path) {
-            let period = path.period;
-            let collectionYear = path.collectionYear;
-
             let pathItems = path.pathItems;
 
-            let pathSummaryTitle = document.createElement("span");
+            let pathSummaryTitle = document.createElement("a");
             pathSummaryTitle.className += "govuk-heading-s";
             pathSummaryTitle.textContent = path.name;
+            pathSummaryTitle.href = "#Path" + path.pathId;
 
             let pathSummary = document.createElement("span");
             pathSummary.className += "nav";
@@ -257,16 +280,40 @@ class pathController {
 
                 let li = document.createElement("li");
 
-                let title = document.createElement("h2");
+                let itemLink = document.createElement("a");
+                itemLink.id = `Path${path.pathId}`;
+                li.appendChild(itemLink);
+
+                let title = document.createElement("h3");
                 title.textContent = path.name;
-                li.appendChild(title);
+
+                let pathFound = true;
+                if (path.pathId !== 0) {
+                    let anchorTarget = classScope.getPathItemName(stateModel, path.pathId);
+                    if (anchorTarget === "Path0") {
+                        pathFound = false;
+                    }
+
+                    let anchor = document.createElement("a");
+                    anchor.textContent = "❮ ";
+                    anchor.href = "#" + anchorTarget;
+                    title.prepend(anchor);
+                }
+
+                if (pathFound === true) {
+                    li.appendChild(title);
+                } else {
+                    let strike = document.createElement("strike");
+                    strike.appendChild(title);
+                    li.appendChild(strike);
+                }
 
                 let subItemList = document.createElement("ul");
                 subItemList.className += "app-task-list__items";
 
                 pathItems.forEach(function (pathItem) {
                     if (pathItem.name != undefined && pathItem.name !== "") {
-                        classScope.renderPathItem(path, pathItem, subItemList, collectionYear, period);
+                        classScope.renderPathItem.call(classScope, path, pathItem, subItemList);
                         classScope.renderSummaryItem(pathSummaryList, path, pathItem);
                     }
                 });
@@ -293,6 +340,21 @@ class pathController {
         this.setButtonState(providerEnabled, "publishProviderReports");
         this.setButtonState(state.collectionClosed && reportsFinished && !state.periodEndFinished, "closePeriodEnd");
         this.setButtonState(state.collectionClosed && state.periodEndFinished && state.referenceDataJobsPaused, "resumeReferenceData");
+
+        this._year = state.year;
+        this._period = state.period;
+    }
+
+    getPathItemName(stateModel, pathId) {
+        let i = 0, len = stateModel.paths[0].pathItems.length;
+        for (; i < len; i++) {
+            if (stateModel.paths[0].pathItems[i].subPaths !== null &&
+                stateModel.paths[0].pathItems[i].subPaths[0] === pathId) {
+                return stateModel.paths[0].pathItems[i].name;
+            }
+        }
+
+        return "Path0";
     }
 }
 
