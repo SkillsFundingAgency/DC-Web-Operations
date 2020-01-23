@@ -2,8 +2,7 @@
 @model ESFA.DC.Web.Operations.Areas.RuleValidation.Models.RuleSearchViewModel
 @{
     ViewData["Title"] = "Index";
-    var years = (List<SelectListItem>)ViewData["years"];
-    ViewData[ViewDataConstants.BackLink] = "/Home";
+    var years = (IEnumerable<SelectListItem>)ViewData["years"];
 }
 
 <div class="govuk-grid-row">
@@ -44,7 +43,7 @@
             confirmOnBlur: false,
             showNoOptionsFound: false,
              onConfirm: searchRulesOnConfirm,
-            source: @Html.Raw(Json.Serialize(@Model.Rules)),
+            source: @Json.Serialize(@Model.Rules),
             placeholder: 'e.g Rule_01'
          });
 </script>
