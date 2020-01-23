@@ -122,12 +122,6 @@
             ;
             @Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';")
             ;
-            @Html.Raw("const hub = new Hub();")
-            ;
-            @Html.Raw("hub.startHub();")
-            ;
-            @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
-            ;
         }
 
         (function() {
@@ -137,6 +131,16 @@
             pathController.initialiseState(stateModel);
 
             pathController.renderPaths(stateModel);
+
+            @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
+            {
+                @Html.Raw("const hub = new Hub(pathController);")
+                ;
+                @Html.Raw("hub.startHub();")
+                ;
+                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
+                ;
+            }
 
             @if (!Model?.IsCurrentPeriod ?? false) {
                 @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");

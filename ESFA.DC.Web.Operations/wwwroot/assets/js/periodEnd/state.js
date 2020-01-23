@@ -14,5 +14,6 @@ export let jobStatus = {
 export let jobContinuation = {
     allCompleted: 1,
     someFailed: 2,
-    running: 3
+    running: 3,
+    nothingRunning: 4
 };
