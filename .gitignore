@@ -330,3 +330,5 @@ ASALocalRun/
 .mfractor/
 
 /ESFA.DC.Web.Operations/appsettings.*.json
+/ESFA.DC.Web.Operations/wwwroot/assets/css
+/ESFA.DC.Web.Operations/wwwroot/assets/minified/site.min.css
