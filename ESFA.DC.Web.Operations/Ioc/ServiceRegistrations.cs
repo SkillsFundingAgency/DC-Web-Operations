@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Autofac;
-using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
@@ -38,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Ioc
         {
             builder.RegisterType<AzureStorageFileService>().As<IFileService>();
 
-            builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
+            //builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();

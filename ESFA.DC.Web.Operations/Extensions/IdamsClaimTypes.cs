@@ -1,4 +1,9 @@
-﻿namespace DC.Web.Authorization.Idams
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ESFA.DC.Web.Operations
 {
     public class IdamsClaimTypes
     {

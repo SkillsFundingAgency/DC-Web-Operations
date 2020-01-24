@@ -5,7 +5,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -13,13 +13,13 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
     [Area(AreaNames.EmailDistribution)]
     [Route(AreaNames.EmailDistribution + "/email-template")]
-    [Authorize(Policy = ESFA.DC.Web.Operations.Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public class EmailTemplateController : BaseDistributionController
     {
         private readonly IEmailDistributionService _emailDistributionService;
         private readonly ILogger _logger;
 
-        public EmailTemplateController(IEmailDistributionService emailDistributionService, ILogger logger)
+        public EmailTemplateController(IEmailDistributionService emailDistributionService, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _emailDistributionService = emailDistributionService;
             _logger = logger;

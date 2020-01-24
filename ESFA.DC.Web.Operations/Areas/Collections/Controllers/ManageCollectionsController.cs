@@ -5,27 +5,28 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Collections.Models;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
 {
     [Area(AreaNames.Collections)]
-    [Authorize(Policy = ESFA.DC.Web.Operations.Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
-    public class ManageCollectionsController : Controller
+    public class ManageCollectionsController : BaseControllerWithOpsPolicy
     {
         private readonly ICollectionsService _collectionsService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
 
-        public ManageCollectionsController(ICollectionsService collectionsService, IDateTimeProvider dateTimeProvider, ILogger logger)
+        public ManageCollectionsController(ICollectionsService collectionsService, IDateTimeProvider dateTimeProvider, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
+            _logger = logger;
             _collectionsService = collectionsService;
             _dateTimeProvider = dateTimeProvider;
-            _logger = logger;
         }
 
         [HttpGet]

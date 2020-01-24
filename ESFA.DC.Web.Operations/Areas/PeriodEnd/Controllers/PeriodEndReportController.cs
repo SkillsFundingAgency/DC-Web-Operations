@@ -3,19 +3,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
-using ESFA.DC.Web.Operations.Constants.Authorization;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
     [Area(AreaNames.PeriodEnd)]
     [Route(AreaNames.PeriodEnd + "/periodEndReports")]
-    [Authorize(Policy = AuthorisationPolicy.OpsPolicy)]
-    public class PeriodEndReportController : Controller
+    public class PeriodEndReportController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
@@ -26,12 +25,14 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             IPeriodService periodService,
             IPeriodEndService periodEndService,
             IStorageService storageService,
-            ILogger logger)
+            ILogger logger,
+            TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
+            _logger = logger;
             _periodService = periodService;
             _periodEndService = periodEndService;
             _storageService = storageService;
-            _logger = logger;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]

@@ -5,20 +5,20 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.ViewModels;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly IDashBoardService _dashBoardService;
         private readonly ILogger _logger;
 
-        public HomeController(
-            IDashBoardService dashBoardService,
-            ILogger logger)
+        public HomeController(IDashBoardService dashBoardService, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _dashBoardService = dashBoardService;
             _logger = logger;

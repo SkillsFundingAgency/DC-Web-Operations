@@ -43,14 +43,8 @@ namespace ESFA.DC.Web.Operations
 
             builder.SetBasePath(env.ContentRootPath);
 
-            if (env.IsDevelopment())
-            {
-                builder.AddJsonFile($"appsettings.{Environment.UserName}.json");
-            }
-            else
-            {
-                builder.AddJsonFile("appsettings.json");
-            }
+            builder.AddJsonFile("appsettings.json");
+            builder.AddJsonFile($"appsettings.{Environment.UserName}.json", optional: true);
 
             _config = builder.Build();
 

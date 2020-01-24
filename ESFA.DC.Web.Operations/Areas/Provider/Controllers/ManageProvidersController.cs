@@ -1,23 +1,22 @@
 ﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
-using ESFA.DC.Web.Operations.Constants.Authorization;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
-    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
-
-    public class ManageProvidersController : Controller
+    public class ManageProvidersController : BaseControllerWithOpsPolicy
     {
         private readonly ILogger _logger;
         private readonly IManageProvidersService _manageProvidersService;
 
-        public ManageProvidersController(ILogger logger, IManageProvidersService manageProvidersService)
+        public ManageProvidersController(ILogger logger, IManageProvidersService manageProvidersService, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _logger = logger;
             _manageProvidersService = manageProvidersService;

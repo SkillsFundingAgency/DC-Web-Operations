@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Constants.Authorization;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Topics.Data;
 using ESFA.DC.Web.Operations.Topics.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    //[Authorize]
-    [Authorize(Policy = AuthorisationPolicy.DevOpsPolicy)]
-    public class TasksController : Controller
+    public class TasksController : BaseControllerWithDevOpsPolicy
     {
         private readonly JobQueueDataContext _context;
 
-        public TasksController(JobQueueDataContext context)
+        public TasksController(JobQueueDataContext context, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _context = context;
         }

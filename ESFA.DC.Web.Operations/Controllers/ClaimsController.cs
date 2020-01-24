@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    public class ClaimsController : Controller
+    public class ClaimsController : BaseController
     {
-        public ClaimsController()
+        private readonly ILogger _logger;
+        private readonly TelemetryClient _telemetryClient;
+
+        public ClaimsController(ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
-            Message = string.Empty;
+            _logger = logger;
+            _telemetryClient = telemetryClient;
         }
 
         [ViewData]
@@ -27,6 +34,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         public IActionResult Ops()
         {
             Message = "Ops";
+            _telemetryClient.TrackEvent($"Authed User : {User.Identity.Name} has {Message} Claim.");
             return View("Index");
         }
 
@@ -34,6 +42,7 @@ namespace ESFA.DC.Web.Operations.Controllers
         public IActionResult DevOps()
         {
             Message = "Dev Ops";
+            _telemetryClient.TrackEvent($"Authed User : {User.Identity.Name} has {Message} Claim.");
             return View("Index");
         }
     }

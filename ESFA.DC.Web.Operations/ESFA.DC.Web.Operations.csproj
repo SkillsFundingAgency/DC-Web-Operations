@@ -262,7 +262,7 @@
     <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.42-beta0001" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
@@ -279,7 +279,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\DC.Web.Authorization\DC.Web.Authorization.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj" />
@@ -305,6 +304,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>

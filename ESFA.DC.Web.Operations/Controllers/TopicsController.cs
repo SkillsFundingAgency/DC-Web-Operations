@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Topics.Data;
 using ESFA.DC.Web.Operations.Topics.Data.Entities;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,11 +14,13 @@ using Microsoft.EntityFrameworkCore;
 namespace ESFA.DC.Web.Operations.Controllers
 {
     [Authorize(Policy = AuthorisationPolicy.DevOpsPolicy)]
-    public class TopicsController : Controller
+    public class TopicsController : BaseControllerWithDevOpsPolicy
     {
         private readonly JobQueueDataContext _context;
+        private readonly TelemetryClient _telemetryClient;
 
-        public TopicsController(JobQueueDataContext context)
+        public TopicsController(JobQueueDataContext context, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _context = context;
         }
@@ -40,6 +44,7 @@ namespace ESFA.DC.Web.Operations.Controllers
                 return NotFound();
             }
 
+            _telemetryClient.TrackEvent($"Edit Task by {User.Identity.Name}");
             var jobTopicSubscription = await _context.JobTopicSubscription
                 .Include(j => j.Collection)
                 .FirstOrDefaultAsync(m => m.JobTopicId == id);

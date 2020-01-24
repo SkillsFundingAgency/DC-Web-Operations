@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ESFA.DC.Logging.Interfaces;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
     [AllowAnonymous]
-    public class StatusController : Controller
+    public class StatusController : BaseController
     {
-        public StatusController()
+        public StatusController(ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             Message = string.Empty;
         }
