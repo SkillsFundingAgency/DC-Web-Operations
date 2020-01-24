@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,14 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        [Route("/NotAuthorized")]
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Constants;
+﻿using ESFA.DC.Web.Operations.Constants;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
-    [Authorize]
-
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public abstract class BaseDistributionController : Controller
     {
         protected void AddError(string key)

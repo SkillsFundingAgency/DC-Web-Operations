@@ -7,9 +7,11 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Models.ServiceFabric;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.ServiceFabric.Common;
 using Newtonsoft.Json;
@@ -18,6 +20,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
     [Area(AreaNames.PeriodEnd)]
     [Route(AreaNames.PeriodEnd + "/periodEndVersion")]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public class VersionController : Controller
     {
         private readonly ILogger _logger;

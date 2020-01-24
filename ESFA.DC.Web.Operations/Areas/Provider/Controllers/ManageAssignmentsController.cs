@@ -4,15 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public class ManageAssignmentsController : Controller
     {
         private readonly ILogger _logger;

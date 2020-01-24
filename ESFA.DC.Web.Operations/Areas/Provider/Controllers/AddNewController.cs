@@ -1,30 +1,34 @@
-﻿using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.Jobs.Model;
-using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Areas.Provider.Models;
-using ESFA.DC.Web.Operations.Constants;
-using ESFA.DC.Web.Operations.Extensions;
-using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.Collections;
-using ESFA.DC.Web.Operations.Interfaces.Provider;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.Enums;
-using ESFA.DC.Web.Operations.Models.Job;
-using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
+﻿namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ESFA.DC.Jobs.Model;
+    using ESFA.DC.Jobs.Model.Enums;
+    using ESFA.DC.Logging.Interfaces;
+    using ESFA.DC.Serialization.Interfaces;
+    using ESFA.DC.Web.Operations.Areas.Provider.Models;
+    using ESFA.DC.Web.Operations.Constants;
+    using ESFA.DC.Web.Operations.Constants.Authorization;
+    using ESFA.DC.Web.Operations.Extensions;
+    using ESFA.DC.Web.Operations.Interfaces;
+    using ESFA.DC.Web.Operations.Interfaces.Collections;
+    using ESFA.DC.Web.Operations.Interfaces.Provider;
+    using ESFA.DC.Web.Operations.Interfaces.Storage;
+    using ESFA.DC.Web.Operations.Models.Enums;
+    using ESFA.DC.Web.Operations.Models.Job;
+    using ESFA.DC.Web.Operations.Settings.Models;
+    using ESFA.DC.Web.Operations.Utils;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
     [Area(AreaNames.Provider)]
+    [Authorize(Policy = AuthorisationPolicy.OpsPolicy)]
+
     public class AddNewController : Controller
     {
         private const string TemplatesPath = @"\\templates";

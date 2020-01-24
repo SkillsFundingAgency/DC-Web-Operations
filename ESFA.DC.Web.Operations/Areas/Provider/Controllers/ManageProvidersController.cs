@@ -1,13 +1,16 @@
 ﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
 
     public class ManageProvidersController : Controller
     {

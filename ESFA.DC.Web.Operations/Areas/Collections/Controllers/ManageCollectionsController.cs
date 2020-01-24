@@ -8,11 +8,13 @@ using ESFA.DC.Web.Operations.Areas.Collections.Models;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
 {
     [Area(AreaNames.Collections)]
+    [Authorize(Policy = ESFA.DC.Web.Operations.Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public class ManageCollectionsController : Controller
     {
         private readonly ICollectionsService _collectionsService;

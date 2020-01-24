@@ -13,6 +13,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
     [Area(AreaNames.EmailDistribution)]
     [Route(AreaNames.EmailDistribution + "/email-template")]
+    [Authorize(Policy = ESFA.DC.Web.Operations.Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public class EmailTemplateController : BaseDistributionController
     {
         private readonly IEmailDistributionService _emailDistributionService;

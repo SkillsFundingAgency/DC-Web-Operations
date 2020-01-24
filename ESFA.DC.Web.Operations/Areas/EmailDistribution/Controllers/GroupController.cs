@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
     [Area(AreaNames.EmailDistribution)]
     [Route(AreaNames.EmailDistribution + "/group")]
+    [Authorize(Policy = AuthorisationPolicy.OpsPolicy)]
     public class GroupController : BaseDistributionController
     {
         private readonly IEmailDistributionService _emailDistributionService;
