@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Controllers
 {
     [Authorize]
-    public class HomeController : BaseController
+    public class HomeController : BaseControllerWithOpsPolicy
     {
         private readonly IDashBoardService _dashBoardService;
         private readonly ILogger _logger;
