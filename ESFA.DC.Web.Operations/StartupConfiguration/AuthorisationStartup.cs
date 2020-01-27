@@ -13,12 +13,12 @@ namespace ESFA.DC.Web.Operations.StartupConfiguration
                 options.AddPolicy(AuthorisationPolicy.OpsPolicy, policy =>
                     policy.RequireClaim(
                         "http://schemas.portal.com/service",
-                        authSettings.OpsClaim));
+                        authSettings.OpsClaim,
+                        authSettings.DevOpsClaim));
 
                 options.AddPolicy(AuthorisationPolicy.DevOpsPolicy, policy =>
                     policy.RequireClaim(
                         "http://schemas.portal.com/service",
-                        authSettings.OpsClaim,
                         authSettings.DevOpsClaim));
             });
         }

@@ -2,18 +2,17 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Topics.Data;
 using ESFA.DC.Web.Operations.Topics.Data.Entities;
+using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    [Authorize(Policy = AuthorisationPolicy.DevOpsPolicy)]
+    [Area(AreaNames.DevOps)]
     public class TopicsController : BaseControllerWithDevOpsPolicy
     {
         private readonly JobQueueDataContext _context;
@@ -23,6 +22,7 @@ namespace ESFA.DC.Web.Operations.Controllers
             : base(logger, telemetryClient)
         {
             _context = context;
+            _telemetryClient = telemetryClient;
         }
 
         // GET: JobTopicSubscriptions

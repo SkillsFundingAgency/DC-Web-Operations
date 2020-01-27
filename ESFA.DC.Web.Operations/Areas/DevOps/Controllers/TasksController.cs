@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Topics.Data;
 using ESFA.DC.Web.Operations.Topics.Data.Entities;
+using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
+    [Area(AreaNames.DevOps)]
     public class TasksController : BaseControllerWithDevOpsPolicy
     {
         private readonly JobQueueDataContext _context;
