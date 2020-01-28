@@ -3,7 +3,10 @@
 
 @{
     ViewData["Title"] = "Add New Provider";
-    ViewData[ViewDataConstants.BackLink] = "/";
+    @if (Model.Ukprn.HasValue)
+    {
+        ViewData[ViewDataConstants.BackLink] = "/";
+    }
 }
 
 <div class="app-masthead">
@@ -46,7 +49,7 @@
             <div class="govuk-form-group">
                 <div class="govuk-checkboxes">
                     <div class="govuk-checkboxes__item">
-                        <input asp-for="IsMca" class="govuk-checkboxes__input" id="isMca" , name="isMca" type="checkbox" />
+                        <input asp-for="IsMca" class="govuk-checkboxes__input" id="isMca" onclick="isMcaClick(this)" name="isMca" type="checkbox" is-ismca-disabled="@Model.Ukprn"/>
                         <label class="govuk-label govuk-checkboxes__label" for="isMca">
                             MCA
                         </label>
@@ -55,14 +58,12 @@
             </div>
             <br />
             <br />
-            <input name="ukprn" type="hidden" id="hiddenUkprn" />
-            <input name="providername" type="hidden" id="hiddenProviderName" />
-            <input name="upin" type="hidden" id="hiddenUpin" />
+            <input asp-for="Ukprn" type="hidden" id="hiddenUkprn"/>
+            <input asp-for="ProviderName" type="hidden" id="hiddenProviderName"/>
+            <input asp-for="Upin" type="hidden" id="hiddenUpin"/>                                           
             <button type="submit" id="submitButton" class="govuk-button" disabled>Save and continue</button>
             <br />
-            <p>
-                <div class="govuk-link"><a asp-controller="Home" asp-action="Index">Cancel</a></div>
-            </p>
+            <a class="govuk-back-link" onclick="goBack()">Cancel</a>
         }
     </div>
 </div>
@@ -99,10 +100,22 @@
 
                 var submitButton = document.getElementById('submitButton');
                 submitButton.disabled = false;
+
+                var ismcaCheckBox = document.getElementById('isMca');
+                ismcaCheckBox.disabled = false;
             }
         }
 
         var v = new aspnetValidation.ValidationService();
         v.bootstrap();
+
+        function isMcaClick(id) {
+            var ukPrnDisplay = document.getElementById('ukprnDisplay');
+            if (ukPrnDisplay.innerHTML !== "") {
+                var submitButton = document.getElementById('submitButton');
+                submitButton.disabled = false;
+            }
+        }
+
     </script>
 }

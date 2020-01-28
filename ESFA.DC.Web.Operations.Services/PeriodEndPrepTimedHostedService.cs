@@ -7,38 +7,37 @@ using ESFA.DC.Web.Operations.Services.Hubs;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public sealed class PeriodEndTimedHostedService : BaseTimedHostedService
+    public sealed class PeriodEndPrepTimedHostedService : BaseTimedHostedService
     {
         private readonly ILogger _logger;
         private readonly IPeriodEndService _periodEndService;
-        private readonly PeriodEndHub _periodEndHub;
+        private readonly PeriodEndPrepHub _periodEndPrepHub;
 
-        public PeriodEndTimedHostedService(
+        public PeriodEndPrepTimedHostedService(
             ILogger logger,
             IPeriodEndService periodEndService,
-            IPeriodEndHubEventBase eventBase,
-            PeriodEndHub periodEndHub)
-        : base("Period End", logger)
+            IPeriodEndPrepHubEventBase eventBase,
+            PeriodEndPrepHub periodEndPrepHub)
+        : base("Period End Prep", logger)
         {
             _logger = logger;
             _periodEndService = periodEndService;
-            _periodEndHub = periodEndHub;
-            eventBase.PeriodEndHubCallback += RegisterClient;
+            _periodEndPrepHub = periodEndPrepHub;
+            eventBase.PeriodEndHubPrepCallback += RegisterClient;
         }
 
         protected override async Task DoWork(CancellationToken cancellationToken)
         {
             try
             {
-                // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStates(null, null, cancellationToken);
+                string state = await _periodEndService.GetPrepState(null, null, cancellationToken);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(pathItemStates, cancellationToken);
+                await _periodEndPrepHub.SendMessage(state, cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to {nameof(DoWork)} in {nameof(PeriodEndTimedHostedService)}", ex);
+                _logger.LogError($"Failed to {nameof(DoWork)} in {nameof(PeriodEndPrepTimedHostedService)}", ex);
             }
         }
     }

@@ -13,7 +13,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<string> GetPathItemStates(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetPathItemStates(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -25,10 +25,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task ClosePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<string> GetReferenceDataJobs(CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<string> GetFailedJobs(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
-
         Task ReSubmitFailedJob(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<ReportDetails>> GetPeriodEndReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
@@ -38,5 +34,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<IEnumerable<ReportDetails>> GetMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

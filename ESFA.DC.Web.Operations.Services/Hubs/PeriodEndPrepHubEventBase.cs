@@ -4,13 +4,13 @@ using ESFA.DC.Web.Operations.Services.Event;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
-    public sealed class PeriodEndHubEventBase : IPeriodEndHubEventBase
+    public sealed class PeriodEndPrepHubEventBase : IPeriodEndPrepHubEventBase
     {
-        public event EventHandler PeriodEndHubCallback;
+        public event EventHandler PeriodEndHubPrepCallback;
 
-        public void TriggerPeriodEnd(string contextConnectionId)
+        public void TriggerPeriodEndPrep(string contextConnectionId)
         {
-            var handler = PeriodEndHubCallback;
+            var handler = PeriodEndHubPrepCallback;
             handler?.Invoke(this, new SignalrEventArgs(contextConnectionId));
         }
     }

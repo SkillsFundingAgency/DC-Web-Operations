@@ -10,7 +10,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class PeriodEndPrepHub : Hub
     {
-        private readonly IPeriodEndHubEventBase _eventBase;
+        private readonly IPeriodEndPrepHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndPrepHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
@@ -19,7 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private readonly ILogger _logger;
 
         public PeriodEndPrepHub(
-            IPeriodEndHubEventBase eventBase,
+            IPeriodEndPrepHubEventBase eventBase,
             IHubContext<PeriodEndPrepHub> hubContext,
             IPeriodEndService periodEndService,
             IEmailService emailService,
@@ -37,22 +37,21 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         }
 
         public async Task SendMessage(
-            string referenceJobs,
-            string failedJobs,
-            string pathStates,
+            string state,
             CancellationToken cancellationToken)
         {
-            await SetButtonStates(referenceJobs, pathStates, cancellationToken);
+            await SetButtonStates(state, cancellationToken);
 
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", referenceJobs, failedJobs, cancellationToken);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", state, cancellationToken);
         }
 
-        public async Task SetButtonStates(string referenceJobs, string pathStates, CancellationToken cancellationToken)
+        public async Task SetButtonStates(string state, CancellationToken cancellationToken)
         {
-            var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(referenceJobs);
+            var prepModel = _stateService.GetPrepState(state);
+            var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(prepModel.ReferenceDataJobs);
             var period = await _periodService.ReturnPeriod(cancellationToken);
             var collectionClosedEmailEnabled = period.PeriodClosed && !pauseEnabled &&
-                                               !_stateService.CollectionClosedEmailSent(pathStates);
+                                               !_stateService.CollectionClosedEmailSent(prepModel.State);
             var continueEnabled = !pauseEnabled && !collectionClosedEmailEnabled && period.PeriodClosed;
 
             if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)
