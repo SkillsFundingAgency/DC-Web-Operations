@@ -259,7 +259,7 @@
     <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.2.28-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
-    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.42-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.43-beta0001" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />

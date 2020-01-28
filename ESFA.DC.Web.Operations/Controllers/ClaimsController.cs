@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
+    [Route("claims")]
     public class ClaimsController : BaseController
     {
         private readonly ILogger _logger;
