@@ -45,8 +45,6 @@ namespace ESFA.DC.Web.Operations.Services.Frm
 
         public async Task<long> RunValidation(string containerName, string folderKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            long jobId = -1;
-
             string collectionName = Constants.FrmReportCollectionName;
             FrmReportsJob job = new FrmReportsJob()
             {
@@ -65,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsStringAsync();
-            long.TryParse(result, out jobId);
+            long.TryParse(result, out var jobId);
 
             return jobId;
         }
