@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    [Route("claims")]
     public class ClaimsController : BaseController
     {
         private readonly ILogger _logger;
@@ -26,11 +25,13 @@ namespace ESFA.DC.Web.Operations.Controllers
         [ViewData]
         public string Message { get; set; }
 
+        [Route("claims/index")]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Route("claims/ops")]
         [Authorize(Policy = AuthorisationPolicy.OpsPolicy)]
         public IActionResult Ops()
         {
@@ -39,6 +40,7 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View("Index");
         }
 
+        [Route("claims/devops")]
         [Authorize(Policy = AuthorisationPolicy.DevOpsPolicy)]
         public IActionResult DevOps()
         {
