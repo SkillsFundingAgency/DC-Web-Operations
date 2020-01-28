@@ -130,7 +130,7 @@
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {
-                    FileDownloadName = string.IsNullOrEmpty(fileName) ? fileName : fileName
+                    FileDownloadName = fileName
                 };
             }
             catch (Exception e)
