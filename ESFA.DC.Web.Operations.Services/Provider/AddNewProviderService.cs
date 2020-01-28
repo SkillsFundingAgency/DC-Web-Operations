@@ -1,11 +1,11 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
-using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Settings.Models;
 using Organisation = ESFA.DC.CollectionsManagement.Models.Organisation;
 
@@ -35,10 +35,25 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, data.IsMCA);
         }
 
-        public async Task<HttpRawResponse> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken = default)
+        public async Task<bool> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken = default)
         {
             var organisationDto = new Organisation() { Name = provider.Name, Ukprn = provider.Ukprn, IsMca = provider.IsMca.GetValueOrDefault() };
-            return await SendDataAsyncRawResponse($"{_baseUrl}/api/org/add", organisationDto, cancellationToken);
+            var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/org/add", organisationDto, cancellationToken);
+
+            if (response.StatusCode == (int)HttpStatusCode.Conflict)
+            {
+                var updateResponse = await SendDataAsyncRawResponse($"{_baseUrl}/api/org/update", organisationDto, cancellationToken);
+                if (updateResponse.StatusCode == (int)HttpStatusCode.OK)
+                {
+                    return true;
+                }
+            }
+            else if (response.StatusCode == (int)HttpStatusCode.OK)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
