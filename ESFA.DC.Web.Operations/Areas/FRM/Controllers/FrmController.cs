@@ -39,8 +39,10 @@
 
         public IActionResult Index()
         {
-            var model = new FrmReportModel();
-            model.IsFrmReportChoice = false;
+            var model = new FrmReportModel()
+            {
+                IsFrmReportChoice = false
+            };
             return View("Index", model);
         }
 
@@ -89,7 +91,7 @@
                 throw new Exception(errorMessage);
             }
 
-            model.FrmJobType = "Validation";
+            model.FrmJobType = Constants.FrmValidationKey;
             var frmContainerName = $"frm{model.FrmYearPeriod}";
             var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
             model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey);
@@ -100,13 +102,13 @@
         [HttpPost]
         public async Task<IActionResult> PublishFrm(FrmReportModel model)
         {
-            model.FrmJobType = "Publish";
+            model.FrmJobType = Constants.FrmPublishKey;
             model.FrmJobId = await _frmService.RunPublish(model.FrmJobId);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
 
-        public async Task<IActionResult> ReportChoiceSelection(FrmReportModel model)
+        public IActionResult ReportChoiceSelection(FrmReportModel model)
         {
             if (model.IsFrmReportChoice)
             {
