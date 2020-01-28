@@ -14,6 +14,9 @@ namespace ESFA.DC.Web.Operations.Areas.DevOps.Controllers
         {
         }
 
+        [ViewData]
+        public string Message { get; set; }
+
         public IActionResult Index()
         {
             return View();
