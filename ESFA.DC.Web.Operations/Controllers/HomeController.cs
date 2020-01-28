@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    [Authorize]
-    public class HomeController : BaseControllerWithOpsPolicy
+    public class HomeController : BaseController
     {
         private readonly IDashBoardService _dashBoardService;
         private readonly ILogger _logger;
@@ -29,19 +28,12 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View((object)await _dashBoardService.GetStatsAsync());
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [AllowAnonymous]
         [Route("/NotAuthorized")]
         public IActionResult NotAuthorized()
         {
             return View();
         }
 
-        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
