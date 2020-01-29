@@ -12,30 +12,29 @@
     The FRM Reports have been successfully validated. Please Check CSV for violation report.
 </div>
 <br />
-<form>
-    <table class="govuk-table">
-        <caption class="govuk-table__caption", style="padding-bottom:5px; text-align:center">CSV Download</caption>
-        <thead class="govuk-table__head">
-            <tr class="govuk-table__row", style="text-align:center">
-                <th scope="col" class="govuk-table__header">Period</th>
-                <th scope="col" class="govuk-table__header">Download</th>
-                <th scope="col" class="govuk-table__header">Last Validated</th>
-            </tr>
-        </thead>
-        <tbody class="govuk-table__body" style="text-align:center">
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@Model.FrmPeriod</td>
-                <td class="govuk-table__cell">
-                    @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFile", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv" })
-                </td>
-                <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
-        </tbody>
-    </table>
-</form>
-<form asp-area="Frm" asp-action="PublishFrm" method="post">
+<table class="govuk-table">
+    <caption class="govuk-table__caption" , style="padding-bottom:5px; text-align:center">CSV Download</caption>
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row" , style="text-align:center">
+            <th scope="col" class="govuk-table__header">Period</th>
+            <th scope="col" class="govuk-table__header">Download</th>
+            <th scope="col" class="govuk-table__header">Last Validated</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body" style="text-align:center">
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@Model.FrmPeriod</td>
+            <td class="govuk-table__cell">
+                @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFile", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv" })
+            </td>
+            <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
+    </tbody>
+</table>
+@using (Html.BeginForm("PublishFrm","Frm"))
+{
     <br />
     <br />
     <br />
     <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
-    <button type="submit" class="govuk-button" formaction="PublishFrm">Publish</button>
-</form>
+    <button type="submit" class="govuk-button">Publish</button>
+}

@@ -12,8 +12,8 @@
         </h1>
         <div class="govuk-form-group">
             <label class="govuk-label" for="name"></label>
-            <form asp-action="ReportChoiceSelection" method="post">
-
+            @using (Html.BeginForm("ReportChoiceSelection","Frm"))
+            {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">
                         <input asp-for="IsFrmReportChoice" value="false" class="govuk-radios__input" type="radio" />
@@ -27,11 +27,11 @@
                 <br />
                 <br />
                 <button type="submit" class="govuk-button">Continue</button>
-            </form>
-                <br />
-                <p>
-                    <div class="govuk-link"><a asp-action="Index">Cancel</a></div>
-                </p>
+            }
+            <br />
+            <p>
+                <div class="govuk-link"><a asp-action="Index">Cancel</a></div>
+            </p>
         </div>
     </div>
 </div>

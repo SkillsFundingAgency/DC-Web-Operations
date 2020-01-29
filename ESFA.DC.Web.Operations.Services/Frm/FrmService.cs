@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
     {
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl;
+        private readonly string _jobApiUrl;
 
         public FrmService(
             IFileService fileService,
@@ -26,7 +26,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             HttpClient httpClient)
             : base(jsonSerializationService, httpClient)
         {
-            _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
             _httpClient = httpClient;
         }
 
@@ -37,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 throw new Exception("Missing 'jobId' parameter");
             }
 
-            string url = $"{_baseUrl}/api/job/{jobId}/status";
+            string url = $"{_jobApiUrl}/{jobId}/status";
             var response = await GetDataAsync(url, cancellationToken);
             int.TryParse(response, out var result);
             return result;
@@ -55,7 +55,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 SourceFolderKey = folderKey
             };
 
-            string url = $"{_baseUrl}/api/job/frm/validate";
+            string url = $"{_jobApiUrl}/frm/validate";
             var json = _jsonSerializationService.Serialize(job);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -78,7 +78,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 JobStatus = 1
             };
 
-            string url = $"{_baseUrl}/api/job/1";
+            string url = $"{_jobApiUrl}/1";
             var json = _jsonSerializationService.Serialize(statusDto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
