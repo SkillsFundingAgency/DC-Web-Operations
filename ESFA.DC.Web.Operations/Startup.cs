@@ -11,10 +11,12 @@ using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Reports;
@@ -107,6 +109,10 @@ namespace ESFA.DC.Web.Operations
                 .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpClient<IReportsService, ReportsService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpClient<IFrmService, FrmService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
