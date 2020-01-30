@@ -39,9 +39,8 @@
     <br />
     <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
     <button type="submit" class="govuk-button">Publish</button>
-}
+
 @using (Html.BeginForm("CancelFrm", "Frm"))
 {
-    <br />
-<button type="submit" class="govuk-button"  onclick="goBack()">Cancel</button>
+    <button type="submit" class="govuk-button" onclick="goBack()">Cancel</button>
 }
