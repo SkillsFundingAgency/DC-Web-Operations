@@ -32,15 +32,19 @@
             <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
     </tbody>
 </table>
-@using (Html.BeginForm("PublishFrm", "Frm"))
-{
-    <br />
-    <br />
-    <br />
-    <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
-    <button type="submit" class="govuk-button">Publish</button>
+<table>
 
-@using (Html.BeginForm("CancelFrm", "Frm"))
-{
-    <button type="submit" class="govuk-button" onclick="goBack()">Cancel</button>
-}
+    @using (Html.BeginForm("PublishFrm", "Frm"))
+    {
+        <br />
+        <br />
+        <br />
+        <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
+        <button type="submit" class="govuk-button">Publish</button>
+    }
+    <nbsp>  </nbsp>
+    @using (Html.BeginForm("CancelFrm", "Frm"))
+    {
+        <button type="submit" class="govuk-button" onclick="goBack()">Cancel</button>
+    }
+</table>
