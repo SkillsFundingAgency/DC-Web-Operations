@@ -1,12 +1,21 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using ESFA.DC.Logging.Interfaces;
+using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    public class AccountController : Controller
+    [AllowAnonymous]
+    public class AccountController : BaseController
     {
+        public AccountController(ILogger logger, TelemetryClient telemetryClient)
+                : base(logger, telemetryClient)
+        {
+        }
+
         [HttpGet]
         public IActionResult SignIn()
         {

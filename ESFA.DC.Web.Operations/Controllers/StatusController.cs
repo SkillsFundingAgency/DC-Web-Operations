@@ -5,15 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    public class ProviderController : BaseControllerWithOpsPolicy
+    [AllowAnonymous]
+    public class StatusController : BaseController
     {
-        public ProviderController(ILogger logger, TelemetryClient telemetryClient)
+        public StatusController(ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
+            Message = string.Empty;
         }
+
+        [ViewData]
+        public string Message { get; set; }
 
         public IActionResult Index()
         {
+            Message = "OK";
             return View();
         }
     }

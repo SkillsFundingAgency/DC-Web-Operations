@@ -5,16 +5,19 @@ using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
+using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
     [Area(AreaNames.Reports)]
     [Route(AreaNames.Reports)]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
     public class ReportsController : Controller
     {
         private readonly ILogger _logger;

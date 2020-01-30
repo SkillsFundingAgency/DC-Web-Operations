@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using DC.Web.Authorization;
-using DC.Web.Authorization.Idams;
+using ESFA.DC.Web.Operations;
 
 namespace ESFA.DC.Web.Operations.Extensions
 {
@@ -37,17 +36,6 @@ namespace ESFA.DC.Web.Operations.Extensions
         public static string Email(this ClaimsPrincipal claimsPrincipal)
         {
             return GetClaimValue(claimsPrincipal, IdamsClaimTypes.Email);
-        }
-
-        public static bool IsHelpDeskUser(this ClaimsPrincipal claimsPrincipal)
-        {
-            var claimValue = GetClaimValue(claimsPrincipal, IdamsClaimTypes.UserType);
-            if (string.IsNullOrEmpty(claimValue))
-            {
-                return false;
-            }
-
-            return ClaimAccessConstants.HelpDeskUserTypes.Contains(claimValue.ToUpper());
         }
 
         private static string GetClaimValue(ClaimsPrincipal claimsPrincipal, string claimType)

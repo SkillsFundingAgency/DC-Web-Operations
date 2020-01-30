@@ -2,6 +2,7 @@
 {
     public static class AreaNames
     {
+        public const string DevOps = "devops";
         public const string PeriodEnd = "periodend";
         public const string EmailDistribution = "emaildistribution";
         public const string Provider = "provider";

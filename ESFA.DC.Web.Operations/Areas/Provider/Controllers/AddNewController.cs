@@ -9,6 +9,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
 using ESFA.DC.Web.Operations.Constants;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
@@ -18,6 +19,7 @@ using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
-    public class AddNewController : Controller
+    public class AddNewController : BaseControllerWithOpsPolicy
     {
         private const string TemplatesPath = @"\\templates";
         private const string BulkUploadFileName = @"MultipleProvidersTemplate.csv";
@@ -51,7 +53,9 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             IHostingEnvironment hostingEnvironment,
             IJobService jobService,
             IFileNameValidationService fileNameValidationService,
-            IJsonSerializationService jsonSerializationService)
+            IJsonSerializationService jsonSerializationService,
+            TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _logger = logger;
             _collectionService = collectionService;
