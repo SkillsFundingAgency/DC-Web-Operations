@@ -4,5 +4,6 @@
     {
         public const string DashBoard = "DashBoard";
         public const string BackLink = "BackLink";
+        public const string LoadingPage = "LoadingPage";
     }
 }

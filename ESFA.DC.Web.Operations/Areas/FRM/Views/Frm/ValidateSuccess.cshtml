@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "FRM Validation Successful";
+    ViewData[ViewDataConstants.LoadingPage] = "LoadingPage";
+
 }
 
 <h1 class="govuk-heading-xl">
@@ -30,11 +32,16 @@
             <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
     </tbody>
 </table>
-@using (Html.BeginForm("PublishFrm","Frm"))
+@using (Html.BeginForm("PublishFrm", "Frm"))
 {
     <br />
     <br />
     <br />
     <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
     <button type="submit" class="govuk-button">Publish</button>
+}
+@using (Html.BeginForm("CancelFrm", "Frm"))
+{
+    <br />
+<button type="submit" class="govuk-button"  onclick="goBack()">Cancel</button>
 }

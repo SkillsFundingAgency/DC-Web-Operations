@@ -139,5 +139,10 @@
                 throw;
             }
         }
+
+        public IActionResult CancelFrm()
+        {
+         return View("CancelledFrm");
+        }
     }
 }
