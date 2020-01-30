@@ -7,9 +7,11 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Models.ServiceFabric;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.ServiceFabric.Common;
 using Newtonsoft.Json;
@@ -18,14 +20,13 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
     [Area(AreaNames.PeriodEnd)]
     [Route(AreaNames.PeriodEnd + "/periodEndVersion")]
-    public class VersionController : Controller
+    public class VersionController : BaseControllerWithOpsPolicy
     {
         private readonly ILogger _logger;
         private readonly JobQueueApiSettings _apiSettings;
 
-        public VersionController(
-            ILogger logger,
-            JobQueueApiSettings apiSettings)
+        public VersionController(JobQueueApiSettings apiSettings, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _logger = logger;
             _apiSettings = apiSettings;

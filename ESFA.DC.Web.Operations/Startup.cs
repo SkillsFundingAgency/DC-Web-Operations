@@ -45,14 +45,8 @@ namespace ESFA.DC.Web.Operations
 
             builder.SetBasePath(env.ContentRootPath);
 
-            if (env.IsDevelopment())
-            {
-                builder.AddJsonFile($"appsettings.{Environment.UserName}.json");
-            }
-            else
-            {
-                builder.AddJsonFile("appsettings.json");
-            }
+            builder.AddJsonFile("appsettings.json");
+            builder.AddJsonFile($"appsettings.{Environment.UserName}.json", optional: true);
 
             _config = builder.Build();
 
@@ -79,6 +73,7 @@ namespace ESFA.DC.Web.Operations
             _logger.LogDebug("Start of ConfigureServices");
 
             Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            //aiOptions.InstrumentationKey = _config.GetValue<string>("ApplicationInsights:InstrumentationKey");
 
             // Disables adaptive sampling.
             aiOptions.EnableAdaptiveSampling = false;
@@ -88,11 +83,13 @@ namespace ESFA.DC.Web.Operations
             services.AddApplicationInsightsTelemetry(aiOptions);
 
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
+            var authoriseSettings = _config.GetConfigSection<AuthorizationSettings>();
 
             services.AddMvc()
                 .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
 
             services.AddAndConfigureAuthentication(authSettings);
+            services.AddAndConfigureAuthorisation(authoriseSettings);
 
             services.AddSignalR();
 
@@ -136,28 +133,28 @@ namespace ESFA.DC.Web.Operations
             }
 
             //log errors
-            app.UseExceptionHandler(handler =>
-            {
-                handler.Run(context =>
-                {
-                    var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-                    if (exception == null)
-                        return Task.CompletedTask;
+            //app.UseExceptionHandler(handler =>
+            //{
+            //    handler.Run(context =>
+            //    {
+            //        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+            //        if (exception == null)
+            //            return Task.CompletedTask;
 
-                    try
-                    {
-                        //log error
-                        handler.ApplicationServices.GetService<ILogger>().LogError(exception.Message, exception);
-                    }
-                    finally
-                    {
-                        //rethrow the exception to show the error page
-                        ExceptionDispatchInfo.Throw(exception);
-                    }
+            //        try
+            //        {
+            //            //log error
+            //            handler.ApplicationServices.GetService<ILogger>().LogError(exception.Message, exception);
+            //        }
+            //        finally
+            //        {
+            //            //rethrow the exception to show the error page
+            //            ExceptionDispatchInfo.Throw(exception);
+            //        }
 
-                    return Task.CompletedTask;
-                });
-            });
+            //        return Task.CompletedTask;
+            //    });
+            //});
 
             app.UseAuthentication();
 
