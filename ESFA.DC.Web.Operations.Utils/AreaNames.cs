@@ -8,5 +8,6 @@
         public const string Provider = "provider";
         public const string Collections = "collections";
         public const string Reports = "reports";
+        public const string Frm = "frm";
     }
 }
