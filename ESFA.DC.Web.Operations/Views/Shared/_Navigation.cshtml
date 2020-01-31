@@ -1,5 +1,4 @@
-﻿@using ESFA.DC.Web.Operations.Constants;
-@using ESFA.DC.Web.Operations.Areas.Frm.Controllers
+﻿@using ESFA.DC.Web.Operations.Constants
 @{
     var requestPath = Context.Request.Path;
 }
@@ -10,21 +9,19 @@
     <a govuk-request-path-search-text="/collections" class="govuk-heading-s" asp-area="collections" asp-controller="ManageCollections" asp-action="Index" asp-route-collectionId="">Collections</a>
     <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Notifications</a>
     <a govuk-request-path-search-text="/periodEndPreparation" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEndPrep" asp-action="Index">Period end</a>
-    <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="frm" asp-controller="Frm" asp-action="FrmIndex">QAR/FRM</a>
+    <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="frm" asp-controller="Frm" asp-action="Index">QAR/FRM</a>
     <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Rule validation</a>
     <a govuk-request-path-search-text="reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
 </div>
 
-@{
-    if (!(ViewData.ContainsKey(ViewDataConstants.DashBoard) || ViewData.ContainsKey(ViewDataConstants.LoadingPage)))
-    {
-        if (ViewData.ContainsKey(ViewDataConstants.GoBackFrm))
-        {
-            <a href="FrmIndex" class="govuk-back-link">Back</a>
-        }
-        else
-        {
-            <a onclick = "goBack()" class="govuk-back-link">Back</a>
-        }
-    }
-}
+  @if (!(ViewData.ContainsKey(ViewDataConstants.DashBoard) || ViewData.ContainsKey(ViewDataConstants.LoadingPage)))
+  {
+      if (ViewData.ContainsKey(ViewDataConstants.BackLink))
+      {
+            <a onclick="goBack()" class="govuk-back-link">Back</a>
+      }
+      else if (ViewData.ContainsKey(ViewDataConstants.GoBackFrm))
+      {
+                <a onclick="go()" class="govuk-back-link">Home</a>
+      }
+  }

@@ -41,13 +41,13 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             _fileService = fileService;
         }
 
-        public IActionResult FrmIndex()
+        public IActionResult Index()
         {
             var model = new FrmReportModel()
             {
                 IsFrmReportChoice = false
             };
-            return View("FrmIndex", model);
+            return View("Index", model);
         }
 
         public IActionResult SelectValidate()
@@ -119,7 +119,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 return RedirectToAction("SelectValidate");
             }
 
-            return View("FrmIndex");
+            return View("Index");
         }
 
         public async Task<FileResult> GetReportFile(string fileName)
@@ -147,11 +147,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         public IActionResult CancelFrm()
         {
          return View("CancelledFrm");
-        }
-
-        public IActionResult ReturnToFrm()
-        {
-            return View("FrmIndex");
         }
     }
 }
