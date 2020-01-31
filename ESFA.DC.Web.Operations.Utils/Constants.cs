@@ -23,7 +23,13 @@
         public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport1920";
         public const string ActCountReportCollectionName = @"PE-ACT-Count-Report1920";
 
+        public const string FrmReportCollectionName = @"FRM-Reports1920";
+
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
+
+        public static readonly string FrmContainerName = "frm{0}-files";
+        public static readonly string FrmValidationKey = "Validation";
+        public static readonly string FrmPublishKey = "Publish";
     }
 }

@@ -143,7 +143,7 @@
             today += jobStats.jobsCurrentPeriodModels[i].jobsCurrentPeriod;
 
             if (len > 1) {
-                today += "/" + jobStats.jobsCurrentPeriodModels[i].PeriodNumber.toString();
+                today += "/" + jobStats.jobsCurrentPeriodModels[i].periodNumber.toString();
 
                 if (i < len - 1) {
                     today += " - ";

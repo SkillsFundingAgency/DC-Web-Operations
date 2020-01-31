@@ -14,12 +14,7 @@ class periodEndPrepHub {
         return this.connection;
     }
 
-    startHub(isCurrentPeriod) {
-        
-        if (!isCurrentPeriod) {
-            return;
-        }
-
+    startHub() {
         const jobController = new JobController();
 
         this.connection.on("ReceiveMessage", jobController.renderJobs.bind(jobController));

@@ -1,5 +1,4 @@
-﻿import PathController from '/assets/js/periodEnd/pathController.js';
-import JobController from '/assets/js/periodEnd/jobController.js';
+﻿import JobController from '/assets/js/periodEnd/jobController.js';
 
 class client {
     
@@ -9,6 +8,8 @@ class client {
     }
 
     startPeriodEnd(collectionYear, period) {
+        this.jobController.setStartPeriodEndButtonState(false);
+
         this.connection
             .invoke("StartPeriodEnd", collectionYear, period)
             .catch(err => console.error(err.toString()));

@@ -13,10 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Models", "ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj", "{A276A229-E30E-414B-9371-09E58C0B3C52}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DC.Web.Authorization", "DC.Web.Authorization\DC.Web.Authorization.csproj", "{027F6746-70AD-4858-96DE-C0D64664151F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DC.Web.Authorization.Data", "DC.Web.Authorization.Data\DC.Web.Authorization.Data.csproj", "{FCD2DCCB-50F1-4B7B-96CC-BA990F799FCB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.ViewModels", "ESFA.DC.Web.Operations.ViewModels\ESFA.DC.Web.Operations.ViewModels.csproj", "{834CF455-07A0-418D-B5AC-8CADED29BADB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Utils", "ESFA.DC.Web.Operations.Utils\ESFA.DC.Web.Operations.Utils.csproj", "{66512F97-9261-45C9-9827-EF0751C101B4}"
@@ -25,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Topi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B7067B80-C763-4FA6-8945-AE1F12376399}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.Web.Operations.Tests", "ESFA.DC.Web.Operations.Tests\ESFA.DC.Web.Operations.Tests.csproj", "{240A9261-3F04-44FA-997B-FD5737A2D4D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Tests", "ESFA.DC.Web.Operations.Tests\ESFA.DC.Web.Operations.Tests.csproj", "{240A9261-3F04-44FA-997B-FD5737A2D4D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +49,6 @@ Global
 		{A276A229-E30E-414B-9371-09E58C0B3C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A276A229-E30E-414B-9371-09E58C0B3C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A276A229-E30E-414B-9371-09E58C0B3C52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{027F6746-70AD-4858-96DE-C0D64664151F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{027F6746-70AD-4858-96DE-C0D64664151F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{027F6746-70AD-4858-96DE-C0D64664151F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{027F6746-70AD-4858-96DE-C0D64664151F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCD2DCCB-50F1-4B7B-96CC-BA990F799FCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCD2DCCB-50F1-4B7B-96CC-BA990F799FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCD2DCCB-50F1-4B7B-96CC-BA990F799FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCD2DCCB-50F1-4B7B-96CC-BA990F799FCB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{834CF455-07A0-418D-B5AC-8CADED29BADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{834CF455-07A0-418D-B5AC-8CADED29BADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{834CF455-07A0-418D-B5AC-8CADED29BADB}.Release|Any CPU.ActiveCfg = Release|Any CPU

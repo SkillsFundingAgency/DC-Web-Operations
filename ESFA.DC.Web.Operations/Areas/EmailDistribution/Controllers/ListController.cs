@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
@@ -15,7 +13,8 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
     {
         private readonly IEmailDistributionService _emailDistributionService;
 
-        public ListController(IEmailDistributionService emailDistributionService)
+        public ListController(IEmailDistributionService emailDistributionService, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _emailDistributionService = emailDistributionService;
         }

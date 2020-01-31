@@ -15,20 +15,27 @@ class confirmationController {
         this._cancelButton.addEventListener("click", classScope.cancelPause.bind(classScope));
     }
 
-    initialiseConfirmation(referenceDataJobs, periodClosed, collectionClosedEmailSent) {
-        let paused = true;
-        const jobs = JSON.parse(referenceDataJobs);
-        const closed = periodClosed === "False" ? false : true;
-        const emailSent = collectionClosedEmailSent === "False" ? false : true;
+    initialiseConfirmation(stateModel, periodClosed, collectionClosedEmailSent, periodEndFinished) {
+        const finished = periodEndFinished === "False" ? false : true;
 
-        jobs.forEach(function(job) {
+        const jobController = new JobController();
+
+        if (finished === true) {
+            jobController.setContinueButtonState(true);
+            return;
+        }
+
+        let paused = true;
+        
+        stateModel.referenceDataJobs.forEach(function(job) {
             if (job.status !== "Paused") {
                 paused = false;
             }
         });
         
-        const jobController = new JobController();
         if (paused === true) {
+            const closed = periodClosed === "False" ? false : true;
+            const emailSent = collectionClosedEmailSent === "False" ? false : true;
 
             jobController.setCollectionClosedEmailButtonState(closed && !emailSent);
             jobController.setContinueButtonState(closed && emailSent);
@@ -38,7 +45,6 @@ class confirmationController {
         } else {
             jobController.setPauseRefJobsButtonState(true);
         }
-
     }
 
     showConfirmation() {

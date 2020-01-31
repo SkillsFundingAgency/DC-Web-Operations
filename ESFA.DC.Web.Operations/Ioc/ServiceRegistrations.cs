@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Autofac;
-using DC.Web.Authorization.Data.Repository;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
@@ -14,6 +13,7 @@ using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
+using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -21,6 +21,7 @@ using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
+using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Provider;
@@ -40,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Ioc
         {
             builder.RegisterType<AzureStorageFileService>().As<IFileService>();
 
-            builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
+            //builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
@@ -48,6 +49,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<PeriodEndHubEventBase>().As<IPeriodEndHubEventBase>().SingleInstance();
+            builder.RegisterType<PeriodEndPrepHubEventBase>().As<IPeriodEndPrepHubEventBase>().SingleInstance();
             builder.RegisterType<DashBoardHubEventBase>().As<IDashBoardHubEventBase>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
@@ -59,7 +61,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<HistoryService>().As<IHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<PeriodEndStateFactory>().As<IPeriodEndStateFactory>().InstancePerLifetimeScope();
             builder.RegisterType<AddNewProviderService>().As<IAddNewProviderService>().InstancePerLifetimeScope();
             builder.RegisterType<SearchProviderService>().As<ISearchProviderService>().InstancePerLifetimeScope();
             builder.RegisterType<ManageProvidersService>().As<IManageProvidersService>().InstancePerLifetimeScope();
@@ -68,6 +69,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<FrmService>().As<IFrmService>().InstancePerLifetimeScope();
 
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().InstancePerLifetimeScope();
 

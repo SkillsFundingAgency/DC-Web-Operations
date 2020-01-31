@@ -9,6 +9,7 @@ using ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
@@ -21,10 +22,11 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         private readonly ILogger _logger;
         private readonly IJsonSerializationService _jsonSerializationService;
 
-        public RecipientController(IEmailDistributionService emailDistributionService, ILogger logger, IJsonSerializationService jsonSerializationService)
+        public RecipientController(IEmailDistributionService emailDistributionService, IJsonSerializationService jsonSerializationService, ILogger logger, TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
-            _emailDistributionService = emailDistributionService;
             _logger = logger;
+            _emailDistributionService = emailDistributionService;
             _jsonSerializationService = jsonSerializationService;
         }
 

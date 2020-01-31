@@ -5,6 +5,7 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <ApplicationInsightsResourceId>/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/DCOL-DEVCI-AppSrvEnv-WEU/providers/microsoft.insights/components/DCOL-DEVCI-Operations-WEU-AI</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/DCOL-DEVCI-AppSrvEnv-WEU/providers/microsoft.insights/components/DCOL-DEVCI-Operations-WEU-AI</ApplicationInsightsAnnotationResourceId>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -254,15 +255,16 @@
     <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.21-beta0001" />
-    <PackageReference Include="ESFA.DC.FileService" Version="0.1.21-beta0001" />
+    <PackageReference Include="ESFA.DC.FileService" Version="0.1.28-beta0001" />
+    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.27-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.2.28-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
-    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.21-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.43-beta0001" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
@@ -279,7 +281,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\DC.Web.Authorization\DC.Web.Authorization.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Services\ESFA.DC.Web.Operations.Services.csproj" />
@@ -305,6 +306,9 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\DevOps\Data\" />
+    <Folder Include="Areas\DevOps\Models\" />
+    <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>

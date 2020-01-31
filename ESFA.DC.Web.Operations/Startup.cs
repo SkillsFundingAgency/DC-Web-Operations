@@ -11,10 +11,12 @@ using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Reports;
@@ -43,14 +45,8 @@ namespace ESFA.DC.Web.Operations
 
             builder.SetBasePath(env.ContentRootPath);
 
-            if (env.IsDevelopment())
-            {
-                builder.AddJsonFile($"appsettings.{Environment.UserName}.json");
-            }
-            else
-            {
-                builder.AddJsonFile("appsettings.json");
-            }
+            builder.AddJsonFile("appsettings.json");
+            builder.AddJsonFile($"appsettings.{Environment.UserName}.json", optional: true);
 
             _config = builder.Build();
 
@@ -77,6 +73,7 @@ namespace ESFA.DC.Web.Operations
             _logger.LogDebug("Start of ConfigureServices");
 
             Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            //aiOptions.InstrumentationKey = _config.GetValue<string>("ApplicationInsights:InstrumentationKey");
 
             // Disables adaptive sampling.
             aiOptions.EnableAdaptiveSampling = false;
@@ -86,14 +83,17 @@ namespace ESFA.DC.Web.Operations
             services.AddApplicationInsightsTelemetry(aiOptions);
 
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
+            var authoriseSettings = _config.GetConfigSection<AuthorizationSettings>();
 
             services.AddMvc()
                 .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
 
             services.AddAndConfigureAuthentication(authSettings);
+            services.AddAndConfigureAuthorisation(authoriseSettings);
 
             services.AddSignalR();
 
+            services.AddHostedService<PeriodEndPrepTimedHostedService>();
             services.AddHostedService<PeriodEndTimedHostedService>();
             services.AddHostedService<DashboardTimedHostedService>();
 
@@ -106,6 +106,10 @@ namespace ESFA.DC.Web.Operations
                 .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpClient<IReportsService, ReportsService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpClient<IFrmService, FrmService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
@@ -129,28 +133,28 @@ namespace ESFA.DC.Web.Operations
             }
 
             //log errors
-            app.UseExceptionHandler(handler =>
-            {
-                handler.Run(context =>
-                {
-                    var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-                    if (exception == null)
-                        return Task.CompletedTask;
+            //app.UseExceptionHandler(handler =>
+            //{
+            //    handler.Run(context =>
+            //    {
+            //        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+            //        if (exception == null)
+            //            return Task.CompletedTask;
 
-                    try
-                    {
-                        //log error
-                        handler.ApplicationServices.GetService<ILogger>().LogError(exception.Message, exception);
-                    }
-                    finally
-                    {
-                        //rethrow the exception to show the error page
-                        ExceptionDispatchInfo.Throw(exception);
-                    }
+            //        try
+            //        {
+            //            //log error
+            //            handler.ApplicationServices.GetService<ILogger>().LogError(exception.Message, exception);
+            //        }
+            //        finally
+            //        {
+            //            //rethrow the exception to show the error page
+            //            ExceptionDispatchInfo.Throw(exception);
+            //        }
 
-                    return Task.CompletedTask;
-                });
-            });
+            //        return Task.CompletedTask;
+            //    });
+            //});
 
             app.UseAuthentication();
 

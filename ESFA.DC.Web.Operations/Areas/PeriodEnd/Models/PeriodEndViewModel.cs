@@ -1,8 +1,11 @@
-﻿namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
+﻿using System.Collections.Generic;
+using ESFA.DC.PeriodEnd.Models.Dtos;
+
+namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {
     public class PeriodEndViewModel
     {
-        public string Paths { get; set; }
+        public IEnumerable<PathPathItemsModel> Paths { get; set; }
 
         public bool IsCurrentPeriod { get; set; }
 
