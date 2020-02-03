@@ -3,8 +3,9 @@
 
 @{
     ViewData["Title"] = "FRM Validation Successful";
+    ViewData[ViewDataConstants.GoToStart] = true;
 }
-
+<br />
 <h1 class="govuk-heading-xl">
     Validation Successful
 </h1>
@@ -30,11 +31,18 @@
             <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
     </tbody>
 </table>
-@using (Html.BeginForm("PublishFrm","Frm"))
-{
-    <br />
-    <br />
-    <br />
-    <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
-    <button type="submit" class="govuk-button">Publish</button>
-}
+<table>
+    @using (Html.BeginForm("PublishFrm", "Frm"))
+    {
+        <br />
+        <br />
+        <br />
+        <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
+        <button type="submit" class="govuk-button">Publish</button>
+    }
+    <nbsp>  </nbsp>
+    @using (Html.BeginForm("CancelFrm", "Frm"))
+    {
+        <button type="submit" class="govuk-button">Cancel</button>
+    }
+</table>

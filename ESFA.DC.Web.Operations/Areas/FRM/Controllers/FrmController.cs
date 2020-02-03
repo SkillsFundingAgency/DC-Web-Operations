@@ -143,5 +143,10 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 throw;
             }
         }
+
+        public IActionResult CancelFrm()
+        {
+         return View("CancelledFrm");
+        }
     }
 }
