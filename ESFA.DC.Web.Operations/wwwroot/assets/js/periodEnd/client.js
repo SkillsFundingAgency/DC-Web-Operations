@@ -41,6 +41,7 @@ class client {
         this.connection
             .invoke("Proceed", collectionYear, period, pathId, pathItemId)
             .catch(err => console.error(err.toString()));
+        return false;
     }
 }
 

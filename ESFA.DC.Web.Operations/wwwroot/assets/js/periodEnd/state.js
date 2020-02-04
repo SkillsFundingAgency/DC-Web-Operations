@@ -17,3 +17,5 @@ export let jobContinuation = {
     running: 3,
     nothingRunning: 4
 };
+
+export let lastMessage = null;
