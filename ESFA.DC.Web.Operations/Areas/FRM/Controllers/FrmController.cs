@@ -97,8 +97,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
             model.FrmJobType = Utils.Constants.FrmValidationKey;
             var frmContainerName = $"frm{model.FrmYearPeriod}";
+            var frmPeriod = currentYearPeriod.Period;
             var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
-            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey);
+            var collectionYear = currentYearPeriod.Year.Value;
+            var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
+            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey, frmPeriod, currentContainerName);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
