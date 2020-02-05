@@ -43,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return result;
         }
 
-        public async Task<long> RunValidation(string containerName, string folderKey, int periodNumber, string storageReference, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunValidation(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             string collectionName = Constants.FrmReportCollectionName;
             FrmReportsJob job = new FrmReportsJob()
@@ -54,7 +54,8 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 SourceContainerName = containerName,
                 SourceFolderKey = folderKey,
                 PeriodNumber = periodNumber,
-                StorageReference = storageReference
+                StorageReference = storageReference,
+                CreatedBy = userName
             };
 
             string url = $"{_jobApiUrl}/frm/validate";

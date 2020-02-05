@@ -7,6 +7,7 @@ using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Frm.Models;
 using ESFA.DC.Web.Operations.Controllers;
+using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -100,8 +101,9 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             var frmPeriod = currentYearPeriod.Period;
             var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
             var collectionYear = currentYearPeriod.Year.Value;
+            var userName = User.Name();
             var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
-            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey, frmPeriod, currentContainerName);
+            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey, frmPeriod, currentContainerName, userName);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
