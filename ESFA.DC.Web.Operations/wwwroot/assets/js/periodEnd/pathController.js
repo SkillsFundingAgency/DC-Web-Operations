@@ -179,7 +179,7 @@ class pathController {
                 }
             }
 
-            if (pathItemSummary != undefined && pathItemSummary != null) {
+            if (pathItemSummary !== undefined && pathItemSummary != null) {
                 let jobSummary = document.createElement("li");
                 jobSummary.id = `JS-${pathItemName}`;
                 jobSummary.className += "app-task-list__summary";
@@ -215,7 +215,7 @@ class pathController {
 
         if ((pathItem.ordinal < path.position - 1 ||
                 (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === totalPathItems)) &&
-            (jobItems == undefined || jobItems.length === 0)) {
+            (jobItems === undefined || jobItems === null || jobItems.length === 0)) {
             itemText += " - Status : Completed";
         }
 
@@ -237,6 +237,8 @@ class pathController {
         itemLink.id = pathItem.name;
         item.appendChild(itemLink);
 
+        const jobStatus = this.renderJobs(item, jobItems, removeSpaces(pathItem.name), pathItem.pathItemJobSummary);
+
         if (currentItem && pathItem.ordinal + 1 !== totalPathItems) {
             let panel = document.createElement("div");
 
@@ -244,8 +246,6 @@ class pathController {
             panel.id = removeSpaces(pathItem.name);
             panel.className += "app-task-list__item";
             panel.appendChild(item);
-
-            const jobStatus = this.renderJobs(item, jobItems, removeSpaces(pathItem.name), pathItem.pathItemJobSummary);
 
             panel.appendChild(this.renderProceed.call(classScope,
                 path.pathId,
@@ -314,7 +314,7 @@ class pathController {
             let pathSummary = document.createElement("span");
             pathSummary.className += "nav";
             let pathSummaryList = document.createElement("ul");
-            pathSummaryList.id = `ST-${classScope.removeSpaces(path.name)}`;
+            pathSummaryList.id = `ST-${removeSpaces(path.name)}`;
             pathSummaryList.className += "govuk-list";
 
             if (pathItems != undefined && pathItems.length > 0) {
@@ -352,7 +352,7 @@ class pathController {
 
                 let subItemList = document.createElement("ul");
                 subItemList.className += "app-task-list__items";
-                subItemList.id = `PI-${classScope.removeSpaces(path.name)}`;
+                subItemList.id = `PI-${removeSpaces(path.name)}`;
 
                 pathItems.forEach(function (pathItem) {
                     if (pathItem.name != undefined && pathItem.name !== "") {
@@ -383,24 +383,19 @@ class pathController {
             if (path.position !== oldPath.position) {
                 classScope.renderSummaryPath(path);
                 
-                let i = oldPath.position - 1, len = path.position, original = i, proceed = path.position - 1;
-                if (i < 0) {
-                    i = 0;
-                    original = 0;
-                }
-
-                let pathList = document.getElementById(`PI-${classScope.removeSpaces(path.name)}`);
+                let i = Math.max(oldPath.position - 1, 0), len = path.position, original = i, proceed = path.position - 1;
+                let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
                 for (; i < len; i++) {
-                    if (original === i || proceed === i || !classScope.pathItemsSame(path.pathItems[i], oldPath.pathItems[i])) {
+                    if (original === i || proceed === i || !classScope.pathItemsSame(path.pathItems[i], oldPath.pathItems[i], true)) {
                         console.log(`Rendering ${path.pathItems[i].name} as position has incremented`);
                         classScope.deleteItem(pathList, path.pathItems[i].name);
                         classScope.renderPathItem(path, path.pathItems[i], pathList);
                     }
                 }
             } else {
-                if (path.position > 0 && !classScope.pathItemsSame(path.pathItems[path.position - 1], oldPath.pathItems[oldPath.position - 1])) {
+                if (path.position > 0 && !classScope.pathItemsSame(path.pathItems[path.position - 1], oldPath.pathItems[oldPath.position - 1], false)) {
                     console.log(`Rendering ${path.pathItems[path.position - 1].name} as item has changed`);
-                    let pathList = document.getElementById(`PI-${classScope.removeSpaces(path.name)}`);
+                    let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
                     classScope.deleteItem(pathList, path.pathItems[path.position - 1].name);
                     classScope.renderPathItem(path, path.pathItems[path.position - 1], pathList);
                 }
@@ -437,7 +432,7 @@ class pathController {
         }
     }
 
-    pathItemsSame(pathItemOne, pathItemTwo) {
+    pathItemsSame(pathItemOne, pathItemTwo, positionChanged) {
         if ((pathItemOne.pathItemJobs !== null && pathItemTwo.pathItemJobs === null) ||
             (pathItemOne.pathItemJobs === null && pathItemTwo.pathItemJobs !== null)) {
             return false;
@@ -469,7 +464,7 @@ class pathController {
                 && pathItemOne.pathItemJobSummary.numberOfCompleteJobs === pathItemTwo.pathItemJobSummary.numberOfCompleteJobs;
         }
 
-        if (pathItemOne.pathItemJobs === null) {
+        if (positionChanged && pathItemOne.pathItemJobs === null) {
             return false;
         }
 
