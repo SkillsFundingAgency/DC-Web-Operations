@@ -1,5 +1,6 @@
-﻿import { disabledProceedButtons, jobStatus, jobContinuation, lastMessage } from '/assets/js/periodEnd/state.js';
+﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
 import { updateSync } from '/assets/js/periodEnd/baseController.js';
+import { removeSpaces } from '/assets/js/util.js';
 
 class pathController {
 
@@ -41,6 +42,7 @@ class pathController {
             case jobStatus.waiting:
                 return "Waiting";
             default:
+                return "";
         }
     }
 
@@ -58,22 +60,22 @@ class pathController {
 
     getProceedInformationText(jobState, itemIsSubPath, nextItemIsSubPath) {
         if (jobState === jobContinuation.running) {
-            return "Can't proceed until jobs complete";
+            return " Can't proceed until jobs complete";
         }
 
         if (nextItemIsSubPath) {
-            return "Proceed will start sub-path(s) and run next item";
+            return " Proceed will start sub-path(s) and run next item";
         }
 
         if (itemIsSubPath && jobState === jobContinuation.nothingRunning) {
-            return "Can't proceed as jobs haven't started yet";
+            return " Can't proceed as jobs haven't started yet";
         }
 
         return "";
     }
 
     renderProceed(pathId, pathItemId, jobState, itemIsSubPath, nextItemIsSubPath) {
-        const proceedEnabled = !disabledProceedButtons.includes(pathItemId) && ((!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running));
+        const proceedEnabled = (!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running);
 
         let proceedLi = document.createElement("li");
         proceedLi.className = "app-task-list__item";
@@ -218,7 +220,7 @@ class pathController {
         }
 
         let item = document.createElement("li");
-        item.id = this.removeSpaces(pathItem.name);
+        item.id = removeSpaces(pathItem.name);
         item.className += "app-task-list__item";
 
         if (pathItem.subPaths !== null) {
@@ -239,11 +241,11 @@ class pathController {
             let panel = document.createElement("div");
 
             item.id = `PA-${item.id}`;
-            panel.id = this.removeSpaces(pathItem.name);
+            panel.id = removeSpaces(pathItem.name);
             panel.className += "app-task-list__item";
             panel.appendChild(item);
 
-            const jobStatus = this.renderJobs(item, jobItems, this.removeSpaces(pathItem.name), pathItem.pathItemJobSummary);
+            const jobStatus = this.renderJobs(item, jobItems, removeSpaces(pathItem.name), pathItem.pathItemJobSummary);
 
             panel.appendChild(this.renderProceed.call(classScope,
                 path.pathId,
@@ -267,16 +269,10 @@ class pathController {
     disableProceed(pathItemId) {
         const button = document.getElementById("proceed_" + pathItemId);
         if (button != null) {
-            disabledProceedButtons.push(pathItemId);
             button.disabled = true;
         }
     }
     
-    padLeft(str, padString, max) {
-        str = str.toString();
-        return str.length < max ? this.padLeft(padString + str, padString, max) : str;
-    }
-
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");
         stateLabel.textContent = `Status: ${state}`;
@@ -415,7 +411,7 @@ class pathController {
     }
 
     deleteItem(pathList, pathItemName) {
-        let itemToDelete = document.getElementById(this.removeSpaces(pathItemName));
+        let itemToDelete = document.getElementById(removeSpaces(pathItemName));
         while (itemToDelete.firstChild) {
             itemToDelete.removeChild(itemToDelete.firstChild);
         }
@@ -425,7 +421,7 @@ class pathController {
 
     renderSummaryPath(path) {
         let classScope = this;
-        let summaryList = document.getElementById(`ST-${this.removeSpaces(path.name)}`);
+        let summaryList = document.getElementById(`ST-${removeSpaces(path.name)}`);
         while (summaryList.firstChild) {
             summaryList.removeChild(summaryList.firstChild);
         }
@@ -473,6 +469,10 @@ class pathController {
                 && pathItemOne.pathItemJobSummary.numberOfCompleteJobs === pathItemTwo.pathItemJobSummary.numberOfCompleteJobs;
         }
 
+        if (pathItemOne.pathItemJobs === null) {
+            return false;
+        }
+
         return true;
     }
 
@@ -512,10 +512,6 @@ class pathController {
         }
 
         return "Path0";
-    }
-
-    removeSpaces(str) {
-        return str.replace(/\s+/g, "");;
     }
 }
 
