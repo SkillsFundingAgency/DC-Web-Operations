@@ -1,0 +1,42 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Models.JobsProcessing.JobsProcessingModel
+
+@{
+    ViewData["Title"] = "Jobs processing";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Jobs processing</h1>
+        <br><br>
+    </div>
+</div>
+
+
+@foreach (var item in Model.Jobs)
+{
+    <p>@item.Ukprn - @item.ProviderName - <h1>@item.TimeTaken</h1> - @item.AverageProcessingTime</p>
+}
+
+@*@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
+
+    <script type="module">
+        import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
+        import Hub from '/assets/js/hubs/dashBoardHub.js';
+
+        const hub = new Hub();
+        hub.startHub();
+
+        const dashBoardController = new DashBoardController();
+
+        (function() {
+            const data = '@Html.Raw(Model)';
+
+            dashBoardController.updatePage(data);
+        })();
+    </script>
+}*@
