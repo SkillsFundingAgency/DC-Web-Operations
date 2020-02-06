@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Autofac;
+using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
+using ESFA.DC.FileService.Config;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.JobQueueManager.Data;
 using ESFA.DC.ReferenceData.Organisations.Model;
 using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using ESFA.DC.Web.Operations.Areas.Frm.Controllers;
+using ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
@@ -39,13 +43,11 @@ namespace ESFA.DC.Web.Operations.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<AzureStorageFileService>().As<IFileService>();
-
-            //builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
+           //builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
-            builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
+            builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<PeriodEndHubEventBase>().As<IPeriodEndHubEventBase>().SingleInstance();
@@ -70,7 +72,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<FrmService>().As<IFrmService>().InstancePerLifetimeScope();
+            builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
 
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
@@ -118,6 +120,29 @@ namespace ESFA.DC.Web.Operations.Ioc
                     return optionsBuilder.Options;
                 })
                 .As<DbContextOptions<OrganisationsContext>>()
+                .SingleInstance();
+
+            RegisterAzureStorage(builder);
+        }
+
+        private static void RegisterAzureStorage(ContainerBuilder builder)
+        {
+            builder.Register(c =>
+                    new AzureStorageFileService(
+                        new AzureStorageFileServiceConfiguration
+                        {
+                            ConnectionString = c.Resolve<AzureStorageSection>().ConnectionString
+                        }))
+                .Keyed<IFileService>(PersistenceStorageKeys.DctAzureStorage)
+                .SingleInstance();
+
+            builder.Register(c =>
+                    new AzureStorageFileService(
+                        new AzureStorageFileServiceConfiguration
+                        {
+                            ConnectionString = c.Resolve<OpsDataLoadServiceConfigSettings>().ConnectionString
+                        }))
+                .Keyed<IFileService>(PersistenceStorageKeys.OperationsAzureStorage)
                 .SingleInstance();
         }
     }

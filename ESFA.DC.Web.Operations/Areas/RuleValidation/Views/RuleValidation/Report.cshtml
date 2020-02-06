@@ -1,0 +1,88 @@
+﻿@using ESFA.DC.Web.Operations.Areas.RuleValidation.Models
+@model ESFA.DC.Web.Operations.Areas.RuleValidation.Models.ReportViewModel
+@{
+    ViewData["Title"] = " Validation Rule Details Report";
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Providers who triggered EPAOrgID_01</h1>
+
+    </div>
+    <br>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <dl id="submissions" class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row ilr eas esf">
+                <dt class="govuk-summary-list__value govuk-!-width-one-third">
+                    <strong>Provider name</strong>
+                </dt>
+
+                <dd class="govuk-summary-list__value">
+                    <strong>UKPRN</strong>
+                </dd>
+
+                <dd class="govuk-summary-list__value">
+                    <strong>Errors</strong>
+                </dd>
+
+                <dd class="govuk-summary-list__value">
+                    <strong>Warnings</strong>
+                </dd>
+
+                <dd class="govuk-summary-list__value">
+                    <strong>Submission date</strong>
+                </dd>
+
+
+            </div>
+
+            @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.Validationruledetails)
+            {
+                <h3 class="govuk-heading-m">@item.Key</h3>
+                foreach (var ruleDetail in item.Value)
+                {
+                    <div class="govuk-summary-list__row ilr">
+                        <dt class="govuk-summary-list__value">
+                            <a href="#">@ruleDetail.ProviderName</a>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @ruleDetail.UkPrn
+                        </dd>
+                        <dd class="govuk-summary-list__value">
+                            @ruleDetail.Errors
+                        </dd>
+                        <dd class="govuk-summary-list__value">
+                            @ruleDetail.Warnings
+                        </dd>
+                        <dd class="govuk-summary-list__value">
+                            @ruleDetail.SubmissionDate
+                        </dd>
+                    </div>
+                }
+            }
+
+            
+
+           
+        </dl>
+
+        
+            <form asp-controller="Rulevalidation" asp-action="DownloadReport" method="post">
+
+                <input asp-for="ContainerName" type="hidden" />
+                <input asp-for="JobId" type="hidden" />
+                <input asp-for="ReportFileName" type="hidden" />
+                <input asp-for="Rule" type="hidden" />
+                <input asp-for="Year" type="hidden" />
+                <button class="govuk-button" type="submit" data-module="govuk-button">
+                    Download CSV
+                </button>
+            </form>
+       
+
+    </div>
+</div>

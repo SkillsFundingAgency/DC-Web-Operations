@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Features.AttributeFilters;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Frm.Models;
 using ESFA.DC.Web.Operations.Controllers;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -30,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             IFrmService frmService,
             IPeriodService periodService,
             IStorageService storageService,
-            IFileService fileService,
+            [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService,
             TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {

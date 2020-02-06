@@ -53,6 +53,12 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 await GetDataAsync($"{_baseUrl}/api/collections/available-years", cancellationToken));
         }
 
+        public async Task<IEnumerable<int>> GetCollectionYearsByType(string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _jsonSerializationService.Deserialize<IEnumerable<int>>(
+                await GetDataAsync($"{_baseUrl}/api/collections/years/{collectionType}", cancellationToken));
+        }
+
         public async Task<CollectionsManagement.Models.Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
           return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
