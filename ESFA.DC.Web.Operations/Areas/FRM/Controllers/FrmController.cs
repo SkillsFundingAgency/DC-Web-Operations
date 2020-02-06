@@ -80,6 +80,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     await _frmService.PublishSld(model.FrmYearPeriod, model.FrmPeriodNumber);
                     return View("PublishSuccess");
                 default:
+
                     break;
             }
 
