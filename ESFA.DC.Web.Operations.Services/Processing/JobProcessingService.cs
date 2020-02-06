@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
-using ESFA.DC.Web.Operations.Models.JobsProcessing;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.Processing
@@ -18,10 +17,9 @@ namespace ESFA.DC.Web.Operations.Services.Processing
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<JobsProcessingModel> GetJobsThatAreProcessing(CancellationToken cancellationToken = default)
+        public async Task<string> GetJobsThatAreProcessing(CancellationToken cancellationToken = default)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/jobsthatareprocessing", cancellationToken);
-            return _jsonSerializationService.Deserialize<JobsProcessingModel>(data);
+            return await GetDataAsync($"{_baseUrl}/api/job/jobsthatareprocessing", cancellationToken);
         }
     }
 }

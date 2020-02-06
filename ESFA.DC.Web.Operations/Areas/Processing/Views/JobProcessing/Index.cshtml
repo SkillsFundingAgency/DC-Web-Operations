@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Models.JobsProcessing.JobsProcessingModel
+@model string
 
 @{
     ViewData["Title"] = "Jobs processing";
@@ -9,34 +9,91 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Jobs processing</h1>
-        <br><br>
+        <div id="typeFilter" class="govuk-checkboxes">
+            <div id="minusMargin" class="govuk-form-group margin-right">
+                <label class="govuk-label" for="sort">
+                    Sort by
+                </label>
+                <select class="govuk-select" id="sort" name="sort">
+                    <option value="published" selected>Time taken - Slowest first</option>
+                    <option value="views">Alphabetical</option>
+                    <option value="comments">UKPRN</option>
+                </select>
+            </div>
+            <div class="flex">
+                <div class="govuk-checkboxes__item">
+                    <input id="ILR" class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="ilr">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-1">
+                        ILR
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input id="EAS" class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="eas">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-2">
+                        EAS
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input id="ESF" class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="esf">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-3">
+                        ESF
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <!-- <h2 class="govuk-heading-m centre-text"><a href="jobs-processing">Jobs processing</a></h2> -->
+            <svg class="circle-chart" viewbox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle class="circle-chart__background" stroke="#EFEFEF" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
+                <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
+                <g class="circle-chart__info">
+                    <text id="firstDonut" class="circle-chart__percent counter" x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" data-count=""></text>
+                    <text id="jobText" class="circle-chart__subline" x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">All jobs</text>
+                </g>
+            </svg>
+        </section>
     </div>
 </div>
 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <dl id="submissions" class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row ilr eas esf">
+                <dt class="govuk-summary-list__value govuk-!-width-one-third">
+                    <strong>Provider name</strong>
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <strong>UKPRN</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    <strong>Time taken</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    <strong>Average processing time</strong>
+                </dd>
+            </div>
+            <div id="dataContent"></div>
+        </dl>
+    </div>
+</div>
 
-@foreach (var item in Model.Jobs)
-{
-    <p>@item.Ukprn - @item.ProviderName - <h1>@item.TimeTaken</h1> - @item.AverageProcessingTime</p>
-}
+<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
-@*@section PageScripts
-{
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
+<script type="module">
+    import JobProcessingController from "/assets/js/jobProcessing/jobProcessingController.js";
+    import Hub from '/assets/js/hubs/jobProcessingHub.js';
 
-    <script type="module">
-        import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
-        import Hub from '/assets/js/hubs/dashBoardHub.js';
-
-        const hub = new Hub();
+    const hub = new Hub();
         hub.startHub();
 
-        const dashBoardController = new DashBoardController();
+    const jobProcessingController = new JobProcessingController();
 
-        (function() {
+    (function () {
             const data = '@Html.Raw(Model)';
-
-            dashBoardController.updatePage(data);
+            jobProcessingController.updatePage(data);
         })();
-    </script>
-}*@
+</script>

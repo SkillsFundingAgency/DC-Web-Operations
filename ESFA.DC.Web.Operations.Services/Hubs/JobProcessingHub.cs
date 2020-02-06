@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
-using ESFA.DC.Web.Operations.Models.JobsProcessing;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
@@ -33,9 +32,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
-        public async Task SendMessage(JobsProcessingModel jobProcessingModel)
+        public async Task SendMessage(string jobProcessingModel)
         {
-            await _hubContext.Clients.All.SendAsync("ReceiveJobs", jobProcessingModel);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", jobProcessingModel);
         }
     }
 }
