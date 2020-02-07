@@ -74,7 +74,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     model.FrmYearPeriod = currentPeriod.Year.Value;
                     var currentContainerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
                     var fileMetaData = await _fileService.GetFileMetaDataAsync(currentContainerName, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
-                    model.FrmCSVValidDate = fileMetaData.First().LastModified;
+                    model.FrmCSVValidDate = fileMetaData.First().DateCreated;
                     return View("ValidateSuccess", model);
                 case JobStatusType.Completed:
                     await _frmService.PublishSld(model.FrmYearPeriod, model.FrmPeriodNumber);
