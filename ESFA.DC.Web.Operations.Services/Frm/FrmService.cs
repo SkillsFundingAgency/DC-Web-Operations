@@ -18,6 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
+        private readonly string _periodEndJobApiUrl;
 
         public FrmService(
             IFileService fileService,
@@ -27,6 +28,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             : base(jsonSerializationService, httpClient)
         {
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
+            _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
             _httpClient = httpClient;
         }
 
@@ -89,6 +91,13 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             response.EnsureSuccessStatusCode();
 
             return jobId;
+        }
+
+        public async Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
+            HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

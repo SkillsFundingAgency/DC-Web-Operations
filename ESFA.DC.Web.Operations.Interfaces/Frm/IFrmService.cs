@@ -10,5 +10,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Frm
         Task<long> RunPublish(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<int> GetFrmStatus(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
