@@ -1,7 +1,13 @@
 ﻿class JobProcessingController {
     constructor() {
-        this._firstDonut = document.getElementById("firstDonut");        
+        this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
+        this._sort = document.getElementById('sort');
+        this._ilr = document.getElementById('ILR');
+        this._eas = document.getElementById('EAS');
+        this._esf = document.getElementById('ESF');
+        this._dataJson = '';
+        this._data = {};
 
         this._percentColors = [
             { pct: 1, color: { r: 0x00, g: 0xff, b: 0 } },
@@ -11,30 +17,20 @@
     }
 
     updatePage(data) {
-        data = JSON.parse(data);
-        
-        this._firstDonut.setAttribute("data-count", data.jobCount);;
-        this._firstDonut.textContent = data.jobCount;
+        this._dataJson = data;
 
-        let percentage = (data.jobCount / 125) * 100;
+        this._data = JSON.parse(this._dataJson);
+
+        this.drawGrid();
+    }
+
+    setDonut() {
+        this._firstDonut.setAttribute("data-count", this._data.jobs.length);
+        this._firstDonut.textContent = this._data.jobs.length;
+
+        let percentage = (this._data.jobs.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
         this._firstCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
-        
-        var sb = [];
-        sb.push(`<div class="govuk-summary-list__row ilr">`);
-        for (var i = 0; i < data.jobCount; i++) {
-            var item = data.jobs[i];
-            sb.push(`<dt class="govuk-summary-list__value"><a href="#">${item.providerName}</a></dt>`);
-            sb.push(`<dd class="govuk-summary-list__value">${item.ukprn}</dd>`);
-            sb.push(`<dd class="govuk-summary-list__value">${item.timeTaken}</dd>`);
-            sb.push(`<dd class="govuk-summary-list__value">${item.averageProcessingTime}</dd>`);
-        }
-        sb.push(`</div>`);
-
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
     }
 
     getColorForPercentage(pct) {
@@ -63,6 +59,90 @@
         //const stateLabel = document.getElementById("state");
         //stateLabel.textContent = `Status: ${state}`;
     }
+
+    drawGrid() {
+        if (this._data.jobCount != undefined && this._data.jobCount != null && this._data.jobCount > 0) {
+
+            this.filterBy();
+
+            this.setDonut();
+
+            this.sortBy();
+
+            var sb = [];
+            for (var i = 0; i < this._data.jobs.length; i++) {
+                var item = this._data.jobs[i];
+                sb.push(`<tr class="govuk-table__row">`);
+                sb.push(`<td class="govuk-table__cell" style="width:330px"><a href="#">${item.providerName}</a></td>`);
+                sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
+                sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>`);
+                sb.push(`<td class="govuk-table__cell" style="width:170px">${item.averageProcessingTime}</td>`);
+                sb.push(`</tr>`);
+            }
+            var result = sb.join('');
+
+            var dataContent = document.getElementById("dataContent");
+            dataContent.innerHTML = result;
+        }
+    }
+
+    sortBy() {
+        if (this._sort) {
+            switch (this._sort.value) {
+                case 'TimeTaken':
+                    this._data.jobs.sort(function (a, b) {
+                        return a.timeTakenSecond + b.timeTakenSecond;
+                    });
+                    break;
+                case 'Alphabetical':
+                    this._data.jobs.sort(function (a, b) {
+                        var nameA = a.providerName.toUpperCase();
+                        var nameB = b.providerName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'Ukprn':
+                    this._data.jobs.sort(function (a, b) {
+                        return a.ukprn - b.ukprn;
+                    });
+                    break;
+            }
+        }
+    }
+
+    filterBy() {
+        var filters = [];
+        if (this._ilr && this._ilr.checked) {
+            filters.push(this._ilr.value);
+        }
+        if (this._eas && this._eas.checked) {
+            filters.push(this._eas.value);
+        }
+        if (this._esf && this._esf.checked) {
+            filters.push(this._esf.value);
+        }
+
+        if (filters.length > 0) {
+            var newArr = [];
+            for (var i = 0; i < this._data.jobs.length; i++) {                
+                var item = this._data.jobs[i];
+                var filter = filters.filter(x => x == item.collectionType);
+                if (filter == item.collectionType) {
+                    newArr.push(item);
+                }
+            }
+            if (newArr.length > 0) {
+                this._data.jobs = newArr;
+            }
+        }
+    }
+
 }
 
 export default JobProcessingController
