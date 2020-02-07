@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,16 +42,19 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignments(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var x = await GetDataAsync(_baseUrl + $"/api/org/assignments/{ukprn}", cancellationToken);
+            var response = await GetDataAsync(_baseUrl + $"/api/org/assignments/{ukprn}", cancellationToken);
 
-            var providerAssignments = _jsonSerializationService.Deserialize<IEnumerable<OrganisationCollection>>(x);
+            var providerAssignments = _jsonSerializationService.Deserialize<IEnumerable<OrganisationCollection>>(response);
 
-            var collectionAssignments = new List<CollectionAssignment>();
-
-            providerAssignments.ForEach(pa => collectionAssignments.Add(new CollectionAssignment()
-                { CollectionId = pa.CollectionId, Name = pa.CollectionName, StartDate = pa.StartDate, EndDate = pa.EndDate, DisplayOrder = SetDisplayOrder(pa.CollectionType, pa.CollectionName) }));
-
-            return collectionAssignments;
+            return providerAssignments.Select(p => new CollectionAssignment()
+            {
+                CollectionId = p.CollectionId,
+                Name = p.CollectionName,
+                StartDate = p.StartDate,
+                EndDate = p.EndDate,
+                DisplayOrder = SetDisplayOrder(p.CollectionType, p.CollectionName),
+                ToBeDeleted = false
+            });
         }
 
         public int SetDisplayOrder(CollectionsManagement.Models.Enums.CollectionType collectionType, string collectionName)
