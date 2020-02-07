@@ -16,5 +16,9 @@
     "inputFile": "wwwroot/assets/scss/application.scss",
     "minify": { "enabled": false },
     "options": { "sourceMap": true }
+  },
+  {
+    "outputFile": "wwwroot/assets/css/autocomplete.css",
+    "inputFile": "wwwroot/assets/scss/autocomplete.scss"
   }
 ]
