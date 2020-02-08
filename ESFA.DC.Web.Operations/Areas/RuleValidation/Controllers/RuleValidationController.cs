@@ -35,7 +35,6 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
         private readonly IValidationRulesService _validationRulesService;
         private readonly IJobService _jobService;
         private readonly IStorageService _storageService;
-        private readonly OpsDataLoadServiceConfigSettings _opsDataLoadServiceConfigSettings;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IFileService _operationsFileService;
 
@@ -45,7 +44,6 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
             IValidationRulesService validationRulesService,
             IJobService jobService,
             IStorageService storageService,
-            OpsDataLoadServiceConfigSettings opsDataLoadServiceConfigSettings,
             IJsonSerializationService jsonSerializationService,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
         {
@@ -54,7 +52,6 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
             _validationRulesService = validationRulesService;
             _jobService = jobService;
             _storageService = storageService;
-            _opsDataLoadServiceConfigSettings = opsDataLoadServiceConfigSettings;
             _jsonSerializationService = jsonSerializationService;
             _operationsFileService = operationsFileService[PersistenceStorageKeys.OperationsAzureStorage];
         }
@@ -91,9 +88,7 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
             model.CollectionYears = collectionYears.OrderByDescending(x => x).ToList();
             model.Rules = await _validationRulesService.GetValidationRules(year);
             ViewData["years"] = model.CollectionYears.Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() }).ToList();
-
             var jobId = await _validationRulesService.GenerateReport(rule, year, User.Name());
-
             return RedirectToAction("InProgress", new { jobId });
         }
 
@@ -101,9 +96,7 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
         public async Task<IActionResult> InProgress(long jobId)
         {
             ViewBag.AutoRefresh = true;
-
             var jobStatus = await _jobService.GetJobStatus(jobId);
-
             if (jobStatus == JobStatusType.Failed || jobStatus == JobStatusType.FailedRetry)
             {
                 _logger.LogError($"Loading in progress page for job id : {jobId}, job is in status ; {jobStatus} - user will be sent to service error page");
@@ -123,51 +116,34 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
         public async Task<IActionResult> Report(long jobId)
         {
             var model = new ReportViewModel();
-            List<ValidationRuleDetail> validationRuleDetails;
+            List<ValidationRuleDetail> validationRuleDetails = new List<ValidationRuleDetail>();
             var validationRuleDetailsReportJsonFile = string.Format(validationRuleDetailsReportJson, jobId);
             var job = await _jobService.GetJob(0, jobId);
             model.JobId = job.JobId;
             model.ContainerName = job.StorageReference;
             model.ReportFileName = string.Format(validationRuleDetailsReportCsv, jobId);
+            model.Rule = job.Rule;
+            model.Year = job.SelectedCollectionYear;
 
-            //todo: get the validationruledetailsreport job
-
-            model.Rule = "abc"; //job.Rule;
-            model.Year = 1920; //job.SelectedCollectionYear;
-            //// json file
-             using (var stream = await _operationsFileService.OpenReadStreamAsync(validationRuleDetailsReportJsonFile, job.StorageReference, CancellationToken.None))
+            // json file
+            using (var stream = await _operationsFileService.OpenReadStreamAsync(validationRuleDetailsReportJsonFile, job.StorageReference, CancellationToken.None))
             {
                 validationRuleDetails = _jsonSerializationService.Deserialize<List<ValidationRuleDetail>>(stream);
             }
 
-            var persistenceService = await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, job.StorageReference);
-            var summaryExists = await persistenceService.ContainsAsync(validationRuleDetailsReportJsonFile);
-            if (summaryExists)
-            {
-                var data = await persistenceService.GetAsync(validationRuleDetailsReportJsonFile);
-//                var validationRuleDetails = _jsonSerializationService.Deserialize<List<ValidationRuleDetail>>(data);
-
-                if (validationRuleDetails.Any())
-                {
-                    model.Validationruledetails = new Dictionary<string, List<ValidationRuleDetail>>();
-                    var groupBy = validationRuleDetails.GroupBy(x => x.ReturnPeriod);
-                    model.Validationruledetails = validationRuleDetails.GroupBy(x => x.ReturnPeriod).ToDictionary(group => group.Key, group => group.ToList());
-                }
-            }
-
+            model.Validationruledetails = validationRuleDetails.GroupBy(x => x.ReturnPeriod).ToDictionary(group => group.Key, group => group.ToList());
             return View(model);
         }
 
         [HttpPost("DownloadReport")]
         public async Task<IActionResult> DownloadReport(string containerName, string reportFilename, string rule, int year, int jobId)
         {
-            using (var stream = await _operationsFileService.OpenReadStreamAsync(reportFilename, containerName, CancellationToken.None))
-             {
-                return new FileStreamResult(stream, _storageService.GetMimeTypeFromFileName(reportFilename))
-                 {
-                     FileDownloadName = $"ValidationRuleDetailReport_{rule}_{year}.csv"
-                 };
-            }
+            var blobStream = await _operationsFileService.OpenReadStreamAsync(reportFilename, containerName, CancellationToken.None);
+
+            return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(reportFilename))
+            {
+                FileDownloadName = $"ValidationRuleDetailReport_{rule}_{year}.csv"
+            };
         }
     }
 }

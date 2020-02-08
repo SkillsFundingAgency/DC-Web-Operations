@@ -8,81 +8,51 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">Providers who triggered EPAOrgID_01</h1>
+        <h1 class="govuk-heading-xl">Providers who triggered @Model.Rule</h1>
+        <h3 class="govuk-heading-l">Academic Year:  @Model.Year</h3>
 
     </div>
     <br>
 </div>
+
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <dl id="submissions" class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row ilr eas esf">
-                <dt class="govuk-summary-list__value govuk-!-width-one-third">
-                    <strong>Provider name</strong>
-                </dt>
-
-                <dd class="govuk-summary-list__value">
-                    <strong>UKPRN</strong>
-                </dd>
-
-                <dd class="govuk-summary-list__value">
-                    <strong>Errors</strong>
-                </dd>
-
-                <dd class="govuk-summary-list__value">
-                    <strong>Warnings</strong>
-                </dd>
-
-                <dd class="govuk-summary-list__value">
-                    <strong>Submission date</strong>
-                </dd>
-
-
-            </div>
-
-            @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.Validationruledetails)
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Provider name</th>
+            <th class="govuk-table__header" scope="col">UKPRN</th>
+            <th class="govuk-table__header" scope="col">Errors</th>
+            <th class="govuk-table__header" scope="col">Warnings</th>
+            <th class="govuk-table__header" scope="col">Submission date</th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.Validationruledetails)
+        {
+            <tr class="govuk-table__row"><td ><h3>@item.Key</h3></td></tr>
+            foreach (var ruleDetail in item.Value)
             {
-                <h3 class="govuk-heading-m">@item.Key</h3>
-                foreach (var ruleDetail in item.Value)
-                {
-                    <div class="govuk-summary-list__row ilr">
-                        <dt class="govuk-summary-list__value">
-                            <a href="#">@ruleDetail.ProviderName</a>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @ruleDetail.UkPrn
-                        </dd>
-                        <dd class="govuk-summary-list__value">
-                            @ruleDetail.Errors
-                        </dd>
-                        <dd class="govuk-summary-list__value">
-                            @ruleDetail.Warnings
-                        </dd>
-                        <dd class="govuk-summary-list__value">
-                            @ruleDetail.SubmissionDate
-                        </dd>
-                    </div>
-                }
+                <tr class="govuk-table__row">
+                    @*<th class="govuk-table__header" scope="row">@ruleDetail.ProviderName</th>*@
+                    <td class="govuk-table__cell">@ruleDetail.ProviderName</td>
+                    <td class="govuk-table__cell">@ruleDetail.UkPrn</td>
+                    <td class="govuk-table__cell">@ruleDetail.Errors</td>
+                    <td class="govuk-table__cell">@ruleDetail.Warnings</td>
+                    <td class="govuk-table__cell">@ruleDetail.SubmissionDate.ToString("d/MM/yyyy")</td>
+                </tr>
             }
-
-            
-
+        }
            
-        </dl>
+        </tbody>
+    </table>
+    <form asp-controller="Rulevalidation" asp-action="DownloadReport" method="post">
 
-        
-            <form asp-controller="Rulevalidation" asp-action="DownloadReport" method="post">
-
-                <input asp-for="ContainerName" type="hidden" />
-                <input asp-for="JobId" type="hidden" />
-                <input asp-for="ReportFileName" type="hidden" />
-                <input asp-for="Rule" type="hidden" />
-                <input asp-for="Year" type="hidden" />
-                <button class="govuk-button" type="submit" data-module="govuk-button">
-                    Download CSV
-                </button>
-            </form>
-       
-
-    </div>
-</div>
+        <input asp-for="ContainerName" type="hidden" />
+        <input asp-for="JobId" type="hidden" />
+        <input asp-for="ReportFileName" type="hidden" />
+        <input asp-for="Rule" type="hidden" />
+        <input asp-for="Year" type="hidden" />
+        <button class="govuk-button" type="submit" data-module="govuk-button">
+            Download CSV
+        </button>
+    </form>
