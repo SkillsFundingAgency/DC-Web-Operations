@@ -33,7 +33,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             IFrmService frmService,
             IPeriodService periodService,
             IStorageService storageService,
-            [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService,
+            [KeyFilter(PersistenceStorageKeys.DctAzureStorage)] IFileService fileService,
             TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
