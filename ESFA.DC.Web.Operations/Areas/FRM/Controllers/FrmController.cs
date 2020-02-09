@@ -8,6 +8,7 @@ using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Frm.Models;
 using ESFA.DC.Web.Operations.Controllers;
+using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -72,18 +73,19 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 case JobStatusType.Waiting:
                     var currentPeriod = await _periodService.ReturnPeriod();
                     model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
-                    var collectionYear = currentPeriod.Year.Value;
-                    var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
+                    model.FrmYearPeriod = currentPeriod.Year.Value;
+                    var currentContainerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
                     var fileMetaData = await _fileService.GetFileMetaDataAsync(currentContainerName, $"FrmFailedFiles_{model.FrmPeriod}.csv", true, CancellationToken.None);
-                    model.FrmCSVValidDate = fileMetaData.First().LastModified;
+                    model.FrmCSVValidDate = fileMetaData.First().DateCreated;
                     return View("ValidateSuccess", model);
                 case JobStatusType.Completed:
+                    await _frmService.PublishSld(model.FrmYearPeriod, model.FrmPeriodNumber);
                     return View("PublishSuccess");
                 default:
                     break;
             }
 
-            return View("HoldingPageAsync");
+            return View("HoldingPageAsync", model);
         }
 
         [HttpPost]
@@ -99,8 +101,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
             model.FrmJobType = Utils.Constants.FrmValidationKey;
             var frmContainerName = $"frm{model.FrmYearPeriod}";
+            model.FrmPeriodNumber = currentYearPeriod.Period;
             var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
-            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey);
+            var collectionYear = currentYearPeriod.Year.Value;
+            var userName = User.Name();
+            var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
+            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
@@ -110,7 +116,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             model.FrmJobType = Utils.Constants.FrmPublishKey;
             model.FrmJobId = await _frmService.RunPublish(model.FrmJobId);
-
             return RedirectToAction("HoldingPageAsync", model);
         }
 
@@ -144,6 +149,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 _logger.LogError($"Download report failed for file name : {fileName}", e);
                 throw;
             }
+        }
+
+        public IActionResult CancelFrm()
+        {
+         return View("CancelledFrm");
         }
     }
 }

@@ -2,13 +2,11 @@
 @model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
 @{
     ViewData["Title"] = "FRM Validation";
-    ViewData[ViewDataConstants.BackLink] = "/";
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-x1">
-            Which reports do you want to publish? 
+            Which reports do you want to publish?
         </h1>
         <div class="govuk-form-group">
             <label class="govuk-label" for="name"></label>
@@ -28,10 +26,6 @@
                 <br />
                 <button type="submit" class="govuk-button">Continue</button>
             }
-            <br />
-            <p>
-                <div class="govuk-link"><a asp-action="Index">Cancel</a></div>
-            </p>
         </div>
     </div>
 </div>

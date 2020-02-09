@@ -13,5 +13,7 @@ namespace ESFA.DC.Web.Operations.Models.Collection
         public DateTime? EndDate { get; set; }
 
         public int DisplayOrder { get; set; }
+
+        public bool ToBeDeleted { get; set; }
     }
 }

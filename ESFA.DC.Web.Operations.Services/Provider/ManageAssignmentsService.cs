@@ -72,19 +72,28 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         public async Task<bool> UpdateProviderAssignments(long ukprn, IEnumerable<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var organisationCollection = new List<OrganisationCollection>();
+            var organisationToUpdate = new List<OrganisationCollection>();
             assignments
-                .Where(w => w.StartDate.HasValue)
-                .ForEach(a => organisationCollection.Add(new OrganisationCollection()
+                .Where(w => !w.ToBeDeleted)
+                .ForEach(a => organisationToUpdate.Add(new OrganisationCollection()
             {
                 CollectionId = a.CollectionId,
                 StartDate = a.StartDate.Value,
                 EndDate = a.EndDate
             }));
 
+            var organisationToDelete = new List<OrganisationCollection>();
+            assignments
+                .Where(w => w.ToBeDeleted)
+                .ForEach(a => organisationToDelete.Add(new OrganisationCollection()
+                {
+                    CollectionId = a.CollectionId
+                }));
+
             try
             {
-                await SendDataAsync($"{_baseUrl}/api/org/assignments/update/{ukprn}", organisationCollection, cancellationToken);
+                await SendDataAsync($"{_baseUrl}/api/org/assignments/delete/{ukprn}", organisationToDelete, cancellationToken);
+                await SendDataAsync($"{_baseUrl}/api/org/assignments/update/{ukprn}", organisationToUpdate, cancellationToken);
                 return true;
             }
             catch (HttpRequestException ex)

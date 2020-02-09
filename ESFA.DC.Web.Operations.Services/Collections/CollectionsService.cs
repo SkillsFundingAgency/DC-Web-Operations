@@ -40,9 +40,13 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                     CollectionId = collection.CollectionId,
                     CollectionYear = year,
                     CollectionName = collection.CollectionTitle,
-                    IsCollectionEnabled = collection.IsOpen,
-                    CollectionClosedDate = collection.ClosingDate,
-                    CollectionCurrentOrLastPeriod = collection.CurrentOrLastPeriod
+                    IsCollectionOpen = collection.IsOpen,
+                    LastPeriodClosedDate = collection.LastPeriodClosedDate,
+                    LastPeriodNumber = collection.LastPeriodNumber,
+                    NextPeriodNumber = collection.NextPeriodNumber,
+                    NextPeriodOpenDate = collection.NextPeriodOpenDateTimeUtc,
+                    OpenPeriodNumber = collection.OpenPeriodNumber,
+                    OpenPeriodCloseDate = collection.OpenPeriodCloseDate
                 })
                 .ToList();
         }
