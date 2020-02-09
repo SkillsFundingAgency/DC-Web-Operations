@@ -26,7 +26,6 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private readonly string _baseUrl;
 
         public ReportsService(
-            [KeyFilter(PersistenceStorageKeys.DctAzureStorage)] IFileService fileService,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)

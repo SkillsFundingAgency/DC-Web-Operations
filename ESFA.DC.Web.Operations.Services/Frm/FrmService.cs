@@ -23,7 +23,6 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         private readonly string _periodEndJobApiUrl;
 
         public FrmService(
-            [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)

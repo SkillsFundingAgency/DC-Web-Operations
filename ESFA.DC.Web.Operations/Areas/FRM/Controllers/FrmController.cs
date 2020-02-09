@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using Autofac.Features.Indexed;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
@@ -33,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             IFrmService frmService,
             IPeriodService periodService,
             IStorageService storageService,
-            [KeyFilter(PersistenceStorageKeys.DctAzureStorage)] IFileService fileService,
+            IIndex<PersistenceStorageKeys, IFileService> fileService,
             TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
@@ -41,7 +42,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             _frmService = frmService;
             _periodService = periodService;
             _storageService = storageService;
-            _fileService = fileService;
+            _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
         }
 
         public IActionResult Index()
