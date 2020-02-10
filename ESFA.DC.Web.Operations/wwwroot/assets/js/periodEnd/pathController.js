@@ -161,7 +161,7 @@ class pathController {
     renderJobs(item, jobItems, pathItemName, pathItemSummary) {
         let jobStatus = jobContinuation.nothingRunning;
 
-        if (jobItems != undefined && jobItems.length > 0) {
+        if (jobItems !== undefined && jobItems !== null && jobItems.length > 0) {
             let jobList = document.createElement("ul");
             jobList.id = `JL-${pathItemName}`;
             for (let job of jobItems) {
@@ -422,10 +422,10 @@ class pathController {
         }
 
         let pathItems = path.pathItems;
-        if (pathItems != undefined && pathItems.length > 0) {
+        if (pathItems !== undefined && pathItems !== null && pathItems.length > 0) {
             pathItems.sort(classScope.pathItemCompare);
             pathItems.forEach(function (pathItem) {
-                if (pathItem.name != undefined && pathItem.name !== "") {
+                if (pathItem.name !== undefined && pathItem.name !== null && pathItem.name !== "") {
                     classScope.renderSummaryItem(summaryList, path, pathItem);
                 }
             });
