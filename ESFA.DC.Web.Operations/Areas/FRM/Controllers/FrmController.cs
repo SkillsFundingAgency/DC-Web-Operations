@@ -124,7 +124,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 return RedirectToAction("SelectValidate");
             }
 
-            return View("Index");
+            return View("SelectUnpublish");
         }
 
         public async Task<FileResult> GetReportFile(string fileName)
