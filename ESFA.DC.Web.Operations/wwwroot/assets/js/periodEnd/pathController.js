@@ -1,5 +1,6 @@
-﻿import { disabledProceedButtons, jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
+﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
 import { updateSync } from '/assets/js/periodEnd/baseController.js';
+import { removeSpaces } from '/assets/js/util.js';
 
 class pathController {
 
@@ -7,6 +8,7 @@ class pathController {
         this._slowTimer = null;
         this._year = 0;
         this._period = 0;
+        this.lastMessage = null;
     }
 
     pathItemCompare(a, b) {
@@ -40,6 +42,7 @@ class pathController {
             case jobStatus.waiting:
                 return "Waiting";
             default:
+                return "";
         }
     }
 
@@ -57,34 +60,57 @@ class pathController {
 
     getProceedInformationText(jobState, itemIsSubPath, nextItemIsSubPath) {
         if (jobState === jobContinuation.running) {
-            return "Can't proceed until jobs complete";
+            return " Can't proceed until jobs complete";
         }
 
         if (nextItemIsSubPath) {
-            return "Proceed will start sub-path(s) and run next item";
+            return " Proceed will start sub-path(s) and run next item";
         }
 
         if (itemIsSubPath && jobState === jobContinuation.nothingRunning) {
-            return "Can't proceed as jobs haven't started yet";
+            return " Can't proceed as jobs haven't started yet";
         }
 
         return "";
     }
 
-    renderProceed(pathId, pathItemId, htmlItem, jobState, itemIsSubPath, nextItemIsSubPath) {
-        const proceedEnabled = !disabledProceedButtons.includes(pathItemId) && ((!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running));
+    renderProceed(pathId, pathItemId, jobState, itemIsSubPath, nextItemIsSubPath) {
+        const proceedEnabled = (!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running);
 
-        const node =
-            `<li class="app-task-list__item">
-                <span class="inline" >
-                    <button type="submit" class="proceed" ${proceedEnabled ? "" : "disabled"} Id="proceed_${pathItemId}"
-                        onClick="window.periodEndClient.proceed.call(window.periodEndClient, ${this._year}, ${this._period}, ${pathId}, ${pathItemId}); return false;">
-                        ${jobState === jobContinuation.someFailed ? "⚠ Proceed with failed jobs" : "Proceed"} ${nextItemIsSubPath ? "↡" : "▼"}
-                    </button>
-                    <label style="font-size: 10px;">${this.getProceedInformationText(jobState, itemIsSubPath, nextItemIsSubPath)}</label>
-                </span>
-            </li>`;
-        htmlItem.insertAdjacentHTML('beforeend', node);
+        let proceedLi = document.createElement("li");
+        proceedLi.className = "app-task-list__item";
+        proceedLi.id = `PL_${pathItemId}`;
+
+        let span = document.createElement("span");
+        span.className = "inline";
+
+        let button = document.createElement("button");
+        button.type = "submit";
+        button.className = "proceed";
+        button.id = `proceed_${pathItemId}`;
+        if (window.periodEndClient !== undefined) {
+            button.addEventListener("click",
+                window.periodEndClient.proceed.bind(window.periodEndClient,
+                    this._year,
+                    this._period,
+                    pathId,
+                    pathItemId));
+        }
+
+        button.textContent = `${jobState === jobContinuation.someFailed ? "⚠ Proceed with failed jobs" : "Proceed"} ${nextItemIsSubPath ? "↡" : "▼"}`;
+        if (!proceedEnabled) {
+            button.disabled = true;
+        }
+
+        let label = document.createElement("label");
+        label.style = "font-size: 10px;";
+        label.textContent = `${this.getProceedInformationText(jobState, itemIsSubPath, nextItemIsSubPath)}`;
+
+        span.appendChild(button);
+        span.appendChild(label);
+        proceedLi.appendChild(span);
+
+        return proceedLi;
     }
 
     renderJob(job, jobList) {
@@ -132,26 +158,69 @@ class pathController {
         container.appendChild(item);
     }
 
+    renderJobs(item, jobItems, pathItemName, pathItemSummary) {
+        let jobStatus = jobContinuation.nothingRunning;
+
+        if (jobItems !== undefined && jobItems !== null && jobItems.length > 0) {
+            let jobList = document.createElement("ul");
+            jobList.id = `JL-${pathItemName}`;
+            for (let job of jobItems) {
+                let status = this.renderJob(job, jobList);
+                if (status === jobContinuation.running) {
+                    jobStatus = jobContinuation.running;
+                }
+
+                if (jobStatus !== jobContinuation.running && status === jobContinuation.someFailed) {
+                    jobStatus = jobContinuation.someFailed;
+                }
+
+                if (jobStatus !== jobContinuation.running && jobStatus !== jobContinuation.someFailed && status === jobContinuation.allCompleted) {
+                    jobStatus = jobContinuation.allCompleted;
+                }
+            }
+
+            if (pathItemSummary !== undefined && pathItemSummary != null) {
+                let jobSummary = document.createElement("li");
+                jobSummary.id = `JS-${pathItemName}`;
+                jobSummary.className += "app-task-list__summary";
+                jobSummary.textContent = `${pathItemSummary.numberOfWaitingJobs} Waiting, ${pathItemSummary.numberOfRunningJobs} Running, ${pathItemSummary.numberOfFailedJobs} Failed, ${pathItemSummary.numberOfCompleteJobs} Complete`;
+                jobList.appendChild(jobSummary);
+
+                if (pathItemSummary.numberOfWaitingJobs + pathItemSummary.numberOfRunningJobs > 0) {
+                    jobStatus = jobContinuation.running;
+                }
+                else if (pathItemSummary.numberOfFailedJobs === 0) {
+                    jobStatus = jobContinuation.allCompleted;
+                } else {
+                    jobStatus = jobContinuation.someFailed;
+                }
+            }
+
+            item.appendChild(jobList);
+        }
+
+        return jobStatus;
+    }
+
     renderPathItem(path, pathItem, subItemList) {
         let classScope = this;
 
         let currentItem = pathItem.ordinal === path.position - 1;
 
         let totalPathItems = path.pathItems.length;
-
-        let jobStatus = jobContinuation.nothingRunning;
-
+        
         let jobItems = pathItem.pathItemJobs;
 
         let itemText = pathItem.name;
 
         if ((pathItem.ordinal < path.position - 1 ||
                 (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === totalPathItems)) &&
-            (jobItems == undefined || jobItems.length === 0)) {
+            (jobItems === undefined || jobItems === null || jobItems.length === 0)) {
             itemText += " - Status : Completed";
         }
 
         let item = document.createElement("li");
+        item.id = removeSpaces(pathItem.name);
         item.className += "app-task-list__item";
 
         if (pathItem.subPaths !== null) {
@@ -168,52 +237,25 @@ class pathController {
         itemLink.id = pathItem.name;
         item.appendChild(itemLink);
 
-        if (jobItems != undefined && jobItems.length > 0) {
-            let jobList = document.createElement("ul");
-            for (let job of jobItems) {
-                let status = classScope.renderJob(job, jobList);
-                if (status === jobContinuation.running) {
-                    jobStatus = jobContinuation.running;
-                }
+        const jobStatus = this.renderJobs(item, jobItems, removeSpaces(pathItem.name), pathItem.pathItemJobSummary);
 
-                if (jobStatus !== jobContinuation.running && status === jobContinuation.someFailed) {
-                    jobStatus = jobContinuation.someFailed;
-                }
+        if (currentItem && pathItem.ordinal + 1 !== totalPathItems) {
+            let panel = document.createElement("div");
 
-                if (jobStatus !== jobContinuation.running && jobStatus !== jobContinuation.someFailed && status === jobContinuation.allCompleted) {
-                    jobStatus = jobContinuation.allCompleted;
-                }
-            }
+            item.id = `PA-${item.id}`;
+            panel.id = removeSpaces(pathItem.name);
+            panel.className += "app-task-list__item";
+            panel.appendChild(item);
 
-            let jobItemSummary = pathItem.pathItemJobSummary;
-            if (jobItemSummary != undefined) {
-                let jobSummary = document.createElement("li");
-                jobSummary.className += "app-task-list__summary";
-                jobSummary.textContent = `${jobItemSummary.numberOfWaitingJobs} Waiting, ${jobItemSummary.numberOfRunningJobs} Running, ${jobItemSummary.numberOfFailedJobs} Failed, ${jobItemSummary.numberOfCompleteJobs} Complete`;
-                jobList.appendChild(jobSummary);
-            }
-
-            item.appendChild(jobList);
-        }
-
-        let summary = pathItem.pathItemJobSummary;
-        if (summary != undefined && summary != null) {
-            if (summary.numberOfWaitingJobs + summary.numberOfRunningJobs > 0) {
-                jobStatus = jobContinuation.running;
-            }
-            else if (summary.numberOfFailedJobs === 0) {
-                jobStatus = jobContinuation.allCompleted;
-            } else {
-                jobStatus = jobContinuation.someFailed;
-            }
-        }
-
-        subItemList.appendChild(item);
-
-        if (currentItem) {
-            if (pathItem.ordinal + 1 !== totalPathItems) {
-                this.renderProceed.call(classScope, path.pathId, pathItem.pathItemId, subItemList, jobStatus, pathItem.subPaths !== null, path.pathItems[pathItem.ordinal + 1].subPaths !== null);
-            }
+            panel.appendChild(this.renderProceed.call(classScope,
+                path.pathId,
+                pathItem.pathItemId,
+                jobStatus,
+                pathItem.subPaths !== null,
+                path.pathItems[pathItem.ordinal + 1].subPaths !== null));
+            subItemList.insertBefore(panel, subItemList.children[pathItem.ordinal]);
+        } else {
+            subItemList.insertBefore(item, subItemList.children[pathItem.ordinal]);
         }
     }
 
@@ -227,16 +269,10 @@ class pathController {
     disableProceed(pathItemId) {
         const button = document.getElementById("proceed_" + pathItemId);
         if (button != null) {
-            disabledProceedButtons.push(pathItemId);
             button.disabled = true;
         }
     }
     
-    padLeft(str, padString, max) {
-        str = str.toString();
-        return str.length < max ? this.padLeft(padString + str, padString, max) : str;
-    }
-
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");
         stateLabel.textContent = `Status: ${state}`;
@@ -250,6 +286,11 @@ class pathController {
         }
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
+
+        if (this.lastMessage !== null) {
+            this.updatePaths(stateModel);
+            return;
+        }
 
         let pathContainer = document.getElementById("pathContainer");
         while (pathContainer.firstChild) {
@@ -273,6 +314,7 @@ class pathController {
             let pathSummary = document.createElement("span");
             pathSummary.className += "nav";
             let pathSummaryList = document.createElement("ul");
+            pathSummaryList.id = `ST-${removeSpaces(path.name)}`;
             pathSummaryList.className += "govuk-list";
 
             if (pathItems != undefined && pathItems.length > 0) {
@@ -310,6 +352,7 @@ class pathController {
 
                 let subItemList = document.createElement("ul");
                 subItemList.className += "app-task-list__items";
+                subItemList.id = `PI-${removeSpaces(path.name)}`;
 
                 pathItems.forEach(function (pathItem) {
                     if (pathItem.name != undefined && pathItem.name !== "") {
@@ -328,6 +371,115 @@ class pathController {
                 pathContainer.appendChild(li);
             }
         });
+
+        this.lastMessage = stateModel;
+    }
+
+    updatePaths(stateModel) {
+        let classScope = this;
+        stateModel.paths.forEach(function(path) {
+            const oldPath = classScope.getPath(classScope.lastMessage, path.pathId);
+
+            if (path.position !== oldPath.position) {
+                classScope.renderSummaryPath(path);
+                
+                let i = Math.max(oldPath.position - 1, 0), len = path.position, original = i, proceed = path.position - 1;
+                let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
+                for (; i < len; i++) {
+                    if (original === i || proceed === i || !classScope.pathItemsSame(path.pathItems[i], oldPath.pathItems[i], true)) {
+                        console.log(`Rendering ${path.pathItems[i].name} as position has incremented`);
+                        classScope.deleteItem(pathList, path.pathItems[i].name);
+                        classScope.renderPathItem(path, path.pathItems[i], pathList);
+                    }
+                }
+            } else {
+                if (path.position > 0 && !classScope.pathItemsSame(path.pathItems[path.position - 1], oldPath.pathItems[oldPath.position - 1], false)) {
+                    console.log(`Rendering ${path.pathItems[path.position - 1].name} as item has changed`);
+                    let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
+                    classScope.deleteItem(pathList, path.pathItems[path.position - 1].name);
+                    classScope.renderPathItem(path, path.pathItems[path.position - 1], pathList);
+                }
+            }
+        });
+
+        this.lastMessage = stateModel;
+    }
+
+    deleteItem(pathList, pathItemName) {
+        let itemToDelete = document.getElementById(removeSpaces(pathItemName));
+        while (itemToDelete.firstChild) {
+            itemToDelete.removeChild(itemToDelete.firstChild);
+        }
+
+        pathList.removeChild(itemToDelete);
+    }
+
+    renderSummaryPath(path) {
+        let classScope = this;
+        let summaryList = document.getElementById(`ST-${removeSpaces(path.name)}`);
+        while (summaryList.firstChild) {
+            summaryList.removeChild(summaryList.firstChild);
+        }
+
+        let pathItems = path.pathItems;
+        if (pathItems !== undefined && pathItems !== null && pathItems.length > 0) {
+            pathItems.sort(classScope.pathItemCompare);
+            pathItems.forEach(function (pathItem) {
+                if (pathItem.name !== undefined && pathItem.name !== null && pathItem.name !== "") {
+                    classScope.renderSummaryItem(summaryList, path, pathItem);
+                }
+            });
+        }
+    }
+
+    pathItemsSame(pathItemOne, pathItemTwo, positionChanged) {
+        if ((pathItemOne.pathItemJobs !== null && pathItemTwo.pathItemJobs === null) ||
+            (pathItemOne.pathItemJobs === null && pathItemTwo.pathItemJobs !== null)) {
+            return false;
+        }
+
+        if ((pathItemOne.pathItemJobSummary === null && pathItemTwo.pathItemJobSummary !== null) ||
+            (pathItemOne.pathItemJobSummary !== null && pathItemTwo.pathItemJobSummary === null)) {
+            return false;
+        }
+
+        if (pathItemOne.pathItemJobs !== null && pathItemTwo.pathItemJobs !== null) {
+            if (pathItemOne.pathItemJobs.length !== pathItemTwo.pathItemJobs.length) {
+                return false;
+            }
+
+            let i = 0, len = pathItemOne.pathItemJobs.length;
+            for (; i < len; i++) {
+                if (pathItemOne.pathItemJobs[i].jobId !== pathItemTwo.pathItemJobs[i].jobId ||
+                    pathItemOne.pathItemJobs[i].status !== pathItemTwo.pathItemJobs[i].status) {
+                    return false;
+                }
+            }
+        }
+
+        if (pathItemOne.pathItemJobSummary !== null && pathItemTwo.pathItemJobSummary !== null) {
+            return pathItemOne.pathItemJobSummary.numberOfWaitingJobs === pathItemTwo.pathItemJobSummary.numberOfWaitingJobs
+                && pathItemOne.pathItemJobSummarynumberOfRunningJobs === pathItemTwo.pathItemJobSummarynumberOfRunningJobs
+                && pathItemOne.pathItemJobSummary.numberOfFailedJobs === pathItemTwo.pathItemJobSummary.numberOfFailedJobs
+                && pathItemOne.pathItemJobSummary.numberOfCompleteJobs === pathItemTwo.pathItemJobSummary.numberOfCompleteJobs;
+        }
+
+        if (positionChanged && pathItemOne.pathItemJobs === null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    getPath(stateModel, pathId) {
+        let i = 0, len = stateModel.paths.length;
+        for (; i < len; i++) {
+            if (stateModel.paths[i].pathId === pathId) {
+                return stateModel.paths[i];
+            }
+        }
+
+        return null;
     }
 
     initialiseState(state) {
