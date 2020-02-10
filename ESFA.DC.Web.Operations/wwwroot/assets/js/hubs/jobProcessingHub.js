@@ -1,4 +1,4 @@
-﻿import JobProcessingController from '/assets/js/jobProcessing/jobProcessingController.js';
+﻿import JobProcessingController from '/assets/js/processing/jobProcessingController.js';
 
 class jobProcessingHub {
 
