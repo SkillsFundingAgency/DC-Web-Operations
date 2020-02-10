@@ -106,13 +106,14 @@
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">
                             Create new report for:
-                            <select asp-for="ReportType">
+                            <select id="reportSelection" asp-for="ReportType" >
                                 <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
                                 <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
                                 <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
                                 <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
                                 <option value="InternalDataMatchReport">Internal Data Match Report</option>
                                 <option value="ACTCountReport">ACT Count Report</option>
+                                <option value="RuleValidationDetailReport">Rule Validation Detail Report</option>
                             </select>
 
                             <button id="createReport" onclick="createReportButton();">Create report</button>
@@ -124,8 +125,137 @@
     </div>
 </form>
 
-<script language="javascript">
+<div id="ruleValidationDetailReportSection">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Search for a validation rule</h1>
+        </div>
+    </div>
 
+    <form asp-controller="Rulevalidation" asp-action="Index" method="post" id="rulesearch">
+        <span id="spinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="year">
+                Year
+            </label>
+            <select class="govuk-select govuk-input--width-20" id="years" name="years" class="form-control"></select>
+        </div>
+
+        <div id="tt-overlay">
+            <div id="tt-overlay" class="autocomplete-wrapper"></div>
+        </div>
+    </form>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="state"></label>
+    </div>
+</div>
+<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/assets/minified/accessible-autocomplete.min.js"></script>
+<script language="javascript" type="module">
+
+    import Client from '/assets/js/reports/client.js';
+    import Hub from '/assets/js/hubs/reportsHub.js';
+
+    const hub = new Hub();
+    hub.startHub();
+   
+    window.reportClient = new Client(hub.getConnection());
+
+    var reportSelection = document.getElementById('reportSelection');
+    var ruleValidationDetailReportSection = document.getElementById('ruleValidationDetailReportSection');
+    var element = document.querySelector('#tt-overlay');
+    var id = 'autocomplete-overlay';
+    var spinner = document.getElementById('spinner');
+    var collectionYears = {};
+    var rulesByYear = {};
+    var yearSelected;
+
+    hideValidationRuleDetailReportSection();
+
+    reportSelection.onchange = function(e) {
+        if (!e)
+            var e = window.event;
+        var reportSelected = this.options[this.selectedIndex].value;
+        if (reportSelected === 'RuleValidationDetailReport') {
+            showValidationRuleDetailReportSection();
+        } else {
+            hideValidationRuleDetailReportSection();
+        }
+    };
+
+    function yearsSelectionChange(e) {
+        if (!e)
+            var e = window.event;
+        yearSelected = this.options[this.selectedIndex].text;
+        removeElementsByClass('autocomplete__wrapper');
+        spinner.style.visibility = 'visible';
+        if (rulesByYear[yearSelected] === undefined) {
+            window.reportClient.getValidationRules(yearSelected, populateRules);
+        } else {
+            populateRules(rulesByYear[yearSelected]);
+        }
+        
+    };
+
+    function showValidationRuleDetailReportSection() {
+        if (Object.keys(collectionYears).length === 0) {
+            window.reportClient.getCollectionYears(populateCollections);
+        }
+        ruleValidationDetailReportSection.style.visibility = 'visible';
+        document.getElementById("years").addEventListener("change", yearsSelectionChange);
+    }
+
+    function hideValidationRuleDetailReportSection() {
+        ruleValidationDetailReportSection.style.visibility = 'hidden';
+    }
+
+    function populateCollections(collections) {
+        spinner.style.visibility = 'visible';
+        collectionYears = collections;
+        var html = "";
+        Object.keys(collectionYears).forEach(function(item) {
+            html += "<option value=" + item + ">" + collectionYears[item] + "</option>";
+        });
+        document.getElementById("years").innerHTML = html;
+        yearSelected = collectionYears[0];
+        if (Object.keys(rulesByYear).length === 0) {
+            window.reportClient.getValidationRules(collectionYears[0], populateRules);
+        } else {
+            populateRules(rulesByYear[yearSelected]);
+        }
+    }
+
+    function populateRules(rules) {
+        accessibleAutocomplete({
+            element: element,
+            id: id,
+            displayMenu: 'overlay',
+            confirmOnBlur: false,
+            showNoOptionsFound: false,
+            onConfirm: searchRulesOnConfirm,
+            source: rules,
+            placeholder: 'e.g Rule_01'
+        });
+        spinner.style.visibility = 'hidden';
+    }
+
+    function removeElementsByClass(className){
+        var elements = document.getElementsByClassName(className);
+        while(elements.length > 0){
+            elements[0].parentNode.removeChild(elements[0]);
+        }
+    }
+
+    function searchRulesOnConfirm(result) {
+        var e = document.getElementById("years");
+        var year = e.options[e.selectedIndex].text;
+        window.location.href = '@Url.Action("ValidationRulesReport", "Rulevalidation", new { Area = "Rulevalidation"})?year=' + year + '&rule=' + result;
+    }
+
+    
     function changePeriodButton() {
         var yearValue = document.getElementById("year").value;
         var periodValue = document.getElementById("period").value;
