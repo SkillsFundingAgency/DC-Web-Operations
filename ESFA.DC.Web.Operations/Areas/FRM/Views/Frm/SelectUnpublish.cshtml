@@ -3,14 +3,22 @@
 @{
     ViewData["Title"] = "FRM Unpublish";
 }
-<div class="govuk-grid-row">
+<label class="govuk-label" for="name"></label>
+<div class="govuk-form-group">
+    <h1 class="govuk-heading-x1">Choose a period to unpublish</h1>
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="name"></label>
+    <label class="govuk-label" for="sort">
+        Sort by
+    </label>
 
 
-        </div>
-    </div>
+    <select class="govuk-select" id="sort" name="sort" style="width:auto">
+        <!--set to periods-->
+        <option value="published">Published</option>
+        <option value="unpublished" selected>Unpublished</option>
+    </select>
+    <br />
+    <br />
+    <button type="submit" class="govuk-button">Continue</button>
 </div>
-
 
