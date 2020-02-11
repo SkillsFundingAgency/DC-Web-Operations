@@ -12,7 +12,7 @@ class JobQueuedController {
     }
 
     updatePage(data) {        
-        this._data = typeof data === 'object' ? state : JSON.parse(data);
+        this._data = typeof data === 'object' ? data : JSON.parse(data);
         this.drawGrid();
     }
 
