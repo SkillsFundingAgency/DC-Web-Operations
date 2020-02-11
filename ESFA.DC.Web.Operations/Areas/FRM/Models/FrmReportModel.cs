@@ -12,7 +12,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
 
         [RegularExpression("[0-9]{4}", ErrorMessage = "The year code must be 4 numeric digits")]
         [Required(ErrorMessage = "A year code is required")]
-        public string FrmYearPeriod { get; set; }
+        public int FrmYearPeriod { get; set; }
 
         [Required(ErrorMessage = "A start date is required")]
         public DateTime FrmDate { get; set; }
@@ -24,5 +24,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
         public long FrmJobId { get; set; }
 
         public string FrmJobType { get; set; }
+
+        public int FrmPeriodNumber { get; set; }
     }
 }

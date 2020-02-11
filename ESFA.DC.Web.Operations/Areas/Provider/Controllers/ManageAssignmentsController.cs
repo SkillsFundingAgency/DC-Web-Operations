@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
@@ -45,7 +46,11 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         {
             foreach (var assignment in model.CollectionsAssignments)
             {
-                if (assignment.EndDate <= assignment.StartDate)
+                if (!assignment.StartDate.HasValue && !assignment.EndDate.HasValue)
+                {
+                    assignment.ToBeDeleted = true;
+                }
+                else if (assignment.EndDate <= assignment.StartDate)
                 {
                     ModelState.AddModelError($"Summary", $"{assignment.Name} - end date should be after start date");
                 }

@@ -8,7 +8,7 @@
 }
 
 <br>
-<form method="post">
+<form asp-area="Provider" asp-controller="ManageAssignments" asp-action="Submit" method="post">
     <input asp-for="Ukprn" type="hidden" />
     <input asp-for="ProviderName" type="hidden" />
     <div class="govuk-grid-row">
@@ -24,20 +24,20 @@
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body" id="assignments">
-                    @for (var i = 0; i < Model.CollectionsAssignments.Count; i++)
+                    @for (int i = 0; i < Model.CollectionsAssignments.Count; i++)
                     {
-                        <input asp-for="CollectionsAssignments[i].CollectionId" type="hidden" />
-                        <input asp-for="CollectionsAssignments[i].Name" type="hidden" />
-                        <input asp-for="CollectionsAssignments[i].DisplayOrder" type="hidden" />
+                        <input asp-for="@Model.CollectionsAssignments[i].CollectionId" type="hidden" />
+                        <input asp-for="@Model.CollectionsAssignments[i].Name" type="hidden" />
+                        <input asp-for="@Model.CollectionsAssignments[i].DisplayOrder" type="hidden" />
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell table">
                                 @Model.CollectionsAssignments[i].Name
                             </td>
                             <td class="govuk-table__cell">
-                                <input asp-for="CollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
+                                <input asp-for="@Model.CollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
                             </td>
                             <td class="govuk-table__cell">
-                                <input asp-for="CollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
+                                <input asp-for="@Model.CollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
                             </td>
                         </tr>
                     }

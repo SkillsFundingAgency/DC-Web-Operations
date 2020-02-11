@@ -1,6 +1,4 @@
-﻿export let disabledProceedButtons = new Array();
-
-export let jobStatus = {
+﻿export let jobStatus = {
     ready: 1,
     movedForProcessing: 2,
     processing: 3,

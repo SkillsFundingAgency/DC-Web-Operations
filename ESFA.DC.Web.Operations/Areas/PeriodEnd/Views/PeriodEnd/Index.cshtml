@@ -130,8 +130,6 @@
 
             pathController.initialiseState(stateModel);
 
-            pathController.renderPaths(stateModel);
-
             @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
             {
                 @Html.Raw("const hub = new Hub(pathController);")
@@ -141,6 +139,8 @@
                 @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
                 ;
             }
+            
+            pathController.renderPaths(stateModel);
 
             @if (!Model?.IsCurrentPeriod ?? false) {
                 @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");

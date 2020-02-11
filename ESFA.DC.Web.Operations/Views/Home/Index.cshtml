@@ -56,8 +56,10 @@
     </div>
 
     <div class="govuk-grid-column-one-third">
-        <section class="margin-bottom">
-            <h2 class="govuk-heading-m centre-text"><a href="jobs-queued">Jobs queued</a></h2>
+        <section class="margin-bottom">            
+            <h2 class="govuk-heading-m centre-text">
+                @Html.ActionLink("Jobs queued", "Index", "JobQueued", new { area = AreaNames.Processing })
+            </h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="secondCircle" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>

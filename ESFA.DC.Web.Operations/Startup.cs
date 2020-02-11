@@ -97,6 +97,7 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<PeriodEndTimedHostedService>();
             services.AddHostedService<DashboardTimedHostedService>();
             services.AddHostedService<JobProcessingTimedHostedService>();
+            services.AddHostedService<JobQueuedTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
@@ -183,6 +184,10 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+                routes.MapHub<JobQueuedHub>("/jobQueuedHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -228,6 +233,7 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<DashBoardHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobProcessingHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<JobQueuedHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

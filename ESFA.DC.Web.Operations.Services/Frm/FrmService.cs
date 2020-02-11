@@ -18,6 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
+        private readonly string _periodEndJobApiUrl;
 
         public FrmService(
             IFileService fileService,
@@ -27,6 +28,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             : base(jsonSerializationService, httpClient)
         {
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
+            _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
             _httpClient = httpClient;
         }
 
@@ -43,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return result;
         }
 
-        public async Task<long> RunValidation(string containerName, string folderKey, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunValidation(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             string collectionName = Constants.FrmReportCollectionName;
             FrmReportsJob job = new FrmReportsJob()
@@ -52,7 +54,10 @@ namespace ESFA.DC.Web.Operations.Services.Frm
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
                 JobId = 0,
                 SourceContainerName = containerName,
-                SourceFolderKey = folderKey
+                SourceFolderKey = folderKey,
+                PeriodNumber = periodNumber,
+                StorageReference = storageReference,
+                CreatedBy = userName
             };
 
             string url = $"{_jobApiUrl}/frm/validate";
@@ -86,6 +91,13 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             response.EnsureSuccessStatusCode();
 
             return jobId;
+        }
+
+        public async Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
+            HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
