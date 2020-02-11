@@ -99,5 +99,19 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task UnpublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/unpublish";
+            HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+            response.EnsureSuccessStatusCode();
+        }
+
+        private async Task GetFrmReportsData()
+        {
+            string url = $"{_periodEndJobApiUrl}/getfrmreportsdata";
+            HttpResponseMessage response = await _httpClient.PostAsync(url, null, default(CancellationToken));
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
