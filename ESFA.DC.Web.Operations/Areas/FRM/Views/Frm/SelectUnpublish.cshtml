@@ -7,18 +7,22 @@
 <div class="govuk-form-group">
     <h1 class="govuk-heading-x1">Choose a period to unpublish</h1>
 
-    <label class="govuk-label" for="sort">
-        Sort by
-    </label>
 
-
-    <select class="govuk-select" id="sort" name="sort" style="width:auto">
-        <!--set to periods-->
-        <option value="published">Published</option>
-        <option value="unpublished" selected>Unpublished</option>
-    </select>
+    @using (Html.BeginForm("Submit", "Frm"))
+    {
+        <select id="PublishedPeriods" name="huh" class="govuk-select" style="width:auto">
+            <option value="0">Please Select</option>
+            @foreach (var period in Model.PublishedFrm)
+            {
+                <option value="@period.PeriodNumber"> @period.CalendarYear - Period @period.PeriodNumber</option>
+            }
+        </select>
+        <br />
+        <br />
+        <button type="submit" class="govuk-button">Continue</button>
+    }
     <br />
     <br />
-    <button type="submit" class="govuk-button">Continue</button>
+
 </div>
 
