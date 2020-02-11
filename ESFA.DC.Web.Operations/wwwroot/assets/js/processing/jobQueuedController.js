@@ -7,22 +7,22 @@ class JobQueuedController {
         this._sort = document.getElementById('sort');
         this._ilr = document.getElementById('ILR');
         this._eas = document.getElementById('EAS');
-        this._esf = document.getElementById('ESF');        
+        this._esf = document.getElementById('ESF');
         this._data = {};
     }
 
-    updatePage(data) {        
+    updatePage(data) {
         this._data = typeof data === 'object' ? data : JSON.parse(data);
         this.drawGrid();
     }
 
-    setDonut() {
-        this._firstDonut.setAttribute("data-count", this._data.jobs.length);
-        this._firstDonut.textContent = this._data.jobs.length;
+    setDonut(filteredData) {
+        this._firstDonut.setAttribute("data-count", filteredData.jobs.length);
+        this._firstDonut.textContent = filteredData.jobs.length;
 
-        let percentage = (this._data.jobs.length / 125) * 100;
+        let percentage = (filteredData.jobs.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
-        this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));        
+        this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
     }
 
     displayConnectionState(state) {
@@ -31,42 +31,40 @@ class JobQueuedController {
     }
 
     drawGrid() {
-        if (this._data.jobCount !== undefined && this._data.jobCount !== null && this._data.jobCount > 0) {
-            this.filterBy();
-            this.setDonut();
-            this.sortBy();
+        var filteredData = this.filterBy();
+        this.setDonut(filteredData);
+        this.sortBy(filteredData);
 
-            var sb = [];
-            for (var i = 0; i < this._data.jobs.length; i++) {
-                var item = this._data.jobs[i];
-                sb.push(`<tr class="govuk-table__row">`);
-                sb.push(`<td class="govuk-table__cell" style="width:500px"><a href="#">${item.providerName}</a></td>`);
-                sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
-                sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>`);
-                sb.push(`</tr>`);
-            }
-            var result = sb.join('');
-
-            var dataContent = document.getElementById("dataContent");
-            dataContent.innerHTML = result;
+        var sb = [];
+        for (var i = 0; i < filteredData.jobs.length; i++) {
+            var item = filteredData.jobs[i];
+            sb.push(`<tr class="govuk-table__row">`);
+            sb.push(`<td class="govuk-table__cell" style="width:500px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>`);
+            sb.push(`</tr>`);
         }
+        var result = sb.join('');
+
+        var dataContent = document.getElementById("dataContent");
+        dataContent.innerHTML = result;
     }
 
-    sortBy() {
+    sortBy(filteredData) {
         if (this._sort) {
             switch (this._sort.value) {
                 case 'LongestTimeInTheQueue':
-                    this._data.jobs.sort(function (a, b) {
+                    filteredData.jobs.sort(function (a, b) {
                         return a.timeInQueueSecond + b.timeInQueueSecond;
                     });
                     break;
                 case 'ShortestTimeInTheQueue':
-                    this._data.jobs.sort(function (a, b) {
+                    filteredData.jobs.sort(function (a, b) {
                         return a.timeInQueueSecond - b.timeInQueueSecond;
                     });
                     break;
                 case 'Alphabetical':
-                    this._data.jobs.sort(function (a, b) {
+                    filteredData.jobs.sort(function (a, b) {
                         var nameA = a.providerName.toUpperCase();
                         var nameB = b.providerName.toUpperCase();
                         if (nameA < nameB) {
@@ -79,7 +77,7 @@ class JobQueuedController {
                     });
                     break;
                 case 'Ukprn':
-                    this._data.jobs.sort(function (a, b) {
+                    filteredData.jobs.sort(function (a, b) {
                         return a.ukprn - b.ukprn;
                     });
                     break;
@@ -100,18 +98,18 @@ class JobQueuedController {
         }
 
         if (filters.length > 0) {
-            var newArr = [];
-            for (var i = 0; i < this._data.jobs.length; i++) {
-                var item = this._data.jobs[i];
-                var filter = filters.filter(x => x == item.collectionType);
-                if (filter == item.collectionType) {
-                    newArr.push(item);
-                }
-            }
-            if (newArr.length > 0) {
-                this._data.jobs = newArr;
-            }
+
+            var retVal = { jobCount: 0, jobs: [] }
+            retVal.jobs = this._data.jobs.filter(function (array_el) {
+                return filters.filter(function (anotherOne_el) {
+                    return anotherOne_el == array_el.collectionType;
+                }).length > 0
+            });
+
+            return retVal;
         }
+
+        return this._data;
     }
 
 }
