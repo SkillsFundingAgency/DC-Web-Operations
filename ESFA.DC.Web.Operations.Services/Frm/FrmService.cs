@@ -1,18 +1,20 @@
-﻿using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.FileService.Interface;
-using ESFA.DC.Jobs.Model;
-using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
-using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
-
-namespace ESFA.DC.Web.Operations.Services.Frm
+﻿namespace ESFA.DC.Web.Operations.Services.Frm
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ESFA.DC.FileService.Interface;
+    using ESFA.DC.Jobs.Model;
+    using ESFA.DC.Logging.Interfaces;
+    using ESFA.DC.Serialization.Interfaces;
+    using ESFA.DC.Web.Operations.Areas.FRM.Models;
+    using ESFA.DC.Web.Operations.Interfaces.Frm;
+    using ESFA.DC.Web.Operations.Settings.Models;
+    using ESFA.DC.Web.Operations.Utils;
+
     public class FrmService : BaseHttpClientService, IFrmService
     {
         private readonly ILogger _logger;
@@ -107,11 +109,11 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             response.EnsureSuccessStatusCode();
         }
 
-        private async Task GetFrmReportsData()
+        public async Task<IEnumerable<FrmPublishedDataModel>> GetFrmReportsData()
         {
             string url = $"{_periodEndJobApiUrl}/getfrmreportsdata";
-            HttpResponseMessage response = await _httpClient.PostAsync(url, null, default(CancellationToken));
-            response.EnsureSuccessStatusCode();
+            var response = await _httpClient.GetStringAsync(url);
+            return _jsonSerializationService.Deserialize<IEnumerable<FrmPublishedDataModel>>(response);
         }
     }
 }

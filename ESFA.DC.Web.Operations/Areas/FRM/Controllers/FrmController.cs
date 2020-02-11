@@ -117,14 +117,32 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return RedirectToAction("HoldingPageAsync", model);
         }
 
-        public IActionResult ReportChoiceSelection(FrmReportModel model)
+        public async Task<IActionResult> ReportChoiceSelection(FrmReportModel model)
         {
             if (model.IsFrmReportChoice)
             {
                 return RedirectToAction("SelectValidate");
             }
 
-            return View("SelectUnpublish");
+            model.PublishedFrm = await _frmService.GetFrmReportsData();
+
+            foreach (var b in model.PublishedFrm)
+            {
+                if (b.PeriodNumber < 6)
+                {
+                    var secondhalfyear = b.CalendarYear % 100;
+                    var firsthalfyear = secondhalfyear + 1;
+                    b.CalendarYear = (secondhalfyear * 100) + firsthalfyear;
+                }
+                else
+                {
+                    var secondhalfyear = b.CalendarYear % 100;
+                    var firsthalfyear = secondhalfyear - 1;
+                    b.CalendarYear = (firsthalfyear * 100) + secondhalfyear;
+                }
+            }
+
+            return View("SelectUnpublish", model);
         }
 
         public async Task<FileResult> GetReportFile(string fileName)

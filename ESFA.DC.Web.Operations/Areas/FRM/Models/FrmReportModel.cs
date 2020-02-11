@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ESFA.DC.Web.Operations.Areas.Frm.Models
+﻿namespace ESFA.DC.Web.Operations.Areas.Frm.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using ESFA.DC.Web.Operations.Areas.FRM.Models;
+
     public class FrmReportModel
     {
         public bool IsFrmReportChoice { get; set; }
@@ -26,5 +27,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Models
         public string FrmJobType { get; set; }
 
         public int FrmPeriodNumber { get; set; }
+
+        public IEnumerable<FrmPublishedDataModel> PublishedFrm { get; set; }
     }
 }
