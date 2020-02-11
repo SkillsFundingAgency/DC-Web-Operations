@@ -102,9 +102,9 @@
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UnpublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/unpublish";
+            string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }

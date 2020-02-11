@@ -7,22 +7,23 @@
 <div class="govuk-form-group">
     <h1 class="govuk-heading-x1">Choose a period to unpublish</h1>
 
+    <div class=" govuk-select">
+        @using (Html.BeginForm("UnpublishSLD", "Frm"))
+        {
 
-    @using (Html.BeginForm("Submit", "Frm"))
-    {
-        <select id="PublishedPeriods" name="huh" class="govuk-select" style="width:auto">
-            <option value="0">Please Select</option>
-            @foreach (var period in Model.PublishedFrm)
-            {
-                <option value="@period.PeriodNumber"> @period.CalendarYear - Period @period.PeriodNumber</option>
-            }
-        </select>
-        <br />
-        <br />
-        <button type="submit" class="govuk-button">Continue</button>
-    }
-    <br />
-    <br />
+            <select id="PublishedPeriods" name="huh" class="govuk-select" style="width:auto">
+                <option value="0">Please Select</option>
+                @foreach (var period in Model.PublishedFrm)
+                {
+                    <option asp-for="UnpublishPath" value="@period.PeriodNumber/@period.CalendarYear" onclick="@Model.UnpublishPath =@period.PeriodNumber/@period.CalendarYear">@period.CalendarYear - Period @period.PeriodNumber</option>
+                    @*<option asp-for="" value="@period.PeriodNumber/@period.CalendarYear" name="path"> @period.CalendarYear - Period @period.PeriodNumber</option>*@
+                }
 
+            </select>
+            <br />
+            <br />
+            <button type="submit" oclass="govuk-button">Continue</button>
+        }
+    </div>
 </div>
 

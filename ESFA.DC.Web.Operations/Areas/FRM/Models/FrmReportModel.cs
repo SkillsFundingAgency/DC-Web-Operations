@@ -29,5 +29,7 @@
         public int FrmPeriodNumber { get; set; }
 
         public IEnumerable<FrmPublishedDataModel> PublishedFrm { get; set; }
+
+        public string UnpublishPath { get; set; }
     }
 }

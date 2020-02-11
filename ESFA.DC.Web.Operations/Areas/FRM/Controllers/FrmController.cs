@@ -171,5 +171,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
          return View("CancelledFrm");
         }
+
+        public async Task<IActionResult> UnpublishSLD(FrmReportModel model)
+        {
+            await _frmService.UnpublishSld(model.UnpublishPath);
+            return RedirectToAction("index");
+        }
     }
 }

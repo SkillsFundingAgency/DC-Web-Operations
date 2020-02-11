@@ -15,6 +15,8 @@
 
         Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<IEnumerable<FrmPublishedDataModel>> GetFrmReportsData();
     }
 }
