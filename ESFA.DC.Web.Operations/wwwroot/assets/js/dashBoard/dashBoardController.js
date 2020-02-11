@@ -1,4 +1,6 @@
-﻿class DashBoardController {
+﻿import { getColorForPercentage } from '/assets/js/util.js';
+
+class DashBoardController {
     constructor() {
         this._averageLabel = document.getElementById("average");
         this._averageSymbolLabel = document.getElementById("averageSymbol");
@@ -23,12 +25,6 @@
         this._queuesIlr = null;
 
         this._averageTimeToday = 0;
-
-        this._percentColors = [
-            { pct: 1, color: { r: 0x00, g: 0xff, b: 0 } },
-            { pct: 50, color: { r: 0xff, g: 0xff, b: 0 } },    
-            { pct: 100, color: { r: 0xff, g: 0x00, b: 0 } }
-        ];
     }
 
     updatePage(data) {
@@ -37,29 +33,6 @@
         this.updateSync();
         this.updateServiceBusStats(data.serviceBusStats);
         this.updateJobStats(data.jobStats);
-    }
-
-    // https://stackoverflow.com/a/7128796
-    getColorForPercentage(pct) {
-        var i = 1;
-        for (; i < this._percentColors.length - 1; i++) {
-            if (pct < this._percentColors[i].pct) {
-                break;
-            }
-        }
-
-        var lower = this._percentColors[i - 1];
-        var upper = this._percentColors[i];
-        var range = upper.pct - lower.pct;
-        var rangePct = (pct - lower.pct) / range;
-        var pctLower = 1 - rangePct;
-        var pctUpper = rangePct;
-        var color = {
-            r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-            g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-            b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
-        };
-        return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
     }
 
     updateJobStats(jobStats) {
@@ -86,7 +59,7 @@
             this._firstDonut.textContent = `${jobStats.todayStatsModel.jobsProcessing}`;
             let percentage = (jobStats.todayStatsModel.jobsProcessing / 125) * 100;
             this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
-            this._firstCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
+            this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
             this._firstLabel.textContent = this.getMessageForPercentage(percentage,
                 [
                     { value: 85, label: 'Really busy!' },
@@ -99,7 +72,7 @@
             this._secondDonut.textContent = `${jobStats.todayStatsModel.jobsQueued}`;
             this._secondCircle.setAttribute("stroke-dasharray", `${jobStats.todayStatsModel.jobsQueued},100`);
             let percentage = (jobStats.todayStatsModel.jobsQueued / 100) * 100;
-            this._secondCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
+            this._secondCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
             this._secondLabel.textContent = this.getMessageForPercentage(percentage,
                 [
                     { value: 50, label: 'Urgent Attention!' },
@@ -116,7 +89,7 @@
             }
 
             this._thirdCircle.setAttribute("stroke-dasharray", `${percentage},100`);
-            this._thirdCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
+            this._thirdCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
             this._thirdLabel.textContent = this.getMessageForPercentage(percentage,
                 [
                     { value: 75, label: 'Super excited!' },
