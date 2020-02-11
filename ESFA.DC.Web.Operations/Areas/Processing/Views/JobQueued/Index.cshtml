@@ -74,16 +74,28 @@
     </div>
 </div>
 
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="lastSync"></label>
+
+        <label id="state"></label>
+    </div>
+</div>
+
 <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
-<script type="module">    
+<script type="module">
+
     import JobQueuedController from "/assets/js/processing/jobQueuedController.js";
     import Hub from '/assets/js/hubs/jobQueuedHub.js';
 
-    const hub = new Hub();    
+    const hub = new Hub();
     hub.startHub();
-    
+
     const jobQueuedController = new JobQueuedController();
     (function () {
             const data = '@Html.Raw(Model)';
