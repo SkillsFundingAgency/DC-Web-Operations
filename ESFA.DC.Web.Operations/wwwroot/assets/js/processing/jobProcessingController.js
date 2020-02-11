@@ -1,4 +1,6 @@
-﻿class JobProcessingController {
+﻿import { getColorForPercentage } from '/assets/js/util.js';
+
+class JobProcessingController {
     constructor() {
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
@@ -6,21 +8,11 @@
         this._ilr = document.getElementById('ILR');
         this._eas = document.getElementById('EAS');
         this._esf = document.getElementById('ESF');
-        this._dataJson = '';
         this._data = {};
-
-        this._percentColors = [
-            { pct: 1, color: { r: 0x00, g: 0xff, b: 0 } },
-            { pct: 50, color: { r: 0xff, g: 0xff, b: 0 } },
-            { pct: 100, color: { r: 0xff, g: 0x00, b: 0 } }
-        ];
     }
 
     updatePage(data) {
-        this._dataJson = data;
-
-        this._data = JSON.parse(this._dataJson);
-
+        this._data = typeof data === 'object' ? data : JSON.parse(data);
         this.drawGrid();
     }
 
@@ -30,34 +22,12 @@
 
         let percentage = (this._data.jobs.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
-        this._firstCircle.setAttribute("style", "stroke:" + this.getColorForPercentage(percentage));
-    }
-
-    getColorForPercentage(pct) {
-        var i = 1;
-        for (; i < this._percentColors.length - 1; i++) {
-            if (pct < this._percentColors[i].pct) {
-                break;
-            }
-        }
-
-        var lower = this._percentColors[i - 1];
-        var upper = this._percentColors[i];
-        var range = upper.pct - lower.pct;
-        var rangePct = (pct - lower.pct) / range;
-        var pctLower = 1 - rangePct;
-        var pctUpper = rangePct;
-        var color = {
-            r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-            g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-            b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
-        };
-        return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+        this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
     }
 
     displayConnectionState(state) {
-        //const stateLabel = document.getElementById("state");
-        //stateLabel.textContent = `Status: ${state}`;
+        const stateLabel = document.getElementById("state");
+        stateLabel.textContent = `Status: ${state}`;
     }
 
     drawGrid() {
