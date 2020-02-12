@@ -16,11 +16,11 @@ class JobProcessingController {
         this.drawGrid();
     }
 
-    setDonut() {
-        this._firstDonut.setAttribute("data-count", this._data.jobs.length);
-        this._firstDonut.textContent = this._data.jobs.length;
+    setDonut(filteredData) {
+        this._firstDonut.setAttribute("data-count", filteredData.length);
+        this._firstDonut.textContent = filteredData.length;
 
-        let percentage = (this._data.jobs.length / 125) * 100;
+        let percentage = (filteredData.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
     }
@@ -31,59 +31,25 @@ class JobProcessingController {
     }
 
     drawGrid() {
-        if (this._data.jobCount != undefined && this._data.jobCount != null && this._data.jobCount > 0) {
+        var filteredData = this.filterBy();
+        this.setDonut(filteredData);
+        this.sortBy(filteredData);
 
-            this.filterBy();
-
-            this.setDonut();
-
-            this.sortBy();
-
-            var sb = [];
-            for (var i = 0; i < this._data.jobs.length; i++) {
-                var item = this._data.jobs[i];
-                sb.push(`<tr class="govuk-table__row">`);
-                sb.push(`<td class="govuk-table__cell" style="width:330px"><a href="#">${item.providerName}</a></td>`);
-                sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
-                sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>`);
-                sb.push(`<td class="govuk-table__cell" style="width:170px">${item.averageProcessingTime}</td>`);
-                sb.push(`</tr>`);
-            }
-            var result = sb.join('');
-
-            var dataContent = document.getElementById("dataContent");
-            dataContent.innerHTML = result;
+        var sb = [];
+        for (var i = 0; i < filteredData.length; i++) {
+            var item = filteredData[i];
+            sb.push(`<tr class="govuk-table__row">`);
+            sb.push(`<td class="govuk-table__cell" style="width:200px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.averageProcessingTime}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:130px">${item.statusDescription}</td>`);
+            sb.push(`</tr>`);
         }
-    }
+        var result = sb.join('');
 
-    sortBy() {
-        if (this._sort) {
-            switch (this._sort.value) {
-                case 'TimeTaken':
-                    this._data.jobs.sort(function (a, b) {
-                        return a.timeTakenSecond + b.timeTakenSecond;
-                    });
-                    break;
-                case 'Alphabetical':
-                    this._data.jobs.sort(function (a, b) {
-                        var nameA = a.providerName.toUpperCase();
-                        var nameB = b.providerName.toUpperCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-                    break;
-                case 'Ukprn':
-                    this._data.jobs.sort(function (a, b) {
-                        return a.ukprn - b.ukprn;
-                    });
-                    break;
-            }
-        }
+        var dataContent = document.getElementById("dataContent");
+        dataContent.innerHTML = result;
     }
 
     filterBy() {
@@ -99,20 +65,46 @@ class JobProcessingController {
         }
 
         if (filters.length > 0) {
-            var newArr = [];
-            for (var i = 0; i < this._data.jobs.length; i++) {                
-                var item = this._data.jobs[i];
-                var filter = filters.filter(x => x == item.collectionType);
-                if (filter == item.collectionType) {
-                    newArr.push(item);
-                }
-            }
-            if (newArr.length > 0) {
-                this._data.jobs = newArr;
+
+            return this._data.jobs.filter(function (array_el) {
+                return filters.filter(function (anotherOne_el) {
+                    return anotherOne_el == array_el.collectionType;
+                }).length > 0
+            });
+        }
+
+        return this._data.jobs;
+    }
+
+    sortBy(filteredData) {
+        if (this._sort) {
+            switch (this._sort.value) {
+                case 'TimeTaken':
+                    filteredData.sort(function (a, b) {
+                        return a.timeTakenSecond + b.timeTakenSecond;
+                    });
+                    break;
+                case 'Alphabetical':
+                    filteredData.sort(function (a, b) {
+                        var nameA = a.providerName.toUpperCase();
+                        var nameB = b.providerName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'Ukprn':
+                    filteredData.sort(function (a, b) {
+                        return a.ukprn - b.ukprn;
+                    });
+                    break;
             }
         }
     }
-
 }
 
 export default JobProcessingController

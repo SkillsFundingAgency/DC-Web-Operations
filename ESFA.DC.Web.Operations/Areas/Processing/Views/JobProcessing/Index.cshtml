@@ -45,7 +45,6 @@
     </div>
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
-            <!-- <h2 class="govuk-heading-m centre-text"><a href="jobs-processing">Jobs processing</a></h2> -->
             <svg class="circle-chart" viewbox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle class="circle-chart__background" stroke="#EFEFEF" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
                 <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
@@ -63,10 +62,11 @@
         <table class="govuk-table" id="tblData">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="col" style="width:330px">Provider name</th>
-                    <th class="govuk-table__header" scope="col" style="width:80px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width:200px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
                     <th class="govuk-table__header" scope="col" style="width:170px">Time taken</th>
                     <th class="govuk-table__header" scope="col" style="width:170px">Average processing time</th>
+                    <th class="govuk-table__header" scope="col" style="width:130px">Job status</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body" id="dataContent">
@@ -104,7 +104,7 @@
     })();
 
     window.change = function () {
-        jobProcessingController.updatePage(jobProcessingController._dataJson);
+        jobProcessingController.updatePage(jobProcessingController._data);
     };
 
 </script>
