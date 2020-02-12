@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Jobs processing";
+    ViewData[ViewDataConstants.BackLink] = "/";
 }
 <div id="content"></div>
 <div class="govuk-grid-row">
@@ -97,7 +98,7 @@
 
     const jobProcessingController = new JobProcessingController();
 
-    (function () {        
+    (function () {
             const data = @Json.Serialize(Model);
             jobProcessingController.updatePage(data);
     })();
