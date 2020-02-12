@@ -33,6 +33,7 @@ class JobQueuedController {
     drawGrid() {
         var filteredData = this.filterBy();
         this.setDonut(filteredData);
+        this.sortBy(filteredData);
 
         var sb = [];
         for (var i = 0; i < filteredData.length; i++) {
@@ -72,6 +73,41 @@ class JobQueuedController {
         }
 
         return this._data.jobs;
+    }
+
+    sortBy(filteredData) {
+        if (this._sort) {
+            switch (this._sort.value) {
+                case 'LongestTimeInTheQueue':
+                    filteredData.sort(function (a, b) {
+                        return a.timeInQueueSecond + b.timeInQueueSecond;
+                    });
+                    break;
+                case 'ShortestTimeInTheQueue':
+                    filteredData.sort(function (a, b) {
+                        return a.timeInQueueSecond - b.timeInQueueSecond;
+                    });
+                    break;
+                case 'Alphabetical':
+                    filteredData.sort(function (a, b) {
+                        var nameA = a.providerName.toUpperCase();
+                        var nameB = b.providerName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'Ukprn':
+                    filteredData.sort(function (a, b) {
+                        return a.ukprn - b.ukprn;
+                    });
+                    break;
+            }
+        }
     }
 
 }
