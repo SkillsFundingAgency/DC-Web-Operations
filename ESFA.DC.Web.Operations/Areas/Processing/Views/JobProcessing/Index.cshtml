@@ -1,0 +1,110 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model string
+
+@{
+    ViewData["Title"] = "Jobs processing";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+<div id="content"></div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Jobs processing</h1>
+        <div id="typeFilter" class="govuk-checkboxes">
+            <div id="minusMargin" class="govuk-form-group margin-right">
+                <label class="govuk-label" for="sort">
+                    Sort by
+                </label>
+                <select class="govuk-select" id="sort" name="sort" onchange="window.change();">
+                    <option value="TimeTaken" selected>Time taken - Slowest first</option>
+                    <option value="Alphabetical">Alphabetical</option>
+                    <option value="Ukprn">UKPRN</option>
+                </select>
+            </div>
+            <div class="flex">
+                <div class="govuk-checkboxes__item">
+                    <input id="ILR" class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="ILR" onchange="window.change();">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-1">
+                        ILR
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input id="EAS" class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="EAS" onchange="window.change();">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-2">
+                        EAS
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input id="ESF" class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="ESF" onchange="window.change();">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-3">
+                        ESF
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <section class="margin-bottom">
+            <svg class="circle-chart" viewbox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle class="circle-chart__background" stroke="#EFEFEF" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
+                <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
+                <g class="circle-chart__info">
+                    <text id="firstDonut" class="circle-chart__percent counter" x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" data-count=""></text>
+                    <text id="jobText" class="circle-chart__subline" x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">All jobs</text>
+                </g>
+            </svg>
+        </section>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <table class="govuk-table" id="tblData">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col" style="width:200px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width:170px">Time taken</th>
+                    <th class="govuk-table__header" scope="col" style="width:170px">Average processing time</th>
+                    <th class="govuk-table__header" scope="col" style="width:130px">Job status</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="dataContent">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="lastSync"></label>
+
+        <label id="state"></label>
+    </div>
+</div>
+
+<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
+
+<script type="module">
+    import JobProcessingController from "/assets/js/processing/jobProcessingController.js";
+    import Hub from '/assets/js/hubs/jobProcessingHub.js';
+
+    const hub = new Hub();
+    hub.startHub();
+
+    const jobProcessingController = new JobProcessingController();
+
+    (function () {
+            const data = @Json.Serialize(Model);
+            jobProcessingController.updatePage(data);
+    })();
+
+    window.change = function () {
+        jobProcessingController.updatePage(jobProcessingController._data);
+    };
+
+</script>
