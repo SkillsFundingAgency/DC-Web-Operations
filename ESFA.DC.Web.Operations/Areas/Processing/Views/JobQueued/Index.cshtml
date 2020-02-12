@@ -63,9 +63,10 @@
         <table class="govuk-table" id="tblData">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="col" style="width:330px">Provider name</th>
-                    <th class="govuk-table__header" scope="col" style="width:80px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width:320px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
                     <th class="govuk-table__header" scope="col" style="width:170px">Time in queue</th>
+                    <th class="govuk-table__header" scope="col" style="width:170px">Job status</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body" id="dataContent">
@@ -103,6 +104,6 @@
     })();
 
     window.change = function () {
-        jobQueuedController.updatePage(jobQueuedController._dataJson);
+        jobQueuedController.updatePage(jobQueuedController._data);
     };
 </script>

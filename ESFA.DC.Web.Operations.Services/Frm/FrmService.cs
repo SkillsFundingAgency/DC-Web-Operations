@@ -45,6 +45,19 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return result;
         }
 
+        public async Task<DateTime?> GetFileSubmittedDate(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (!jobId.HasValue)
+            {
+                throw new Exception("Missing 'jobId' parameter");
+            }
+
+            string url = $"{_jobApiUrl}/0/{jobId}";
+            var jobinfojson = await GetDataAsync(url, cancellationToken);
+            var jobinfo = _jsonSerializationService.Deserialize<FileUploadJob>(jobinfojson);
+            return jobinfo.DateTimeSubmittedUtc;
+        }
+
         public async Task<long> RunValidation(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             string collectionName = Constants.FrmReportCollectionName;
