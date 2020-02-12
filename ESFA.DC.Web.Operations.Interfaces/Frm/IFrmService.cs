@@ -13,6 +13,8 @@
 
         Task<int> GetFrmStatus(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<DateTime?> GetFileSubmittedDate(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
+
         Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<PeriodEndYearPeriodModel>> GetFrmReportsData();
