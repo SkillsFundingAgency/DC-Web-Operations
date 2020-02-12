@@ -64,7 +64,7 @@ class JobQueuedController {
 
         if (filters.length > 0) {
 
-            var retVal = { jobCount: 0, jobs: [] }
+            var retVal = { jobs: [] }
             retVal.jobs = this._data.jobs.filter(function (array_el) {
                 return filters.filter(function (anotherOne_el) {
                     return anotherOne_el == array_el.collectionType;
