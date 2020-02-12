@@ -33,56 +33,21 @@ class JobQueuedController {
     drawGrid() {
         var filteredData = this.filterBy();
         this.setDonut(filteredData);
-        this.sortBy(filteredData);
 
         var sb = [];
         for (var i = 0; i < filteredData.jobs.length; i++) {
             var item = filteredData.jobs[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:500px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:320px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.statusDescription}</td>`);
             sb.push(`</tr>`);
         }
         var result = sb.join('');
 
         var dataContent = document.getElementById("dataContent");
         dataContent.innerHTML = result;
-    }
-
-    sortBy(filteredData) {
-        if (this._sort) {
-            switch (this._sort.value) {
-                case 'LongestTimeInTheQueue':
-                    filteredData.jobs.sort(function (a, b) {
-                        return a.timeInQueueSecond + b.timeInQueueSecond;
-                    });
-                    break;
-                case 'ShortestTimeInTheQueue':
-                    filteredData.jobs.sort(function (a, b) {
-                        return a.timeInQueueSecond - b.timeInQueueSecond;
-                    });
-                    break;
-                case 'Alphabetical':
-                    filteredData.jobs.sort(function (a, b) {
-                        var nameA = a.providerName.toUpperCase();
-                        var nameB = b.providerName.toUpperCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-                    break;
-                case 'Ukprn':
-                    filteredData.jobs.sort(function (a, b) {
-                        return a.ukprn - b.ukprn;
-                    });
-                    break;
-            }
-        }
     }
 
     filterBy() {
