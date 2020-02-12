@@ -17,10 +17,10 @@ class JobQueuedController {
     }
 
     setDonut(filteredData) {
-        this._firstDonut.setAttribute("data-count", filteredData.jobs.length);
-        this._firstDonut.textContent = filteredData.jobs.length;
+        this._firstDonut.setAttribute("data-count", filteredData.length);
+        this._firstDonut.textContent = filteredData.length;
 
-        let percentage = (filteredData.jobs.length / 125) * 100;
+        let percentage = (filteredData.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
     }
@@ -35,8 +35,8 @@ class JobQueuedController {
         this.setDonut(filteredData);
 
         var sb = [];
-        for (var i = 0; i < filteredData.jobs.length; i++) {
-            var item = filteredData.jobs[i];
+        for (var i = 0; i < filteredData.length; i++) {
+            var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
             sb.push(`<td class="govuk-table__cell" style="width:320px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
@@ -64,17 +64,14 @@ class JobQueuedController {
 
         if (filters.length > 0) {
 
-            var retVal = { jobs: [] }
-            retVal.jobs = this._data.jobs.filter(function (array_el) {
+            return this._data.jobs.filter(function (array_el) {
                 return filters.filter(function (anotherOne_el) {
                     return anotherOne_el == array_el.collectionType;
                 }).length > 0
             });
-
-            return retVal;
         }
 
-        return this._data;
+        return this._data.jobs;
     }
 
 }
