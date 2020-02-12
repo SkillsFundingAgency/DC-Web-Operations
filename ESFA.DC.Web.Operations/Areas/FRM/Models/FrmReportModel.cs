@@ -3,9 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using ESFA.DC.Web.Operations.Areas.FRM.Models;
+    using ESFA.DC.PeriodEnd.Models.Dtos;
 
     public class FrmReportModel
     {
@@ -28,6 +26,6 @@
 
         public int FrmPeriodNumber { get; set; }
 
-        public IEnumerable<FrmPublishedDataModel> PublishedFrm { get; set; }
+        public IEnumerable<PeriodEndYearPeriodModel> PublishedFrm { get; set; }
     }
 }

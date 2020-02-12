@@ -130,18 +130,19 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             {
                 if (b.PeriodNumber < 6)
                 {
-                    var secondhalfyear = b.CalendarYear % 100;
-                    var firsthalfyear = secondhalfyear + 1;
-                    b.CalendarYear = (secondhalfyear * 100) + firsthalfyear;
+                    var firstHalfYear = b.CalendarYear % 100;
+                    var secondHalfYear = firstHalfYear + 1;
+                    b.CalendarYear = (firstHalfYear * 100) + secondHalfYear;
                 }
                 else
                 {
-                    var secondhalfyear = b.CalendarYear % 100;
-                    var firsthalfyear = secondhalfyear - 1;
-                    b.CalendarYear = (firsthalfyear * 100) + secondhalfyear;
+                    var secondHalfYear = b.CalendarYear % 100;
+                    var firstHalfYear = secondHalfYear - 1;
+                    b.CalendarYear = (firstHalfYear * 100) + secondHalfYear;
                 }
             }
 
+            model.PublishedFrm = model.PublishedFrm.TakeLast(5);
             return View("SelectUnpublish", model);
         }
 
@@ -170,6 +171,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         public IActionResult CancelFrm()
         {
          return View("CancelledFrm");
+        }
+
+        public IActionResult UnpublishFrm(string path)
+        {
+            _frmService.UnpublishSld(path);
+            return View("UnpublishSuccess");
         }
     }
 }

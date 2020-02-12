@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Text;
     using System.Threading;
@@ -9,8 +10,8 @@
     using ESFA.DC.FileService.Interface;
     using ESFA.DC.Jobs.Model;
     using ESFA.DC.Logging.Interfaces;
+    using ESFA.DC.PeriodEnd.Models.Dtos;
     using ESFA.DC.Serialization.Interfaces;
-    using ESFA.DC.Web.Operations.Areas.FRM.Models;
     using ESFA.DC.Web.Operations.Interfaces.Frm;
     using ESFA.DC.Web.Operations.Settings.Models;
     using ESFA.DC.Web.Operations.Utils;
@@ -102,18 +103,19 @@
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UnpublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/unpublish";
+            string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<IEnumerable<FrmPublishedDataModel>> GetFrmReportsData()
+        public async Task<IEnumerable<PeriodEndYearPeriodModel>> GetFrmReportsData()
         {
             string url = $"{_periodEndJobApiUrl}/getfrmreportsdata";
             var response = await _httpClient.GetStringAsync(url);
-            return _jsonSerializationService.Deserialize<IEnumerable<FrmPublishedDataModel>>(response);
+            var unsortedJson = _jsonSerializationService.Deserialize<IEnumerable<PeriodEndYearPeriodModel>>(response);
+            return unsortedJson.OrderBy(x => x.CalendarYear).ThenBy(y => y.PeriodNumber);
         }
     }
 }

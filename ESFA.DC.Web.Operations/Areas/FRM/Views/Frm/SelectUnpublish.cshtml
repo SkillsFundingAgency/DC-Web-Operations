@@ -5,16 +5,15 @@
 }
 <label class="govuk-label" for="name"></label>
 <div class="govuk-form-group">
-    <h1 class="govuk-heading-x1">Choose a period to unpublish</h1>
+    <h1 class="govuk-heading-x1">Choose a Period to Unpublish</h1>
 
 
-    @using (Html.BeginForm("Submit", "Frm"))
+    @using (Html.BeginForm("UnpublishFrm", "Frm"))
     {
-        <select id="PublishedPeriods" name="huh" class="govuk-select" style="width:auto">
-            <option value="0">Please Select</option>
+        <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto">
             @foreach (var period in Model.PublishedFrm)
             {
-                <option value="@period.PeriodNumber"> @period.CalendarYear - Period @period.PeriodNumber</option>
+                <option value="@period.CalendarYear/@period.PeriodNumber"> @period.CalendarYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
             }
         </select>
         <br />

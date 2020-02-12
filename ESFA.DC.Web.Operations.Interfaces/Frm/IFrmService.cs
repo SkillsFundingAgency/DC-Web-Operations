@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using ESFA.DC.Web.Operations.Areas.FRM.Models;
+    using ESFA.DC.PeriodEnd.Models.Dtos;
 
     public interface IFrmService
     {
@@ -15,6 +15,8 @@
 
         Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<FrmPublishedDataModel>> GetFrmReportsData();
+        Task<IEnumerable<PeriodEndYearPeriodModel>> GetFrmReportsData();
+
+        Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
