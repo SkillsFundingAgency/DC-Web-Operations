@@ -124,6 +124,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
 
             model.PublishedFrm = await _frmService.GetFrmReportsData();
+
+            if (!model.PublishedFrm.Any())
+            {
+                return View("ErrorView");
+            }
+
             model = ChangeYearIntoYearPeriod(model);
             model.PublishedFrm = model.PublishedFrm.TakeLast(5);
             return View("SelectUnpublish", model);
