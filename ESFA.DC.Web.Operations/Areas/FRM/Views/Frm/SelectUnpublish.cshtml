@@ -6,8 +6,6 @@
 <label class="govuk-label" for="name"></label>
 <div class="govuk-form-group">
     <h1 class="govuk-heading-x1">Choose a Period to Unpublish</h1>
-
-
     @using (Html.BeginForm("UnpublishFrm", "Frm"))
     {
         <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablecontinue()">
@@ -20,15 +18,12 @@
         <br />
         <br />
         <button id="continue" type="button" class="govuk-button" disabled onclick="showsubmit()">Continue</button>
-
         <p hidden id="confirmtext">Are you sure you want to unpublish the selected reports?</p>
         <button hidden id="submit" class="">Unpublish Reports</button>
     }
     <br />
     <br />
-
 </div>
-
 @section PageScripts
     {
     <script>
@@ -38,7 +33,6 @@
             document.getElementById("submit").hidden = false;
             document.getElementById("confirmtext").hidden = false;
         }
-
 //enablecontinue button to be selected
         function enablecontinue() {
             if (
@@ -51,4 +45,3 @@
         };
     </script>
 }
-
