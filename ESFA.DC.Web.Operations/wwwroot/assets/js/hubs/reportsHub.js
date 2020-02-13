@@ -1,6 +1,6 @@
-﻿import ProviderSearchController from '/assets/js/reports/reportsController.js';
+﻿import ReportsController from '/assets/js/reports/reportsController.js';
 
-class providerSearchHub {
+class ReportsHub {
 
     constructor() {
         this.connection = new signalR
@@ -15,7 +15,7 @@ class providerSearchHub {
     }
 
     startHub() {
-        const controller = new ProviderSearchController();
+        const controller = new ReportsController();
 
         this.connection.onreconnecting((error) => {
             console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
@@ -54,4 +54,4 @@ class providerSearchHub {
     }
 }
 
-export default providerSearchHub
+export default ReportsHub
