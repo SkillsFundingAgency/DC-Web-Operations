@@ -10,7 +10,8 @@
 
     @using (Html.BeginForm("UnpublishFrm", "Frm"))
     {
-        <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto">
+        <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablesubmit()">
+            <option value ="selectone"  selected>Select One</option>
             @foreach (var period in Model.PublishedFrm)
             {
                 <option value="@period.CalendarYear/@period.PeriodNumber"> @period.CalendarYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
@@ -18,10 +19,25 @@
         </select>
         <br />
         <br />
-        <button type="submit" class="govuk-button">Continue</button>
+        <button id="submit" class="govuk-button" disabled>Continue</button>
     }
     <br />
     <br />
 
 </div>
+
+@section PageScripts
+    {
+    <script>
+        function enablesubmit() {
+            if (
+                document.getElementById("PublishedPeriods").value == "selectone") {
+                document.getElementById("submit").disabled = true;
+            }
+            else {
+                document.getElementById("submit").disabled = false;
+            }
+        };
+    </script>
+}
 
