@@ -124,23 +124,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
 
             model.PublishedFrm = await _frmService.GetFrmReportsData();
-
-            foreach (var b in model.PublishedFrm)
-            {
-                if (b.PeriodNumber < 6)
-                {
-                    var firstHalfYear = b.CalendarYear % 100;
-                    var secondHalfYear = firstHalfYear + 1;
-                    b.CalendarYear = (firstHalfYear * 100) + secondHalfYear;
-                }
-                else
-                {
-                    var secondHalfYear = b.CalendarYear % 100;
-                    var firstHalfYear = secondHalfYear - 1;
-                    b.CalendarYear = (firstHalfYear * 100) + secondHalfYear;
-                }
-            }
-
+            model = ChangeYearIntoYearPeriod(model);
             model.PublishedFrm = model.PublishedFrm.TakeLast(5);
             return View("SelectUnpublish", model);
         }
@@ -176,6 +160,27 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             _frmService.UnpublishSld(path);
             return View("UnpublishSuccess");
+        }
+
+        private FrmReportModel ChangeYearIntoYearPeriod(FrmReportModel model)
+        {
+            foreach (var b in model.PublishedFrm)
+            {
+                if (b.PeriodNumber < 6)
+                {
+                    var firstHalfYear = b.CalendarYear % 100;
+                    var secondHalfYear = firstHalfYear + 1;
+                    b.CalendarYear = (firstHalfYear * 100) + secondHalfYear;
+                }
+                else
+                {
+                    var secondHalfYear = b.CalendarYear % 100;
+                    var firstHalfYear = secondHalfYear - 1;
+                    b.CalendarYear = (firstHalfYear * 100) + secondHalfYear;
+                }
+            }
+
+            return model;
         }
     }
 }
