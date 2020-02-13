@@ -36,7 +36,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         public async Task<IEnumerable<string>> GetValidationRules(int year)
         {
             var validationRules = await _validationRulesService.GetValidationRules(year);
-            return validationRules;
+            return validationRules.OrderBy(x => x);
         }
     }
 }

@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
 using Autofac.Features.Indexed;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Areas.RuleValidation.Models;
+using ESFA.DC.Web.Operations.Areas.Reports.Models;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
-using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
+namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
-    [Area(AreaNames.RuleValidation)]
-    [Route(AreaNames.RuleValidation)]
-    public class RulevalidationController : Controller
+    [Area(AreaNames.Reports)]
+    [Route(AreaNames.Reports)]
+    public class RuleValidationController : Controller
     {
         private readonly string validationRuleDetailsReportJson = "Reports/{0}/Validation Rule Details.json";
         private readonly string validationRuleDetailsReportCsv = "Reports/{0}/Validation Rule Details.csv";
@@ -38,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IFileService _operationsFileService;
 
-        public RulevalidationController(
+        public RuleValidationController(
             ILogger logger,
             ICollectionsService collectionsService,
             IValidationRulesService validationRulesService,
@@ -54,30 +51,6 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
             _storageService = storageService;
             _jsonSerializationService = jsonSerializationService;
             _operationsFileService = operationsFileService[PersistenceStorageKeys.OperationsAzureStorage];
-        }
-
-        [HttpGet("")]
-        [HttpGet("Index")]
-        public async Task<IActionResult> Index()
-        {
-            var model = new RuleSearchViewModel();
-            var collectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypeConstants.Ilr);
-            model.CollectionYears = collectionYears.OrderByDescending(x => x).ToList();
-            model.Rules = await _validationRulesService.GetValidationRules(model.CollectionYears.ElementAt(0));
-            ViewData["years"] = model.CollectionYears.Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() }).ToList();
-            return View(model);
-        }
-
-        [HttpPost("")]
-        [HttpPost("Index")]
-        public async Task<IActionResult> Index(int year)
-        {
-            var model = new RuleSearchViewModel();
-            var collectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypeConstants.Ilr);
-            model.CollectionYears = collectionYears.OrderByDescending(x => x).ToList();
-            model.Rules = await _validationRulesService.GetValidationRules(year);
-            ViewData["years"] = model.CollectionYears.Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() }).ToList();
-            return View(model);
         }
 
         [HttpGet("ValidationRulesReport")]
@@ -100,8 +73,8 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
             if (jobStatus == JobStatusType.Failed || jobStatus == JobStatusType.FailedRetry)
             {
                 _logger.LogError($"Loading in progress page for job id : {jobId}, job is in status ; {jobStatus} - user will be sent to service error page");
-                TempData["JobFailed"] = $"Job {jobId} has failed";
-                return RedirectToAction("Index");
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, $"Job {jobId} has failed");
+                return View();
             }
 
             if (jobStatus != JobStatusType.Completed)
@@ -115,7 +88,7 @@ namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers
         [HttpGet("Report")]
         public async Task<IActionResult> Report(long jobId)
         {
-            var model = new ReportViewModel();
+            var model = new ValidationRuleDetailReportViewModel();
             List<ValidationRuleDetail> validationRuleDetails = new List<ValidationRuleDetail>();
             var validationRuleDetailsReportJsonFile = string.Format(validationRuleDetailsReportJson, jobId);
             var job = await _jobService.GetJob(0, jobId);

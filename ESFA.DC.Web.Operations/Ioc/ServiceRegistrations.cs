@@ -13,7 +13,6 @@ using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Areas.Frm.Controllers;
-using ESFA.DC.Web.Operations.Areas.RuleValidation.Controllers;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;

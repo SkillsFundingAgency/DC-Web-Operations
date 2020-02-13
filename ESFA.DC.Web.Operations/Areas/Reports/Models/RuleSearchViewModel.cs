@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ESFA.DC.Web.Operations.Areas.RuleValidation.Models
+namespace ESFA.DC.Web.Operations.Areas.Reports.Models
 {
     public class RuleSearchViewModel
     {
