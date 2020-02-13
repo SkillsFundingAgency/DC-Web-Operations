@@ -1,4 +1,5 @@
 ﻿import { getColorForPercentage } from '/assets/js/util.js';
+import { convertToCsv } from '/assets/js/csv-operations.js';
 
 class JobQueuedController {
     constructor() {
@@ -39,10 +40,10 @@ class JobQueuedController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:320px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:420px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.statusDescription}</td>`);
+            sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
             sb.push(`</tr>`);
         }
         var result = sb.join('');
@@ -110,6 +111,18 @@ class JobQueuedController {
         }
     }
 
+    downloadCSV(data) {
+        let newData = data.jobs.map(function (obj) {
+            return {
+                "Provider name": obj.providerName,
+                Ukprn: obj.ukprn,
+                "Collection type": obj.collectionType,
+                "Job status": obj.statusDescription,
+                "Time in queue": obj.timeInQueue
+            }
+        });
+        convertToCsv({ filename: 'Jobs-queued.csv', data: newData });
+    }
 }
 
 export default JobQueuedController

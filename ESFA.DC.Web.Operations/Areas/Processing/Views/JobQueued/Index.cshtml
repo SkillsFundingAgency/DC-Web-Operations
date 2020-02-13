@@ -63,10 +63,10 @@
         <table class="govuk-table" id="tblData">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="col" style="width:320px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width:420px">Provider name</th>
                     <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
                     <th class="govuk-table__header" scope="col" style="width:170px">Time in queue</th>
-                    <th class="govuk-table__header" scope="col" style="width:170px">Job status</th>
+                    <th class="govuk-table__header" scope="col">Job status</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body" id="dataContent">
@@ -74,6 +74,8 @@
         </table>
     </div>
 </div>
+
+<a href="#" class="govuk-button" onclick="downloadCSV()">Download CSV</a>
 
 <br />
 
@@ -105,5 +107,9 @@
 
     window.change = function () {
         jobQueuedController.updatePage(jobQueuedController._data);
+    };
+
+    window.downloadCSV = function () {
+        jobQueuedController.downloadCSV(jobQueuedController._data);
     };
 </script>
