@@ -10,8 +10,8 @@
 
     @using (Html.BeginForm("UnpublishFrm", "Frm"))
     {
-        <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablesubmit()">
-            <option value ="selectone"  selected>Select One</option>
+        <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablecontinue()">
+            <option value="selectone" selected>Select One</option>
             @foreach (var period in Model.PublishedFrm)
             {
                 <option value="@period.CalendarYear/@period.PeriodNumber"> @period.CalendarYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
@@ -19,7 +19,10 @@
         </select>
         <br />
         <br />
-        <button id="submit" class="govuk-button" disabled>Continue</button>
+        <button id="continue" type="button" class="govuk-button" disabled onclick="showsubmit()">Continue</button>
+
+        <p hidden id="confirmtext">Are you sure you want to unpublish the selected reports?</p>
+        <button hidden id="submit" class="">Unpublish Reports</button>
     }
     <br />
     <br />
@@ -29,13 +32,21 @@
 @section PageScripts
     {
     <script>
-        function enablesubmit() {
+        //unhide submit unpublish reports
+        function showsubmit() {
+            document.getElementById("submit").classList.add('govuk-button');
+            document.getElementById("submit").hidden = false;
+            document.getElementById("confirmtext").hidden = false;
+        }
+
+//enablecontinue button to be selected
+        function enablecontinue() {
             if (
                 document.getElementById("PublishedPeriods").value == "selectone") {
-                document.getElementById("submit").disabled = true;
+                document.getElementById("continue").disabled = true;
             }
             else {
-                document.getElementById("submit").disabled = false;
+                document.getElementById("continue").disabled = false;
             }
         };
     </script>
