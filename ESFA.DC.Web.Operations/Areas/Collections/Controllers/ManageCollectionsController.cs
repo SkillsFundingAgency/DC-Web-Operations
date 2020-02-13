@@ -198,7 +198,6 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
             {
                 CollectionName = collection.CollectionTitle,
                 CollectionId = collection.CollectionId,
-                Referer = Request.Headers["Referer"].ToString(),
                 Jobs = jobs.ToList()
             };
 

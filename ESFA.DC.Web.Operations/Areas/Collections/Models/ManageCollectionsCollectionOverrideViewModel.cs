@@ -14,8 +14,6 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Models
 
         public int ProcessingOverride { get; set; }
 
-        public string Referer { get; set; }
-
         public IList<FileUploadJob> Jobs { get; set; }
     }
 }
