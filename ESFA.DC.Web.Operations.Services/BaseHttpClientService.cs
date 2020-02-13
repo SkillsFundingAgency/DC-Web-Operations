@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -58,9 +59,10 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<string> GetDataAsync(string url, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(new Uri(url), cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri(url), cancellationToken);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+
+            return response.StatusCode == HttpStatusCode.NoContent ? null : await response.Content.ReadAsStringAsync();
         }
     }
 }

@@ -103,32 +103,21 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
         [HttpGet]
         public async Task<IActionResult> CollectionOverride(string collectionName)
         {
-            // Get the current override status
-            var collection = await _collectionsService.GetCollectionFromName(collectionName);
+            var model = await PopulateCollectionOverrideViewModel(collectionName);
 
-            var model = new ManageCollectionsCollectionOverrideViewModel()
+            return View("CollectionOverride", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FailJob(int jobId, string collectionName)
+        {
+            var result = await _collectionsService.FailJob(jobId);
+
+            var model = await PopulateCollectionOverrideViewModel(collectionName);
+
+            if (!result)
             {
-                CollectionName = collection.CollectionTitle,
-                CollectionId = collection.CollectionId,
-                Referer = Request.Headers["Referer"].ToString()
-            };
-
-            switch (collection.ProcessingOverride)
-            {
-                case true:
-                    // force file processing
-                    model.ProcessingOverride = 2;
-                    break;
-
-                case false:
-                    // stop processing
-                    model.ProcessingOverride = 3;
-                    break;
-
-                default:
-                    // automatic processing
-                    model.ProcessingOverride = 1;
-                    break;
+                ModelState.AddModelError("Summary", "Error 'Fail'ing Job");
             }
 
             return View("CollectionOverride", model);
@@ -197,6 +186,41 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
                 default:
                     return "Automatic";
             }
+        }
+
+        private async Task<ManageCollectionsCollectionOverrideViewModel> PopulateCollectionOverrideViewModel(string collectionName)
+        {
+            var collection = await _collectionsService.GetCollectionFromName(collectionName);
+
+            var jobs = await _collectionsService.GetCollectionJobs(collectionName);
+
+            var model = new ManageCollectionsCollectionOverrideViewModel()
+            {
+                CollectionName = collection.CollectionTitle,
+                CollectionId = collection.CollectionId,
+                Referer = Request.Headers["Referer"].ToString(),
+                Jobs = jobs.ToList()
+            };
+
+            switch (collection.ProcessingOverride)
+            {
+                case true:
+                    // force file processing
+                    model.ProcessingOverride = 2;
+                    break;
+
+                case false:
+                    // stop processing
+                    model.ProcessingOverride = 3;
+                    break;
+
+                default:
+                    // automatic processing
+                    model.ProcessingOverride = 1;
+                    break;
+            }
+
+            return model;
         }
     }
 }
