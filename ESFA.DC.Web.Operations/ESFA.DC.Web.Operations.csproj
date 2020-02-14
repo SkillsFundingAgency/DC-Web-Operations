@@ -259,6 +259,7 @@
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.27-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.2.28-beta0001" />
+    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.53-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Operations.Reports.Model" Version="0.0.22" />
@@ -309,6 +310,7 @@
   <ItemGroup>
     <Folder Include="Areas\DevOps\Data\" />
     <Folder Include="Areas\DevOps\Models\" />
+    <Folder Include="Areas\Processing\Models\" />
     <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\minified\" />

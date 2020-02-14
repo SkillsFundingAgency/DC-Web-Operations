@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Web.Operations.Models.Collection;
 
 namespace ESFA.DC.Web.Operations.Interfaces.Collections
@@ -26,5 +27,9 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
         Task<bool> UpdateReturnPeriod(ReturnPeriod returnPeriod, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> SetCollectionProcessingOverride(int collectionId, bool? collectionProcessingOverrideStatus, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<bool> FailJob(int jobId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

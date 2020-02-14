@@ -3,37 +3,73 @@
 
 @{
     ViewData["Title"] = "Collection Override";
-    ViewData[ViewDataConstants.BackLink] = @Model.Referer;
+    ViewData[ViewDataConstants.BackLink] = "/";
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-x1">Collection override</h1>
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="name"></label>
-            <form asp-action="SaveCollectionOverride" method="post">
-                <div class="govuk-radios">
-                    <div class="govuk-radios__item">
-                        <input asp-for="ProcessingOverride" value="1" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">Automatic (use calendar dates)</label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input asp-for="ProcessingOverride" value="2" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">Force file processing</label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input asp-for="ProcessingOverride" value="3" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">Stop processing</label>
-                    </div>
-                </div>
-                <input type="hidden" name="CollectionName" id="CollectionName" value=@Model.CollectionName />
-                <input type="hidden" name="CollectionId" id="CollectionId" value=@Model.CollectionId />
-                <br />
-                <br />
-                <button type="submit" class="govuk-button">Save</button>
-                <br margin-bottom="500px" />
-            </form>
-        </div>
-    </div>
-</div>
+<h1 class="govuk-heading-x1">Collection override</h1>
 
+@if (@Model.Jobs.Count > 0)
+{
+    <table class="govuk-table">
+        <caption class="govuk-table__caption">Outstanding Jobs in a Ready status.</caption>
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Job id</th>
+                <th scope="col" class="govuk-table__header">Ukprn</th>
+                <th scope="col" class="govuk-table__header">Provider Name</th>
+                <th scope="col" class="govuk-table__header">Created Date</th>
+                <th scope="col" class="govuk-table__header">Period Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < @Model.Jobs.Count(); i++)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        @Model.Jobs[i].JobId
+                    </td>
+                    <td class="govuk-table__cell">
+                        @Model.Jobs[i].Ukprn
+                    </td>
+                    <td class="govuk-table__cell">
+                        <a asp-controller="ManageProviders" asp-area="Provider" asp-action="Index" asp-route-ukprn=@Model.Jobs[i].Ukprn>@Model.Jobs[i].ProviderName</a>
+                    </td>
+                    <td class="govuk-table__cell">
+                        @Model.Jobs[i].DateTimeCreatedUtc.ToShortDateString()
+                    </td>
+                    <td class="govuk-table__cell">
+                        @Model.Jobs[i].PeriodNumber
+                    </td>
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link" onclick="return confirm('Are you sure you wish to fail job @Model.Jobs[i].JobId ?');" asp-action="FailJob" asp-controller="ManageCollections" asp-area="Collections" asp-route-jobId="@Model.Jobs[i].JobId" asp-route-collectionName="@Model.CollectionName">Fail</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<div class="govuk-form-group">
+    <label class="govuk-label" for="name"></label>
+    <form asp-action="SaveCollectionOverride" method="post">
+        <div class="govuk-radios">
+            <div class="govuk-radios__item">
+                <input asp-for="ProcessingOverride" value="1" class="govuk-radios__input" type="radio" />
+                <label class="govuk-label govuk-radios__label">Automatic (use calendar dates)</label>
+            </div>
+            <div class="govuk-radios__item">
+                <input asp-for="ProcessingOverride" value="2" class="govuk-radios__input" type="radio" />
+                <label class="govuk-label govuk-radios__label">Force file processing</label>
+            </div>
+            <div class="govuk-radios__item">
+                <input asp-for="ProcessingOverride" value="3" class="govuk-radios__input" type="radio" />
+                <label class="govuk-label govuk-radios__label">Stop processing</label>
+            </div>
+        </div>
+        <input type="hidden" name="CollectionName" id="CollectionName" value=@Model.CollectionName />
+        <input type="hidden" name="CollectionId" id="CollectionId" value=@Model.CollectionId />
+        <br />
+        <br />
+        <button type="submit" class="govuk-button">Save</button>
+        <br margin-bottom="500px" />
+    </form>
+</div>

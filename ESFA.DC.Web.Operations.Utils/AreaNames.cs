@@ -9,6 +9,6 @@
         public const string Collections = "collections";
         public const string Reports = "reports";
         public const string Frm = "frm";
-        public const string RuleValidation = "rulevalidation";
+        public const string Processing = "processing";
     }
 }
