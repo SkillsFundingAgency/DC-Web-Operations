@@ -15,6 +15,7 @@
     using ESFA.DC.Web.Operations.Interfaces.Frm;
     using ESFA.DC.Web.Operations.Settings.Models;
     using ESFA.DC.Web.Operations.Utils;
+    using MoreLinq;
 
     public class FrmService : BaseHttpClientService, IFrmService
     {
@@ -130,5 +131,14 @@
             var unsortedJson = _jsonSerializationService.Deserialize<IEnumerable<PeriodEndCalendarYearAndPeriodModel>>(response);
             return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
+
+        public async Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
+        {
+            string url = $"{_periodEndJobApiUrl}/collections/years/{collectiontype}";
+            var reponse = await _httpClient.GetStringAsync(url);
+            var years = _jsonSerializationService.Deserialize<IEnumerable<int>>(reponse);
+            years.OrderBy(year => years);
+            return years.TakeLast(2);
+         }
     }
 }

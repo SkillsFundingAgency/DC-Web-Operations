@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -123,7 +124,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 return RedirectToAction("SelectValidate");
             }
 
-            model.PublishedFrm = await _frmService.GetFrmReportsData();
+            var collectionType = "frm";
+            var reportsData = await _frmService.GetFrmReportsData();
+            var lastTwoYears = GetLastTwoCollectionYears(collectionType);
+            model.PublishedFrm = reportsData.TakeWhile(reportsData.
+
+                )
 
             if (!model.PublishedFrm.Any())
             {
@@ -132,6 +138,17 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
             model.PublishedFrm = model.PublishedFrm.TakeLast(5);
             return View("SelectUnpublish", model);
+        }
+
+        public IActionResult CancelFrm()
+        {
+            return View("CancelledFrm");
+        }
+
+        public IActionResult UnpublishFrm(string path)
+        {
+            _frmService.UnpublishSld(path);
+            return View("UnpublishSuccess");
         }
 
         public async Task<FileResult> GetReportFile(string fileName)
@@ -156,15 +173,10 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
         }
 
-        public IActionResult CancelFrm()
+        public async Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
         {
-         return View("CancelledFrm");
-        }
-
-        public IActionResult UnpublishFrm(string path)
-        {
-            _frmService.UnpublishSld(path);
-            return View("UnpublishSuccess");
+            var model = new FrmReportModel();
+           return await _frmService.GetLastTwoCollectionYears(collectionType);
         }
     }
 }
