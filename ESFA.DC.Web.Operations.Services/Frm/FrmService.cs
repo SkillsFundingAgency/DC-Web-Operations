@@ -132,13 +132,13 @@
             return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
 
-        public async Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
+        public async Task<List<int>> GetLastTwoCollectionYears(string collectionType)
         {
-            string url = $"{_periodEndJobApiUrl}/collections/years/{collectiontype}";
+            string url = $"{_periodEndJobApiUrl}/collections/years/{collectionType}";
             var reponse = await _httpClient.GetStringAsync(url);
             var years = _jsonSerializationService.Deserialize<IEnumerable<int>>(reponse);
             years.OrderBy(year => years);
-            return years.TakeLast(2);
+            return years.TakeLast(2).ToList<int>();
          }
     }
 }

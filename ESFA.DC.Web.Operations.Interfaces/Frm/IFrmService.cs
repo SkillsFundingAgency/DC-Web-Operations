@@ -22,6 +22,6 @@
 
         Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType);
+        Task<List<int>> GetLastTwoCollectionYears(string collectionType);
     }
 }

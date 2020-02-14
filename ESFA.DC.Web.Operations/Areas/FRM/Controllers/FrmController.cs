@@ -126,10 +126,10 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
             var collectionType = "frm";
             var reportsData = await _frmService.GetFrmReportsData();
-            var lastTwoYears = GetLastTwoCollectionYears(collectionType);
-            model.PublishedFrm = reportsData.TakeWhile(reportsData.
+            var lastTwoYears = GetLastTwoCollectionYears(collectionType).ToAsyncEnumerable();
+            model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastTwoYears.ElementAt(1));
 
-                )
+            )
 
             if (!model.PublishedFrm.Any())
             {
@@ -173,10 +173,9 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
         }
 
-        public async Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
+        public Task<List<int>> GetLastTwoCollectionYears(string collectionType)
         {
-            var model = new FrmReportModel();
-           return await _frmService.GetLastTwoCollectionYears(collectionType);
+           return _frmService.GetLastTwoCollectionYears(collectionType);
         }
     }
 }
