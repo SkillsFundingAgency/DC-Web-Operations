@@ -2,6 +2,8 @@
 @model ESFA.DC.Web.Operations.Areas.Reports.Models.ValidationRuleDetailReportViewModel
 @{
     ViewData["Title"] = " Validation Rule Details Report";
+    var totalErrors = 0;
+    var totalWarnings = 0;
 }
 
 <br />
@@ -19,31 +21,53 @@
 <div class="govuk-grid-row">
     <table class="govuk-table">
         <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">Provider name</th>
-            <th class="govuk-table__header" scope="col">UKPRN</th>
-            <th class="govuk-table__header" scope="col">Errors</th>
-            <th class="govuk-table__header" scope="col">Warnings</th>
-            <th class="govuk-table__header" scope="col">Submission date</th>
-        </tr>
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col">Provider name</th>
+                <th class="govuk-table__header" scope="col">UKPRN</th>
+                <th class="govuk-table__header" scope="col">Errors</th>
+                <th class="govuk-table__header" scope="col">Warnings</th>
+                <th class="govuk-table__header" scope="col">Submission date</th>
+            </tr>
         </thead>
         <tbody class="govuk-table__body">
-        @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.Validationruledetails)
-        {
-            <tr class="govuk-table__row"><td ><h3>@item.Key</h3></td></tr>
-            foreach (var ruleDetail in item.Value)
+            @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.Validationruledetails)
             {
+                var subTotalErrors = 0;
+                var subTotalWarnings = 0;
+
+                <tr class="govuk-table__row"><td><h3>@item.Key</h3></td></tr>
+                foreach (var ruleDetail in item.Value)
+                {
+                    subTotalErrors = subTotalErrors + @ruleDetail.Errors;
+                    subTotalWarnings = subTotalWarnings + @ruleDetail.Warnings;
+
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@ruleDetail.ProviderName</td>
+                        <td class="govuk-table__cell">@ruleDetail.UkPrn</td>
+                        <td class="govuk-table__cell">@ruleDetail.Errors</td>
+                        <td class="govuk-table__cell">@ruleDetail.Warnings</td>
+                        <td class="govuk-table__cell">@ruleDetail.SubmissionDate.ToString("d/MM/yyyy")</td>
+                    </tr>
+                }
+                {
+                    totalErrors = totalErrors + subTotalErrors;
+                    totalWarnings = totalWarnings + subTotalWarnings;
+                }
                 <tr class="govuk-table__row">
-                    @*<th class="govuk-table__header" scope="row">@ruleDetail.ProviderName</th>*@
-                    <td class="govuk-table__cell">@ruleDetail.ProviderName</td>
-                    <td class="govuk-table__cell">@ruleDetail.UkPrn</td>
-                    <td class="govuk-table__cell">@ruleDetail.Errors</td>
-                    <td class="govuk-table__cell">@ruleDetail.Warnings</td>
-                    <td class="govuk-table__cell">@ruleDetail.SubmissionDate.ToString("d/MM/yyyy")</td>
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell"><b>Sub total</b></td>
+                    <td class="govuk-table__cell">@subTotalErrors</td>
+                    <td class="govuk-table__cell">@subTotalWarnings</td>
+                    <td class="govuk-table__cell"></td>
                 </tr>
             }
-        }
-           
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"><b>Total</b></td>
+                <td class="govuk-table__cell">@totalErrors</td>
+                <td class="govuk-table__cell">@totalWarnings</td>
+                <td class="govuk-table__cell"></td>
+            </tr>
         </tbody>
     </table>
     <form asp-controller="Rulevalidation" asp-action="DownloadReport" method="post">
