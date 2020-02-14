@@ -7,6 +7,7 @@ using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Operations.Reports.Model;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
 using ESFA.DC.Web.Operations.Constants;
