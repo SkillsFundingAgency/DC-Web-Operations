@@ -26,6 +26,6 @@
 
         public int FrmPeriodNumber { get; set; }
 
-        public IEnumerable<PeriodEndYearPeriodModel> PublishedFrm { get; set; }
+        public IEnumerable<PeriodEndCalendarYearAndPeriodModel> PublishedFrm { get; set; }
     }
 }

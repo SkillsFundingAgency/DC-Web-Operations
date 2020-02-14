@@ -123,12 +123,12 @@
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<IEnumerable<PeriodEndYearPeriodModel>> GetFrmReportsData()
+        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsData()
         {
             string url = $"{_periodEndJobApiUrl}/getfrmreportsdata";
             var response = await _httpClient.GetStringAsync(url);
-            var unsortedJson = _jsonSerializationService.Deserialize<IEnumerable<PeriodEndYearPeriodModel>>(response);
-            return unsortedJson.OrderBy(x => x.CalendarYear).ThenBy(y => y.PeriodNumber);
+            var unsortedJson = _jsonSerializationService.Deserialize<IEnumerable<PeriodEndCalendarYearAndPeriodModel>>(response);
+            return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
     }
 }

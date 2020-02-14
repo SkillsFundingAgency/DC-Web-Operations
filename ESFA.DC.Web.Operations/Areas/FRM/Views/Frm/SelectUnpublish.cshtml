@@ -13,7 +13,7 @@
         <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto">
             @foreach (var period in Model.PublishedFrm)
             {
-                <option value="@period.CalendarYear/@period.PeriodNumber"> @period.CalendarYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
+                <option value="@period.CollectionYear/@period.PeriodNumber"> @period.CollectionYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
             }
         </select>
         <br />
