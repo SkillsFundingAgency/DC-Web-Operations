@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.2.51-beta0001" />
+    <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.2.57-beta0001" />
     <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.21-beta0001" />
     <PackageReference Include="ESFA.DC.IO.Interfaces" Version="0.1.20-beta0001" />
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.55-beta0001" />

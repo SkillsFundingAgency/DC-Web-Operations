@@ -53,8 +53,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             else
             {
                 // get the current period
-                var currentYearPeriod = await _periodService.ReturnPeriod();
-
+                var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
                 if (currentYearPeriod == null)
                 {
                     string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
@@ -62,16 +61,8 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                     throw new Exception(errorMessage);
                 }
 
-                if (!currentYearPeriod.Year.HasValue)
-                {
-                    string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
-
-                    _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
-                }
-
-                reportsViewModel.CollectionYear = currentYearPeriod.Year.Value;
-                reportsViewModel.CollectionPeriod = currentYearPeriod.Period;
+                reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
+                reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
             }
 
             // get all the internal reports for the current period

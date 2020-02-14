@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
@@ -32,6 +33,20 @@ namespace ESFA.DC.Web.Operations.Services
         {
             PathYearPeriod period = _jsonSerializationService.Deserialize<PathYearPeriod>(
                 await GetDataAsync($"{_baseUrl}/api/returns-calendar/periodEnd", cancellationToken));
+
+            if (period == null)
+            {
+                _logger.LogError(NoPeriodError);
+                throw new Exception(NoPeriodError);
+            }
+
+            return period;
+        }
+
+        public async Task<ReturnPeriod> GetRecentlyClosedPeriodAsync(CancellationToken cancellationToken = default)
+        {
+            ReturnPeriod period = _jsonSerializationService.Deserialize<ReturnPeriod>(
+                await GetDataAsync($"{_baseUrl}/api/returns-calendar/closed", cancellationToken));
 
             if (period == null)
             {
