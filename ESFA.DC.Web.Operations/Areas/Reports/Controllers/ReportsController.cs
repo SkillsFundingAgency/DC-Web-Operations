@@ -82,16 +82,16 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             // if collection period params not specified default to current period
             if (year == null || period == null)
             {
-                var currentYearPeriod = await _periodService.ReturnPeriod();
-                if (currentYearPeriod?.Year == null)
+                var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
+                if (currentYearPeriod?.CollectionYear == null)
                 {
                     string errorMessage = $"Call to get current return period failed in request {reportType} collectionYear: {year} collectionPeriod: {period}";
                     _logger.LogError(errorMessage);
                     throw new Exception(errorMessage);
                 }
 
-                year = currentYearPeriod.Year.Value;
-                period = currentYearPeriod?.Period;
+                year = currentYearPeriod.CollectionYear;
+                period = currentYearPeriod?.PeriodNumber;
             }
 
             // queue the report job
