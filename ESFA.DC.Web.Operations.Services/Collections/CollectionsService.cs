@@ -4,6 +4,9 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.Collection;
@@ -14,19 +17,24 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 {
     public class CollectionsService : BaseHttpClientService, ICollectionsService
     {
+        private const int ReadyStatusCode = 1;
+
         private readonly string _baseUrl;
         private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM" };
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly ILogger _logger;
 
         public CollectionsService(
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ILogger logger)
             : base(jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken = default(CancellationToken))
@@ -69,6 +77,12 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
         }
 
+        public async Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken)
+        {
+            var data = await GetDataAsync($"{_baseUrl}/api/job/previous-periods/{collectionName}/{ReadyStatusCode}", cancellationToken);
+            return data != null ? _jsonSerializationService.Deserialize<IEnumerable<FileUploadJob>>(data) : new List<FileUploadJob>();
+        }
+
         public async Task<CollectionsManagement.Models.Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
@@ -80,6 +94,24 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 CollectionId = data.CollectionId,
                 ProcessingOverride = data.ProcessingOverride
             };
+        }
+
+        public async Task<bool> FailJob(int jobId, CancellationToken cancellationToken)
+        {
+            var fileUploadJobDto = new FileUploadJob()
+            {
+                JobId = jobId,
+                Status = JobStatusType.FailedRetry
+            };
+
+            var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/job", fileUploadJobDto, cancellationToken);
+
+            if (!response.IsSuccess)
+            {
+                _logger.LogError($"Web Operations. Error occured failing job: {jobId}");
+            }
+
+            return response.IsSuccess;
         }
 
         public async Task<bool> SetCollectionProcessingOverride(int collectionId, bool? collectionProcessingOverrideStatus, CancellationToken cancellationToken = default(CancellationToken))

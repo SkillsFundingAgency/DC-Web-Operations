@@ -96,6 +96,7 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<PeriodEndPrepTimedHostedService>();
             services.AddHostedService<PeriodEndTimedHostedService>();
             services.AddHostedService<DashboardTimedHostedService>();
+            services.AddHostedService<JobProcessingTimedHostedService>();
             services.AddHostedService<JobQueuedTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
@@ -179,6 +180,10 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+                routes.MapHub<JobProcessingHub>("/jobProcessingHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
                 routes.MapHub<JobQueuedHub>("/jobQueuedHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
@@ -227,6 +232,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<DashBoardHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<JobProcessingHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobQueuedHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);

@@ -1,7 +1,7 @@
 ﻿import { getColorForPercentage } from '/assets/js/util.js';
 import { convertToCsv } from '/assets/js/csv-operations.js';
 
-class JobQueuedController {
+class JobProcessingController {
     constructor() {
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
@@ -40,9 +40,10 @@ class JobQueuedController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:420px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.averageProcessingTime}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
             sb.push(`</tr>`);
         }
@@ -79,14 +80,9 @@ class JobQueuedController {
     sortBy(filteredData) {
         if (this._sort) {
             switch (this._sort.value) {
-                case 'LongestTimeInTheQueue':
+                case 'TimeTaken':
                     filteredData.sort(function (a, b) {
-                        return a.timeInQueueSecond + b.timeInQueueSecond;
-                    });
-                    break;
-                case 'ShortestTimeInTheQueue':
-                    filteredData.sort(function (a, b) {
-                        return a.timeInQueueSecond - b.timeInQueueSecond;
+                        return a.timeTakenSecond + b.timeTakenSecond;
                     });
                     break;
                 case 'Alphabetical':
@@ -116,13 +112,13 @@ class JobQueuedController {
             return {
                 "Provider name": obj.providerName,
                 Ukprn: obj.ukprn,
-                "Collection type": obj.collectionType,
-                "Job status": obj.statusDescription,
-                "Time in queue": obj.timeInQueue
+                "Time taken": obj.timeTaken,
+                "Average processing time": obj.averageProcessingTime,
+                "Job status": obj.statusDescription
             }
         });
-        convertToCsv({ filename: 'Jobs-queued.csv', data: newData });
+        convertToCsv({ filename: 'Jobs-processing.csv', data: newData });
     }
 }
 
-export default JobQueuedController
+export default JobProcessingController
