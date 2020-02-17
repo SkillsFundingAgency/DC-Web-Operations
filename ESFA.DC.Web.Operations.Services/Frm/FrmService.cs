@@ -7,6 +7,7 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Autofac.Features.AttributeFilters;
     using ESFA.DC.FileService.Interface;
     using ESFA.DC.Jobs.Model;
     using ESFA.DC.Logging.Interfaces;
@@ -26,7 +27,6 @@
         private readonly string _baseJobApiUrl;
 
         public FrmService(
-            IFileService fileService,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
