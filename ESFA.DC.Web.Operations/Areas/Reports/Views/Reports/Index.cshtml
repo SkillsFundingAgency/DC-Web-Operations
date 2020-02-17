@@ -8,141 +8,164 @@
     ViewData[ViewDataConstants.BackLink] = "/Home";
 }
 
-<form>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
-            <br />
-            <h2 class="govuk-heading-l">Period: @Model.CollectionYear R@(Model?.CollectionPeriod.ToString().PadLeft(2, '0'))</h2>
-            <input type="hidden" name="year" id="year" value=@Model.CollectionYear />
-            <input type="hidden" name="period" id="period" value=@Model.CollectionPeriod />
-        </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
+        <br />
+        <h2 class="govuk-heading-l">Period: @Model.CollectionYear R@(Model?.CollectionPeriod.ToString().PadLeft(2, '0'))</h2>
+        <input type="hidden" name="year" id="year" value=@Model.CollectionYear />
+        <input type="hidden" name="period" id="period" value=@Model.CollectionPeriod />
     </div>
+</div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <table class="govuk-table">
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            Change period to:
-                            <select asp-for="CollectionYear">
-                                <option value="1920">1920</option>
-                            </select>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Change period to:
+                        <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control">
+                            <option value="1920">1920</option>
+                            <option value="1819">1819</option>
+                        </select>
 
-                            <select asp-for="CollectionPeriod">
-                                <option value="1">R01</option>
-                                <option value="2">R02</option>
-                                <option value="3">R03</option>
-                                <option value="4">R04</option>
-                                <option value="5">R05</option>
-                                <option value="6">R06</option>
-                                <option value="7">R07</option>
-                                <option value="8">R08</option>
-                                <option value="9">R09</option>
-                                <option value="10">R10</option>
-                                <option value="11">R11</option>
-                                <option value="12">R12</option>
-                                <option value="13">R13</option>
-                                <option value="14">R14</option>
-                            </select>
+                        <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control">
+                            <option value="1">R01</option>
+                            <option value="2">R02</option>
+                            <option value="3">R03</option>
+                            <option value="4">R04</option>
+                            <option value="5">R05</option>
+                            <option value="6">R06</option>
+                            <option value="7">R07</option>
+                            <option value="8">R08</option>
+                            <option value="9">R09</option>
+                            <option value="10">R10</option>
+                            <option value="11">R11</option>
+                            <option value="12">R12</option>
+                            <option value="13">R13</option>
+                            <option value="14">R14</option>
+                        </select>
 
-                            <button id="changePeriod" onclick="changePeriodButton()">Change period</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <button class="govuk-button" data-module="govuk-button" id="changePeriod">Change period</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <br />
+</div>
+<br />
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">Internal Reports</h2>
-            <table class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col">Report name</th>
-                        <th class="govuk-table__header" scope="col">Download</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @if (Model?.Reports != null && Model.Reports.Any())
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Internal Reports</h2>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Report name</th>
+                    <th class="govuk-table__header" scope="col">Download</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @if (Model?.Reports != null && Model.Reports.Any())
+                {
+                    foreach (var reportDetail in Model.Reports.Where(rd => !string.IsNullOrEmpty(rd.Url)))
                     {
-                        foreach (var reportDetail in Model.Reports.Where(rd => !string.IsNullOrEmpty(rd.Url)))
+                        if (!string.IsNullOrEmpty(reportDetail?.DisplayName)
+                            && !string.IsNullOrEmpty(reportDetail?.Url))
                         {
-                            if (!string.IsNullOrEmpty(reportDetail?.DisplayName)
-                                && !string.IsNullOrEmpty(reportDetail?.Url))
-                            {
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">@reportDetail.DisplayName</td>
-                                    <td class="govuk-table__cell">
-                                        @Html.ActionLink(reportDetail.Url, "GetReportFile", new { collectionYear = Model.CollectionYear, collectionPeriod = Model.CollectionPeriod, fileName = @Html.Encode(reportDetail.Url) })
-                                    </td>
-                                </tr>
-                            }
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                                <td class="govuk-table__cell">
+                                    @Html.ActionLink(reportDetail.Url, "GetReportFile", new { collectionYear = Model.CollectionYear, collectionPeriod = Model.CollectionPeriod, fileName = @Html.Encode(reportDetail.Url) })
+                                </td>
+                            </tr>
                         }
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
+</div>
 
-    @if (!string.IsNullOrEmpty(@ViewBag.Error))
-    {
-        <div>
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <h4 class="govuk-error-message">The following error occured during processing: <br /><br />@ViewBag.Error</h4>
-                </div>
+@if (!string.IsNullOrEmpty(@ViewBag.Error))
+{
+    <div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h4 class="govuk-error-message">The following error occured during processing: <br /><br />@ViewBag.Error</h4>
             </div>
         </div>
-    }
+    </div>
+}
 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Create new report for:
+                        <select id="reportSelection" asp-for="ReportType" class="govuk-select govuk-input--width-20 form-control">
+                            <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
+                            <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
+                            <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
+                            <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
+                            <option value="InternalDataMatchReport">Internal Data Match Report</option>
+                            <option value="ACTCountReport">ACT Count Report</option>
+                            <option value="RuleValidationDetailReport">Rule Validation Detail Report</option>
+                        </select>
+
+                        <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="ruleValidationDetailReportSection">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <table class="govuk-table">
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            Create new report for:
-                            <select asp-for="ReportType">
-                                <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
-                                <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
-                                <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
-                                <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
-                                <option value="InternalDataMatchReport">Internal Data Match Report</option>
-                                <option value="ACTCountReport">ACT Count Report</option>
-                            </select>
-
-                            <button id="createReport" onclick="createReportButton();">Create report</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="govuk-grid-column-two-thirds">
+            <span id="spinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+            <h1 class="govuk-heading-xl">Search for a validation rule</h1>
+        </div>
+        <div class="govuk-grid-row govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds">
+                <div id="tt-overlay">
+                    <div id="tt-overlay" class="autocomplete-wrapper"></div>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <button data-prevent-double-click="true" class="govuk-button" type="submit" data-module="govuk-button" id="generateValidationReport">Generate Report</button>
+            </div>
         </div>
     </div>
-</form>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="state"></label>
+    </div>
+</div>
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
+    <script type="module">
+        import Client from '/assets/js/reports/client.js';
+        import ReportsController from '/assets/js/reports/reportsController.js';
+        import Hub from '/assets/js/hubs/reportsHub.js';
+        const hub = new Hub();
+        hub.startHub();
+        window.reportClient = new Client(hub.getConnection());
+        var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
+        var reportsUrl = '@Url.Action("Index", "Reports")';
+        var reportGenerationUrl = '@Url.Action("RunReport", "Reports")';
+        const reportsController = new ReportsController();
 
-<script language="javascript">
-
-    function changePeriodButton() {
-        var yearValue = document.getElementById("year").value;
-        var periodValue = document.getElementById("period").value;
-
-        window.location.href = "/reports/Index/" + reportValue + "/" + yearValue + "/" + periodValue;
-        event.preventDefault();
-        return false;
-    }
-
-    function createReportButton() {
-        var reportValue = document.getElementById("ReportType").value;
-        var yearValue = document.getElementById("year").value;
-        var periodValue = document.getElementById("period").value;
-
-        window.location.href = "/reports/RunReport/" + reportValue + "/" + yearValue + "/" + periodValue;
-        event.preventDefault();
-        return false;
-    }
-</script>
-
+        (function() {
+            reportsController.init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl);
+        })();
+    </script>
+}
