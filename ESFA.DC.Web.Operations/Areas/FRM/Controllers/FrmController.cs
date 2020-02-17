@@ -126,12 +126,14 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
             var collectionType = "frm";
             var reportsData = await _frmService.GetFrmReportsData();
-            var lastTwoYears = await GetLastTwoCollectionYears(collectionType);
-            model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastTwoYears.Last()); // get all the open periods from the latest year period
+            var lastTwoYears = await _frmService.GetLastTwoCollectionYears(collectionType);
+            var lastYearValue = lastTwoYears.Last();
+            model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
 
             if (lastTwoYears.Count() > 1) //if there are more than two years in the collection
             {
-                var firstYearList = reportsData.Where(x => x.CollectionYear == lastTwoYears.First()).TakeLast(1); //take the most recent open period in the previous year
+                var firstYearValue = lastTwoYears.First();
+                var firstYearList = reportsData.Where(x => x.CollectionYear == firstYearValue).TakeLast(1); //take the most recent open period in the previous year
                 model.PublishedFrm = firstYearList.Concat(model.PublishedFrm); // add it to the front of the list
             }
 
@@ -148,9 +150,9 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return View("CancelledFrm");
         }
 
-        public IActionResult UnpublishFrm(string path)
+        public async Task<IActionResult> UnpublishFrmAsync(string path)
         {
-            _frmService.UnpublishSld(path);
+            await _frmService.UnpublishSld(path);
             return View("UnpublishSuccess");
         }
 
@@ -174,11 +176,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 _logger.LogError($"Download report failed for file name : {fileName}", e);
                 throw;
             }
-        }
-
-        public Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
-        {
-           return _frmService.GetLastTwoCollectionYears(collectionType);
         }
     }
 }

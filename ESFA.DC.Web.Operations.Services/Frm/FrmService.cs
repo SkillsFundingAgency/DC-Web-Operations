@@ -130,7 +130,7 @@
         {
             string url = $"{_periodEndJobApiUrl}/getfrmreportsdata";
             var response = await _httpClient.GetStringAsync(url);
-            var unsortedJson = _jsonSerializationService.Deserialize<IEnumerable<PeriodEndCalendarYearAndPeriodModel>>(response);
+            var unsortedJson = _jsonSerializationService.Deserialize<List<PeriodEndCalendarYearAndPeriodModel>>(response);
             return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
 
@@ -138,7 +138,7 @@
         {
             string url = $"{_baseJobApiUrl}/collections/years/{collectionType}";
             var reponse = await _httpClient.GetStringAsync(url);
-            var years = _jsonSerializationService.Deserialize<IEnumerable<int>>(reponse);
+            var years = _jsonSerializationService.Deserialize<List<int>>(reponse);
             years.OrderBy(year => years);
             return years.TakeLast(2);
          }
