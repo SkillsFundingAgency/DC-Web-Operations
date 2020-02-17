@@ -23,6 +23,7 @@
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
         private readonly string _periodEndJobApiUrl;
+        private readonly string _baseJobApiUrl;
 
         public FrmService(
             IFileService fileService,
@@ -31,6 +32,7 @@
             HttpClient httpClient)
             : base(jsonSerializationService, httpClient)
         {
+            _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
             _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
             _httpClient = httpClient;
@@ -132,13 +134,13 @@
             return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
 
-        public async Task<List<int>> GetLastTwoCollectionYears(string collectionType)
+        public async Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
         {
-            string url = $"{_periodEndJobApiUrl}/collections/years/{collectionType}";
+            string url = $"{_baseJobApiUrl}/collections/years/{collectionType}";
             var reponse = await _httpClient.GetStringAsync(url);
             var years = _jsonSerializationService.Deserialize<IEnumerable<int>>(reponse);
             years.OrderBy(year => years);
-            return years.TakeLast(2).ToList<int>();
+            return years.TakeLast(2);
          }
     }
 }
