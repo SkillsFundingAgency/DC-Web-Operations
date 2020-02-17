@@ -25,6 +25,8 @@
 
         public const string FrmReportCollectionName = @"FRM-Reports1920";
 
+        public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
+
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
 

@@ -53,25 +53,16 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             else
             {
                 // get the current period
-                var currentYearPeriod = await _periodService.ReturnPeriod();
-
+                var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
                 if (currentYearPeriod == null)
                 {
                     string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                     _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
+                    throw new InvalidOperationException(errorMessage);
                 }
 
-                if (!currentYearPeriod.Year.HasValue)
-                {
-                    string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
-
-                    _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
-                }
-
-                reportsViewModel.CollectionYear = currentYearPeriod.Year.Value;
-                reportsViewModel.CollectionPeriod = currentYearPeriod.Period;
+                reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
+                reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
             }
 
             // get all the internal reports for the current period
@@ -85,29 +76,29 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return View(model: reportsViewModel);
         }
 
-        [HttpGet("RunReport/{reportType}/{collectionYear?}/{collectionPeriod?}")]
-        public async Task<IActionResult> RunReport(string reportType, int? collectionYear, int? collectionPeriod)
+        [HttpGet("RunReport")]
+        public async Task<IActionResult> RunReport(string reportType, int? year, int? period)
         {
             // if collection period params not specified default to current period
-            if (collectionYear == null || collectionPeriod == null)
+            if (year == null || period == null)
             {
-                var currentYearPeriod = await _periodService.ReturnPeriod();
-                if (currentYearPeriod?.Year == null)
+                var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
+                if (currentYearPeriod?.CollectionYear == null)
                 {
-                    string errorMessage = $"Call to get current return period failed in request {reportType} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
+                    string errorMessage = $"Call to get current return period failed in request {reportType} collectionYear: {year} collectionPeriod: {period}";
                     _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
+                    throw new InvalidOperationException(errorMessage);
                 }
 
-                collectionYear = currentYearPeriod.Year.Value;
-                collectionPeriod = currentYearPeriod?.Period;
+                year = currentYearPeriod.CollectionYear;
+                period = currentYearPeriod?.PeriodNumber;
             }
 
             // queue the report job
-            var jobId = await _reportsService.RunReport(reportType, collectionYear.Value, collectionPeriod.Value);
+            var jobId = await _reportsService.RunReport(reportType, year.Value, period.Value);
 
             // display the processing report spinner page while the report is running
-            return RedirectToAction("ProcessingReport", "Reports", new { area = AreaNames.Reports, ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod, JobId = jobId });
+            return RedirectToAction("ProcessingReport", "Reports", new { ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = year, CollectionPeriod = period, JobId = jobId });
         }
 
         [HttpGet("GetReportFile/{collectionYear}/{collectionPeriod}/{fileName}/{downloadName?}")]

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Autofac.Features.AttributeFilters;
 using ESFA.DC.Logging;
 using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
@@ -26,6 +28,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -85,8 +88,7 @@ namespace ESFA.DC.Web.Operations
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
             var authoriseSettings = _config.GetConfigSection<AuthorizationSettings>();
 
-            services.AddMvc()
-                .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
+            services.AddMvc().AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
 
             services.AddAndConfigureAuthentication(authSettings);
             services.AddAndConfigureAuthorisation(authoriseSettings);
@@ -188,6 +190,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<ReportsHub>("/reportsHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -237,6 +244,9 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
+
+            var opsConnectionString = _applicationContainer.Resolve<OpsDataLoadServiceConfigSettings>().ConnectionString;
+            var azureConnectionString = _applicationContainer.Resolve<AzureStorageSection>().ConnectionString;
 
             _logger.LogDebug("End of ConfigureAutofac");
 

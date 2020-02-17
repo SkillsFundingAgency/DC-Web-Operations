@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Features.AttributeFilters;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
@@ -15,7 +17,8 @@ namespace ESFA.DC.Web.Operations.Services.Storage
     {
         private readonly IFileService _fileService;
 
-        public StorageService(IFileService fileService)
+        public StorageService(
+            [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService)
         {
             _fileService = fileService;
         }
