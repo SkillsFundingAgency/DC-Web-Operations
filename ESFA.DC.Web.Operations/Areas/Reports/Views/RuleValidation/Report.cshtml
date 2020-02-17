@@ -30,7 +30,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.Validationruledetails)
+            @foreach (KeyValuePair<string, List<ValidationRuleDetail>> item in Model.ValidationRuleDetailsByReturnPeriod)
             {
                 var subTotalErrors = 0;
                 var subTotalWarnings = 0;

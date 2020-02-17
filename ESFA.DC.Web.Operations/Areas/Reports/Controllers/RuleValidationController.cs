@@ -105,7 +105,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 validationRuleDetails = _jsonSerializationService.Deserialize<List<ValidationRuleDetail>>(stream);
             }
 
-            model.Validationruledetails = validationRuleDetails.GroupBy(x => x.ReturnPeriod).ToDictionary(group => group.Key, group => group.ToList());
+            model.ValidationRuleDetailsByReturnPeriod = validationRuleDetails.GroupBy(x => x.ReturnPeriod).ToDictionary(group => group.Key, group => group.ToList());
             return View(model);
         }
 

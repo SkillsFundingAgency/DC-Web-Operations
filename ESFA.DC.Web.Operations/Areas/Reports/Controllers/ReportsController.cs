@@ -58,7 +58,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 {
                     string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                     _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
+                    throw new InvalidOperationException(errorMessage);
                 }
 
                 reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
@@ -87,7 +87,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 {
                     string errorMessage = $"Call to get current return period failed in request {reportType} collectionYear: {year} collectionPeriod: {period}";
                     _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
+                    throw new InvalidOperationException(errorMessage);
                 }
 
                 year = currentYearPeriod.CollectionYear;
