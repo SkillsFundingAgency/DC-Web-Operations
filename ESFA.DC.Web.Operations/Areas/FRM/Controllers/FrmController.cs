@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
         public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType)
         {
-            var frmStatus = (JobStatusType)await _frmService.GetFrmStatus(model.FrmJobId);
+            var frmStatus = (JobStatusType)await _frmService.GetFrmStatusAsync(model.FrmJobId);
 
             switch (frmStatus)
             {
@@ -76,10 +77,10 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
                     model.FrmYearPeriod = currentPeriod.Year.Value;
                     var currentContainerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
-                    model.FrmCSVValidDate = await _frmService.GetFileSubmittedDate(model.FrmJobId);
+                    model.FrmCSVValidDate = await _frmService.GetFileSubmittedDateAsync(model.FrmJobId);
                     return View("ValidateSuccess", model);
                 case JobStatusType.Completed:
-                    await _frmService.PublishSld(model.FrmYearPeriod, model.FrmPeriodNumber);
+                    await _frmService.PublishSldAsync(model.FrmYearPeriod, model.FrmPeriodNumber);
                     return View("PublishSuccess");
                 default:
                     break;
@@ -89,7 +90,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidateFrm(FrmReportModel model)
+        public async Task<IActionResult> ValidateFrmAsync(FrmReportModel model)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
             if (currentYearPeriod?.Year == null)
@@ -106,30 +107,59 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             var collectionYear = currentYearPeriod.Year.Value;
             var userName = User.Name();
             var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
-            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
+            model.FrmJobId = await _frmService.RunValidationAsync(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PublishFrm(FrmReportModel model)
+        public async Task<IActionResult> PublishFrmAsync(FrmReportModel model)
         {
             model.FrmJobType = Utils.Constants.FrmPublishKey;
-            model.FrmJobId = await _frmService.RunPublish(model.FrmJobId);
+            model.FrmJobId = await _frmService.RunPublishAsync(model.FrmJobId);
             return RedirectToAction("HoldingPageAsync", model);
         }
 
-        public IActionResult ReportChoiceSelection(FrmReportModel model)
+        public async Task<IActionResult> ReportChoiceSelectionAsync(FrmReportModel model)
         {
             if (model.IsFrmReportChoice)
             {
                 return RedirectToAction("SelectValidate");
             }
 
-            return View("Index");
+            var collectionType = "frm";
+            var reportsData = await _frmService.GetFrmReportsDataAsync();
+            var lastTwoYears = await _frmService.GetLastTwoCollectionYearsAsync(collectionType);
+            var lastYearValue = lastTwoYears.Last();
+            model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
+
+            if (lastTwoYears.Count() > 1) //if there are more than two years in the collection
+            {
+                var firstYearValue = lastTwoYears.First();
+                var firstYearList = reportsData.Where(x => x.CollectionYear == firstYearValue).TakeLast(1); //take the most recent open period in the previous year
+                model.PublishedFrm = firstYearList.Concat(model.PublishedFrm); // add it to the front of the list
+            }
+
+            if (!model.PublishedFrm.Any())
+            {
+                return View("ErrorView");
+            }
+
+            return View("SelectUnpublish", model);
         }
 
-        public async Task<FileResult> GetReportFile(string fileName)
+        public IActionResult CancelFrm()
+        {
+            return View("CancelledFrm");
+        }
+
+        public async Task<IActionResult> UnpublishFrmAsync(string path)
+        {
+            await _frmService.UnpublishSldAsync(path);
+            return View("UnpublishSuccess");
+        }
+
+        public async Task<FileResult> GetReportFileAsync(string fileName)
         {
             try
             {
@@ -149,11 +179,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 _logger.LogError($"Download report failed for file name : {fileName}", e);
                 throw;
             }
-        }
-
-        public IActionResult CancelFrm()
-        {
-         return View("CancelledFrm");
         }
     }
 }

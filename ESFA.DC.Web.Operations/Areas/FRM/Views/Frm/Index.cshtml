@@ -1,25 +1,25 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
 @{
-    ViewData["Title"] = "FRM Validation";
+    ViewData["Title"] = "FRM Choice";
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-x1">
-            Which reports do you want to publish?
+            Would you like to publish or unpublish FRM reports?
         </h1>
         <div class="govuk-form-group">
             <label class="govuk-label" for="name"></label>
-            @using (Html.BeginForm("ReportChoiceSelection","Frm"))
+            @using (Html.BeginForm("ReportChoiceSelectionAsync","Frm"))
             {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">
                         <input asp-for="IsFrmReportChoice" value="false" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">QAR</label>
+                        <label class="govuk-label govuk-radios__label">Unpublish</label>
                     </div>
                     <div class="govuk-radios__item">
                         <input asp-for="IsFrmReportChoice" value="true" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">FRM</label>
+                        <label class="govuk-label govuk-radios__label">Publish</label>
                     </div>
                 </div>
                 <br />

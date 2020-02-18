@@ -1,0 +1,47 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+@{
+    ViewData["Title"] = "FRM Unpublish";
+}
+<label class="govuk-label" for="name"></label>
+<div class="govuk-form-group">
+    <h1 class="govuk-heading-x1">Choose a Period to Unpublish</h1>
+    @using (Html.BeginForm("UnpublishFrmAsync", "Frm"))
+    {
+        <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablecontinue()">
+            <option value="selectone" selected>Select One</option>
+            @foreach (var period in Model.PublishedFrm)
+            {
+                <option value="@period.CollectionYear/@period.PeriodNumber"> @period.CollectionYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
+            }
+        </select>
+        <br />
+        <br />
+        <button id="continue" type="button" class="govuk-button" disabled onclick="showsubmit()">Continue</button>
+        <p hidden id="confirmtext">Are you sure you want to unpublish the selected reports?</p>
+        <button hidden id="submit" class="">Unpublish Reports</button>
+    }
+    <br />
+    <br />
+</div>
+@section PageScripts
+    {
+    <script>
+        //unhide submit unpublish reports
+        function showsubmit() {
+            document.getElementById("submit").classList.add('govuk-button');
+            document.getElementById("submit").hidden = false;
+            document.getElementById("confirmtext").hidden = false;
+        }
+        //enable continue button to be selected
+        function enablecontinue() {
+            if (
+                document.getElementById("PublishedPeriods").value == "selectone") {
+                document.getElementById("continue").disabled = true;
+            }
+            else {
+                document.getElementById("continue").disabled = false;
+            }
+        };
+    </script>
+}
