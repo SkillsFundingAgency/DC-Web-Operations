@@ -38,7 +38,7 @@
             _httpClient = httpClient;
         }
 
-        public async Task<int> GetFrmStatus(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> GetFrmStatusAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!jobId.HasValue)
             {
@@ -51,7 +51,7 @@
             return result;
         }
 
-        public async Task<DateTime?> GetFileSubmittedDate(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<DateTime?> GetFileSubmittedDateAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!jobId.HasValue)
             {
@@ -64,7 +64,7 @@
             return jobinfo.DateTimeSubmittedUtc;
         }
 
-        public async Task<long> RunValidation(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunValidationAsync(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             string collectionName = Constants.FrmReportCollectionName;
             FrmReportsJob job = new FrmReportsJob()
@@ -92,7 +92,7 @@
             return jobId;
         }
 
-        public async Task<long> RunPublish(long jobId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunPublishAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             string collectionName = Constants.FrmReportCollectionName;
 
@@ -112,21 +112,21 @@
             return jobId;
         }
 
-        public async Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsData()
+        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
         {
             string url = $"{_periodEndJobApiUrl}/getfrmreportsdata";
             var response = await _httpClient.GetStringAsync(url);
@@ -134,7 +134,7 @@
             return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
 
-        public async Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType)
+        public async Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType)
         {
             string url = $"{_baseJobApiUrl}/collections/years/{collectionType}";
             var reponse = await _httpClient.GetStringAsync(url);

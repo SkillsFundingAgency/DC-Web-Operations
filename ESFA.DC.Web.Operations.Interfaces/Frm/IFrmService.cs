@@ -8,20 +8,20 @@
 
     public interface IFrmService
     {
-        Task<long> RunValidation(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> RunValidationAsync(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<long> RunPublish(long jobId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> RunPublishAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<int> GetFrmStatus(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> GetFrmStatusAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<DateTime?> GetFileSubmittedDate(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<DateTime?> GetFileSubmittedDateAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task PublishSld(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
+        Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsData();
+        Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync();
 
-        Task UnpublishSld(string path, CancellationToken cancellationToken = default(CancellationToken));
+        Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<int>> GetLastTwoCollectionYears(string collectionType);
+        Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType);
     }
 }

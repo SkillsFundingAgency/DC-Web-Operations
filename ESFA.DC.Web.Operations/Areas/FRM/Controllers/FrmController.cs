@@ -62,7 +62,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
         public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType)
         {
-            var frmStatus = (JobStatusType)await _frmService.GetFrmStatus(model.FrmJobId);
+            var frmStatus = (JobStatusType)await _frmService.GetFrmStatusAsync(model.FrmJobId);
 
             switch (frmStatus)
             {
@@ -77,10 +77,10 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
                     model.FrmYearPeriod = currentPeriod.Year.Value;
                     var currentContainerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
-                    model.FrmCSVValidDate = await _frmService.GetFileSubmittedDate(model.FrmJobId);
+                    model.FrmCSVValidDate = await _frmService.GetFileSubmittedDateAsync(model.FrmJobId);
                     return View("ValidateSuccess", model);
                 case JobStatusType.Completed:
-                    await _frmService.PublishSld(model.FrmYearPeriod, model.FrmPeriodNumber);
+                    await _frmService.PublishSldAsync(model.FrmYearPeriod, model.FrmPeriodNumber);
                     return View("PublishSuccess");
                 default:
                     break;
@@ -90,7 +90,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidateFrm(FrmReportModel model)
+        public async Task<IActionResult> ValidateFrmAsync(FrmReportModel model)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod();
             if (currentYearPeriod?.Year == null)
@@ -107,20 +107,20 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             var collectionYear = currentYearPeriod.Year.Value;
             var userName = User.Name();
             var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
-            model.FrmJobId = await _frmService.RunValidation(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
+            model.FrmJobId = await _frmService.RunValidationAsync(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
 
             return RedirectToAction("HoldingPageAsync", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PublishFrm(FrmReportModel model)
+        public async Task<IActionResult> PublishFrmAsync(FrmReportModel model)
         {
             model.FrmJobType = Utils.Constants.FrmPublishKey;
-            model.FrmJobId = await _frmService.RunPublish(model.FrmJobId);
+            model.FrmJobId = await _frmService.RunPublishAsync(model.FrmJobId);
             return RedirectToAction("HoldingPageAsync", model);
         }
 
-        public async Task<IActionResult> ReportChoiceSelection(FrmReportModel model)
+        public async Task<IActionResult> ReportChoiceSelectionAsync(FrmReportModel model)
         {
             if (model.IsFrmReportChoice)
             {
@@ -128,8 +128,8 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
 
             var collectionType = "frm";
-            var reportsData = await _frmService.GetFrmReportsData();
-            var lastTwoYears = await _frmService.GetLastTwoCollectionYears(collectionType);
+            var reportsData = await _frmService.GetFrmReportsDataAsync();
+            var lastTwoYears = await _frmService.GetLastTwoCollectionYearsAsync(collectionType);
             var lastYearValue = lastTwoYears.Last();
             model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
 
@@ -155,11 +155,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
         public async Task<IActionResult> UnpublishFrmAsync(string path)
         {
-            await _frmService.UnpublishSld(path);
+            await _frmService.UnpublishSldAsync(path);
             return View("UnpublishSuccess");
         }
 
-        public async Task<FileResult> GetReportFile(string fileName)
+        public async Task<FileResult> GetReportFileAsync(string fileName)
         {
             try
             {
