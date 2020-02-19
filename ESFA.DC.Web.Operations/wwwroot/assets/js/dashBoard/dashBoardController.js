@@ -1,4 +1,5 @@
 ﻿import { getColorForPercentage } from '/assets/js/util.js';
+import { getMessageForPercentage } from '/assets/js/util.js';
 
 class DashBoardController {
     constructor() {
@@ -25,6 +26,10 @@ class DashBoardController {
         this._queuesIlr = null;
 
         this._averageTimeToday = 0;
+
+        this._percentageTextRangeJobProcessing = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
+        this._percentageTextRangeJobQueued = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
+        this._percentageTextRangeSubmissionsToday = [{ value: 75, label: 'Super excited!' }, { value: 50, label: 'Feeling happy' }, { value: 0, label: 'Looking Good' }];
     }
 
     updatePage(data) {
@@ -60,25 +65,15 @@ class DashBoardController {
             let percentage = (jobStats.todayStatsModel.jobsProcessing / 125) * 100;
             this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
             this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            this._firstLabel.textContent = this.getMessageForPercentage(percentage,
-                [
-                    { value: 85, label: 'Really busy!' },
-                    { value: 60, label: 'Busy' },
-                    { value: 0, label: 'Looking Good' }
-                ]);
+            this._firstLabel.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobProcessing);
         }
 
         if (this._secondDonut.textContent !== jobStats.todayStatsModel.jobsQueued.toString()) {
             this._secondDonut.textContent = `${jobStats.todayStatsModel.jobsQueued}`;
             this._secondCircle.setAttribute("stroke-dasharray", `${jobStats.todayStatsModel.jobsQueued},100`);
-            let percentage = (jobStats.todayStatsModel.jobsQueued / 100) * 100;
+            let percentage = (jobStats.todayStatsModel.jobsQueued / 125) * 100;
             this._secondCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            this._secondLabel.textContent = this.getMessageForPercentage(percentage,
-                [
-                    { value: 50, label: 'Urgent Attention!' },
-                    { value: 25, label: 'Needs Attention' },
-                    { value: 0, label: 'Looking Good' }
-                ]);
+            this._secondLabel.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobQueued);
         }
 
         if (this._thirdDonut.textContent !== jobStats.todayStatsModel.submissionsToday.toString()) {
@@ -90,12 +85,7 @@ class DashBoardController {
 
             this._thirdCircle.setAttribute("stroke-dasharray", `${percentage},100`);
             this._thirdCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            this._thirdLabel.textContent = this.getMessageForPercentage(percentage,
-                [
-                    { value: 75, label: 'Super excited!' },
-                    { value: 50, label: 'Feeling happy' },
-                    { value: 0, label: 'Looking Good' }
-                ]);
+            this._thirdLabel.textContent = getMessageForPercentage(percentage, this._percentageTextRangeSubmissionsToday);
         }
 
         if (this._failedToday.textContent !== jobStats.todayStatsModel.failedToday.toString()) {
@@ -240,17 +230,6 @@ class DashBoardController {
         chart.data.datasets[0].data = messages;
         chart.data.datasets[1].data = deadLetters;
         chart.update();
-    }
-
-    getMessageForPercentage(percentage, options) {
-        let i = 0, len = options.length;
-        for (; i < len; i++) {
-            if (options[i].value <= percentage) {
-                return options[i].label;
-            }
-        }
-
-        return options[0].label;
     }
 
     updateSync() {

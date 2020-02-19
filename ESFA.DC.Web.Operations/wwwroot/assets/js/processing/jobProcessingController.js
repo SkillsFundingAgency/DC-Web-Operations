@@ -1,14 +1,22 @@
 ﻿import { getColorForPercentage } from '/assets/js/util.js';
 import { convertToCsv } from '/assets/js/csv-operations.js';
+import { getMessageForPercentage } from '/assets/js/util.js';
 
 class JobProcessingController {
     constructor() {
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
+        this._firstDonutText = document.getElementById("firstDonutText");
+
         this._sort = document.getElementById('sort');
         this._ilr = document.getElementById('ILR');
         this._eas = document.getElementById('EAS');
         this._esf = document.getElementById('ESF');
+
+        this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
+
+        this._percentageTextRangeJobProcessing = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
+
         this._data = {};
     }
 
@@ -24,6 +32,7 @@ class JobProcessingController {
         let percentage = (filteredData.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
+        this._firstDonutText.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobProcessing);
     }
 
     displayConnectionState(state) {
@@ -33,6 +42,7 @@ class JobProcessingController {
 
     drawGrid() {
         var filteredData = this.filterBy();
+        this._aBtnDownloadCSV.style.visibility = (filteredData.length > 0) ? 'visible' : 'hidden';
         this.setDonut(filteredData);
         this.sortBy(filteredData);
 
@@ -106,16 +116,19 @@ class JobProcessingController {
         }
     }
 
-    downloadCSV(data) {
-        let newData = data.jobs.map(function (obj) {
-            return {
-                "Provider name": obj.providerName,
-                Ukprn: obj.ukprn,
-                "Time taken": obj.timeTaken,
-                "Average processing time": obj.averageProcessingTime
-            }
-        });
-        convertToCsv({ filename: 'Jobs-processing.csv', data: newData });
+    downloadCSV() {
+        var filteredData = this.filterBy();
+        if (filteredData.length > 0) {
+            let newData = filteredData.map(function (obj) {
+                return {
+                    "Provider name": obj.providerName,
+                    Ukprn: obj.ukprn,
+                    "Time taken": obj.timeTaken,
+                    "Average processing time": obj.averageProcessingTime
+                }
+            });
+            convertToCsv({ filename: 'Jobs-processing.csv', data: newData });
+        }
     }
 }
 
