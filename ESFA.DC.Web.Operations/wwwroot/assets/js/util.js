@@ -34,3 +34,14 @@ export function getColorForPercentage(pct) {
     };
     return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
 }
+
+export function getMessageForPercentage(percentage, options) {
+    let i = 0, len = options.length;
+    for (; i < len; i++) {
+        if (options[i].value <= percentage) {
+            return options[i].label;
+        }
+    }
+
+    return options[0].label;
+}

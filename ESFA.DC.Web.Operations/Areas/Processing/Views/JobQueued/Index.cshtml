@@ -51,7 +51,7 @@
                 <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15" />
                 <g class="circle-chart__info">
                     <text id="firstDonut" class="circle-chart__percent counter" x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" data-count=""></text>
-                    <text id="jobText" class="circle-chart__subline" x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">All jobs</text>
+                    <text id="firstDonutText" class="circle-chart__subline" x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2">Waiting ...</text>
                 </g>
             </svg>
         </section>
@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<a href="#" class="govuk-button" onclick="downloadCSV()">Download CSV</a>
+<a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
 
 <br />
 
@@ -110,6 +110,6 @@
     };
 
     window.downloadCSV = function () {
-        jobQueuedController.downloadCSV(jobQueuedController._data);
+        jobQueuedController.downloadCSV();
     };
 </script>
