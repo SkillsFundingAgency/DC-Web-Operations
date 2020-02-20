@@ -45,3 +45,19 @@ export function getMessageForPercentage(percentage, options) {
 
     return options[0].label;
 }
+
+export function getDatetimeFromString(dateString) {        
+    return new Date(dateString);
+}
+
+export function getFormattedDatetimeString(dateString) {
+    var dateObject = getDatetimeFromString(dateString);
+
+    var month = padLeft(dateObject.getMonth() + 1, '0', 2);
+    var day = padLeft(dateObject.getDate(), '0', 2);
+    var hour = padLeft(dateObject.getHours(), '0', 2);
+    var minute = padLeft(dateObject.getMinutes(), '0', 2);
+    var second = padLeft(dateObject.getSeconds(), '0', 2);
+
+    return `${dateObject.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
+}
