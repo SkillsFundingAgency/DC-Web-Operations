@@ -6,7 +6,7 @@ class ReportsHub {
         this.connection = new signalR
             .HubConnectionBuilder()
             .withAutomaticReconnect()
-            .withUrl("/reportsHub", { transport: signalR.HttpTransportType.WebSockets })
+            .withUrl("/reportsHub")
             .build();
     }
 
@@ -45,6 +45,7 @@ class ReportsHub {
                 console.assert(this.connection.state === signalR.HubConnectionState.Connected);
                 console.log("connected");
                 controller.displayConnectionState("Connected");
+                controller.getReports();
             });
         } catch (err) {
             console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);

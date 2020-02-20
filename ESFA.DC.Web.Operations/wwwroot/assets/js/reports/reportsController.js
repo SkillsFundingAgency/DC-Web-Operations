@@ -14,10 +14,12 @@
         this._collectionYears = {};
         this._rulesByYear = {};
         this._yearSelected = null;
+        this._periodSelected = null;
         this._ruleSelected = null;
         this._validationReportGenerationUrl = null;
         this._reportGenerationUrl = null;
         this._reportsUrl = null;
+        this._reportsDownloadUrl = null;
     }
 
     displayConnectionState(state) {
@@ -25,8 +27,9 @@
         stateLabel.textContent = `Status: ${state}`;
     }
 
-    init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl) {
+    init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl, reportsDownloadUrl) {
         this._yearSelection.addEventListener("change", this.yearsSelectionChange.bind(this));
+        this._periodSelection.addEventListener("change", this.periodSelectionChange.bind(this));
         this._generateValidationReportButton.addEventListener("click", this.generateValidationDetailReport.bind(this));
         this._createReportBtn.addEventListener("click", this.createReport.bind(this));
         this._changePeriodBtn.addEventListener("click", this.changePeriod.bind(this));
@@ -35,6 +38,13 @@
         this._validationReportGenerationUrl = validationReportGenerationUrl;
         this._reportGenerationUrl = reportGenerationUrl;
         this._reportsUrl = reportsUrl;
+        this._reportsDownloadUrl = reportsDownloadUrl;
+    }
+
+    getReports() {
+        this._yearSelected = document.getElementById('collectionYears').value;
+        this._periodSelected = document.getElementById('collectionPeriod').value;
+        window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
     }
 
     hideValidationRuleDetailReportSection() {
@@ -69,8 +79,9 @@
 
     yearsSelectionChange(e) {
         var reportSelected = this._reportSelection.value;
+        this._yearSelected = this._yearSelection.value;
+        this._periodSelected = this._periodSelection.value;
         if (reportSelected === 'RuleValidationDetailReport') {
-            this._yearSelected = this._yearSelection.value;
             this.removeElementsByClass('autocomplete__wrapper');
             this._spinner.style.visibility = 'visible';
             this._generateValidationReportButton.disabled = true;
@@ -79,13 +90,45 @@
             } else {
                 this.populateRules(this._rulesByYear[this._yearSelected]);
             }
+        } else {
+            window.reportClient.getReports(this._yearSelected,this._periodSelected, this.populateReports.bind(this));
         }
+    }
+
+    periodSelectionChange(e) {
+        this._yearSelected = this._yearSelection.value;
+        this._periodSelected = this._periodSelection.value;
+        window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
     }
 
     removeElementsByClass(className) {
         var elements = document.getElementsByClassName(className);
         while (elements.length > 0) {
             elements[0].parentNode.removeChild(elements[0]);
+        }
+    }
+
+    populateReports(reportDetails) {
+        var tableRef = document.getElementById('internalReportsTable').getElementsByTagName('tbody')[0];
+
+        // remove the existing rows
+        var elmtTable = document.getElementById('internalReportsTableBody');
+        var tableRows = elmtTable.getElementsByTagName('tr');
+        var rowCount = tableRows.length;
+        for (var x = rowCount - 1; x >= 0; x--) {
+            elmtTable.removeChild(tableRows[x]);
+        }
+
+        // display the rows
+        for (var i = 0; i < reportDetails.length; i++) {
+            var url = this._reportsDownloadUrl + '?collectionYear=' + this._yearSelected + '&collectionPeriod=' + this._periodSelected + '&fileName=' + reportDetails[i].url;
+            var encodedUrl = encodeURI(url);
+            var reportUrl = '<a href=' + encodedUrl + '> ' + reportDetails[i].url + '</a>';
+
+            var htmlContent =
+                '<tr class="govuk-table__row internalreports"><td class="govuk-table__cell" >' + reportDetails[i].displayName + '</td ><td class="govuk-table__cell">' + reportUrl + '</td></tr >';
+            var newRow = tableRef.insertRow(tableRef.rows.length);
+            newRow.innerHTML = htmlContent;
         }
     }
 
