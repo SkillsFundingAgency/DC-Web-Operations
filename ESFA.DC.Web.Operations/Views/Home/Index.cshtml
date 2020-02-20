@@ -75,7 +75,9 @@
 
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
-            <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Submissions</a></h2>
+            <h2 class="govuk-heading-m centre-text">
+                @Html.ActionLink("Submissions", "Index", "JobSubmitted", new { area = AreaNames.Processing })
+            </h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="thirdCircle" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
