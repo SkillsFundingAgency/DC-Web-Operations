@@ -6,11 +6,11 @@
         this._periodSelection = document.getElementById('collectionPeriod');
         this._ruleValidationDetailReportSection = document.getElementById('ruleValidationDetailReportSection');
         this._createReportBtn = document.getElementById('createReport');
-        this._changePeriodBtn = document.getElementById('changePeriod');
         this._generateValidationReportButton = document.getElementById("generateValidationReport");
         this._element = document.querySelector('#tt-overlay');
         this._id = 'autocomplete-overlay';
         this._spinner = document.getElementById('spinner');
+        this._reportsLoadingSpinner = document.getElementById('reportsLoadingSpinner');
         this._collectionYears = {};
         this._rulesByYear = {};
         this._yearSelected = null;
@@ -32,7 +32,6 @@
         this._periodSelection.addEventListener("change", this.periodSelectionChange.bind(this));
         this._generateValidationReportButton.addEventListener("click", this.generateValidationDetailReport.bind(this));
         this._createReportBtn.addEventListener("click", this.createReport.bind(this));
-        this._changePeriodBtn.addEventListener("click", this.changePeriod.bind(this));
         this._reportSelection.addEventListener("change", this.onReportSelection.bind(this));
         this.hideValidationRuleDetailReportSection();
         this._validationReportGenerationUrl = validationReportGenerationUrl;
@@ -42,12 +41,14 @@
     }
 
     getReports() {
+        this._reportsLoadingSpinner.style.visibility = 'visible';
         this._yearSelected = document.getElementById('collectionYears').value;
         this._periodSelected = document.getElementById('collectionPeriod').value;
         window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
     }
 
     hideValidationRuleDetailReportSection() {
+        this._ruleValidationDetailReportSection.style.display = 'none';
         this._ruleValidationDetailReportSection.style.visibility = 'hidden';
         this._createReportBtn.style.visibility = 'visible';
         this._generateValidationReportButton.disabled = true;
@@ -66,6 +67,7 @@
             }
         }
         this._ruleValidationDetailReportSection.style.visibility = 'visible';
+        this._ruleValidationDetailReportSection.style.display = 'block';
     }
 
     onReportSelection(e) {
@@ -91,14 +93,12 @@
                 this.populateRules(this._rulesByYear[this._yearSelected]);
             }
         } else {
-            window.reportClient.getReports(this._yearSelected,this._periodSelected, this.populateReports.bind(this));
+            this.getReports();
         }
     }
 
     periodSelectionChange(e) {
-        this._yearSelected = this._yearSelection.value;
-        this._periodSelected = this._periodSelection.value;
-        window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
+        this.getReports();
     }
 
     removeElementsByClass(className) {
@@ -110,7 +110,7 @@
 
     populateReports(reportDetails) {
         var tableRef = document.getElementById('internalReportsTable').getElementsByTagName('tbody')[0];
-
+        
         // remove the existing rows
         var elmtTable = document.getElementById('internalReportsTableBody');
         var tableRows = elmtTable.getElementsByTagName('tr');
@@ -130,6 +130,7 @@
             var newRow = tableRef.insertRow(tableRef.rows.length);
             newRow.innerHTML = htmlContent;
         }
+        this._reportsLoadingSpinner.style.visibility = 'hidden';
     }
 
     populateRules(rules) {

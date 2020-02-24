@@ -65,13 +65,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
             }
 
-            // get all the internal reports for the current period
-            var reportDetails = await _reportsService.GetAllReportDetails(reportsViewModel.CollectionYear, reportsViewModel.CollectionPeriod);
-            if (reportDetails != null)
-            {
-                reportsViewModel.ReportAction = ReportActions.GetReportDetails;
-                reportsViewModel.Reports = reportDetails;
-            }
+            reportsViewModel.ReportAction = ReportActions.GetReportDetails;
 
             return View(model: reportsViewModel);
         }
