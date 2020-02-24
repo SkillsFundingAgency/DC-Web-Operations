@@ -1,5 +1,4 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@using ESFA.DC.Web.Operations.Utils
 
 @model ESFA.DC.Web.Operations.Areas.Reports.Models.ReportsViewModel
 
@@ -8,10 +7,10 @@
     ViewData[ViewDataConstants.BackLink] = "/Home";
 }
 
+<br/>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
-
         <input type="hidden" name="year" id="year" value=@Model.CollectionYear />
         <input type="hidden" name="period" id="period" value=@Model.CollectionPeriod />
     </div>
@@ -19,62 +18,44 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">
-                        Period:
-                        <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control">
-                            <option value="1920">1920</option>
-                            <option value="1819">1819</option>
-                        </select>
+        <h3>Period:</h3>
+        <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control">
+            <option value="1920">1920</option>
+            <option value="1819">1819</option>
+        </select>
 
-                        <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control">
-                            <option value="1">R01</option>
-                            <option value="2">R02</option>
-                            <option value="3">R03</option>
-                            <option value="4">R04</option>
-                            <option value="5">R05</option>
-                            <option value="6">R06</option>
-                            <option value="7">R07</option>
-                            <option value="8">R08</option>
-                            <option value="9">R09</option>
-                            <option value="10">R10</option>
-                            <option value="11">R11</option>
-                            <option value="12">R12</option>
-                            <option value="13">R13</option>
-                            <option value="14">R14</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control">
+            <option value="1">R01</option>
+            <option value="2">R02</option>
+            <option value="3">R03</option>
+            <option value="4">R04</option>
+            <option value="5">R05</option>
+            <option value="6">R06</option>
+            <option value="7">R07</option>
+            <option value="8">R08</option>
+            <option value="9">R09</option>
+            <option value="10">R10</option>
+            <option value="11">R11</option>
+            <option value="12">R12</option>
+            <option value="13">R13</option>
+            <option value="14">R14</option>
+        </select>
     </div>
 </div>
-<br />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">
-                        Create new report for:
-                        <select id="reportSelection" asp-for="ReportType" class="govuk-select govuk-input--width-20 form-control">
-                            <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
-                            <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
-                            <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
-                            <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
-                            <option value="InternalDataMatchReport">Internal Data Match Report</option>
-                            <option value="ACTCountReport">ACT Count Report</option>
-                            <option value="RuleValidationDetailReport">Rule Validation Detail Report</option>
-                        </select>
-
-                        <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <h3>Create new report for:</h3>
+        <select id="reportSelection" asp-for="ReportType" class="govuk-select govuk-input--width-20 form-control">
+            <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
+            <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
+            <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
+            <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
+            <option value="InternalDataMatchReport">Internal Data Match Report</option>
+            <option value="ACTCountReport">ACT Count Report</option>
+            <option value="RuleValidationDetailReport">Rule Validation Detail Report</option>
+        </select>
+        <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
     </div>
 </div>
 
@@ -82,7 +63,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span id="spinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
-            <h1 class="govuk-heading-xl">Search for a validation rule</h1>
+            <h3>Search for a validation rule:</h3>
         </div>
         <div class="govuk-grid-row govuk-grid-column-two-thirds">
             <div class="govuk-grid-column-two-thirds">
@@ -131,6 +112,7 @@
         <label id="state"></label>
     </div>
 </div>
+
 @section PageScripts
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>

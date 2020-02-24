@@ -15,7 +15,6 @@
         this._rulesByYear = {};
         this._yearSelected = null;
         this._periodSelected = null;
-        this._ruleSelected = null;
         this._validationReportGenerationUrl = null;
         this._reportGenerationUrl = null;
         this._reportsUrl = null;
@@ -145,11 +144,21 @@
             onConfirm: this.searchRulesOnConfirm.bind(this),
             placeholder: 'e.g Rule_01'
         });
+        document.getElementById('autocomplete-overlay').addEventListener("blur", this.onautocompleteblur.bind(this));
         this._spinner.style.visibility = 'hidden';
     }
 
+    onautocompleteblur() {
+        if (this._id) {
+            if (document.getElementById('autocomplete-overlay').value) {
+                this._generateValidationReportButton.disabled = false;
+            } else {
+                this._generateValidationReportButton.disabled = true;
+            }
+        }
+    }
+
     searchRulesOnConfirm(result) {
-        this._ruleSelected = result;
         this._generateValidationReportButton.disabled = false;
     }
 
