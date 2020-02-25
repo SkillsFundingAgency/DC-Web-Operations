@@ -65,13 +65,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
             }
 
-            // get all the internal reports for the current period
-            var reportDetails = await _reportsService.GetAllReportDetails(reportsViewModel.CollectionYear, reportsViewModel.CollectionPeriod);
-            if (reportDetails != null)
-            {
-                reportsViewModel.ReportAction = ReportActions.GetReportDetails;
-                reportsViewModel.Reports = reportDetails;
-            }
+            reportsViewModel.ReportAction = ReportActions.GetReportDetails;
 
             return View(model: reportsViewModel);
         }
@@ -101,7 +95,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return RedirectToAction("ProcessingReport", "Reports", new { ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = year, CollectionPeriod = period, JobId = jobId });
         }
 
-        [HttpGet("GetReportFile/{collectionYear}/{collectionPeriod}/{fileName}/{downloadName?}")]
+        [HttpGet("GetReportFile")]
         public async Task<FileResult> GetReportFile(int collectionYear, int collectionPeriod, string fileName, string downloadName = "")
         {
             try
