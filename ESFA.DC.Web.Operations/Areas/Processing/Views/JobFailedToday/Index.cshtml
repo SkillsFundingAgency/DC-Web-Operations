@@ -51,8 +51,8 @@
 
     import JobFailedTodayController from "/assets/js/processing/jobFailedTodayController.js";
     import Hub from '/assets/js/hubs/jobFailedTodayHub.js';
-
-    const hub = new Hub();
+    
+    const hub = new Hub('jobFailedTodayHub');
     hub.startHub();
 
     const jobFailedTodayController = new JobFailedTodayController();

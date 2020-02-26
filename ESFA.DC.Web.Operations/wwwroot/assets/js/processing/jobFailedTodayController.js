@@ -31,7 +31,7 @@ class JobFailedTodayController {
         stateLabel.textContent = `Status: ${state}`;
 
     }
-
+    
     drawGrid() {
 
         this.sortByUkprn();

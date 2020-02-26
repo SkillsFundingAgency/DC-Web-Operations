@@ -1,66 +1,18 @@
 ﻿import JobQueuedController from '/assets/js/processing/jobQueuedController.js';
+import HubBase from '/assets/js/hubs/hubBase.js';
 
-class JobQueuedHub {
+class JobQueuedHub extends HubBase {
 
-    constructor() {
-        this.connection = new signalR
-            .HubConnectionBuilder()
-            .withAutomaticReconnect()
-            .withUrl("/jobQueuedHub", { transport: signalR.HttpTransportType.WebSockets })
-            .build();
-    }
-
-    getConnection() {
-        return this.connection;
+    constructor(url) {
+        super(url);
+        this._controller = new JobQueuedController();
     }
 
     startHub() {
-
-        const jobQueuedController = new JobQueuedController();
-
-        this.connection.on("ReceiveMessage", jobQueuedController.updatePage.bind(jobQueuedController));
-
-        this.connection.onreconnecting((error) => {
-            console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
-            console.log("Reconnecting - " + error);
-            jobQueuedController.displayConnectionState("Reconnecting");
-        });
-
-        this.connection.onreconnected((connectionId) => {
-            console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-            console.log("Connected - " + connectionId);
-            jobQueuedController.displayConnectionState("Connected");
-        });
-
-        this.connection.onclose((error) => {
-            console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-            console.log("Closed - " + error);
-            jobQueuedController.displayConnectionState("Closed");
-        });
-
-        this.startConnection(jobQueuedController);
+        super.getConnection().on("ReceiveMessage", this._controller.updatePage.bind(this._controller));
+        super.startHub(this._controller);
     }
 
-    startConnection(JobQueuedController) {
-        const classScope = this;
-
-        try {
-            this.connection.start().then(() => {
-                clearTimeout(this.timerId);
-                this.timerId = setInterval(function () {
-                    console.log('Attempting to send client handshake as ' + classScope.connection.connectionId);
-                    classScope.connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
-                }, 5 * 1000);
-                console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-                console.log("connected");
-                JobQueuedController.displayConnectionState("Connected");
-            });
-        } catch (err) {
-            console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-            console.log(err);
-            setTimeout(() => this.startConnection(), 1000);
-        }
-    }
 }
 
 export default JobQueuedHub;

@@ -94,7 +94,7 @@
     import JobProcessingController from "/assets/js/processing/jobProcessingController.js";
     import Hub from '/assets/js/hubs/jobProcessingHub.js';
 
-    const hub = new Hub();
+    const hub = new Hub('jobProcessingHub');
     hub.startHub();
 
     const jobProcessingController = new JobProcessingController();

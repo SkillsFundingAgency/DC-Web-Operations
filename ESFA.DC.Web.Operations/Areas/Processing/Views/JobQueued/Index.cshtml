@@ -96,7 +96,7 @@
     import JobQueuedController from "/assets/js/processing/jobQueuedController.js";
     import Hub from '/assets/js/hubs/jobQueuedHub.js';
 
-    const hub = new Hub();
+    const hub = new Hub('jobQueuedHub');
     hub.startHub();
 
     const jobQueuedController = new JobQueuedController();
