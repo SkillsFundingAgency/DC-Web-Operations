@@ -17,8 +17,6 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 {
     public class CollectionsService : BaseHttpClientService, ICollectionsService
     {
-        private const int ReadyStatusCode = 1;
-
         private readonly string _baseUrl;
         private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM" };
         private readonly IDateTimeProvider _dateTimeProvider;
@@ -85,7 +83,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/previous-periods/{collectionName}/{ReadyStatusCode}", cancellationToken);
+            var data = await GetDataAsync($"{_baseUrl}/api/job/all-periods/{collectionName}/{(short)JobStatusType.Ready}", cancellationToken);
             return data != null ? _jsonSerializationService.Deserialize<IEnumerable<FileUploadJob>>(data) : new List<FileUploadJob>();
         }
 
