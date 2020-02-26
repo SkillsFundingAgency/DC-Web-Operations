@@ -1,85 +1,60 @@
 ﻿import JobController from '/assets/js/periodEnd/jobController.js';
+import HubBase from '/assets/js/hubs/hubBase.js';
 
-class periodEndPrepHub {
-    
-    constructor() {
-        this.connection = new signalR
-            .HubConnectionBuilder()
-            .withUrl("/periodEndPrepHub", { transport: signalR.HttpTransportType.WebSockets }) 
-            .withAutomaticReconnect()
-            .build();
-    }
+class periodEndPrepHub extends HubBase {
 
-    getConnection() {
-        return this.connection;
+    constructor(url) {
+        super(url);
+        this._controller = new JobController();
     }
 
     startHub() {
-        const jobController = new JobController();
 
-        this.connection.on("ReceiveMessage", jobController.renderJobs.bind(jobController));
+        this.connection = super.getConnection();
+        
+        this.connection.on("ReceiveMessage", this._controller.renderJobs.bind(this._controller));
 
         this.connection.on("DisableJobReSubmit",
             (jobId) => {
-                jobController.disableJobReSubmit.call(jobController, jobId);
+                this._controller.disableJobReSubmit.call(this._controller, jobId);
             });
 
         this.connection.on("ReferenceJobsButtonState",
             (enabled) => {
-                jobController.setPauseRefJobsButtonState.call(jobController, enabled);
+                this._controller.setPauseRefJobsButtonState.call(this._controller, enabled);
             });
 
         this.connection.on("CollectionClosedEmailButtonState",
             (enabled) => {
-                jobController.setCollectionClosedEmailButtonState.call(jobController, enabled);
+                this._controller.setCollectionClosedEmailButtonState.call(this._controller, enabled);
             });
 
         this.connection.on("ContinueButtonState",
             (enabled) => {
-                jobController.setContinueButtonState.call(jobController, enabled);
+                this._controller.setContinueButtonState.call(this._controller, enabled);
             });
-        
+
         this.connection.onreconnecting((error) => {
             console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
             console.log("Reconnecting - " + error);
-            jobController.displayConnectionState("Reconnecting");
+            this._controller.displayConnectionState("Reconnecting");
         });
 
         this.connection.onreconnected((connectionId) => {
             console.assert(this.connection.state === signalR.HubConnectionState.Connected);
             console.log("Connected - " + connectionId);
-            jobController.displayConnectionState("Connected");
+            this._controller.displayConnectionState("Connected");
         });
 
         this.connection.onclose((error) => {
             console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
             console.log("Closed - " + error);
-            jobController.displayConnectionState("Closed");
+            this._controller.displayConnectionState("Closed");
         });
 
-        this.startConnection(jobController);
+        super.startHub(this._controller);
     }
-
-    startConnection(jobController) {
-        const classScope = this;
-
-        try {
-            this.connection.start().then(() => {
-                clearTimeout(this.timerId);
-                this.timerId = setInterval(function () {
-                    console.log('Attempting to send client handshake as ' + classScope.connection.connectionId);
-                    classScope.connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
-                }, 5*1000);
-                console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-                console.log("connected");
-                jobController.displayConnectionState("Connected");
-            });
-        } catch (err) {
-            console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-            console.log(err);
-            setTimeout(() => this.startConnection(), 1000);
-        }
-    }
+    
 }
 
 export default periodEndPrepHub;

@@ -96,7 +96,7 @@
     import JobSubmittedController from "/assets/js/processing/jobSubmittedController.js";
     import Hub from '/assets/js/hubs/jobSubmittedHub.js';
 
-    const hub = new Hub();
+    const hub = new Hub('jobSubmittedHub');
     hub.startHub();
 
     const jobSubmittedController = new JobSubmittedController();

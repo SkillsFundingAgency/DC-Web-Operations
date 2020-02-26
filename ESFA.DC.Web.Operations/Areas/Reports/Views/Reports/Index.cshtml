@@ -121,7 +121,7 @@
         import Client from '/assets/js/reports/client.js';
         import ReportsController from '/assets/js/reports/reportsController.js';
         import Hub from '/assets/js/hubs/reportsHub.js';
-        const hub = new Hub();
+        const hub = new Hub('reportsHub');
         hub.startHub();
         window.reportClient = new Client(hub.getConnection());
         var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
