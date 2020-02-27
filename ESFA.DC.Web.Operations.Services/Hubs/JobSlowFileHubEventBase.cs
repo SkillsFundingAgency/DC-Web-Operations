@@ -2,7 +2,7 @@
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
-    public sealed class JobQueuedHubEventBase : BaseHubEvent, IJobQueuedHubEventBase
+    public sealed class JobSlowFileHubEventBase : BaseHubEvent, IJobSlowFileHubEventBase
     {
     }
 }

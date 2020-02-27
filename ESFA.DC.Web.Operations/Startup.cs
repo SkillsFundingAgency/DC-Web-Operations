@@ -102,6 +102,7 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<JobQueuedTimedHostedService>();
             services.AddHostedService<JobSubmittedTimedHostedService>();
             services.AddHostedService<JobFailedTodayTimedHostedService>();
+            services.AddHostedService<JobSlowFileTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
@@ -207,6 +208,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<JobSlowFileHub>("/jobSlowFileHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -255,6 +261,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobQueuedHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobSubmittedHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobFailedTodayHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<JobSlowFileHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
-    public class JobFailedTodayHub : BaseHub<JobFailedTodayHub>
+    public class JobSlowFileHub : BaseHub<JobSlowFileHub>
     {
-        public JobFailedTodayHub(IJobFailedTodayHubEventBase eventBase, IHubContext<JobFailedTodayHub> hubContext, ILogger logger)
+        public JobSlowFileHub(IJobSlowFileHubEventBase eventBase, IHubContext<JobSlowFileHub> hubContext, ILogger logger)
             : base(eventBase, hubContext, logger)
         {
         }

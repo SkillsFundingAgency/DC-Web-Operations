@@ -128,7 +128,9 @@
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
-            <h2 class="govuk-heading-m"><a class="" href="slow-files">Slow files</a></h2>
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("Slow files", "Index", "JobSlowFile", new { area = AreaNames.Processing })
+            </h2>
             <span id="slowFiles" class="govuk-heading-l no-margin-bottom">16</span>
             <span class="govuk-body-s">Taking 20% longer than usual</span>
         </div>

@@ -9,22 +9,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
 {
     [Area(AreaNames.Processing)]
-    [Route(AreaNames.Processing + "/jobSubmitted")]
-    public class JobSubmittedController : BaseController
+    [Route(AreaNames.Processing + "/jobSlowFile")]
+    public class JobSlowFileController : BaseController
     {
-        IJobSubmittedService _jobSubmittedService;
+        IJobSlowFileService _jobSlowFileService;
         ILogger _logger;
 
-        public JobSubmittedController(IJobSubmittedService jobSubmittedService, ILogger logger, TelemetryClient telemetryClient)
+        public JobSlowFileController(IJobSlowFileService jobSlowFileService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
-            _jobSubmittedService = jobSubmittedService;
+            _jobSlowFileService = jobSlowFileService;
             _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View("Index", await _jobSubmittedService.GetJobsThatAreSubmitted());
+            return View("Index", await _jobSlowFileService.GetJobsThatAreSlowFile());
         }
     }
 }
