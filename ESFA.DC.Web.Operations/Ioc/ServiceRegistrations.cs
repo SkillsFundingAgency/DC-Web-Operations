@@ -60,6 +60,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobProcessingHubEventBase>().As<IJobProcessingHubEventBase>().SingleInstance();
             builder.RegisterType<JobSubmittedHubEventBase>().As<IJobSubmittedHubEventBase>().SingleInstance();
             builder.RegisterType<JobFailedTodayHubEventBase>().As<IJobFailedTodayHubEventBase>().SingleInstance();
+            builder.RegisterType<JobSlowFileHubEventBase>().As<IJobSlowFileHubEventBase>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -92,6 +93,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobSubmittedService>().As<IJobSubmittedService>().InstancePerLifetimeScope();
 
             builder.RegisterType<JobFailedTodayService>().As<IJobFailedTodayService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<JobSlowFileService>().As<IJobSlowFileService>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();
