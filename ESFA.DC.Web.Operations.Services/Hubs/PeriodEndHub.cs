@@ -72,6 +72,59 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
+        public async Task UnPauseReferenceJobs(int collectionYear, int period)
+        {
+            try
+            {
+                await _periodEndService.ToggleReferenceDataJobs(collectionYear, period, false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
+        }
+
+        public async Task PublishProviderReports(int collectionYear, int period)
+        {
+            try
+            {
+                await _periodEndService.PublishProviderReports(collectionYear, period);
+                await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
+        }
+
+        public async Task PublishMcaReports(int collectionYear, int period)
+        {
+            try
+            {
+                await _periodEndService.PublishMcaReports(collectionYear, period);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
+        }
+
+        public async Task ClosePeriodEnd(int collectionYear, int period)
+        {
+            try
+            {
+                await _periodEndService.ClosePeriodEnd(collectionYear, period);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
+        }
+
         public async Task Proceed(int collectionYear, int period, int pathId, int pathItemId)
         {
             try

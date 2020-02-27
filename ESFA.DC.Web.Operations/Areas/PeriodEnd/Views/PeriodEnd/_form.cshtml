@@ -1,9 +1,0 @@
-﻿@model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.FormDefinitionViewModel
-
-
-@using (Html.BeginForm(Model.FormMethod, "PeriodEnd", FormMethod.Post, new { @class = "app-task-list__section" }))
-{
-    <input type="hidden" name="collectionYear" value="@Model.Year" />
-    <input type="hidden" name="period" value="@Model.Period" />
-    <input type="submit" class="govuk-button customised" id="@Model.SubmitButtonId" value="@Model.SubmitButtonText">
-}

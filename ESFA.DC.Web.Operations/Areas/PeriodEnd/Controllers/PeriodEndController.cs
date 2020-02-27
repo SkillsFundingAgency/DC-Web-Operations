@@ -60,40 +60,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             return View(model);
         }
 
-        [HttpPost("unPauseReferenceData")]
-        public async Task<IActionResult> UnPauseReferenceJobs(int collectionYear, int period)
-        {
-            await _periodEndService.ToggleReferenceDataJobs(collectionYear, period, false);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
-        [HttpPost("publishProviderReports")]
-        public async Task<IActionResult> PublishProviderReports(int collectionYear, int period)
-        {
-            await _periodEndService.PublishProviderReports(collectionYear, period);
-
-            await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
-        [HttpPost("publishMcaReports")]
-        public async Task<IActionResult> PublishMcaReports(int collectionYear, int period)
-        {
-            await _periodEndService.PublishMcaReports(collectionYear, period);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
-        [HttpPost("closePeriodEnd")]
-        public async Task<IActionResult> ClosePeriodEnd(int collectionYear, int period)
-        {
-            await _periodEndService.ClosePeriodEnd(collectionYear, period);
-
-            return RedirectToAction("Index", new { collectionYear, period });
-        }
-
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
             var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period);
