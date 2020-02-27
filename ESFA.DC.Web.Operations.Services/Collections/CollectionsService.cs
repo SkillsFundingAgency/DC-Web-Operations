@@ -71,14 +71,14 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<CollectionsManagement.Models.Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
-          return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
-                await GetDataAsync($"{_baseUrl}/api/collections/byId/{collectionId}", cancellationToken));
+            return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+                  await GetDataAsync($"{_baseUrl}/api/collections/byId/{collectionId}", cancellationToken));
         }
 
         public async Task<CollectionsManagement.Models.Collection> GetCollectionAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
-           return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
-                await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
+            return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
+                 await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
         }
 
         public async Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken)
@@ -102,13 +102,14 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<bool> FailJob(int jobId, CancellationToken cancellationToken)
         {
-            var fileUploadJobDto = new FileUploadJob()
+            var dto = new JobStatusDto()
             {
                 JobId = jobId,
-                Status = JobStatusType.FailedRetry
+                ContinueToFailJob = true,
+                JobStatus = (int)JobStatusType.Failed,
             };
 
-            var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/job", fileUploadJobDto, cancellationToken);
+            var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/job/status", dto, cancellationToken);
 
             if (!response.IsSuccess)
             {
