@@ -52,16 +52,21 @@
                 var period = $"R{periodHistory.Period:D2}";
                 var periodFinished = periodHistory.PeriodEndStart != null && periodHistory.PeriodEndFinish != null;
 
-                var periodDuration = periodHistory.PeriodEndRuntimeBusinessDays;
+                var periodDurationSimple = periodHistory.PeriodEndRuntimeDays;
+                var periodDurationBusiness = periodHistory.PeriodEndRuntimeBusinessDays;
                 <div class="history-left">
                     <h2 class="govuk-heading-m">@period</h2>
                     <p><strong>Started: </strong>@periodHistory.PeriodEndStart</p>
                     <p><strong>Finished: </strong>@periodHistory.PeriodEndFinish</p>
                     @if (periodFinished)
                     {
-                        <p>
-                            <strong>Duration: </strong> @periodDuration.Value.Days days @periodDuration.Value.Hours hours @periodDuration.Value.Minutes minutes
-                        </p>
+                    <p>
+                        <strong>Duration: </strong> @periodDurationSimple.Value.Days days @periodDurationSimple.Value.Hours hours @periodDurationSimple.Value.Minutes minutes
+                    </p>
+
+                    <p>
+                        <strong>Duration (Business Days): </strong> @periodDurationBusiness.Value.Days days @periodDurationBusiness.Value.Hours hours @periodDurationBusiness.Value.Minutes minutes
+                    </p>
                     }
                 </div>
                 <div class="history-right">
