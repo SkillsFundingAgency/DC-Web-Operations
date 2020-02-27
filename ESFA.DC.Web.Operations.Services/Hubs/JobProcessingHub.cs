@@ -6,35 +6,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
-    public class JobProcessingHub : Hub
+    public class JobProcessingHub : BaseHub<JobProcessingHub>
     {
-        private readonly IJobProcessingHubEventBase _eventBase;
-        private readonly IHubContext<JobProcessingHub> _hubContext;
-        private readonly ILogger _logger;
-
-        public JobProcessingHub(IJobProcessingHubEventBase eventBase, IHubContext<JobProcessingHub> hubContext, ILogger logger)
+        public JobProcessingHub(IJobSlowFileHubEventBase eventBase, IHubContext<JobProcessingHub> hubContext, ILogger logger)
+            : base(eventBase, hubContext, logger)
         {
-            _eventBase = eventBase;
-            _hubContext = hubContext;
-            _logger = logger;
-        }
-
-        public async Task ReceiveMessage()
-        {
-            try
-            {
-                _eventBase.ClientHeartbeat(Context.ConnectionId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                throw;
-            }
-        }
-
-        public async Task SendMessage(string jobProcessingModel)
-        {
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", jobProcessingModel);
         }
     }
 }

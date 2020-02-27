@@ -1,11 +1,6 @@
-﻿using System;
-
-namespace ESFA.DC.Web.Operations.Interfaces.Processing
+﻿namespace ESFA.DC.Web.Operations.Interfaces.Processing
 {
-    public interface IJobQueuedHubEventBase
+    public interface IJobQueuedHubEventBase : IHubEventBase
     {
-        event EventHandler ClientHeartbeatCallback;
-
-        void ClientHeartbeat(string contextConnectionId);
     }
 }
