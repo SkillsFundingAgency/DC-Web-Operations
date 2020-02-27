@@ -9,33 +9,27 @@ class client {
 
     startPeriodEnd(collectionYear, period) {
         this.jobController.setStartPeriodEndButtonState(false);
-        invokeAction("StartPeriodEnd", collectionYear, period);
+        this.invokeAction("StartPeriodEnd", collectionYear, period);
     }
 
     unPauseReferenceJobs(collectionYear, period) {
         this.jobController.setUnPauseReferenceJobsButtonState(false);
-        invokeAction("UnPauseReferenceJobs", collectionYear, period);
+        this.invokeAction("UnPauseReferenceJobs", collectionYear, period);
     }
 
     publishProviderReports(collectionYear, period) {
         this.jobController.setPublishProviderReportsButtonState(false);
-        invokeAction("PublishProviderReports", collectionYear, period);
+        this.invokeAction("PublishProviderReports", collectionYear, period);
     }
 
     publishMcaReports(collectionYear, period) {
         this.jobController.setPublishMcaReportsButtonState(false);
-        invokeAction("PublishMcaReports", collectionYear, period);
+        this.invokeAction("PublishMcaReports", collectionYear, period);
     }
 
     closePeriodEnd(collectionYear, period) {
         this.jobController.setClosePeriodEndButtonState(false);
-        invokeAction("ClosePeriodEnd", collectionYear, period);
-    }
-
-    invokeAction(action, collectionYear, period) {
-        this.connection
-            .invoke(action, collectionYear, period)
-            .catch(err => console.error(err.toString()));
+        this.invokeAction("ClosePeriodEnd", collectionYear, period);
     }
 
     resubmitJob(jobId) {
@@ -46,12 +40,12 @@ class client {
 
     collectionClosedEmail(collectionYear, period) {
         this.jobController.setCollectionClosedEmailButtonState(false);
-        invokeAction("SendCollectionClosedEmail", collectionYear, period);
+        this.invokeAction("SendCollectionClosedEmail", collectionYear, period);
     }
 
     pauseReferenceDataJobs(collectionYear, period) {
         this.jobController.setPauseRefJobsButtonState(false);
-        invokeAction("PauseReferenceDataJobs", collectionYear, period);
+        this.invokeAction("PauseReferenceDataJobs", collectionYear, period);
     }
 
     proceed(collectionYear, period, pathId, pathItemId) {
@@ -59,6 +53,12 @@ class client {
             .invoke("Proceed", collectionYear, period, pathId, pathItemId)
             .catch(err => console.error(err.toString()));
         return false;
+    }
+
+    invokeAction(action, collectionYear, period) {
+        this.connection
+            .invoke(action, collectionYear, period)
+            .catch(err => console.error(err.toString()));
     }
 }
 
