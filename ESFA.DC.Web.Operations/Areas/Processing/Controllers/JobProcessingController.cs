@@ -24,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View((object)await _jobProcessingService.GetJobsThatAreProcessing());
+            return View("Index", await _jobProcessingService.GetJobsThatAreProcessing());
         }
     }
 }
