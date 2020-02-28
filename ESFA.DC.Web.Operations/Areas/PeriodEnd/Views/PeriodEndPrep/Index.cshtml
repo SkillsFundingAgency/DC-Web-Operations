@@ -7,6 +7,7 @@
     ViewData[ViewDataConstants.BackLink] = "/";
 }
 
+@String.Join(",", Model.GlaCodes)
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
@@ -90,7 +91,7 @@
 
         <br />
         <br />
-        
+
         <button class="govuk-button customised" id="collectionClosed"
                 onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period);" disabled>
             Send Collection Closed Email
@@ -120,7 +121,7 @@
 </div>
 
 @section PageScripts
-{
+    {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 
     <script type="module">

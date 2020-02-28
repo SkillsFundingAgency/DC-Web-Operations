@@ -1,4 +1,5 @@
-﻿using ESFA.DC.PeriodEnd.Models.Dtos;
+﻿using System.Collections.Generic;
+using ESFA.DC.PeriodEnd.Models.Dtos;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {
@@ -13,5 +14,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
         public bool Closed { get; set; }
 
         public PeriodEndPrepModel PeriodEndPrepModel { get; set; }
+
+        public List<string> GlaCodes { get; set; }
     }
 }

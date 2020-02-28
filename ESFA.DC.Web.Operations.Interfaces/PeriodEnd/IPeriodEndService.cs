@@ -36,5 +36,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IEnumerable<McaDetails>> GetMcaDetails(CancellationToken cancellationToken = default);
     }
 }
