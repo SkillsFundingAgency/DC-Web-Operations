@@ -48,50 +48,30 @@
         <br />
         <br />
 
-        @await Html.PartialAsync("_form", new FormDefinitionViewModel
-        {
-            FormMethod = "PublishMcaReports",
-            Year = Model.Year,
-            Period = Model.Period,
-            SubmitButtonId = "publishMcaReports",
-            SubmitButtonText = "Publish MCA Reports"
-        })
-        
-        <br />
-        <br />
-
-        @await Html.PartialAsync("_form", new FormDefinitionViewModel
-        {
-            FormMethod = "PublishProviderReports",
-            Year = Model.Year,
-            Period = Model.Period,
-            SubmitButtonId = "publishProviderReports",
-            SubmitButtonText = "Publish Provider Reports"
-        })
+        <div class="app-task-list__section">
+            <input id="publishMcaReports" type="submit" class="govuk-button customised" onclick="window.periodEndClient.publishMcaReports(@Model.Year, @Model.Period);return false;" value="Publish MCA Reports">
+        </div>
 
         <br />
         <br />
 
-        @await Html.PartialAsync("_form", new FormDefinitionViewModel
-        {
-            FormMethod = "ClosePeriodEnd",
-            Year = Model.Year,
-            Period = Model.Period,
-            SubmitButtonId = "closePeriodEnd",
-            SubmitButtonText = "Close Period End"
-        })
+        <div class="app-task-list__section">
+            <input id="publishProviderReports" type="submit" class="govuk-button customised" onclick="window.periodEndClient.publishProviderReports(@Model.Year, @Model.Period);return false;" value="Publish Provider Reports">
+        </div>
 
         <br />
         <br />
 
-        @await Html.PartialAsync("_form", new FormDefinitionViewModel
-        {
-            FormMethod = "UnPauseReferenceJobs",
-            Year = Model.Year,
-            Period = Model.Period,
-            SubmitButtonId = "resumeReferenceData",
-            SubmitButtonText = "Resume Reference Data Jobs"
-        })
+        <div class="app-task-list__section">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period);return false;" value="Close Period End">
+        </div>
+
+        <br />
+        <br />
+
+        <div class="app-task-list__section">
+            <input id="resumeReferenceData" type="submit" class="govuk-button customised" onclick="window.periodEndClient.unPauseReferenceJobs(@Model.Year, @Model.Period);return false;" value="Resume Reference Data Jobs">
+        </div>
     </div>
 </div>
 

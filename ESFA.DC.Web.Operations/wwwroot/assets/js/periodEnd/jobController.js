@@ -1,5 +1,5 @@
 ﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
-
+import { setControlEnabledState } from '/assets/js/util.js';
 class jobController {
 
     constructor() {
@@ -106,38 +106,39 @@ class jobController {
     }
 
     disableJobReSubmit(jobId) {
-        const reSubmitButton = document.getElementById("jobButton"+jobId);
-        if (reSubmitButton != null) {
-            reSubmitButton.disabled = true;
-        }
+        setControlEnabledState(enabled, "jobButton" + jobId);
     }
 
     setPauseRefJobsButtonState(enabled) {
-        const button = document.getElementById("pause-all-jobs");
-        if (button != null) {
-            button.disabled = !enabled;
-        }
+        setControlEnabledState(enabled, "pause-all-jobs");
     }
 
     setCollectionClosedEmailButtonState(enabled) {
-        const button = document.getElementById("collectionClosed");
-        if (button != null) {
-            button.disabled = !enabled;
-        }
+        setControlEnabledState(enabled, "collectionClosed");
     }
 
     setContinueButtonState(enabled) {
-        const button = document.getElementById("startPeriodEnd");
-        if (button != null) {
-            button.disabled = !enabled;
-        }
+        setControlEnabledState(enabled, "startPeriodEnd");
     }
 
     setStartPeriodEndButtonState(enabled) {
-        const button = document.getElementById("startPeriodEnd");
-        if (button != null) {
-            button.disabled = !enabled;
-        }
+        setControlEnabledState(enabled, "startPeriodEnd");
+    }
+
+    setUnPauseReferenceJobsButtonState(enabled) {
+        setControlEnabledState(enabled, "resumeReferenceData");
+    }
+
+    setPublishMcaReportsButtonState(enabled) {
+        setControlEnabledState(enabled, "publishMcaReports");
+    }
+
+    setPublishProviderReportsButtonState(enabled) {
+        setControlEnabledState(enabled, "publishProviderReports");
+    }
+
+    setClosePeriodEndButtonState(enabled) {
+        setControlEnabledState(enabled, "closePeriodEnd");
     }
 
     displayConnectionState(state) {

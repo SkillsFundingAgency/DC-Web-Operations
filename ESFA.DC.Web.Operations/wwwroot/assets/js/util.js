@@ -61,3 +61,10 @@ export function getFormattedDatetimeString(dateString) {
 
     return `${dateObject.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
 }
+
+export function setControlEnabledState(enabledState, controlId) {
+    const control = document.getElementById(controlId);
+    if (control) {
+        control.disabled = !enabledState;
+    }
+}
