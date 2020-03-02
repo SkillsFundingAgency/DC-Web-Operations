@@ -145,6 +145,7 @@
             placeholder: 'e.g Rule_01'
         });
         document.getElementById('autocomplete-overlay').addEventListener("blur", this.onautocompleteblur.bind(this));
+        document.getElementById("autocomplete-overlay").maxLength = "100";
         this._spinner.style.visibility = 'hidden';
     }
 
