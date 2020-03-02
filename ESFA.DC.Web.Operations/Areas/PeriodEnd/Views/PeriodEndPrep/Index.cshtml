@@ -7,7 +7,6 @@
     ViewData[ViewDataConstants.BackLink] = "/";
 }
 
-@String.Join(",", Model.GlaCodes)
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
@@ -35,6 +34,13 @@
     </div>
 
     <div class="govuk-grid-column-two-thirds">
+
+        <h2 class="govuk-heading-m">MCAs</h2>
+
+        @String.Join(", ", Model.GlaCodes)
+
+        <br />
+        <br />
 
         @if (Model != null)
         {
@@ -147,9 +153,9 @@
             const state = @Json.Serialize(Model?.PeriodEndPrepModel);
             const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
             const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
-
+            const mcas = '@Html.Raw(Model?.PeriodEndPrepModel.McaDetails)'
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished);
+            confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished, mcas);
 
             const jobController = new JobController();
             jobController.renderJobs(state);
