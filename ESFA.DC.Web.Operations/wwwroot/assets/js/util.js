@@ -46,7 +46,7 @@ export function getMessageForPercentage(percentage, options) {
     return options[0].label;
 }
 
-export function getDatetimeFromString(dateString) {        
+export function getDatetimeFromString(dateString) {
     return new Date(dateString);
 }
 

@@ -1,11 +1,10 @@
-﻿import JobProcessingController from '/assets/js/processing/jobProcessingController.js';
-import HubBase from '/assets/js/hubs/hubBase.js';
+﻿import HubBase from '/assets/js/hubs/hubBase.js';
 
 class jobProcessingHub extends HubBase{
 
-    constructor(url) {
+    constructor(url, jobProcessingController) {
         super(url);
-        this._controller = new JobProcessingController();
+        this._controller = jobProcessingController;
     }
 
     startHub() {

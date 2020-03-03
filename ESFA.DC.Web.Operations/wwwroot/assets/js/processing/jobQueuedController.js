@@ -21,8 +21,16 @@ class JobQueuedController {
     }
 
     updatePage(data) {
-        this._data = typeof data === 'object' ? data : JSON.parse(data);
+        //this._data = typeof data === 'object' ? data : JSON.parse(data);
+        if (typeof data === 'object') {
+            this._data = data;
+        }
+        else {
+            this._data = JSON.parse(data);
+        }
+
         this.drawGrid();
+
     }
 
     setDonut(filteredData) {
@@ -81,6 +89,7 @@ class JobQueuedController {
                     return anotherOne_el == array_el.collectionType;
                 }).length > 0
             });
+
         }
 
         return this._data.jobs;
@@ -122,7 +131,9 @@ class JobQueuedController {
     }
 
     downloadCSV() {
+
         var filteredData = this.filterBy();
+
         if (filteredData.length > 0) {
             let newData = filteredData.map(function (obj) {
                 return {
@@ -135,6 +146,7 @@ class JobQueuedController {
             });
             convertToCsv({ filename: 'Jobs-queued.csv', data: newData });
         }
+
     }
 }
 

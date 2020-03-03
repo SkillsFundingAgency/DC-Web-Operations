@@ -52,10 +52,11 @@
     import JobFailedTodayController from "/assets/js/processing/jobFailedTodayController.js";
     import Hub from '/assets/js/hubs/jobFailedTodayHub.js';
     
-    const hub = new Hub('jobFailedTodayHub');
+    const jobFailedTodayController = new JobFailedTodayController();
+
+    const hub = new Hub('jobFailedTodayHub', jobFailedTodayController);
     hub.startHub();
 
-    const jobFailedTodayController = new JobFailedTodayController();
     (function () {
             const data = @Json.Serialize(Model);
             jobFailedTodayController.updatePage(data);

@@ -52,10 +52,11 @@
     import JobSlowFileController from "/assets/js/processing/jobSlowFileController.js";
     import Hub from '/assets/js/hubs/jobSlowFileHub.js';
     
-    const hub = new Hub('jobSlowFileHub');
+    const jobSlowFileController = new JobSlowFileController();
+
+    const hub = new Hub('jobSlowFileHub', jobSlowFileController);
     hub.startHub();
 
-    const jobSlowFileController = new JobSlowFileController();
     (function () {
             const data = @Json.Serialize(Model);
             jobSlowFileController.updatePage(data);

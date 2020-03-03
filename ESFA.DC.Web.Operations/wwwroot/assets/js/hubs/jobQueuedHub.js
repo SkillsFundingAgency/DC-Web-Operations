@@ -1,11 +1,10 @@
-﻿import JobQueuedController from '/assets/js/processing/jobQueuedController.js';
-import HubBase from '/assets/js/hubs/hubBase.js';
+﻿import HubBase from '/assets/js/hubs/hubBase.js';
 
 class JobQueuedHub extends HubBase {
 
-    constructor(url) {
+    constructor(url, jobQueuedController) {
         super(url);
-        this._controller = new JobQueuedController();
+        this._controller = jobQueuedController;
     }
 
     startHub() {
