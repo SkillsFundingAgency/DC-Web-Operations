@@ -8,7 +8,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class JobProcessingHub : BaseHub<JobProcessingHub>
     {
-        public JobProcessingHub(IJobSlowFileHubEventBase eventBase, IHubContext<JobProcessingHub> hubContext, ILogger logger)
+        public JobProcessingHub(IJobProcessingHubEventBase eventBase, IHubContext<JobProcessingHub> hubContext, ILogger logger)
             : base(eventBase, hubContext, logger)
         {
         }

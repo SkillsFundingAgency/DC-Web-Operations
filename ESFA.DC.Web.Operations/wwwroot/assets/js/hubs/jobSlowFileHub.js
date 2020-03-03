@@ -1,11 +1,10 @@
-﻿import JobFailedTodayController from "/assets/js/processing/jobSlowFileController.js";
-import HubBase from '/assets/js/hubs/hubBase.js';
+﻿import HubBase from '/assets/js/hubs/hubBase.js';
 
 class JobSlowFileHub extends HubBase {
 
-    constructor(url) {
+    constructor(url, jobFailedTodayController) {
         super(url);
-        this._controller = new JobFailedTodayController();
+        this._controller = jobFailedTodayController;
     }
 
     startHub() {

@@ -96,10 +96,11 @@
     import JobSubmittedController from "/assets/js/processing/jobSubmittedController.js";
     import Hub from '/assets/js/hubs/jobSubmittedHub.js';
 
-    const hub = new Hub('jobSubmittedHub');
+    const jobSubmittedController = new JobSubmittedController();
+
+    const hub = new Hub('jobSubmittedHub', jobSubmittedController);
     hub.startHub();
 
-    const jobSubmittedController = new JobSubmittedController();
     (function () {
             const data = @Json.Serialize(Model);
             jobSubmittedController.updatePage(data);

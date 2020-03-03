@@ -1,11 +1,10 @@
-﻿import JobSubmittedController from '/assets/js/processing/jobSubmittedController.js';
-import HubBase from '/assets/js/hubs/hubBase.js';
+﻿import HubBase from '/assets/js/hubs/hubBase.js';
 
 class JobSubmittedHub extends HubBase {
 
-    constructor(url) {
+    constructor(url, jobSubmittedController) {
         super(url);
-        this._controller = new JobSubmittedController();
+        this._controller = jobSubmittedController;
     }
 
     startHub() {

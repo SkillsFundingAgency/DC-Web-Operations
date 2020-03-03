@@ -91,18 +91,18 @@
 <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
-<script type="module">
-
+<script type="module">    
     import JobQueuedController from "/assets/js/processing/jobQueuedController.js";
     import Hub from '/assets/js/hubs/jobQueuedHub.js';
 
-    const hub = new Hub('jobQueuedHub');
+    const jobQueuedController = new JobQueuedController();
+
+    const hub = new Hub('jobQueuedHub', jobQueuedController);
     hub.startHub();
 
-    const jobQueuedController = new JobQueuedController();
     (function () {
-            const data = '@Html.Raw(Model)';
-            jobQueuedController.updatePage(data);
+        const data = '@Html.Raw(Model)';
+        jobQueuedController.updatePage(data);
     })();
 
     window.change = function () {

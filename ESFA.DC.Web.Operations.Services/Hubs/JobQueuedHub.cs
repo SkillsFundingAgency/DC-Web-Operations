@@ -8,7 +8,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class JobQueuedHub : BaseHub<JobQueuedHub>
     {
-        public JobQueuedHub(IJobSlowFileHubEventBase eventBase, IHubContext<JobQueuedHub> hubContext, ILogger logger)
+        public JobQueuedHub(IJobQueuedHubEventBase eventBase, IHubContext<JobQueuedHub> hubContext, ILogger logger)
             : base(eventBase, hubContext, logger)
         {
         }
