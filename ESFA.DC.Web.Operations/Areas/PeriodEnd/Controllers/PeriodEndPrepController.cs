@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Controllers;
@@ -56,12 +55,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 
             string state = await _periodEndService.GetPrepState(model.Year, model.Period);
             model.PeriodEndPrepModel = _stateService.GetPrepState(state);
-            var mcaDetails = await _periodEndService.GetMcaDetails();
-            model.GlaCodes = new List<string>();
-            foreach (var mca in mcaDetails)
-            {
-                model.GlaCodes.Add(mca.Code);
-            }
 
             return View(model);
         }
