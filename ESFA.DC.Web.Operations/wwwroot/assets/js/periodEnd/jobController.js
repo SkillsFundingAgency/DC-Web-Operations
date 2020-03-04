@@ -4,6 +4,7 @@ class jobController {
 
     constructor() {
         this._slowTimer = null;
+        this._mcaLabel = document.getElementById("mcaLabel")
     }
 
     renderJobs(state) {
@@ -14,6 +15,7 @@ class jobController {
         }
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
+        this.renderMcas(stateModel.mcaDetails);
         this.renderFailedJobs(stateModel.failedJobs);
         this.renderReferenceJobs(stateModel.referenceDataJobs);
     }
@@ -90,6 +92,19 @@ class jobController {
         } else {
             let emptyDom = '<div class="govuk-!-font-size-16">No Failed Jobs</div>';
             container.insertAdjacentHTML("beforeend", emptyDom);
+        }
+    }
+
+    renderMcas(mcadetails) {
+        console.log(mcadetails);
+        var mcaGlaa = []
+        if (mcadetails != null && mcadetails.length > 0) {
+            for (var i = 0; i < mcadetails.length; i++) {
+                var obj = mcadetails[i];
+                var value = obj["code"];
+                mcaGlaa.push(value)
+            }
+            this._mcaLabel.textContent = mcaGlaa.join(", ")
         }
     }
 

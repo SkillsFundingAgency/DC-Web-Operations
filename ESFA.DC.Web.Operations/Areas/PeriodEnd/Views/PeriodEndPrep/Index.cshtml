@@ -37,8 +37,7 @@
 
         <h2 class="govuk-heading-m">MCAs</h2>
 
-        @String.Join(", ", Model.GlaCodes)
-
+        <label id="mcaLabel"></label>
         <br />
         <br />
 
@@ -153,9 +152,8 @@
             const state = @Json.Serialize(Model?.PeriodEndPrepModel);
             const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
             const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
-            const mcas = '@Html.Raw(Model?.PeriodEndPrepModel.McaDetails)'
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished, mcas);
+            confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished);
 
             const jobController = new JobController();
             jobController.renderJobs(state);
