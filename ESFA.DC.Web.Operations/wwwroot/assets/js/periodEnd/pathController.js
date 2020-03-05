@@ -64,7 +64,7 @@ class pathController {
         }
 
         if (nextItemIsSubPath) {
-            return " Proceed will start sub-path(s) and run next item";
+            return " Proceed will start sub-path(s) and run next item(s)";
         }
 
         if (itemIsSubPath && jobState === jobContinuation.nothingRunning) {
