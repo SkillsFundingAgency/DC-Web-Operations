@@ -114,5 +114,5 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
             return data;
         }
-     }
+    }
 }
