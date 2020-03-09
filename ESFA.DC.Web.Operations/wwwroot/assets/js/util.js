@@ -69,14 +69,12 @@ export function setControlEnabledState(enabledState, controlId) {
     }
 }
 
-export function stringNullValueReplaceWith(stringValue, replaceValue) {
+export function replaceNullOrEmpty(stringValue, replaceValue) {
     if (
         (typeof stringValue == 'undefined')
         ||
         (stringValue == null)
-        ||
-        (stringValue == false)
-        ||
+        ||        
         (stringValue.length == 0)
         ||
         (stringValue == "")

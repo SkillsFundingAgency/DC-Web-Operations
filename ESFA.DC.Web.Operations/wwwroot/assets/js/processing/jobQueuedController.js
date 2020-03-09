@@ -1,7 +1,7 @@
 ﻿import { getColorForPercentage } from '/assets/js/util.js';
 import { convertToCsv } from '/assets/js/csv-operations.js';
 import { getMessageForPercentage } from '/assets/js/util.js';
-import { stringNullValueReplaceWith } from '/assets/js/util.js';
+import { replaceNullOrEmpty } from '/assets/js/util.js';
 
 class JobQueuedController {
     constructor() {
@@ -59,7 +59,7 @@ class JobQueuedController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:420px"><a href="#">${stringNullValueReplaceWith(item.providerName, `Esfa`)}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:420px"><a href="#">${replaceNullOrEmpty(item.providerName, `ESFA`)}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
