@@ -3,6 +3,7 @@ import { convertToCsv } from '/assets/js/csv-operations.js';
 import { getMessageForPercentage } from '/assets/js/util.js';
 import { getFormattedDatetimeString } from '/assets/js/util.js';
 import { getDatetimeFromString } from '/assets/js/util.js';
+import { stringNullValueReplaceWith } from '/assets/js/util.js';
 
 class JobSubmittedController {
 
@@ -74,10 +75,10 @@ class JobSubmittedController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${stringNullValueReplaceWith(item.providerName, `Esfa`)}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:200px">${item.createdDateStr}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${stringNullValueReplaceWith(item.fileName, ``)}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
             sb.push(`</tr>`);
         }
