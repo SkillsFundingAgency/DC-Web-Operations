@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>ESFA.DC.Web.Operations.Interfaces.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.Services\Hubs\ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>ESFA.DC.Web.Operations.Interfaces.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.Services\Hubs\ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

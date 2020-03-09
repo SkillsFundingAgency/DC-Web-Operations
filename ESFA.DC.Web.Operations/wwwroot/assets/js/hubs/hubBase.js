@@ -68,6 +68,8 @@
 
                 console.log("connected");
 
+                this.getConnection().send("newMessage", 100);
+
                 this._controller.displayConnectionState("Connected");
 
                 if (this._callback !== undefined && typeof this._callback == "function") {

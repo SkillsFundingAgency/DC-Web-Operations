@@ -152,7 +152,9 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
-            <h2 class="govuk-heading-m"><a class="" href="#">Current period</a></h2>
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("Current Period", "Index", "JobProcessingDetail", new { area = AreaNames.Processing })
+            </h2>
             <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">40</span>
         </div>
     </div>

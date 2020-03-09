@@ -9,7 +9,7 @@ namespace ESFA.DC.Web.Operations.Services
 {
     public abstract class BaseTimedHostedService : IHostedService, IDisposable
     {
-        private const int TimerCadenceMs = 3000;
+        private const int TimerCadenceMs = 10000;
         private const int SleepAfterMinutes = 5;
 
         private readonly string _logPrefix;
