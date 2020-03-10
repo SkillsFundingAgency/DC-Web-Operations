@@ -22,7 +22,17 @@ class JobProcessingController {
     }
 
     updatePage(data) {
-        this._data = typeof data === 'object' ? data : JSON.parse(data);
+
+        if (typeof data === 'object') {
+            this._data = data;
+        }
+        else {
+            this._data = JSON.parse(data);
+            this._data.jobs.map(p => {                
+                    p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA')
+            });
+        }
+
         this.drawGrid();
     }
 
@@ -51,7 +61,7 @@ class JobProcessingController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:400px"><a href="#">${replaceNullOrEmpty(item.providerName, `ESFA`)}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:400px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.averageProcessingTime}</td>`);

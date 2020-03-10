@@ -2,7 +2,7 @@
 import { getFormattedDatetimeString } from '/assets/js/util.js';
 import { replaceNullOrEmpty } from '/assets/js/util.js';
 
-class JobFailedTodayController {
+class JobConcernController {
 
     constructor() {
 
@@ -19,10 +19,11 @@ class JobFailedTodayController {
         }
         else {
             this._data = JSON.parse(data);
-            this._data.jobs.map(p => {
-                p.failedAtDateStr = getFormattedDatetimeString(p.failedAt),
-                    p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA'),
-                    p.fileName = replaceNullOrEmpty(p.fileName, '')
+
+            this._data.jobs.map(item => {
+                item.providerName = replaceNullOrEmpty(item.providerName, 'ESFA'),
+                    item.fileName = replaceNullOrEmpty(item.fileName, ''),
+                    item.lastSuccessfulSubmission = getFormattedDatetimeString(item.lastSuccessfulSubmission)
             });
         }
 
@@ -36,7 +37,7 @@ class JobFailedTodayController {
         stateLabel.textContent = `Status: ${state}`;
 
     }
-    
+
     drawGrid() {
 
         this.sortByUkprn();
@@ -53,8 +54,8 @@ class JobFailedTodayController {
             sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.failedAtDateStr}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.processingTimeBeforeFailure}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.lastSuccessfulSubmission}</td>`);
+            sb.push(`<td class="govuk-table__cell">${item.periodOfLastSuccessfulSubmission}</td>`);
             sb.push(`</tr>`);
         }
 
@@ -83,16 +84,16 @@ class JobFailedTodayController {
                     "Provider name": obj.providerName,
                     "Ukprn": obj.ukprn,
                     "Filename": obj.fileName,
-                    "Failed at": obj.failedAtDateStr,
-                    "Processing time before failure": obj.processingTimeBeforeFailure
+                    "Last successful submission": obj.lastSuccessfulSubmission,
+                    "Period of last successful submission": obj.periodOfLastSuccessfulSubmission
                 }
             });
 
-            convertToCsv({ filename: 'Jobs-Failed-Today.csv', data: newData });
+            convertToCsv({ filename: 'Jobs-Concern.csv', data: newData });
 
         }
 
     }
 }
 
-export default JobFailedTodayController
+export default JobConcernController

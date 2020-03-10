@@ -1,0 +1,73 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model string
+
+@{
+    ViewData["Title"] = "Concerns";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+<div id="content"></div>
+<div class="govuk-grid-row">
+    <br />
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Concerns</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <table class="govuk-table" id="tblData">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col" style="width:250px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width:170px">Filename </th>
+                    <th class="govuk-table__header" scope="col" style="width:170px">Last successful submission</th>
+                    <th class="govuk-table__header" scope="col">Period of last successful submission</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="dataContent">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
+
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="lastSync"></label>
+
+        <label id="state"></label>
+    </div>
+</div>
+
+<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
+
+<script type="module">
+
+    import JobConcernController from "/assets/js/processing/jobConcernController.js";
+    import Hub from '/assets/js/hubs/jobConcernHub.js';
+    
+    const jobConcernController = new JobConcernController();
+
+    const hub = new Hub('jobConcernHub', jobConcernController);
+    hub.startHub();
+
+    (function () {
+            const data = @Json.Serialize(Model);
+            jobConcernController.updatePage(data);
+    })();
+
+    window.change = function () {
+        jobConcernController.updatePage(jobConcernController._data);
+    };
+
+    window.downloadCSV = function () {
+        jobConcernController.downloadCSV();
+    };
+
+</script>
