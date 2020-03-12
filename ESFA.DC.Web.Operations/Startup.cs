@@ -99,7 +99,6 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<PeriodEndTimedHostedService>();
             services.AddHostedService<DashboardTimedHostedService>();
             services.AddHostedService<JobProcessingTimedHostedService>();
-            services.AddHostedService<JobProcessingDetailTimedHostedService>();
             services.AddHostedService<JobQueuedTimedHostedService>();
             services.AddHostedService<JobSubmittedTimedHostedService>();
             services.AddHostedService<JobFailedTodayTimedHostedService>();
@@ -265,7 +264,6 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<DashBoardHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobProcessingHub>().InstancePerLifetimeScope().ExternallyOwned();
-            containerBuilder.RegisterType<JobProcessingDetailHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobQueuedHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobSubmittedHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobFailedTodayHub>().InstancePerLifetimeScope().ExternallyOwned();

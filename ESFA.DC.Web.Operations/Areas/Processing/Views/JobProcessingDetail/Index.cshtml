@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model string
+@model ESFA.DC.Web.Operations.Areas.Processing.Models.JobProcessingDetailViewModel
 
 @{
     ViewData["Title"] = "Job Processing Detail";
@@ -9,7 +9,7 @@
 <div class="govuk-grid-row">
     <br />
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Job Processing Detail</h1>
+        <h1 class="govuk-heading-l">Job Processing Detail - @Model.JobProcessingType</h1>
     </div>
 </div>
 
@@ -31,6 +31,10 @@
     <div id="index_native" class="box"></div>
 </div>
 
+<div class="govuk-grid-column-one-third">
+    <button data-prevent-double-click="true" class="govuk-button" type="submit" data-module="govuk-button" id="refreshData">Refresh</button>
+</div>
+
 <a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
 
 <br />
@@ -49,23 +53,24 @@
 <script src="~/assets/js/paginator.js"></script>
 
 <script type="module">
-
-    import jobProcessingDetailController from "/assets/js/processing/jobProcessingDetailController.js";
+    import Client from '/assets/js/processing/jobProcessingDetail/client.js';
+    import jobProcessingDetailController from "/assets/js/processing/jobProcessingDetail/jobProcessingDetailController.js";
     import Hub from '/assets/js/hubs/jobProcessingDetailHub.js';
 
     const jobProcessingDetailCtrl = new jobProcessingDetailController();
-
     const hub = new Hub('jobProcessingDetailHub', jobProcessingDetailCtrl);
     hub.startHub();
+    window.jobProcessingDetailClient = new Client(hub.getConnection());
 
     (function () {
-            const data = @Json.Serialize(Model);
-            jobProcessingDetailCtrl.updatePage(data);
+            const data = @Json.Serialize(Model.Data);
+        jobProcessingDetailCtrl.updatePage(data);
+         jobProcessingDetailCtrl.init('@Model.JobProcessingType');
     })();
 
-    window.change = function () {
-        jobProcessingDetailCtrl.updatePage(jobProcessingDetailCtrl._data);
-    };
+    //window.change = function () {
+    //    jobProcessingDetailCtrl.updatePage(jobProcessingDetailCtrl._data);
+    //};
 
     window.downloadCSV = function () {
         jobProcessingDetailCtrl.downloadCSV();

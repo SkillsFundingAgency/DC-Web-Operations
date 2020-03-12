@@ -58,7 +58,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<DashBoardHubEventBase>().As<IDashBoardHubEventBase>().SingleInstance();
             builder.RegisterType<JobQueuedHubEventBase>().As<IJobQueuedHubEventBase>().SingleInstance();
             builder.RegisterType<JobProcessingHubEventBase>().As<IJobProcessingHubEventBase>().SingleInstance();
-            builder.RegisterType<JobProcessingDetailHubEventBase>().As<IJobProcessingDetailHubEventBase>().SingleInstance();
             builder.RegisterType<JobSubmittedHubEventBase>().As<IJobSubmittedHubEventBase>().SingleInstance();
             builder.RegisterType<JobFailedTodayHubEventBase>().As<IJobFailedTodayHubEventBase>().SingleInstance();
             builder.RegisterType<JobSlowFileHubEventBase>().As<IJobSlowFileHubEventBase>().SingleInstance();

@@ -153,7 +153,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Current Period", "Index", "JobProcessingDetail", new { area = AreaNames.Processing })
+                @Html.ActionLink("Current Period", "CurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
             </h2>
             <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">40</span>
         </div>
@@ -161,14 +161,18 @@
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
-            <h2 class="govuk-heading-m"><a class="" href="#">Last hour</a></h2>
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("Last Hour", "LastHour", "JobProcessingDetail", new { area = AreaNames.Processing })
+            </h2>
             <span id="lastHour" class="govuk-heading-l no-margin-bottom">7</span>
         </div>
     </div>
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
-            <h2 class="govuk-heading-m"><a class="" href="#">Last 5 minutes</a></h2>
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("Last 5 Minutes", "LastFiveMins", "JobProcessingDetail", new { area = AreaNames.Processing })
+            </h2>
             <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">18</span>
         </div>
     </div>

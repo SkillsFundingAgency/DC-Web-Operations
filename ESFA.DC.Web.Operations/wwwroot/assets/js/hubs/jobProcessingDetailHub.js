@@ -8,13 +8,9 @@ class jobProcessingDetailHub extends HubBase{
     }
 
     startHub() {
-        super.getConnection().on("ReceiveMessage", this._controller.updatePage.bind(this._controller));
-        super.getConnection().on("messageReceived",
-            (duration) => {
-                alert(duration);
-            });
-
+        //super.getConnection().on("ReceiveMessage", this._controller.updatePage.bind(this._controller));
         super.startHub(this._controller);
+        //super.startHub(this._controller);
     }
 }
 
