@@ -33,7 +33,12 @@ class JobSubmittedController {
         }
         else {
             this._data = JSON.parse(data);
-            this._data.jobs.map(p => { p.datetime = getDatetimeFromString(p.createdDate), p.createdDateStr = getFormattedDatetimeString(p.createdDate) });
+            this._data.jobs.map(p => {
+                p.providerName = replaceNullOrEmpty(p.providerName),
+                    p.fileName = replaceNullOrEmpty(p.fileName),
+                    p.datetime = getDatetimeFromString(p.createdDate),
+                    p.createdDateStr = getFormattedDatetimeString(p.createdDate)
+            });
         }
 
         this.drawGrid();
@@ -53,7 +58,7 @@ class JobSubmittedController {
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage}, 100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
         this._firstDonutText.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobSubmitted);
-        
+
     }
 
     displayConnectionState(state) {
@@ -75,10 +80,10 @@ class JobSubmittedController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${replaceNullOrEmpty(item.providerName, `ESFA`)}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:200px">${item.createdDateStr}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${replaceNullOrEmpty(item.fileName, ``)}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
             sb.push(`</tr>`);
         }
