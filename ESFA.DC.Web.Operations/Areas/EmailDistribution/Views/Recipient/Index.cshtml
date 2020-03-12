@@ -5,8 +5,8 @@
 @{
     ViewData["Title"] = "Add a new recipient";
     ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
+    ViewData[ViewDataConstants.EmailNavigation] = "EmailNavigation";
 }
-
 
 <h1 class="govuk-heading-xl">Enter the recipient's email address</h1>
 <form asp-controller="Recipient" asp-action="Submit" method="post" id="choiceform">

@@ -6,6 +6,8 @@
     ViewData["Title"] = "Edit";
     var groups = (List<SelectListItem>)ViewData["groups"];
     ViewData[ViewDataConstants.BackLink] = "/emaildistribution/email-template";
+    ViewData[ViewDataConstants.EmailNavigation] = "EmailNavigation";
+
 }
 
 <h1 class="govuk-heading-xl">@Model.TemplateName</h1>

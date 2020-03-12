@@ -3,12 +3,12 @@
 @{
     ViewData["Title"] = "GroupRecipients";
     var recipientGroupId = ViewContext.RouteData.Values["recipientGroupId"];
+    ViewData[ViewDataConstants.EmailNavigation] = "EmailNavigation";
     ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
 }
 
 
 <h1 class="govuk-heading-xl">DCT mailing list</h1>
-
 
 <table class="govuk-table">
 

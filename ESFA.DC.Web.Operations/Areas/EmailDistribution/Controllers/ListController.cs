@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
@@ -19,10 +20,10 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             _emailDistributionService = emailDistributionService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(AddRemoveViewModel emailDetails)
         {
-            var data = await _emailDistributionService.GetEmailRecipientGroups();
-            return View(data);
+            emailDetails.Data = await _emailDistributionService.GetEmailRecipientGroups();
+            return View(emailDetails);
         }
     }
 }
