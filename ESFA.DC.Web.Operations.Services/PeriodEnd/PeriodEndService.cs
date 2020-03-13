@@ -8,6 +8,7 @@ using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models.Summarisation;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
@@ -111,6 +112,24 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
                 await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}/samples", cancellationToken));
+
+            return data;
+        }
+
+        public async Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodes(string collectionType, int numberOfPeriods, CancellationToken cancellationToken)
+        {
+            var data = _jsonSerializationService.Deserialize<List<SummarisationCollectionReturnCode>>(
+                await GetDataAsync($"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}", cancellationToken));
+
+            return data;
+        }
+
+        public async Task<List<SummarisationTotal>> GetSummarisationTotals(List<int> collectionReturnIds, CancellationToken cancellationToken)
+        {
+            var strCollectionReturnIds = string.Join("&collectionReturnIds=", collectionReturnIds).Substring(0);
+
+            var data = _jsonSerializationService.Deserialize<List<SummarisationTotal>>(
+                await GetDataAsync($"{_baseUrl}/api/summarisation/return-totals/?collectionReturnIds={strCollectionReturnIds}", cancellationToken));
 
             return data;
         }

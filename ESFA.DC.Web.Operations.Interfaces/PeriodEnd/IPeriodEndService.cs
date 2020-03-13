@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.PeriodEnd.Models;
+using ESFA.DC.Web.Operations.Models.Summarisation;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
@@ -36,5 +37,9 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodes(string collectionType, int numberOfPeriods, CancellationToken cancellationToken);
+
+        Task<List<SummarisationTotal>> GetSummarisationTotals(List<int> collectionReturnIds, CancellationToken cancellationToken);
     }
 }
