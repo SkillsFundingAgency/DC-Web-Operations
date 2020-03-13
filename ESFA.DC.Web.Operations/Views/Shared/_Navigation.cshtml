@@ -23,6 +23,11 @@
     {
         <a onclick="goToStart()" class="govuk-back-link">Back</a>
     }
+    else if (ViewData.ContainsKey(ViewDataConstants.EmailDistributionHome))
+    {
+        <a onclick="goToEmaiDistrbutionlHome()" class="govuk-back-link">Back</a>
+
+    }
 }
 
 @if (ViewData.ContainsKey(ViewDataConstants.EmailNavigation))

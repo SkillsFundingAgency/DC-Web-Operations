@@ -7,5 +7,6 @@
         public const string LoadingPage = "LoadingPage";
         public const string GoToStart = "GoToStart";
         public const string EmailNavigation = "EmailNavigation";
+        public const string EmailDistributionHome = "EmailDistributionHome";
     }
 }
