@@ -18,9 +18,9 @@
         <table class="govuk-table" id="tblData">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="col" style="width:250px">Provider name</th>
-                    <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
-                    <th class="govuk-table__header" scope="col" style="width:170px">Filename </th>
+                    <th class="govuk-table__header" scope="col" style="width: 250px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width: 100px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width: 170px">Filename </th>
                     <th class="govuk-table__header" scope="col">Processing time</th>
                 </tr>
             </thead>
@@ -30,14 +30,19 @@
     </div>
     <div id="index_native" class="box"></div>
 </div>
+<br />
 
 <div class="govuk-grid-column-one-third">
+    <span id="dataLoadingSpinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
     <button data-prevent-double-click="true" class="govuk-button" type="submit" data-module="govuk-button" id="refreshData">Refresh</button>
 </div>
+<div class="govuk-grid-column-two-thirds">
+    <a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
+</div>
 
-<a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
 
-<br />
+
+
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>

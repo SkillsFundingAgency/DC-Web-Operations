@@ -107,6 +107,11 @@ function paginator(config) {
     // get page count
     var pages = (rows_per_page > 0)? Math.ceil(trs.length / rows_per_page):1;
 
+    // get/set current page
+    if (typeof config.pages === "undefined") {
+        config.pages = pages;
+    }
+
     // check that page and page count are sensible values
     if (pages < 1) {
         pages = 1;
@@ -145,8 +150,77 @@ function paginator(config) {
     if (typeof config.box_mode != "function" && config.box_mode != "list" && config.box_mode != "buttons") {
         config.box_mode = "button";
     }
-    if (typeof config.box_mode == "function") {
-        config.box_mode(config);
+    if (typeof config.box_mode === "function") {
+        make_button = function (symbol, index, config, disabled, active) {
+            var button = document.createElement("button");
+            button.innerHTML = symbol;
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                if (this.disabled != true) {
+                    config.page = index;
+                    paginator(config);
+                }
+                return false;
+            }, false);
+            if (disabled) {
+                button.disabled = true;
+                button.className = "govuk-button govuk-button--disabled govuk-!-margin-right-1";
+            } else {
+                button.className = "govuk-button govuk-button--secondary govuk-!-margin-right-1";
+                if (active) {
+                    //button.className = config.active_class;
+                    button.className = "govuk-button govuk-!-margin-right-1";
+                }
+            }
+             
+            return button;
+        }
+
+        var pageArray = config.box_mode(config);
+        var page_box = document.createElement(config.box_mode == "list" ? "ul" : "div");
+        
+        var left = make_button("First", 1, config, false, false);
+        page_box.appendChild(left);
+
+        for (var i = 1; i < pageArray.length-1; i++) {
+            if (pageArray[i] === '...') {
+                var li = make_button(pageArray[i], pageArray[i], config, true, false);
+                page_box.appendChild(li);
+            } else {
+                var li = make_button(pageArray[i], pageArray[i], config, false, (page == pageArray[i]));
+                page_box.appendChild(li);
+            }
+        }
+
+        var right = make_button("Last", pages, config, false, false);
+        page_box.appendChild(right);
+
+        //pageArray.forEach(function (element) {
+        //    var button = document.createElement("button");
+        //    button.innerHTML = element;
+        //    button.addEventListener("click", function (event) {
+        //        event.preventDefault();
+        //        if (this.disabled != true) {
+        //            config.page = element;
+        //            paginator(config);
+        //        }
+        //        return false;
+        //    }, false);
+            
+        //    page_box.appendChild(button);
+        //});
+        //box.appendChild(page_box);
+
+
+        if (box.childNodes.length) {
+            while (box.childNodes.length > 1) {
+                box.removeChild(box.childNodes[0]);
+            }
+            box.replaceChild(page_box, box.childNodes[0]);
+        } else {
+            box.appendChild(page_box);
+        }
+        
     } else {
         var make_button;
         if (config.box_mode == "list") {
@@ -178,6 +252,30 @@ function paginator(config) {
                 }, false);
                 return li;
             }
+            var page_box = document.createElement(config.box_mode == "list" ? "ul" : "div");
+            if (config.box_mode == "list") {
+                page_box.className = "pagination";
+            }
+
+            var left = make_button("&laquo;", (page > 1 ? page - 1 : 1), config, (page == 1), false);
+            page_box.appendChild(left);
+
+            for (var i = 1; i <= pages; i++) {
+                var li = make_button(i, i, config, false, (page == i));
+                page_box.appendChild(li);
+            }
+
+            var right = make_button("&raquo;", (pages > page ? page + 1 : page), config, (page == pages), false);
+            page_box.appendChild(right);
+            if (box.childNodes.length) {
+                while (box.childNodes.length > 1) {
+                    box.removeChild(box.childNodes[0]);
+                }
+                box.replaceChild(page_box, box.childNodes[0]);
+            } else {
+                box.appendChild(page_box);
+            }
+
         } else {
             make_button = function (symbol, index, config, disabled, active) {
                 var button = document.createElement("button");
@@ -193,8 +291,10 @@ function paginator(config) {
                 if (disabled) {
                     button.disabled = true;
                 }
+               // button.className = "govuk-button govuk-button--secondary";
                 if (active) {
-                    button.className = config.active_class;
+                    //button.className = config.active_class;
+                  //  button.className = "govuk-button";
                 }
                 return button;
             }
