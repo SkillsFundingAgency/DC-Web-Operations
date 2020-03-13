@@ -61,6 +61,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobSubmittedHubEventBase>().As<IJobSubmittedHubEventBase>().SingleInstance();
             builder.RegisterType<JobFailedTodayHubEventBase>().As<IJobFailedTodayHubEventBase>().SingleInstance();
             builder.RegisterType<JobSlowFileHubEventBase>().As<IJobSlowFileHubEventBase>().SingleInstance();
+            builder.RegisterType<JobConcernHubEventBase>().As<IJobConcernHubEventBase>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -87,14 +88,11 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
 
             builder.RegisterType<JobProcessingService>().As<IJobProcessingService>().InstancePerLifetimeScope();
-
             builder.RegisterType<JobQueuedService>().As<IJobQueuedService>().InstancePerLifetimeScope();
-
             builder.RegisterType<JobSubmittedService>().As<IJobSubmittedService>().InstancePerLifetimeScope();
-
             builder.RegisterType<JobFailedTodayService>().As<IJobFailedTodayService>().InstancePerLifetimeScope();
-
             builder.RegisterType<JobSlowFileService>().As<IJobSlowFileService>().InstancePerLifetimeScope();
+            builder.RegisterType<JobConcernService>().As<IJobConcernService>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();
