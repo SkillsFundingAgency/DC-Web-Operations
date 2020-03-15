@@ -32,17 +32,15 @@
 </div>
 <br />
 
-<div class="govuk-grid-column-one-third">
-    <span id="dataLoadingSpinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
-    <button data-prevent-double-click="true" class="govuk-button" type="submit" data-module="govuk-button" id="refreshData">Refresh</button>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <button data-prevent-double-click="true" class="govuk-button govuk-!-margin-right-3" type="submit" data-module="govuk-button" id="refreshData">Refresh</button>
+        <a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+        <span id="dataLoadingSpinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+    </div>
 </div>
-<div class="govuk-grid-column-two-thirds">
-    <a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
-</div>
-
-
-
-
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>

@@ -145,190 +145,63 @@ function paginator(config) {
         }
     }
 
-    // page button maker functions
-    config.active_class = config.active_class||"active";
-    if (typeof config.box_mode != "function" && config.box_mode != "list" && config.box_mode != "buttons") {
-        config.box_mode = "button";
-    }
-    if (typeof config.box_mode === "function") {
-        make_button = function (symbol, index, config, disabled, active) {
+    // page button maker function
+    var li;
+    var make_button = function(symbol, index, config, disabled, active) {
             var button = document.createElement("button");
             button.innerHTML = symbol;
-            button.addEventListener("click", function (event) {
-                event.preventDefault();
-                if (this.disabled != true) {
-                    config.page = index;
-                    paginator(config);
-                }
-                return false;
-            }, false);
+            button.addEventListener("click",
+                function(event) {
+                    event.preventDefault();
+                    if (this.disabled !== true) {
+                        config.page = index;
+                        paginator(config);
+                    }
+                    return false;
+                },
+                false);
             if (disabled) {
                 button.disabled = true;
                 button.className = "govuk-button govuk-button--disabled govuk-!-margin-right-1";
             } else {
                 button.className = "govuk-button govuk-button--secondary govuk-!-margin-right-1";
                 if (active) {
-                    //button.className = config.active_class;
                     button.className = "govuk-button govuk-!-margin-right-1";
                 }
             }
-             
             return button;
-        }
+        };
 
-        var pageArray = config.box_mode(config);
-        var page_box = document.createElement(config.box_mode == "list" ? "ul" : "div");
+        var pageArray = generatePagination(config);
+        var pageBox = document.createElement(config.box_mode == "list" ? "ul" : "div");
         
-        var left = make_button("First", 1, config, false, false);
-        page_box.appendChild(left);
-
-        for (var i = 1; i < pageArray.length-1; i++) {
+        var leftButton = make_button("< Previous", (page > 1 ? page - 1 : 1), config, (page == 1), false);
+        pageBox.appendChild(leftButton);
+        for (var i = 0 ; i < pageArray.length; i++) {
             if (pageArray[i] === '...') {
-                var li = make_button(pageArray[i], pageArray[i], config, true, false);
-                page_box.appendChild(li);
+                li = make_button(pageArray[i], pageArray[i], config, true, false);
+                pageBox.appendChild(li);
             } else {
-                var li = make_button(pageArray[i], pageArray[i], config, false, (page == pageArray[i]));
-                page_box.appendChild(li);
+                li = make_button(pageArray[i], pageArray[i], config, false, (page == pageArray[i]));
+                pageBox.appendChild(li);
             }
         }
 
-        var right = make_button("Last", pages, config, false, false);
-        page_box.appendChild(right);
-
-        //pageArray.forEach(function (element) {
-        //    var button = document.createElement("button");
-        //    button.innerHTML = element;
-        //    button.addEventListener("click", function (event) {
-        //        event.preventDefault();
-        //        if (this.disabled != true) {
-        //            config.page = element;
-        //            paginator(config);
-        //        }
-        //        return false;
-        //    }, false);
-            
-        //    page_box.appendChild(button);
-        //});
-        //box.appendChild(page_box);
-
+        var rightButton = make_button("Next >", (pages > page ? page + 1 : page), config, (page == pages), false);
+        pageBox.appendChild(rightButton);
 
         if (box.childNodes.length) {
             while (box.childNodes.length > 1) {
                 box.removeChild(box.childNodes[0]);
             }
-            box.replaceChild(page_box, box.childNodes[0]);
+            box.replaceChild(pageBox, box.childNodes[0]);
         } else {
-            box.appendChild(page_box);
+            box.appendChild(pageBox);
         }
-        
-    } else {
-        var make_button;
-        if (config.box_mode == "list") {
-            make_button = function (symbol, index, config, disabled, active) {
-                var li = document.createElement("li");
-                var a  = document.createElement("a");
-                a.href = "#";
-                a.innerHTML = symbol;
-                a.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    this.parentNode.click();
-                    return false;
-                }, false);
-                li.appendChild(a);
-
-                var classes = [];
-                if (disabled) {
-                    classes.push("disabled");
-                }
-                if (active) {
-                    classes.push(config.active_class);
-                }
-                li.className = classes.join(" ");
-                li.addEventListener("click", function () {
-                    if (this.className.split(" ").indexOf("disabled") == -1) {
-                        config.page = index;
-                        paginator(config);
-                    }
-                }, false);
-                return li;
-            }
-            var page_box = document.createElement(config.box_mode == "list" ? "ul" : "div");
-            if (config.box_mode == "list") {
-                page_box.className = "pagination";
-            }
-
-            var left = make_button("&laquo;", (page > 1 ? page - 1 : 1), config, (page == 1), false);
-            page_box.appendChild(left);
-
-            for (var i = 1; i <= pages; i++) {
-                var li = make_button(i, i, config, false, (page == i));
-                page_box.appendChild(li);
-            }
-
-            var right = make_button("&raquo;", (pages > page ? page + 1 : page), config, (page == pages), false);
-            page_box.appendChild(right);
-            if (box.childNodes.length) {
-                while (box.childNodes.length > 1) {
-                    box.removeChild(box.childNodes[0]);
-                }
-                box.replaceChild(page_box, box.childNodes[0]);
-            } else {
-                box.appendChild(page_box);
-            }
-
-        } else {
-            make_button = function (symbol, index, config, disabled, active) {
-                var button = document.createElement("button");
-                button.innerHTML = symbol;
-                button.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    if (this.disabled != true) {
-                        config.page = index;
-                        paginator(config);
-                    }
-                    return false;
-                }, false);
-                if (disabled) {
-                    button.disabled = true;
-                }
-               // button.className = "govuk-button govuk-button--secondary";
-                if (active) {
-                    //button.className = config.active_class;
-                  //  button.className = "govuk-button";
-                }
-                return button;
-            }
-        }
-
-        // make page button collection
-        var page_box = document.createElement(config.box_mode == "list"?"ul":"div");
-        if (config.box_mode == "list") {
-            page_box.className = "pagination";
-        }
-
-        var left = make_button("&laquo;", (page>1?page-1:1), config, (page == 1), false);
-        page_box.appendChild(left);
-
-        for (var i=1;i<=pages;i++) {
-            var li = make_button(i, i, config, false, (page == i));
-            page_box.appendChild(li);
-        }
-
-        var right = make_button("&raquo;", (pages>page?page+1:page), config, (page == pages), false);
-        page_box.appendChild(right);
-        if (box.childNodes.length) {
-            while (box.childNodes.length > 1) {
-                box.removeChild(box.childNodes[0]);
-            }
-            box.replaceChild(page_box, box.childNodes[0]);
-        } else {
-            box.appendChild(page_box);
-        }
-    }
 
     // make rows per page selector
-    if (!(typeof config.page_options == "boolean" && !config.page_options)) {
-        if (typeof config.page_options == "undefined") {
+    if (!(typeof config.page_options === "boolean" && !config.page_options)) {
+        if (typeof config.page_options === "undefined") {
             config.page_options = [
                 { value: 5,  text: '5'   },
                 { value: 10, text: '10'  },
@@ -364,7 +237,7 @@ function paginator(config) {
 
     // hide pagination if disabled
     if (config.disable) {
-        if (typeof box["data-display"] == "undefined") {
+        if (typeof box["data-display"] === "undefined") {
             box["data-display"] = box.style.display||"";
         }
         box.style.display = "none";
@@ -380,4 +253,73 @@ function paginator(config) {
     }
 
     return box;
+}
+
+function generatePagination(config) {
+    const offset = 2;
+    var current = config.page;
+    var last = config.pages;
+    const leftOffset = current - offset;
+    const rightOffset = current + offset + 1;
+
+    /**
+     * Reduces a list into the page numbers desired in the pagination
+     * @param {array} accumulator - Growing list of desired page numbers
+     * @param {*} _ - Throwaway variable to ignore the current value in iteration
+     * @param {*} idx - The index of the current iteration
+     * @returns {array} The accumulating list of desired page numbers
+     */
+    function reduceToDesiredPageNumbers(accumulator, _, idx) {
+        const currIdx = idx + 1;
+
+        if (
+            // Always include first page
+            currIdx === 1
+            // Always include last page
+            || currIdx === last
+            // Include if index is between the above defined offsets
+            || (currIdx >= leftOffset && currIdx < rightOffset)) {
+            return [
+                ...accumulator,
+                currIdx,
+            ];
+        }
+
+        return accumulator;
+    }
+
+    /**
+     * Transforms a list of desired pages and puts ellipsis in any gaps
+     * @param {array} accumulator - The growing list of page numbers with ellipsis included
+     * @param {number} currentPage - The current page in iteration
+     * @param {number} currIdx - The current index
+     * @param {array} src - The source array the function was called on
+     */
+    function transformToPagesWithEllipsis(accumulator, currentPage, currIdx, src) {
+        const prev = src[currIdx - 1];
+
+        // Ignore the first number, as we always want the first page
+        // Include an ellipsis if there is a gap of more than one between numbers
+        if (prev != null && currentPage - prev !== 1) {
+            return [
+                ...accumulator,
+                '...',
+                currentPage,
+            ];
+        }
+
+        // If page does not meet above requirement, just add it to the list
+        return [
+            ...accumulator,
+            currentPage,
+        ];
+    }
+
+    const pageNumbers = Array(last)
+        .fill()
+        .reduce(reduceToDesiredPageNumbers, []);
+
+    const pageNumbersWithEllipsis = pageNumbers.reduce(transformToPagesWithEllipsis, []);
+
+    return pageNumbersWithEllipsis;
 }

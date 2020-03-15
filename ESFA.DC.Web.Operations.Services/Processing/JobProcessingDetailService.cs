@@ -24,11 +24,25 @@ namespace ESFA.DC.Web.Operations.Services.Processing
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(DateTime startDateTimeUtc, DateTime endDateTimeUtc, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(short jobStatus, DateTime startDateTimeUtc, DateTime endDateTimeUtc, CancellationToken cancellationToken = default)
         {
             IEnumerable<JobDetails> jobDetailsList = new List<JobDetails>();
             var data = await GetDataAsync(
-                $"{_baseUrl}/api/job/job-processing-details/4/{DateHelper.GetUrlFriendlyDate(startDateTimeUtc)}/{DateHelper.GetUrlFriendlyDate(endDateTimeUtc)}",
+                $"{_baseUrl}/api/job/job-processing-details/{jobStatus}/{DateHelper.GetUrlFriendlyDate(startDateTimeUtc)}/{DateHelper.GetUrlFriendlyDate(endDateTimeUtc)}",
+                cancellationToken);
+            if (data != null)
+            {
+                jobDetailsList = _jsonSerializationService.Deserialize<IEnumerable<JobDetails>>(data);
+            }
+
+            return jobDetailsList;
+        }
+
+        public async Task<IEnumerable<JobDetails>> GetJobsProcessingDetailsForCurrentPeriod(short jobStatus, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<JobDetails> jobDetailsList = new List<JobDetails>();
+            var data = await GetDataAsync(
+                $"{_baseUrl}/api/job/job-processing-details/current-period/{jobStatus}",
                 cancellationToken);
             if (data != null)
             {

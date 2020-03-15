@@ -1,5 +1,5 @@
 ﻿export function removeSpaces(str) {
-    return str.replace(/\s+/g, "");;
+    return str.replace(/\s+/g, "");
 }
 
 export function padLeft(str, padString, max) {
@@ -68,3 +68,72 @@ export function setControlEnabledState(enabledState, controlId) {
         control.disabled = !enabledState;
     }
 }
+
+//export function generatePagination(config) {
+//    const offset = 2;
+//    var current = config.page;
+//    var last = config.pages;
+//    const leftOffset = current - offset;
+//    const rightOffset = current + offset + 1;
+
+//    /**
+//     * Reduces a list into the page numbers desired in the pagination
+//     * @param {array} accumulator - Growing list of desired page numbers
+//     * @param {*} _ - Throwaway variable to ignore the current value in iteration
+//     * @param {*} idx - The index of the current iteration
+//     * @returns {array} The accumulating list of desired page numbers
+//     */
+//    function reduceToDesiredPageNumbers(accumulator, _, idx) {
+//        const currIdx = idx + 1;
+
+//        if (
+//            // Always include first page
+//            currIdx === 1
+//            // Always include last page
+//            || currIdx === last
+//            // Include if index is between the above defined offsets
+//            || (currIdx >= leftOffset && currIdx < rightOffset)) {
+//            return [
+//                ...accumulator,
+//                currIdx,
+//            ];
+//        }
+
+//        return accumulator;
+//    }
+
+//    /**
+//     * Transforms a list of desired pages and puts ellipsis in any gaps
+//     * @param {array} accumulator - The growing list of page numbers with ellipsis included
+//     * @param {number} currentPage - The current page in iteration
+//     * @param {number} currIdx - The current index
+//     * @param {array} src - The source array the function was called on
+//     */
+//    function transformToPagesWithEllipsis(accumulator, currentPage, currIdx, src) {
+//        const prev = src[currIdx - 1];
+
+//        // Ignore the first number, as we always want the first page
+//        // Include an ellipsis if there is a gap of more than one between numbers
+//        if (prev != null && currentPage - prev !== 1) {
+//            return [
+//                ...accumulator,
+//                '...',
+//                currentPage,
+//            ];
+//        }
+
+//        // If page does not meet above requirement, just add it to the list
+//        return [
+//            ...accumulator,
+//            currentPage,
+//        ];
+//    }
+
+//    const pageNumbers = Array(last)
+//        .fill()
+//        .reduce(reduceToDesiredPageNumbers, []);
+
+//    const pageNumbersWithEllipsis = pageNumbers.reduce(transformToPagesWithEllipsis, []);
+
+//    return pageNumbersWithEllipsis;
+//}

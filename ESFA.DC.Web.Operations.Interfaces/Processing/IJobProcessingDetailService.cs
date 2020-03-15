@@ -8,6 +8,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.Processing
 {
     public interface IJobProcessingDetailService
     {
-        Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(DateTime startDateTimeUtc, DateTime endDateTimeUtc, CancellationToken cancellationToken = default);
+        Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(short jobStatus, DateTime startDateTimeUtc, DateTime endDateTimeUtc, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<JobDetails>> GetJobsProcessingDetailsForCurrentPeriod(short jobStatus, CancellationToken cancellationToken = default);
     }
 }
