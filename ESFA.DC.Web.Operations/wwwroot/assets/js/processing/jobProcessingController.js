@@ -1,6 +1,7 @@
 ﻿import { getColorForPercentage } from '/assets/js/util.js';
 import { convertToCsv } from '/assets/js/csv-operations.js';
 import { getMessageForPercentage } from '/assets/js/util.js';
+import { replaceNullOrEmpty } from '/assets/js/util.js';
 
 class JobProcessingController {
     constructor() {
@@ -21,7 +22,17 @@ class JobProcessingController {
     }
 
     updatePage(data) {
-        this._data = typeof data === 'object' ? data : JSON.parse(data);
+
+        if (typeof data === 'object') {
+            this._data = data;
+        }
+        else {
+            this._data = JSON.parse(data);
+            this._data.jobs.map(p => {                
+                    p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA')
+            });
+        }
+
         this.drawGrid();
     }
 

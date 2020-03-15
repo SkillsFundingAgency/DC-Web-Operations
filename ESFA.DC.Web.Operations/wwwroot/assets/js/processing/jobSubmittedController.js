@@ -3,6 +3,7 @@ import { convertToCsv } from '/assets/js/csv-operations.js';
 import { getMessageForPercentage } from '/assets/js/util.js';
 import { getFormattedDatetimeString } from '/assets/js/util.js';
 import { getDatetimeFromString } from '/assets/js/util.js';
+import { replaceNullOrEmpty } from '/assets/js/util.js';
 
 class JobSubmittedController {
 
@@ -32,7 +33,12 @@ class JobSubmittedController {
         }
         else {
             this._data = JSON.parse(data);
-            this._data.jobs.map(p => { p.datetime = getDatetimeFromString(p.createdDate), p.createdDateStr = getFormattedDatetimeString(p.createdDate) });
+            this._data.jobs.map(p => {
+                p.providerName = replaceNullOrEmpty(p.providerName),
+                    p.fileName = replaceNullOrEmpty(p.fileName),
+                    p.datetime = getDatetimeFromString(p.createdDate),
+                    p.createdDateStr = getFormattedDatetimeString(p.createdDate)
+            });
         }
 
         this.drawGrid();
@@ -52,7 +58,7 @@ class JobSubmittedController {
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage}, 100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
         this._firstDonutText.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobSubmitted);
-        
+
     }
 
     displayConnectionState(state) {

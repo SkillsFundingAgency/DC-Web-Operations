@@ -139,6 +139,20 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
+        public async Task ReSubmitJob(int jobId)
+        {
+            try
+            {
+                await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
+                await _periodEndService.ReSubmitFailedJob(jobId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                throw;
+            }
+        }
+
         private async Task SetButtonStates(CancellationToken cancellationToken)
         {
             var period = await _periodService.ReturnPeriod(cancellationToken);

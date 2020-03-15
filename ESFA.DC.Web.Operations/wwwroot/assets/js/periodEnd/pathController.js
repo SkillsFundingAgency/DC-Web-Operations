@@ -64,7 +64,7 @@ class pathController {
         }
 
         if (nextItemIsSubPath) {
-            return " Proceed will start sub-path(s) and run next item";
+            return " Proceed will start sub-path(s) and run next item(s)";
         }
 
         if (itemIsSubPath && jobState === jobContinuation.nothingRunning) {
@@ -116,6 +116,22 @@ class pathController {
     renderJob(job, jobList) {
         let jobItem = document.createElement("li");
         jobItem.textContent = this.getJobText(job);
+
+        let retryLink = document.createElement("a");
+        retryLink.text = "Retry";
+        retryLink.href = "#";
+        retryLink.className = "govuk-link govuk-!-margin-left-3"
+        retryLink.id = `retryJob_${job.jobId}`;
+        if (window.periodEndClient !== undefined) {
+            retryLink.addEventListener("click",
+                window.periodEndClient.resubmitJob.bind(window.periodEndClient,
+                    job.jobId));
+        }
+
+        if (job.status === jobStatus.failed || job.status === jobStatus.failedRetry) {
+            jobItem.append(retryLink);
+        }
+
         jobList.appendChild(jobItem);
 
         return this.isJobContinuable(job.status);

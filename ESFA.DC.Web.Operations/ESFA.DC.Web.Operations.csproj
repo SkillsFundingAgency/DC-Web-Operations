@@ -263,7 +263,7 @@
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Operations.Reports.Model" Version="0.0.22" />
-    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.59-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.61-beta0001" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />

@@ -138,7 +138,9 @@
 
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
-            <h2 class="govuk-heading-m"><a class="" href="concerns">Concerns</a></h2>
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("Concerns", "Index", "JobConcern", new { area = AreaNames.Processing })
+            </h2>
             <span id="concerns" class="govuk-heading-l no-margin-bottom">3</span>
             <span class="govuk-body-s">Providers with rejected files and no successful submission this period</span>
         </div>

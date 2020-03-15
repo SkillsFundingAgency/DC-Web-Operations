@@ -2,9 +2,9 @@
 
 class JobSlowFileHub extends HubBase {
 
-    constructor(url, jobSlowFileController) {
+    constructor(url, jobConcernController) {
         super(url);
-        this._controller = jobSlowFileController;
+        this._controller = jobConcernController;
     }
 
     startHub() {

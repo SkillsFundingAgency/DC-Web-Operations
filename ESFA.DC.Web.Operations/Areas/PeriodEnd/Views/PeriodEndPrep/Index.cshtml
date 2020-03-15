@@ -35,6 +35,12 @@
 
     <div class="govuk-grid-column-two-thirds">
 
+        <h2 class="govuk-heading-m">MCAs</h2>
+
+        <label id="mcaLabel"></label>
+        <br />
+        <br />
+
         @if (Model != null)
         {
             <div class="flex space-between">
@@ -90,7 +96,7 @@
 
         <br />
         <br />
-        
+
         <button class="govuk-button customised" id="collectionClosed"
                 onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period);" disabled>
             Send Collection Closed Email
@@ -120,7 +126,7 @@
 </div>
 
 @section PageScripts
-{
+    {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 
     <script type="module">
@@ -146,7 +152,6 @@
             const state = @Json.Serialize(Model?.PeriodEndPrepModel);
             const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
             const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
-
             const confirm = new Confirm();
             confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished);
 
