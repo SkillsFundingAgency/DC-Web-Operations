@@ -66,14 +66,10 @@
     window.jobProcessingDetailClient = new Client(hub.getConnection());
 
     (function () {
-            const data = @Json.Serialize(Model.Data);
+        const data = @Json.Serialize(Model.Data);
         jobProcessingDetailCtrl.updatePage(data);
-         jobProcessingDetailCtrl.init('@Model.JobProcessingType');
+        jobProcessingDetailCtrl.init('@Model.JobProcessingType');
     })();
-
-    //window.change = function () {
-    //    jobProcessingDetailCtrl.updatePage(jobProcessingDetailCtrl._data);
-    //};
 
     window.downloadCSV = function () {
         jobProcessingDetailCtrl.downloadCSV();
