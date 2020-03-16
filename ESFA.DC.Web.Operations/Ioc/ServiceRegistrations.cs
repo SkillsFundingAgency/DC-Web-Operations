@@ -88,6 +88,9 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
 
             builder.RegisterType<JobProcessingService>().As<IJobProcessingService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<JobProcessingDetailService>().As<IJobProcessingDetailService>().InstancePerLifetimeScope();
+
             builder.RegisterType<JobQueuedService>().As<IJobQueuedService>().InstancePerLifetimeScope();
             builder.RegisterType<JobSubmittedService>().As<IJobSubmittedService>().InstancePerLifetimeScope();
             builder.RegisterType<JobFailedTodayService>().As<IJobFailedTodayService>().InstancePerLifetimeScope();
