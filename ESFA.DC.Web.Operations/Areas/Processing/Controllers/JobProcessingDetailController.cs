@@ -54,33 +54,32 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
         [HttpGet("LastHour")]
         public async Task<IActionResult> LastHour(CancellationToken cancellationToken)
         {
-            var model = new JobProcessingDetailViewModel
-            {
-                Data = await GetJobsProcessingDetails(-60, cancellationToken),
-                JobProcessingType = JobProcessingTypeLastHour
-            };
+            var model = await BuildJobProcessingDetailModel(-60, JobProcessingTypeLastHour, cancellationToken);
             return View("Index", model);
         }
 
         [HttpGet("LastFiveMins")]
         public async Task<IActionResult> LastFiveMins(CancellationToken cancellationToken)
         {
-            var model = new JobProcessingDetailViewModel
-            {
-                Data = await GetJobsProcessingDetails(-5, cancellationToken),
-                JobProcessingType = JobProcessingTypeLastFiveMins
-            };
+            var model = await BuildJobProcessingDetailModel(-5, JobProcessingTypeLastFiveMins, cancellationToken);
             return View("Index", model);
         }
 
-        private async Task<List<JobDetails>> GetJobsProcessingDetails(int minutes, CancellationToken cancellationToken)
+        private async Task<JobProcessingDetailViewModel> BuildJobProcessingDetailModel(int minutes, string jobProcessingType, CancellationToken cancellationToken)
         {
+            var dateTimeUtc = _dateTimeProvider.GetNowUtc();
             var jobDetails = await _jobProcessingDetailService.GetJobsProcessingDetails(
                                                                 (short)JobStatusType.Completed,
-                                                                _dateTimeProvider.GetNowUtc().AddMinutes(minutes),
-                                                                _dateTimeProvider.GetNowUtc(),
+                                                                dateTimeUtc.AddMinutes(minutes),
+                                                                dateTimeUtc,
                                                                 cancellationToken);
-            return jobDetails.ToList();
+            var model = new JobProcessingDetailViewModel
+            {
+                Data = jobDetails.ToList(),
+                JobProcessingType = jobProcessingType
+            };
+
+            return model;
         }
     }
 }
