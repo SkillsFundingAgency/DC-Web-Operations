@@ -116,7 +116,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodes(string collectionType, int numberOfPeriods, CancellationToken cancellationToken)
+        public async Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken)
         {
             var data = _jsonSerializationService.Deserialize<List<SummarisationCollectionReturnCode>>(
                 await GetDataAsync($"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}", cancellationToken));
@@ -124,7 +124,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task<List<SummarisationTotal>> GetSummarisationTotals(List<int> collectionReturnIds, CancellationToken cancellationToken)
+        public async Task<List<SummarisationTotal>> GetSummarisationTotalsAsync(List<int> collectionReturnIds, CancellationToken cancellationToken)
         {
             var strCollectionReturnIds = string.Join("&collectionReturnIds=", collectionReturnIds).Substring(0);
 

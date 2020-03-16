@@ -110,15 +110,19 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 
         private async Task<IEnumerable<SummarisationTotal>> GetSummarisationTotals(CancellationToken cancellationToken)
         {
-            List<SummarisationCollectionReturnCode> summarisationReturnCodes = new List<SummarisationCollectionReturnCode>();
+            var tasks = new List<Task<List<SummarisationCollectionReturnCode>>>();
 
-            summarisationReturnCodes.AddRange(await _periodEndService.GetLatestSummarisationCollectionCodes(CollectionType_ILR1920, NumberofPreviousReturnPeriods, cancellationToken));
-            summarisationReturnCodes.AddRange(await _periodEndService.GetLatestSummarisationCollectionCodes(CollectionType_ESF, NumberofPreviousReturnPeriods, cancellationToken));
-            summarisationReturnCodes.AddRange(await _periodEndService.GetLatestSummarisationCollectionCodes(CollectionType_APPS, NumberofPreviousReturnPeriods, cancellationToken));
+            tasks.Add(_periodEndService.GetLatestSummarisationCollectionCodesAsync(CollectionType_ILR1920, NumberofPreviousReturnPeriods, cancellationToken));
+            tasks.Add(_periodEndService.GetLatestSummarisationCollectionCodesAsync(CollectionType_ESF, NumberofPreviousReturnPeriods, cancellationToken));
+            tasks.Add(_periodEndService.GetLatestSummarisationCollectionCodesAsync(CollectionType_APPS, NumberofPreviousReturnPeriods, cancellationToken));
+
+            await Task.WhenAll(tasks);
+
+            var summarisationReturnCodes = tasks.SelectMany(t => t.Result);
 
             var collectionReturnIds = summarisationReturnCodes.Select(x => x.Id).ToList();
 
-            var summarisedData = await _periodEndService.GetSummarisationTotals(collectionReturnIds, cancellationToken);
+            var summarisedData = await _periodEndService.GetSummarisationTotalsAsync(collectionReturnIds, cancellationToken);
 
             return summarisedData;
         }

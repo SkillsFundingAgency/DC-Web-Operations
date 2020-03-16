@@ -38,8 +38,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodes(string collectionType, int numberOfPeriods, CancellationToken cancellationToken);
+        Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken);
 
-        Task<List<SummarisationTotal>> GetSummarisationTotals(List<int> collectionReturnIds, CancellationToken cancellationToken);
+        Task<List<SummarisationTotal>> GetSummarisationTotalsAsync(List<int> collectionReturnIds, CancellationToken cancellationToken);
     }
 }
