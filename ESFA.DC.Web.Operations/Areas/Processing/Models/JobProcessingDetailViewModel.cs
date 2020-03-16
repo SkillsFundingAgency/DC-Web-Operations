@@ -10,6 +10,6 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Models
     {
         public string JobProcessingType { get; set; }
 
-        public IEnumerable<JobDetails> Data { get; set; }
+        public List<JobDetails> Data { get; set; }
     }
 }
