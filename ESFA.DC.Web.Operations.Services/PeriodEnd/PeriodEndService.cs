@@ -88,7 +88,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             string url = $"{_baseUrl}/api/period-end/reports/{year}/{period}";
 
-            var data = await DeserializeAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
+            var data = await GetAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
 
             return data;
         }
@@ -97,7 +97,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             string url = $"{_baseUrl}/api/period-end/mca-reports/{year}/{period}";
 
-            var data = await DeserializeAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
+            var data = await GetAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
 
             return data;
         }
@@ -106,7 +106,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             string url = $"{_baseUrl}/api/period-end/collectionstats/{year}/{period}";
 
-            var data = await DeserializeAsync<IEnumerable<CollectionStats>>(url, cancellationToken);
+            var data = await GetAsync<IEnumerable<CollectionStats>>(url, cancellationToken);
 
             return data;
         }
@@ -115,7 +115,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             string url = $"{_baseUrl}/api/period-end/reports/{year}/{period}/samples";
 
-            var data = await DeserializeAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
+            var data = await GetAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
 
             return data;
         }
@@ -124,7 +124,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             string url = $"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}";
 
-            var data = await DeserializeAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
+            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
 
             return data;
         }
@@ -135,7 +135,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
             string url = $"{_baseUrl}/api/summarisation/return-totals/?collectionReturnIds={strCollectionReturnIds}";
 
-            var data = await DeserializeAsync<List<SummarisationTotal>>(url, cancellationToken);
+            var data = await GetAsync<List<SummarisationTotal>>(url, cancellationToken);
 
             return data;
         }
