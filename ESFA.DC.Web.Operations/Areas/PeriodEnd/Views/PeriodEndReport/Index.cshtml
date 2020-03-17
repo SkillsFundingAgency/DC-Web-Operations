@@ -51,6 +51,75 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Summarisation Comparison</h2>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col"></th>
+                    <th class="govuk-table__header" scope="col">Last</th>
+                    <th class="govuk-table__header" scope="col">Current</th>
+                    <th class="govuk-table__header" scope="col">Difference</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @if (Model != null && Model.SummarisationTotals.Any())
+                {
+                    foreach (var collectionType in Model.SummarisationTotals.Select(x => x.CollectionType).Distinct())
+                    {
+                        var orderedSummarisationTotals = Model.SummarisationTotals.Where(y => y.CollectionType.Equals(collectionType, StringComparison.OrdinalIgnoreCase)).OrderBy(c => c.CollectionReturnId).ToList();
+
+                        var previous = orderedSummarisationTotals.FirstOrDefault();
+
+                        var current = orderedSummarisationTotals.LastOrDefault();
+
+                        var difference = current.TotalActualValue - previous.TotalActualValue;
+
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@collectionType</td>
+
+                            <td class="govuk-table__cell">
+                                <table>
+                                    <tr>
+                                        <td>@previous.CollectionReturnCode</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@String.Format("{0:#,###.##}",previous.TotalActualValue)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <table>
+                                    <tr>
+                                        <td>@current.CollectionReturnCode</td>
+                                      </tr>
+                                    <tr>
+                                        <td>@String.Format("{0:#,###.##}", current.TotalActualValue)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <table>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@String.Format("{0:#,###.##}", current.TotalActualValue - previous.TotalActualValue)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m">Internal Reports</h2>
         <table class="govuk-table">
             <thead class="govuk-table__head">
@@ -87,25 +156,25 @@
 
         <table class="govuk-table">
             <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Report name</th>
-                <th class="govuk-table__header" scope="col">Download</th>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Report name</th>
+                    <th class="govuk-table__header" scope="col">Download</th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @if (Model?.SampleReports != null && Model.SampleReports.Any())
-            {
-                foreach (var reportDetail in Model.SampleReports)
+                @if (Model?.SampleReports != null && Model.SampleReports.Any())
                 {
-                    var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@reportDetail.DisplayName</td>
-                        <td class="govuk-table__cell">
-                            @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url })
-                        </td>
-                    </tr>
+                    foreach (var reportDetail in Model.SampleReports)
+                    {
+                        var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                            <td class="govuk-table__cell">
+                                @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url })
+                            </td>
+                        </tr>
+                    }
                 }
-            }
             </tbody>
         </table>
     </div>
@@ -120,25 +189,25 @@
 
         <table class="govuk-table">
             <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Report name</th>
-                <th class="govuk-table__header" scope="col">Download</th>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Report name</th>
+                    <th class="govuk-table__header" scope="col">Download</th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @if (Model?.McaReports != null && Model.McaReports.Any())
-            {
-                foreach (var reportDetail in Model.McaReports)
+                @if (Model?.McaReports != null && Model.McaReports.Any())
                 {
-                    var fileDisplayName = string.IsNullOrEmpty(reportDetail.Url) ? string.Empty : reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@reportDetail.DisplayName</td>
-                        <td class="govuk-table__cell">
-                            @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url })
-                        </td>
-                    </tr>
+                    foreach (var reportDetail in Model.McaReports)
+                    {
+                        var fileDisplayName = string.IsNullOrEmpty(reportDetail.Url) ? string.Empty : reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                            <td class="govuk-table__cell">
+                                @Html.ActionLink(fileDisplayName, "GetReportFile", new { collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url })
+                            </td>
+                        </tr>
+                    }
                 }
-            }
             </tbody>
         </table>
     </div>
