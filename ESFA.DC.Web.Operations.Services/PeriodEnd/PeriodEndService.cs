@@ -86,40 +86,45 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<IEnumerable<ReportDetails>> GetPeriodEndReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
-                await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}", cancellationToken));
+            string url = $"{_baseUrl}/api/period-end/reports/{year}/{period}";
+
+            var data = await DeserializeAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
 
             return data;
         }
 
         public async Task<IEnumerable<ReportDetails>> GetMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
-                await GetDataAsync($"{_baseUrl}/api/period-end/mca-reports/{year}/{period}", cancellationToken));
+            string url = $"{_baseUrl}/api/period-end/mca-reports/{year}/{period}";
+
+            var data = await DeserializeAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
 
             return data;
         }
 
         public async Task<IEnumerable<CollectionStats>> GetCollectionStatsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionStats>>(
-                await GetDataAsync($"{_baseUrl}/api/period-end/collectionstats/{year}/{period}", cancellationToken));
+            string url = $"{_baseUrl}/api/period-end/collectionstats/{year}/{period}";
+
+            var data = await DeserializeAsync<IEnumerable<CollectionStats>>(url, cancellationToken);
 
             return data;
         }
 
         public async Task<IEnumerable<ReportDetails>> GetSampleReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
-                await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}/samples", cancellationToken));
+            string url = $"{_baseUrl}/api/period-end/reports/{year}/{period}/samples";
+
+            var data = await DeserializeAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
 
             return data;
         }
 
         public async Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<List<SummarisationCollectionReturnCode>>(
-                await GetDataAsync($"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}", cancellationToken));
+            string url = $"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}";
+
+            var data = await DeserializeAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
 
             return data;
         }
@@ -128,8 +133,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             var strCollectionReturnIds = string.Join("&collectionReturnIds=", collectionReturnIds).Substring(0);
 
-            var data = _jsonSerializationService.Deserialize<List<SummarisationTotal>>(
-                await GetDataAsync($"{_baseUrl}/api/summarisation/return-totals/?collectionReturnIds={strCollectionReturnIds}", cancellationToken));
+            string url = $"{_baseUrl}/api/summarisation/return-totals/?collectionReturnIds={strCollectionReturnIds}";
+
+            var data = await DeserializeAsync<List<SummarisationTotal>>(url, cancellationToken);
 
             return data;
         }
