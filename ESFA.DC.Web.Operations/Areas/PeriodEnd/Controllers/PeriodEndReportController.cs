@@ -65,17 +65,19 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
                 model.Period = currentYearPeriod.Period;
             }
 
-            var reportDetails = await _periodEndService.GetPeriodEndReports(model.Year, model.Period, cancellationToken);
-            var sampleReports = await _periodEndService.GetSampleReports(model.Year, model.Period, cancellationToken);
-            var collectionStats = await _periodEndService.GetCollectionStats(model.Year, model.Period, cancellationToken);
-            var mcaReports = await _periodEndService.GetMcaReports(model.Year, model.Period, cancellationToken);
+            var reportDetails = _periodEndService.GetPeriodEndReportsAsync(model.Year, model.Period, cancellationToken);
+            var sampleReports = _periodEndService.GetSampleReportsAsync(model.Year, model.Period, cancellationToken);
+            var collectionStats = _periodEndService.GetCollectionStatsAsync(model.Year, model.Period, cancellationToken);
+            var mcaReports = _periodEndService.GetMcaReportsAsync(model.Year, model.Period, cancellationToken);
 
-            model.ReportDetails = reportDetails;
-            model.SampleReports = sampleReports;
-            model.CollectionStats = collectionStats;
-            model.McaReports = mcaReports;
+            await Task.WhenAll(reportDetails, sampleReports, collectionStats, mcaReports);
 
-            model.SummarisationTotals = await GetSummarisationTotals(cancellationToken);
+            model.ReportDetails = reportDetails.Result;
+            model.SampleReports = sampleReports.Result;
+            model.CollectionStats = collectionStats.Result;
+            model.McaReports = mcaReports.Result;
+
+            model.SummarisationTotals = await GetSummarisationTotalsAsync(cancellationToken);
 
             return View(model);
         }
@@ -108,7 +110,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             return await GetReportFile(collectionYear, fileName, downloadName);
         }
 
-        private async Task<IEnumerable<SummarisationTotal>> GetSummarisationTotals(CancellationToken cancellationToken)
+        private async Task<IEnumerable<SummarisationTotal>> GetSummarisationTotalsAsync(CancellationToken cancellationToken)
         {
             var tasks = new List<Task<List<SummarisationCollectionReturnCode>>>();
 

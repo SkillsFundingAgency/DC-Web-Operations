@@ -84,7 +84,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
         }
 
-        public async Task<IEnumerable<ReportDetails>> GetPeriodEndReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ReportDetails>> GetPeriodEndReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
                 await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}", cancellationToken));
@@ -92,7 +92,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task<IEnumerable<ReportDetails>> GetMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ReportDetails>> GetMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
                 await GetDataAsync($"{_baseUrl}/api/period-end/mca-reports/{year}/{period}", cancellationToken));
@@ -100,7 +100,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<CollectionStats>> GetCollectionStatsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionStats>>(
                 await GetDataAsync($"{_baseUrl}/api/period-end/collectionstats/{year}/{period}", cancellationToken));
@@ -108,7 +108,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task<IEnumerable<ReportDetails>> GetSampleReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ReportDetails>> GetSampleReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(
                 await GetDataAsync($"{_baseUrl}/api/period-end/reports/{year}/{period}/samples", cancellationToken));

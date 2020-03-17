@@ -28,13 +28,13 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task ReSubmitFailedJob(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<ReportDetails>> GetPeriodEndReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<ReportDetails>> GetPeriodEndReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<ReportDetails>> GetSampleReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<ReportDetails>> GetSampleReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<ReportDetails>> GetMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<ReportDetails>> GetMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<CollectionStats>> GetCollectionStats(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<CollectionStats>> GetCollectionStatsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
 
