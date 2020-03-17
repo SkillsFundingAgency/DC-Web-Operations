@@ -1,0 +1,77 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Processing.Models.JobProcessingDetailViewModel
+
+@{
+    ViewData["Title"] = "Job Processing Detail";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+<div id="content"></div>
+<div class="govuk-grid-row">
+    <br />
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Job Processing Detail - @Model.JobProcessingType</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full" id="table_box_native">
+        <table class="govuk-table" id="tblData">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col" style="width: 250px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width: 100px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width: 170px">Filename </th>
+                    <th class="govuk-table__header" scope="col">Processing time</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="dataContent">
+            </tbody>
+        </table>
+    </div>
+    <div id="index_native" class="box"></div>
+</div>
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <button data-prevent-double-click="true" class="govuk-button govuk-!-margin-right-3" type="submit" data-module="govuk-button" id="refreshData">Refresh</button>
+        <a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+        <span id="dataLoadingSpinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="lastSync"></label>
+
+        <label id="state"></label>
+    </div>
+</div>
+
+<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
+<script src="~/assets/js/paginator.js"></script>
+
+<script type="module">
+    import Client from '/assets/js/processing/jobProcessingDetail/client.js';
+    import jobProcessingDetailController from "/assets/js/processing/jobProcessingDetail/jobProcessingDetailController.js";
+    import Hub from '/assets/js/hubs/jobProcessingDetailHub.js';
+
+    const jobProcessingDetailCtrl = new jobProcessingDetailController();
+    const hub = new Hub('jobProcessingDetailHub', jobProcessingDetailCtrl);
+    hub.startHub();
+    window.jobProcessingDetailClient = new Client(hub.getConnection());
+
+    (function () {
+        const data = @Json.Serialize(Model.Data);
+        jobProcessingDetailCtrl.updatePage(data);
+        jobProcessingDetailCtrl.init('@Model.JobProcessingType');
+    })();
+
+    window.downloadCSV = function () {
+        jobProcessingDetailCtrl.downloadCSV();
+    };
+</script>
