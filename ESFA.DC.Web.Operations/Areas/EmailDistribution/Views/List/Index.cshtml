@@ -2,24 +2,13 @@
 @model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
 @{
     ViewData["Title"] = "Manage distribution list";
-    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
+    ViewData[ViewDataConstants.EmailNavigation] = "EmailNavigation";
+
 }
 
 
 <h1 class="govuk-heading-xl">Manage distribution list</h1>
 
-
-<div class="flex space-between">
-    <p>
-        <a class="govuk-button govuk-button--secondary" href="/emaildistribution/group">Add a new list</a>&nbsp; &nbsp; &nbsp;
-        <a class="govuk-button govuk-button--secondary" href="/emaildistribution/recipient">Add a new recipient</a>&nbsp; &nbsp; &nbsp;
-        <a class="govuk-button govuk-button--secondary" href="/emaildistribution/email-template">Manage emails</a>
-    </p>
-    <div>
-
-        <!-- <a class="govuk-link govuk-!-font-size-19" href="manage-mailing-list">Manage lists</a> -->
-    </div>
-</div>
 
 <!-- <h2 class="govuk-heading-m">DCT mailing list</h2> -->
 <table class="govuk-table">

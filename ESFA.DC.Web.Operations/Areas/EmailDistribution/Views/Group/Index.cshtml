@@ -2,11 +2,13 @@
 
 @{
     ViewData["Title"] = "Add a new distribution list";
-    ViewData[ViewDataConstants.BackLink] = "/emaildistribution";
+    ViewData[ViewDataConstants.EmailNavigation] = "EmailNavigation";
+    ViewData[ViewDataConstants.EmailDistributionHome] = "/emaildistribution";
+
 }
 
+<h1 class="govuk-heading-xl">Enter the list's name</h1>
 
-<h1 class="govuk-heading-xl">Name your new mailing list</h1>
 
 <form asp-controller="Group" asp-action="Submit" method="post" id="choiceform">
     <div class="govuk-form-group">

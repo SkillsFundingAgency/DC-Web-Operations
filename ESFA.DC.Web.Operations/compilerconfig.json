@@ -12,6 +12,12 @@
     "options": { "sourceMap": true }
   },
   {
+    "outputFile": "wwwroot/assets/css/banner.css",
+    "inputFile": "wwwroot/assets/scss/banner.scss",
+    "minify": { "enabled": false },
+    "options": { "sourceMap": true }
+  },
+  {
     "outputFile": "wwwroot/assets/css/application.css",
     "inputFile": "wwwroot/assets/scss/application.scss",
     "minify": { "enabled": false },

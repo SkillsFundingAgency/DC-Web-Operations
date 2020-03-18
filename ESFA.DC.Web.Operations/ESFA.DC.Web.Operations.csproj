@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +56,10 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\macro.njk" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\README.md" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\template.njk" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\_banner.scss" />
     <None Include="node_modules\govuk-frontend\all-ie8.scss" />
     <None Include="node_modules\govuk-frontend\all.js" />
     <None Include="node_modules\govuk-frontend\all.scss" />
@@ -244,6 +249,7 @@
     <None Include="node_modules\govuk-frontend\vendor\polyfills\Object\defineProperty.js" />
     <None Include="node_modules\govuk-frontend\vendor\polyfills\Window.js" />
     <None Include="node_modules\govuk-frontend\vendor\_sass-mq.scss" />
+    <None Include="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
 
 
