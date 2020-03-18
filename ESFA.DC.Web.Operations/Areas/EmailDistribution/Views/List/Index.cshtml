@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels.AddRemoveViewModel
+@model IEnumerable<ESFA.DC.EmailDistribution.Models.RecipientGroup>
 @{
     ViewData["Title"] = "Manage distribution list";
     ViewData[ViewDataConstants.EmailNavigation] = "EmailNavigation";
@@ -9,29 +9,6 @@
 
 <h1 class="govuk-heading-xl">Manage distribution list</h1>
 
-
-@if ( Model.AddRemove != null)
-{
-    @if (Model.AddRemove == "add")
-    {
-        <div class="govuk-panel govuk-panel--confirmation">
-
-            <div>
-                You've added <br><strong> @Model.Email</strong>
-            </div>
-        </div>
-    }
-
-    @if ( Model.AddRemove == "remove")
-    {
-        <div class="govuk-panel govuk-panel--confirmation">
-
-            <div>
-                You've removed <br><strong> @Model.Email </strong> <br />They'll no longer receive DCT emails.           
-            </div>
-        </div>
-    }
-}
 
 <!-- <h2 class="govuk-heading-m">DCT mailing list</h2> -->
 <table class="govuk-table">
@@ -44,7 +21,7 @@
     </thead>
     <tbody class="govuk-table__body" id="referenceDataContainer">
 
-        @foreach (var group in Model.Data)
+        @foreach (var group in Model)
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@group.GroupName</td>

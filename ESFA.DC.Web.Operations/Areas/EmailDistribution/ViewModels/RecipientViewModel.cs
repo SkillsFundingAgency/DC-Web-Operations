@@ -24,6 +24,8 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels
 
         public IEnumerable<int> SelectedGroupIds { get; set; }
 
+        public bool? IsAdd { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!IsValidEmail(Email))

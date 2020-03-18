@@ -28,9 +28,10 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         }
 
         [HttpGet("details/{recipientGroupId}")]
-        public async Task<IActionResult> DisplayGroupRecipients(int recipientGroupId)
+        public async Task<IActionResult> DisplayGroupRecipients(int recipientGroupId, string recipientEmail = null)
         {
             var data = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
+            ViewData["removedEmail"] = recipientEmail;
             return View("GroupRecipients", data);
         }
 

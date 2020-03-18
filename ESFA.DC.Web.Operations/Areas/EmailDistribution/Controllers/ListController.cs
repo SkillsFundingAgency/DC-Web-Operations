@@ -20,10 +20,10 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             _emailDistributionService = emailDistributionService;
         }
 
-        public async Task<IActionResult> Index(AddRemoveViewModel emailDetails)
+        public async Task<IActionResult> Index()
         {
-            emailDetails.Data = await _emailDistributionService.GetEmailRecipientGroups();
-            return View(emailDetails);
+            var data = await _emailDistributionService.GetEmailRecipientGroups();
+            return View(data);
         }
     }
 }
