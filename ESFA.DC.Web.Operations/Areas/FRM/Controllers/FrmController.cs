@@ -13,7 +13,6 @@ using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
@@ -26,14 +25,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
     {
         private readonly IFrmService _frmService;
         private readonly ILogger _logger;
-        private readonly IPeriodService _periodService;
         private readonly IStorageService _storageService;
         private readonly IFileService _fileService;
 
         public FrmController(
             ILogger logger,
             IFrmService frmService,
-            IPeriodService periodService,
             IStorageService storageService,
             IIndex<PersistenceStorageKeys, IFileService> fileService,
             TelemetryClient telemetryClient)
@@ -41,7 +38,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             _logger = logger;
             _frmService = frmService;
-            _periodService = periodService;
             _storageService = storageService;
             _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
         }
@@ -73,9 +69,8 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
                 case JobStatusType.Waiting:
-                    var currentPeriod = await _periodService.ReturnPeriod();
-                    model.FrmPeriod = $"R{currentPeriod.Period.ToString("D2")}";
-                    model.FrmYearPeriod = currentPeriod.Year.Value;
+                    var publishPeriod = model.FrmPeriodNumber;
+                    model.FrmPeriod = $"R{publishPeriod.ToString("D2")}";
                     var currentContainerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
                     model.FrmCSVValidDate = await _frmService.GetFileSubmittedDateAsync(model.FrmJobId);
                     return View("ValidateSuccess", model);
@@ -92,19 +87,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateFrmAsync(FrmReportModel model)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod();
-            if (currentYearPeriod?.Year == null)
-            {
-                string errorMessage = $"Call to get current return period failed";
-                _logger.LogError(errorMessage);
-                throw new Exception(errorMessage);
-            }
-
             model.FrmJobType = Utils.Constants.FrmValidationKey;
             var frmContainerName = $"frm{model.FrmYearPeriod}";
-            model.FrmPeriodNumber = currentYearPeriod.Period;
+            model.FrmPeriodNumber = model.FrmPeriodNumber;
             var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
-            var collectionYear = currentYearPeriod.Year.Value;
+            var collectionYear = model.FrmYearPeriod;
             var userName = User.Name();
             var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
             model.FrmJobId = await _frmService.RunValidationAsync(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
@@ -159,13 +146,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return View("UnpublishSuccess");
         }
 
-        public async Task<FileResult> GetReportFileAsync(string fileName)
+        public async Task<FileResult> GetReportFileAsync(string fileName, FrmReportModel model)
         {
             try
             {
-                var currentPeriod = await _periodService.ReturnPeriod();
-
-                var containerName = string.Format(Utils.Constants.FrmContainerName, currentPeriod.Year);
+                var containerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
 
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
