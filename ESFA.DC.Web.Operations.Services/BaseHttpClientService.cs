@@ -65,6 +65,13 @@ namespace ESFA.DC.Web.Operations.Services
             return response.StatusCode == HttpStatusCode.NoContent ? null : await response.Content.ReadAsStringAsync();
         }
 
+        public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
+        {
+            var data = _jsonSerializationService.Deserialize<T>(await GetDataAsync(url, cancellationToken));
+
+            return data;
+        }
+
         public async Task<string> PutDataAsync(string url, object data, CancellationToken cancellationToken)
         {
             var json = _jsonSerializationService.Serialize(data);

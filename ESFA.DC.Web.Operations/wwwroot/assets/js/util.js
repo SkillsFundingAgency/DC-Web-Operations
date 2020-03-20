@@ -1,5 +1,5 @@
 ﻿export function removeSpaces(str) {
-    return str.replace(/\s+/g, "");;
+    return str.replace(/\s+/g, "");
 }
 
 export function padLeft(str, padString, max) {

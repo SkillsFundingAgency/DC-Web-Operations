@@ -37,30 +37,19 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             return View("Index", model);
         }
 
-        [HttpPost("remove-recipient")]
-        public async Task<IActionResult> Remove()
+        [HttpPost("remove-recipient/{recipientId}/{recipientGroupId}")]
+        public async Task<IActionResult> Remove(int recipientId, int recipientGroupId)
         {
-            var email = Request.Form["email"];
-            int.TryParse(Request.Form["recipientId"], out var recipientId);
-            int.TryParse(Request.Form["recipientGroupId"], out var recipientGroupId);
-
+            var recipients = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
+            var recipientEmail = recipients.Single(x => x.RecipientId == recipientId).EmailAddress;
             await _emailDistributionService.RemoveRecipient(recipientId, recipientGroupId);
-
-            return View("ConfirmRemove", new Recipient() { EmailAddress = email });
+            return RedirectToAction("DisplayGroupRecipients", "group", new { recipientGroupId, recipientEmail });
         }
 
         [HttpGet("/ask-remove/{recipientId}/{recipientGroupId}")]
         public async Task<IActionResult> AskRemove(int recipientId, int recipientGroupId)
         {
-            var group = await _emailDistributionService.GetGroup(recipientGroupId);
-            var recipients = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
-
-            ViewData["email"] = recipients.Single(x => x.RecipientId == recipientId).EmailAddress;
-            ViewData["group"] = group.GroupName;
-            ViewData["recipientId"] = recipientId;
-            ViewData["recipientGroupId"] = recipientGroupId;
-
-            return View("AskRemove");
+            return await Remove(recipientId, recipientGroupId);
         }
 
         [HttpPost]
@@ -106,7 +95,9 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 return View("Index", model);
             }
 
-            return View("ConfirmAdd", recipient);
+            model.IsAdd = true;
+            model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
+            return View("Index", model);
         }
     }
 }

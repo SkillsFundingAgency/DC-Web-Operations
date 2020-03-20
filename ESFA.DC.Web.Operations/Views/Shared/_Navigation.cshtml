@@ -3,24 +3,40 @@
     var requestPath = Context.Request.Path;
 }
 
-    <div class="main-nav">
-        <a govuk-request-path-search-text="/home" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        <a govuk-request-path-search-text="/provider" class="govuk-heading-s" asp-area="provider" asp-controller="AddNew" asp-action="AddNewOption">Providers</a>
-        <a govuk-request-path-search-text="/collections" class="govuk-heading-s" asp-area="collections" asp-controller="ManageCollections" asp-action="Index" asp-route-collectionId="">Collections</a>
-        <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Notifications</a>
-        <a govuk-request-path-search-text="/periodEndPreparation" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEndPrep" asp-action="Index">Period end</a>
-        <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="frm" asp-controller="Frm" asp-action="Index">FRM</a>
-        <a govuk-request-path-search-text="reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
-    </div>
+<div class="main-nav">
+    <a govuk-request-path-search-text="/home" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    <a govuk-request-path-search-text="/provider" class="govuk-heading-s" asp-area="provider" asp-controller="AddNew" asp-action="AddNewOption">Providers</a>
+    <a govuk-request-path-search-text="/collections" class="govuk-heading-s" asp-area="collections" asp-controller="ManageCollections" asp-action="Index" asp-route-collectionId="">Collections</a>
+    <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Notifications</a>
+    <a govuk-request-path-search-text="/periodEndPreparation" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEndPrep" asp-action="Index">Period end</a>
+    <a govuk-request-path-search-text="NA" class="govuk-heading-s" asp-area="frm" asp-controller="Frm" asp-action="Index">FRM</a>
+    <a govuk-request-path-search-text="reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
+</div>
 
-  @if (!(ViewData.ContainsKey(ViewDataConstants.DashBoard) || ViewData.ContainsKey(ViewDataConstants.LoadingPage)))
-  {
-      if (ViewData.ContainsKey(ViewDataConstants.BackLink))
-      {
-            <a onclick="goBack()" class="govuk-back-link">Back</a>
-      }
-      else if (ViewData.ContainsKey(ViewDataConstants.GoToStart))
-      {
-            <a onclick="goToStart()" class="govuk-back-link">Back</a>
-      }
-  }
+@if (!(ViewData.ContainsKey(ViewDataConstants.DashBoard) || ViewData.ContainsKey(ViewDataConstants.LoadingPage)))
+{
+    if (ViewData.ContainsKey(ViewDataConstants.BackLink))
+    {
+        <a onclick="goBack()" class="govuk-back-link">Back</a>
+    }
+    else if (ViewData.ContainsKey(ViewDataConstants.GoToStart))
+    {
+        <a onclick="goToStart()" class="govuk-back-link">Back</a>
+    }
+    else if (ViewData.ContainsKey(ViewDataConstants.EmailDistributionHome))
+    {
+        <a onclick="goToEmaiDistrbutionlHome()" class="govuk-back-link">Back</a>
+
+    }
+}
+
+@if (ViewData.ContainsKey(ViewDataConstants.EmailNavigation))
+{
+    <div class="sub-navigation">
+        <div class="sub-navigation">
+            <a class="govuk-heading-s" style="text-decoration:none" href="/emaildistribution/group">&nbsp; Add a new list &nbsp;</a>
+            <a class="govuk-heading-s" style="text-decoration:none" href="/emaildistribution/recipient">&nbsp; Add a new recipient &nbsp;</a>
+            <a class="govuk-heading-s" style="text-decoration:none" href="/emaildistribution/email-template">&nbsp; Manage emails &nbsp;</a>
+        </div>
+    </div>
+}

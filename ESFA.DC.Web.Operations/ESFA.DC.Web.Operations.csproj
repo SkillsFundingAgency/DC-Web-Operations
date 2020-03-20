@@ -9,15 +9,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>ESFA.DC.Web.Operations.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.Services\Hubs\ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>ESFA.DC.Web.Operations.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.Services\Hubs\ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +56,10 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\macro.njk" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\README.md" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\template.njk" />
+    <None Include="node_modules\%40hmcts\frontend\components\hmcts-banner\_banner.scss" />
     <None Include="node_modules\govuk-frontend\all-ie8.scss" />
     <None Include="node_modules\govuk-frontend\all.js" />
     <None Include="node_modules\govuk-frontend\all.scss" />
@@ -244,6 +249,7 @@
     <None Include="node_modules\govuk-frontend\vendor\polyfills\Object\defineProperty.js" />
     <None Include="node_modules\govuk-frontend\vendor\polyfills\Window.js" />
     <None Include="node_modules\govuk-frontend\vendor\_sass-mq.scss" />
+    <None Include="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
 
 
@@ -259,7 +265,7 @@
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.27-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager.Data" Version="0.2.28-beta0001" />
-    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.61-beta0001" />
+    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.63-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Operations.Reports.Model" Version="0.0.22" />
@@ -310,7 +316,6 @@
   <ItemGroup>
     <Folder Include="Areas\DevOps\Data\" />
     <Folder Include="Areas\DevOps\Models\" />
-    <Folder Include="Areas\Processing\Models\" />
     <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\minified\" />

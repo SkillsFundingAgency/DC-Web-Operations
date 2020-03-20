@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.PeriodEnd.Models;
+using ESFA.DC.Web.Operations.Models.Summarisation;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {
@@ -21,5 +22,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
         public IEnumerable<ReportDetails> McaReports { get; set; }
 
         public IEnumerable<CollectionStats> CollectionStats { get; set; }
+
+        public IEnumerable<SummarisationTotal> SummarisationTotals { get; set; }
     }
 }

@@ -190,6 +190,12 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<JobProcessingDetailHub>("/jobProcessingDetailHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
                 routes.MapHub<JobQueuedHub>("/jobQueuedHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
