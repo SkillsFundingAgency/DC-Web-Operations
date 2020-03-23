@@ -56,7 +56,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model, string frmJobType)
+        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model)
         {
             var frmStatus = (JobStatusType)await _frmService.GetFrmStatusAsync(model.FrmJobId);
 
@@ -89,7 +89,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             model.FrmJobType = Utils.Constants.FrmValidationKey;
             var frmContainerName = $"frm{model.FrmYearPeriod}";
-            model.FrmPeriodNumber = model.FrmPeriodNumber;
             var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
             var collectionYear = model.FrmYearPeriod;
             var userName = User.Name();
@@ -117,7 +116,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             var collectionType = "frm";
             var reportsData = await _frmService.GetFrmReportsDataAsync();
             var lastTwoYears = await _frmService.GetLastTwoCollectionYearsAsync(collectionType);
-            var lastYearValue = lastTwoYears.Last();
+            var lastYearValue = lastTwoYears.LastOrDefault();
             model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
 
             if (lastTwoYears.Count() > 1) //if there are more than two years in the collection
