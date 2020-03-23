@@ -1,6 +1,6 @@
 ﻿using ESFA.DC.PeriodEnd.Models.Dtos;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models
 {
     public sealed class PeriodEndPrepViewModel
     {

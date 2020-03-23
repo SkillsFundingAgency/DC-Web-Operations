@@ -2,131 +2,68 @@
 @using ESFA.DC.Web.Operations.Utils
 @model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndViewModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Period End";
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
-        <ul class="govuk-list">
-            <li>
-                @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+<div class="govuk-width-container">
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="dashboard">Home</a>
             </li>
-            <li>
-                @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
-            </li>
-            <li>
-                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
-            </li>
-            <li>
-                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
-            </li>
-        </ul>
-        <div id="summaryContainer"></div>
+
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">Period end</li>
+        </ol>
     </div>
 
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
-        <br />
-        <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
+    <main class="govuk-main-wrapper">
+        <div class="govuk-grid-row govuk-!-margin-top-6">
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
+                        <h3 class="home-services__heading"><a href="ALLF" class="govuk-link">ALLF</a></h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1"><span class="govuk-!-font-weight-bold">A55</span> open until</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">07 July 2020 18:05pm</p>
+                    </li>
+                    <li>
+                        <h3 class="home-services__heading">
+                            @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
+                        </h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">1 January 2020 at 12:04pm</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by Bernie ODONNELL</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
+                        <h3 class="home-services__heading">@Html.ActionLink("ILR", "Index", "PeriodEndPrep", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })</h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1"><span class="govuk-!-font-weight-bold">R06</span> open until</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">22 July 2020 18:05pm</p>
+                    </li>
 
 
-        <br />
-        <br />
+                    <li>
+                        <h3 class="home-services__heading">@Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })</h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">1 January 2020 at 12:04pm</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by Lynne BURDON</p>
+                    </li>
 
-        <button type="submit" class="govuk-button customised" id="startPeriodEnd"
-                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period);return false;">
-            Start Period End
-        </button>
+                </ul>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
+                        <h3 class="home-services__heading"><a href="NCS" class="govuk-link">NCS</a></h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1"><span class="govuk-!-font-weight-bold">N12</span> open until</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">22 March 2020 18:05</p>
+                    </li>
 
-        <br />
-        <br />
 
-        <div>
-            <ol id="pathContainer" class="app-task-list"></ol>
+                </ul>
+            </div>
         </div>
-
-        <br />
-        <br />
-
-        <div class="app-task-list__section">
-            <input id="publishMcaReports" type="submit" class="govuk-button customised" onclick="window.periodEndClient.publishMcaReports(@Model.Year, @Model.Period);return false;" value="Publish MCA Reports">
-        </div>
-
-        <br />
-        <br />
-
-        <div class="app-task-list__section">
-            <input id="publishProviderReports" type="submit" class="govuk-button customised" onclick="window.periodEndClient.publishProviderReports(@Model.Year, @Model.Period);return false;" value="Publish Provider Reports">
-        </div>
-
-        <br />
-        <br />
-
-        <div class="app-task-list__section">
-            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period);return false;" value="Close Period End">
-        </div>
-
-        <br />
-        <br />
-
-        <div class="app-task-list__section">
-            <input id="resumeReferenceData" type="submit" class="govuk-button customised" onclick="window.periodEndClient.unPauseReferenceJobs(@Model.Year, @Model.Period);return false;" value="Resume Reference Data Jobs">
-        </div>
-    </div>
+    </main>
 </div>
-
-<br />
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">&nbsp;</div>
-    <div class="govuk-grid-column-two-thirds">
-            <label id="slowConnection" alt="Connection is slow at the moment"></label>
-            <label id="lastSync"></label>
-            <label id="state"></label>
-        </div>
-    </div>
-
-@section PageScripts
-{
-    @if (Model != null && Model.CollectionClosed)
-    {
-        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    }
-
-<script type="module">
-        import PathController from '/assets/js/periodEnd/pathController.js';
-
-        @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
-        {
-            @Html.Raw("import Client from '/assets/js/periodEnd/client.js';")
-            ;
-            @Html.Raw("import Hub from '/assets/js/hubs/periodEndHub.js';")
-            ;
-        }
-
-        (function() {
-            const stateModel = @Json.Serialize(Model);
-            const pathController = new PathController();
-
-            pathController.initialiseState(stateModel);
-
-            @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
-            {
-                @Html.Raw("const hub = new Hub(pathController);")
-                ;
-                @Html.Raw("hub.startHub();")
-                ;
-                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
-                ;
-            }
-            
-            pathController.renderPaths(stateModel);
-
-            @if (!Model?.IsCurrentPeriod ?? false) {
-                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
-                    @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
-            }
-        })();
-
-</script>
-}

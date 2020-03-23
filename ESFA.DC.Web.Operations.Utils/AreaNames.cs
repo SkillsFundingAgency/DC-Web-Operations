@@ -10,5 +10,6 @@
         public const string Reports = "reports";
         public const string Frm = "frm";
         public const string Processing = "processing";
+        public const string PeriodEndILR = "periodendilr";
     }
 }
