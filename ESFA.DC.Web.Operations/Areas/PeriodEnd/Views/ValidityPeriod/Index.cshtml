@@ -12,7 +12,7 @@
         <div id="typeFilter" class="govuk-checkboxes">
             <div id="minusMargin" class="govuk-form-group margin-right">
                 <label class="govuk-label" for="sort">
-                    Period numbers
+                    Period number
                 </label>
                 <select class="govuk-select" id="periodNumber" name="periodNumber" onchange="window.change();">
                     <option value="1" selected>1</option>
@@ -87,11 +87,7 @@
         validityPeriodController.saveList(connection, "UpdateValidityPeriod", periodNumber.value);
     };
 
-    window.checkedChanged = function (idx, inputCheck) {
-        this._data[idx].enabled = inputCheck.checked;
-    };
-
-    window.test = function (idx, checkBox) {
+    window.checkedChanged = function (idx, checkBox) {
         validityPeriodController._data[idx].enabled = checkBox.checked;
     };
 

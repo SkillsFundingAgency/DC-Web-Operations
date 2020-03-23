@@ -44,7 +44,7 @@
                                            type="checkbox"
                                            ${checked}
                                            value="${enabled}" 
-                                           onchange="window.test(${i}, this);"/>
+                                           onchange="window.checkedChanged(${i}, this);"/>
                                     <label class="govuk-label govuk-checkboxes__label">
                                     </label>
                                 </div>
