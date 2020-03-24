@@ -79,13 +79,13 @@ class JobSubmittedController {
 
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
-            sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${replaceNullOrEmpty(item.providerName, '')}</a></td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:200px">${item.createdDateStr}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${replaceNullOrEmpty(item.fileName, '')}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
-            sb.push(`</tr>`);
+            sb.push(`<tr class="govuk-table__row">` + 
+            `<td class="govuk-table__cell" style="width:250px"><a href="#">${replaceNullOrEmpty(item.providerName, '')}</a></td>` + 
+            `<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>` +
+            `<td class="govuk-table__cell" style="width:200px">${item.createdDateStr}</td>` + 
+            `<td class="govuk-table__cell" style="width:170px">${replaceNullOrEmpty(item.fileName, '')}</td>` +
+            `<td class="govuk-table__cell">${item.statusDescription}</td>` +
+            `</tr>`);
         }
 
         var result = sb.join('');
