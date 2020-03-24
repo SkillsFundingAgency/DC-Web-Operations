@@ -16,10 +16,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.ServiceFabric.Common;
 using Newtonsoft.Json;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 {
-    [Area(AreaNames.PeriodEnd)]
-    [Route(AreaNames.PeriodEnd + "/periodEndVersion")]
+    [Area(AreaNames.PeriodEndILR)]
+    [Route(AreaNames.PeriodEndILR + "/periodEndVersion")]
     public class VersionController : BaseControllerWithOpsPolicy
     {
         private readonly ILogger _logger;
