@@ -1,4 +1,5 @@
 ﻿import { convertToCsv } from '/assets/js/csv-operations.js';
+import { msToTime } from '/assets/js/util.js';
 
 class JobProcessingDetailController {
 
@@ -52,7 +53,7 @@ class JobProcessingDetailController {
             sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${item.providerName}</a></td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.processingTimeMilliSeconds}</td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:170px">${msToTime(item.processingTimeMilliSeconds)}</td>`);
             sb.push(`</tr>`);
         }
 

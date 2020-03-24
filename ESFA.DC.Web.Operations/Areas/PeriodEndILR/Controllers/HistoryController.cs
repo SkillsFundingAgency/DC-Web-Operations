@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
+using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
 using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -10,10 +10,10 @@ using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 {
-    [Area(AreaNames.PeriodEnd)]
-    [Route(AreaNames.PeriodEnd + "/periodEndHistory")]
+    [Area(AreaNames.PeriodEndILR)]
+    [Route(AreaNames.PeriodEndILR + "/periodEndHistory")]
     public class HistoryController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
