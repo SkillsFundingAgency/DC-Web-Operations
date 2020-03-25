@@ -1,6 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Utils
 @using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.PeriodEnd.Models.PeriodEndPrepViewModel
+@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.PeriodEndPrepViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -29,6 +29,9 @@
             </li>
             <li>
                 @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
             </li>
         </ul>
     </div>

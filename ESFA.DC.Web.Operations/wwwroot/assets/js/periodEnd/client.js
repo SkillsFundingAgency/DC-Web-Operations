@@ -36,6 +36,7 @@ class client {
         this.connection
             .invoke("ReSubmitJob", jobId)
             .catch(err => console.error(err.toString()));
+        return false;
     }
 
     collectionClosedEmail(collectionYear, period) {

@@ -2,7 +2,7 @@
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Models.Summarisation;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models
 {
     public class PeriodEndReportViewModel
     {
