@@ -119,8 +119,8 @@ class pathController {
 
         let retryLink = document.createElement("a");
         retryLink.text = "Retry";
-        retryLink.href = "#";
-        retryLink.className = "govuk-link govuk-!-margin-left-3"
+        retryLink.href = "#/";
+        retryLink.className = "govuk-link govuk-!-margin-left-3";
         retryLink.id = `retryJob_${job.jobId}`;
         if (window.periodEndClient !== undefined) {
             retryLink.addEventListener("click",
