@@ -112,18 +112,28 @@
             return jobId;
         }
 
-        public async Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode == false)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public async Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode == false)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
