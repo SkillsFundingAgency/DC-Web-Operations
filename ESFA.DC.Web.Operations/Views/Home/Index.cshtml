@@ -22,25 +22,33 @@
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-m">Data Collections <season></season></span>
             Health check
+            <span class="govuk-caption-m">🕑<span class="govuk-body-s" id="lastTime">Waiting...</span></span>
         </h1>
     </div>
-
-    <div class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-half">
         <section class="info">
-            <span class="govuk-heading-m no-margin-bottom">Average processing time</span>
-            <h2 class="govuk-heading-xl no-margin-bottom govuk-teal"><span id="average">Waiting...</span><text id="averageSymbol" style="color: red;font-size: 20px"></text></h2>
-            🕑<span class="govuk-body-s" id="lastTime">Waiting...</span>
+            <div class="govuk-heading-s no-margin-bottom">Average processing time</div>
+            <span class="inline-display">
+                <h3 class="govuk-heading-xl no-margin-bottom govuk-teal">
+                    <span id="average">Waiting...</span><text id="averageSymbol" style="color: orange; font-size: 20px"></text>
+                </h3>
+                <span class="govuk-body-s">Today</span>
+            </span>
+            <span class="inline-display govuk-!-margin-left-4">
+                <h3 class="govuk-heading-xl no-margin-bottom">
+                    <span id="averageLastHour">Waiting...</span><text id="averageLastHourSymbol" style="color: red; font-size: 20px"></text>
+                </h3>
+                <span class="govuk-body-s">Last hour</span>
+            </span>
+
         </section>
     </div>
 </div>
-
 <div class="govuk-grid-row grey-background">
-
-
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text">
@@ -56,7 +64,6 @@
             </svg>
         </section>
     </div>
-
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text">
@@ -72,7 +79,6 @@
             </svg>
         </section>
     </div>
-
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text">
@@ -120,7 +126,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Failed today", "Index", "JobFailedToday", new { area = AreaNames.Processing })                
+                @Html.ActionLink("Failed today", "Index", "JobFailedToday", new { area = AreaNames.Processing })
             </h2>
             <span id="failedToday" class="govuk-heading-l no-margin-bottom">4</span>
         </div>

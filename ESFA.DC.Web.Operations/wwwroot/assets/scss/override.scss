@@ -808,3 +808,8 @@ progress::-moz-progress-bar { background: white; }
 .td--width-200{
     width:200px;
 }
+
+.inline-display {
+    display: inline !important;
+    float: left;
+}

@@ -5,6 +5,10 @@ class DashBoardController {
     constructor() {
         this._averageLabel = document.getElementById("average");
         this._averageSymbolLabel = document.getElementById("averageSymbol");
+
+        this._averageLastHourLabel = document.getElementById("averageLastHour");
+        this._averageLastHourSymbolLabel = document.getElementById("averageLastHourSymbol");
+
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
         this._firstLabel = document.getElementById("firstLabel");
@@ -26,6 +30,7 @@ class DashBoardController {
         this._queuesIlr = null;
 
         this._averageTimeToday = 0;
+        this._averageTimeLastHour = 0;
 
         this._percentageTextRangeJobProcessing = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
         this._percentageTextRangeJobQueued = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
@@ -59,6 +64,26 @@ class DashBoardController {
         }
 
         this._averageTimeToday = jobStats.todayStatsModel.averageTimeToday;
+
+
+        if (this._averageLastHourLabel.textContent !== jobStats.todayStatsModel.averageProcessingTimeLastHour) {
+            this._averageLastHourLabel.textContent = `${jobStats.todayStatsModel.averageProcessingTimeLastHour}`;
+        }
+
+        if (this._averageTimeLastHour < jobStats.todayStatsModel.averageTimeLastHour) {
+            this._averageLastHourSymbolLabel.textContent = '▲';
+            this._averageLastHourSymbolLabel.setAttribute("style", "color: red;font-size: 20px");
+        }
+        else if (this._averageTimeLastHour > jobStats.todayStatsModel.averageTimeLastHour) {
+            this._averageLastHourSymbolLabel.textContent = '▼';
+            this._averageLastHourSymbolLabel.setAttribute("style", "color: green;font-size: 20px");
+        }
+        else {
+            this._averageLastHourSymbolLabel.textContent = '⟷';
+            this._averageLastHourSymbolLabel.setAttribute("style", "color: orange;font-size: 20px");
+        }
+
+        this._averageTimeLastHour = jobStats.todayStatsModel.averageTimeLastHour;
 
         if (this._firstDonut.textContent !== jobStats.todayStatsModel.jobsProcessing.toString()) {
             this._firstDonut.textContent = `${jobStats.todayStatsModel.jobsProcessing}`;
