@@ -116,24 +116,14 @@
         {
             string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
-            if (response.IsSuccessStatusCode == false)
-            {
-                return false;
-            }
-
-            return true;
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
-            if (response.IsSuccessStatusCode == false)
-            {
-                return false;
-            }
-
-            return true;
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
