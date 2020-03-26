@@ -16,11 +16,11 @@
 
         Task<DateTime?> GetFileSubmittedDateAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<bool> PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
+        Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync();
 
-        Task<bool> UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
+        Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType);
     }
