@@ -100,7 +100,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         }
 
         [Fact]
-        public async void TestHoldingPageAsyncCompleted()
+        public async void TestHoldingPageAsyncCompletedNoError()
         {
             var model = SetupModel(1920, 1, 3);
             var controller = SetupControllerWithLogger();
@@ -108,6 +108,17 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             var result = await controller.HoldingPageAsync(model);
             var viewResult = result as ViewResult;
             viewResult.ViewName.Should().Be("PublishSuccess");
+        }
+
+        [Fact]
+        public async void TestHoldingPageAsyncCompletedError()
+        {
+            var model = SetupModel(1920, 1, 3);
+            var controller = SetupControllerWithLoggerError();
+
+            var result = await controller.HoldingPageAsync(model);
+            var viewResult = result as ViewResult;
+            viewResult.ViewName.Should().Be("ErrorView");
         }
 
         [Fact]
@@ -204,17 +215,26 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         }
 
         [Fact]
-        public async void TestUnpublishFrmAsync()
+        public async void TestUnpublishFrmAsyncNoError()
         {
             var model = SetupModel(1920, 1, 0);
-            var controller = SetupController();
+            var controller = SetupControllerWithLogger();
 
             var result = await controller.UnpublishFrmAsync(null);
             var viewResult = result as ViewResult;
             viewResult.ViewName.Should().Be("UnpublishSuccess");
         }
 
+        [Fact]
+        public async void TestUnpublishFrmAsyncError()
+        {
+            var model = SetupModel(1920, 1, 0);
+            var controller = SetupControllerError();
 
+            var result = await controller.UnpublishFrmAsync(null);
+            var viewResult = result as ViewResult;
+            viewResult.ViewName.Should().Be("ErrorView");
+        }
 
         private FrmReportModel SetupModel(int yearPeriod, int periodNumber, int frmJobId = 0)
         {
@@ -315,6 +335,40 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>())).ReturnsAsync(yearList);
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var controller = new FrmController(null, frmServiceMock.Object, null, iIndex.Object, null);
+            return controller;
+        }
+
+        private FrmController SetupControllerError()
+        {
+            var frmServiceMock = new Mock<IFrmService>();
+            frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            frmServiceMock.Setup(x => x.UnpublishSldAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
+            var logger = new Mock<ILogger>();
+            var controller = new FrmController(logger.Object, frmServiceMock.Object, null, iIndex.Object, null);
+            var mockcontext = new Mock<HttpContext>();
+            var mockTempProvider = new Mock<ITempDataProvider>();
+            controller.TempData = new TempDataDictionary(mockcontext.Object, mockTempProvider.Object);
+            return controller;
+        }
+
+        private FrmController SetupControllerWithLoggerError()
+        {
+            var frmServiceMock = new Mock<IFrmService>();
+            frmServiceMock.Setup(x => x.RunValidationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(100);
+            frmServiceMock.Setup(x => x.GetFrmStatusAsync(0, It.IsAny<CancellationToken>())).ReturnsAsync(6);
+            frmServiceMock.Setup(x => x.GetFrmStatusAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(5);
+            frmServiceMock.Setup(x => x.GetFrmStatusAsync(2, It.IsAny<CancellationToken>())).ReturnsAsync(8);
+            frmServiceMock.Setup(x => x.GetFrmStatusAsync(3, It.IsAny<CancellationToken>())).ReturnsAsync(4);
+            frmServiceMock.Setup(x => x.GetFrmStatusAsync(4, It.IsAny<CancellationToken>())).ReturnsAsync(3);
+            frmServiceMock.Setup(x => x.GetFileSubmittedDateAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(new DateTime(2000, 2, 3));
+            frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
+            var logger = new Mock<ILogger>();
+            var controller = new FrmController(logger.Object, frmServiceMock.Object, null, iIndex.Object, null);
+            var mockcontext = new Mock<HttpContext>();
+            var mockTempProvider = new Mock<ITempDataProvider>();
+            controller.TempData = new TempDataDictionary(mockcontext.Object, mockTempProvider.Object);
             return controller;
         }
     }

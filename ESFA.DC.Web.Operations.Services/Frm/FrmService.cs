@@ -117,6 +117,7 @@
             string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
+
         }
 
         public async Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
@@ -124,6 +125,7 @@
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
+
         }
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()

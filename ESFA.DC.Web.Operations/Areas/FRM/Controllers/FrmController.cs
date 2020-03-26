@@ -75,7 +75,16 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     model.FrmCSVValidDate = await _frmService.GetFileSubmittedDateAsync(model.FrmJobId);
                     return View("ValidateSuccess", model);
                 case JobStatusType.Completed:
-                    await _frmService.PublishSldAsync(model.FrmYearPeriod, model.FrmPeriodNumber);
+
+                    try
+                    {
+                        await _frmService.PublishSldAsync(model.FrmYearPeriod, model.FrmPeriodNumber);
+                    }
+                    catch
+                    {
+                        return View("ErrorView");
+                    }
+
                     return View("PublishSuccess");
                 default:
                     break;
@@ -141,8 +150,15 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
         public async Task<IActionResult> UnpublishFrmAsync(string path)
         {
-            await _frmService.UnpublishSldAsync(path);
-            return View("UnpublishSuccess");
+            try
+            {
+                await _frmService.UnpublishSldAsync(path);
+                return View("UnpublishSuccess");
+            }
+            catch
+            {
+                return View("ErrorView");
+            }
         }
 
         public async Task<FileResult> GetReportFileAsync(string fileName, FrmReportModel model)
