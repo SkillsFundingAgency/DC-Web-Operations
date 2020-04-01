@@ -25,6 +25,12 @@
                 @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
             </li>
             <li>
+                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
+            </li>
+            <li>
                 @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
             </li>
         </ul>
