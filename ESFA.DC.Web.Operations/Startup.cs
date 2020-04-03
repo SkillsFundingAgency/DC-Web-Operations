@@ -75,20 +75,16 @@ namespace ESFA.DC.Web.Operations
         {
             _logger.LogDebug("Start of ConfigureServices");
 
-            Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
-            //aiOptions.InstrumentationKey = _config.GetValue<string>("ApplicationInsights:InstrumentationKey");
-
-            // Disables adaptive sampling.
-            aiOptions.EnableAdaptiveSampling = false;
-
-            // Disables QuickPulse (Live Metrics stream).
-            aiOptions.EnableQuickPulseMetricStream = false;
-            services.AddApplicationInsightsTelemetry(aiOptions);
+            services.AddApplicationInsightsTelemetry();
 
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
             var authoriseSettings = _config.GetConfigSection<AuthorizationSettings>();
 
-            services.AddMvc().AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
+            services.AddMvc(options =>
+                            {
+                                options.Filters.Add(typeof(CustomFilters.TelemetryActionFilter));
+                            })
+                    .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
 
             services.AddAndConfigureAuthentication(authSettings);
             services.AddAndConfigureAuthorisation(authoriseSettings);
