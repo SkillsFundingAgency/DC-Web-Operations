@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
 using ESFA.DC.Web.Operations.Controllers;
@@ -34,9 +35,9 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period)
+        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod();
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             PeriodEndViewModel model;
 
@@ -62,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
-            var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period);
+            var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period, CollectionTypes.ILR);
             var state = _stateService.GetMainState(pathItemStates);
 
             var pathModel = new PeriodEndViewModel

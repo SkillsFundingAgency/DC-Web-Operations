@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
 using ESFA.DC.Web.Operations.Controllers;
@@ -31,9 +32,9 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period)
+        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod();
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndPrepViewModel();
 

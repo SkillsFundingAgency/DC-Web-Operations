@@ -8,13 +8,13 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IPeriodEndService
     {
-        Task InitialisePeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task InitialisePeriodEnd(int year, int period, string collectionType, CancellationToken cancellationToken);
 
-        Task StartPeriodEnd(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task StartPeriodEnd(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<string> GetPathItemStates(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetPathItemStates(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 

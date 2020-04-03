@@ -36,9 +36,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _logger = logger;
         }
 
-        public async Task SendMessage(string paths, CancellationToken cancellationToken)
+        public async Task SendMessage(string paths, string collectionType, CancellationToken cancellationToken)
         {
-            await SetButtonStates(cancellationToken);
+            await SetButtonStates(collectionType, cancellationToken);
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
         }
@@ -56,12 +56,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
-        public async Task StartPeriodEnd(int collectionYear, int period)
+        public async Task StartPeriodEnd(int collectionYear, int period, string collectionType)
         {
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
-                await _periodEndService.StartPeriodEnd(collectionYear, period);
+                await _periodEndService.StartPeriodEnd(collectionYear, period, collectionType);
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
             }
@@ -153,12 +153,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
-        private async Task SetButtonStates(CancellationToken cancellationToken)
+        private async Task SetButtonStates(string collectionType, CancellationToken cancellationToken)
         {
-            var period = await _periodService.ReturnPeriod(cancellationToken);
+            var period = await _periodService.ReturnPeriod(collectionType, cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string stateString = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, collectionType, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted;
