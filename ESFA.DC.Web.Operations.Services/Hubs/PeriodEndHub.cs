@@ -112,11 +112,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
-        public async Task ClosePeriodEnd(int collectionYear, int period)
+        public async Task ClosePeriodEnd(int collectionYear, int period, string collectionType)
         {
             try
             {
-                await _periodEndService.ClosePeriodEnd(collectionYear, period);
+                await _periodEndService.ClosePeriodEnd(collectionYear, period, collectionType);
             }
             catch (Exception e)
             {

@@ -27,9 +27,9 @@ class client {
         this.invokeAction("PublishMcaReports", collectionYear, period);
     }
 
-    closePeriodEnd(collectionYear, period) {
+    closePeriodEnd(collectionYear, period, collectionType) {
         this.jobController.setClosePeriodEndButtonState(false);
-        this.invokeAction("ClosePeriodEnd", collectionYear, period);
+        this.invokeAction("ClosePeriodEnd", collectionYear, period, collectionType);
     }
 
     resubmitJob(jobId) {
