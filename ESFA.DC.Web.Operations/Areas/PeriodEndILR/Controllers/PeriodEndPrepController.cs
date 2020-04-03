@@ -54,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
-            string state = await _periodEndService.GetPrepState(model.Year, model.Period);
+            string state = await _periodEndService.GetPrepState(model.Year, model.Period, CollectionTypes.ILR, cancellationToken);
             model.PeriodEndPrepModel = _stateService.GetPrepState(state);
 
             return View(model);

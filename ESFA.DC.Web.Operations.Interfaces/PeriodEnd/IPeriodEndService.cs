@@ -36,7 +36,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<IEnumerable<CollectionStats>> GetCollectionStatsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<string> GetPrepState(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetPrepState(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken);
 
