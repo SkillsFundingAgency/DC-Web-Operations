@@ -1,6 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Utils
 @using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.PeriodEndPrepViewModel
+@model ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models.PeriodEndPrepViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -18,15 +18,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
         <ul class="govuk-list">
-           <li>
-                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
-            </li>
-            <li>
-                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
-            </li>
-            <li>
-                @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
-            </li>
+            
         </ul>
     </div>
 
@@ -95,7 +87,7 @@
         <br />
 
         <button class="govuk-button customised" id="collectionClosed"
-                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period, '@CollectionTypes.ILR');" disabled>
+                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period, '@CollectionTypes.NCS');" disabled>
             Send Collection Closed Email
         </button>
 

@@ -1,17 +1,17 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
+using ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 {
-    [Area(AreaNames.PeriodEndILR)]
-    [Route(AreaNames.PeriodEndILR + "/periodEndPreparation")]
+    [Area(AreaNames.PeriodEndNCS)]
+    [Route(AreaNames.PeriodEndNCS + "/periodEndPreparation")]
     public class PeriodEndPrepController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
@@ -34,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.NCS, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndPrepViewModel();
 
@@ -54,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
-            string state = await _periodEndService.GetPrepState(model.Year, model.Period, CollectionTypes.ILR, cancellationToken);
+            string state = await _periodEndService.GetPrepState(model.Year, model.Period, CollectionTypes.NCS, cancellationToken);
             model.PeriodEndPrepModel = _stateService.GetPrepState(state);
 
             return View(model);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Hubs;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services
 {
@@ -30,7 +31,7 @@ namespace ESFA.DC.Web.Operations.Services
         {
             try
             {
-                string state = await _periodEndService.GetPrepState(null, null, cancellationToken);
+                string state = await _periodEndService.GetPrepState(null, null, CollectionTypes.ILR, cancellationToken);
 
                 // Send JSON to clients.
                 await _periodEndPrepHub.SendMessage(state, cancellationToken);

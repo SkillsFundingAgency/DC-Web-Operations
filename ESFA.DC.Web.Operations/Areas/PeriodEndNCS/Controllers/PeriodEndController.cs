@@ -1,17 +1,17 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
+using ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 {
-    [Area(AreaNames.PeriodEndILR)]
-    [Route(AreaNames.PeriodEndILR + "/periodEnd")]
+    [Area(AreaNames.PeriodEndNCS)]
+    [Route(AreaNames.PeriodEndNCS + "/periodEnd")]
     public class PeriodEndController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
@@ -37,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.NCS, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             PeriodEndViewModel model;
 
@@ -63,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
-            var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period, CollectionTypes.ILR);
+            var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period, CollectionTypes.NCS);
             var state = _stateService.GetMainState(pathItemStates);
 
             var pathModel = new PeriodEndViewModel
