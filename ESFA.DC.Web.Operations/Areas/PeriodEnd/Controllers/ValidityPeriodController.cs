@@ -27,7 +27,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         {
             var model = new ValidityPeriodViewModel
             {
-                Period = (await _periodService.ReturnPeriod()).Period
+                Period = (await _periodService.ReturnPeriod())?.Period ?? 1
             };
 
             return View(model);
