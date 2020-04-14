@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model IEnumerable<ESFA.DC.EmailDistribution.Models.Recipient>
+@model ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels.GroupDetailsViewModel
 @{
     ViewData["Title"] = "GroupRecipients";
     var recipientGroupId = ViewContext.RouteData.Values["recipientGroupId"];
@@ -28,12 +28,13 @@
 }
 
 <h1 class="govuk-heading-xl">DCT mailing list</h1>
+<h2 class="govuk-heading-l">@Model.GroupName</h2>
 
 <table class="govuk-table">
 
     <tbody class="govuk-table__body" id="recipients">
 
-        @foreach (var recipient in Model)
+        @foreach (var recipient in Model.Recipients)
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@recipient.EmailAddress</td>
