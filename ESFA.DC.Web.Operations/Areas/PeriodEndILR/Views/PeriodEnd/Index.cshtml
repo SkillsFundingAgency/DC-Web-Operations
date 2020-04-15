@@ -9,10 +9,10 @@
     <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
         <ul class="govuk-list">
             <li>
-                @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
             </li>
             <li>
-                @Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })
+                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
             </li>
             <li>
                 @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
