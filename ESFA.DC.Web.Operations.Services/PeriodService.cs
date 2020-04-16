@@ -29,10 +29,10 @@ namespace ESFA.DC.Web.Operations.Services
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<PathYearPeriod> ReturnPeriod(CancellationToken cancellationToken = default)
+        public async Task<PathYearPeriod> ReturnPeriod(string collectionType, CancellationToken cancellationToken = default)
         {
             PathYearPeriod period = _jsonSerializationService.Deserialize<PathYearPeriod>(
-                await GetDataAsync($"{_baseUrl}/api/returns-calendar/periodEnd", cancellationToken));
+                await GetDataAsync($"{_baseUrl}/api/returns-calendar/periodEnd/{collectionType}", cancellationToken));
 
             if (period == null)
             {

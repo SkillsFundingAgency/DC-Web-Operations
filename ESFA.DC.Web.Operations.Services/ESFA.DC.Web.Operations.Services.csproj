@@ -45,4 +45,8 @@
     <ProjectReference Include="..\ESFA.DC.Web.Operations.ViewModels\ESFA.DC.Web.Operations.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TimedHostedService\ILR\" />
+  </ItemGroup>
+
 </Project>

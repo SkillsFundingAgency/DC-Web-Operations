@@ -49,7 +49,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             var prepModel = _stateService.GetPrepState(state);
             var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(prepModel.ReferenceDataJobs);
-            var period = await _periodService.ReturnPeriod(cancellationToken);
+            var period = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
             var collectionClosedEmailEnabled = period.PeriodClosed && !pauseEnabled &&
                                                !_stateService.CollectionClosedEmailSent(prepModel.State);
             var continueEnabled = !pauseEnabled && !collectionClosedEmailEnabled && period.PeriodClosed;
@@ -83,15 +83,15 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
-        public async Task SendCollectionClosedEmail(int year, int period)
+        public async Task SendCollectionClosedEmail(int year, int period, string collectionType)
         {
             try
             {
                 PeriodEndState.CurrentAction = Constants.Action_CollectionClosedEmailButton;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_CollectionClosedEmailButton, false);
 
-                await _periodEndService.InitialisePeriodEnd(year, period);
-                await _periodEndService.CollectionClosedEmailSent(year, period);
+                await _periodEndService.InitialisePeriodEndAsync(year, period, collectionType, CancellationToken.None);
+                await _periodEndService.CollectionClosedEmailSentAsync(year, period);
                 await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
             }
             catch (Exception e)
@@ -108,7 +108,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
                 PeriodEndState.CurrentAction = Constants.Action_ReferenceJobsButton;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, false);
 
-                await _periodEndService.ToggleReferenceDataJobs(year, period, true);
+                await _periodEndService.ToggleReferenceDataJobsAsync(year, period, true);
             }
             catch (Exception e)
             {
@@ -122,7 +122,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
-                await _periodEndService.ReSubmitFailedJob(jobId);
+                await _periodEndService.ReSubmitFailedJobAsync(jobId);
             }
             catch (Exception e)
             {

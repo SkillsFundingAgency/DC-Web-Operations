@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
 using ESFA.DC.Web.Operations.Controllers;
@@ -31,9 +32,9 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period)
+        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod();
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndPrepViewModel();
 
@@ -53,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
-            string state = await _periodEndService.GetPrepState(model.Year, model.Period);
+            string state = await _periodEndService.GetPrepStateAsync(model.Year, model.Period, CollectionTypes.ILR, cancellationToken);
             model.PeriodEndPrepModel = _stateService.GetPrepState(state);
 
             return View(model);
@@ -68,7 +69,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         [HttpPost("resubmitJob")]
         public async Task<IActionResult> ReSubmitJob(int collectionYear, int period, int jobId)
         {
-            await _periodEndService.ReSubmitFailedJob(jobId);
+            await _periodEndService.ReSubmitFailedJobAsync(jobId);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }

@@ -7,7 +7,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IPeriodService
     {
-        Task<PathYearPeriod> ReturnPeriod(CancellationToken cancellationToken = default(CancellationToken));
+        Task<PathYearPeriod> ReturnPeriod(string collectionType, CancellationToken cancellationToken = default);
 
         Task<ReturnPeriod> GetRecentlyClosedPeriodAsync(CancellationToken cancellationToken = default);
     }

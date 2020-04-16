@@ -25,7 +25,7 @@
                 @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
             </li>
             <li>
-                @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEnd }, new { @class = "govuk-link" })
+                @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
             </li>
         </ul>
     </div>
@@ -95,7 +95,7 @@
         <br />
 
         <button class="govuk-button customised" id="collectionClosed"
-                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period);" disabled>
+                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period, '@CollectionTypes.ILR');" disabled>
             Send Collection Closed Email
         </button>
 

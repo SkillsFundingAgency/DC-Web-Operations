@@ -1,7 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.PeriodEnd.Models;
+using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
@@ -10,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
-    [Area(AreaNames.PeriodEnd)]
-    [Route(AreaNames.PeriodEnd + "/validityPeriod")]
+    [Area(AreaNames.PeriodEndILR)]
+    [Route(AreaNames.PeriodEndILR + "/validityPeriod")]
     public class ValidityPeriodController : BaseControllerWithOpsPolicy
     {
         private readonly ILogger _logger;
@@ -27,7 +26,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
         {
             var model = new ValidityPeriodViewModel
             {
-                Period = (await _periodService.ReturnPeriod())?.Period ?? 1
+                Period = (await _periodService.ReturnPeriod(CollectionTypes.ILR))?.Period ?? 1
             };
 
             return View(model);
