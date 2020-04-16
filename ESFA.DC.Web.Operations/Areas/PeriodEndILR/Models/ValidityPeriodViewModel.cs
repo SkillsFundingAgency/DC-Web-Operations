@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
+﻿namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models
 {
     public class ValidityPeriodViewModel
     {
