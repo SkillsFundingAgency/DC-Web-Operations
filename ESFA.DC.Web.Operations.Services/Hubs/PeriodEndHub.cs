@@ -61,7 +61,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
-                await _periodEndService.StartPeriodEnd(collectionYear, period, collectionType);
+                await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
             }
@@ -76,7 +76,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             try
             {
-                await _periodEndService.ToggleReferenceDataJobs(collectionYear, period, false);
+                await _periodEndService.ToggleReferenceDataJobsAsync(collectionYear, period, false);
             }
             catch (Exception e)
             {
@@ -89,7 +89,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             try
             {
-                await _periodEndService.PublishProviderReports(collectionYear, period);
+                await _periodEndService.PublishProviderReportsAsync(collectionYear, period);
                 await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period);
             }
             catch (Exception e)
@@ -103,7 +103,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             try
             {
-                await _periodEndService.PublishMcaReports(collectionYear, period);
+                await _periodEndService.PublishMcaReportsAsync(collectionYear, period);
             }
             catch (Exception e)
             {
@@ -116,7 +116,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             try
             {
-                await _periodEndService.ClosePeriodEnd(collectionYear, period, collectionType);
+                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
             }
             catch (Exception e)
             {
@@ -130,7 +130,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisablePathItemProceed", pathItemId);
-                await _periodEndService.Proceed(collectionYear, period, pathId);
+                await _periodEndService.ProceedAsync(collectionYear, period, pathId);
             }
             catch (Exception e)
             {
@@ -144,7 +144,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
-                await _periodEndService.ReSubmitFailedJob(jobId);
+                await _periodEndService.ReSubmitFailedJobAsync(jobId);
             }
             catch (Exception e)
             {
@@ -158,7 +158,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             var period = await _periodService.ReturnPeriod(collectionType, cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string stateString = await _periodEndService.GetPathItemStates(period.Year.Value, period.Period, collectionType, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, collectionType, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted;

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
@@ -30,9 +31,17 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
         [HttpGet("details/{recipientGroupId}")]
         public async Task<IActionResult> DisplayGroupRecipients(int recipientGroupId, string recipientEmail = null)
         {
-            var data = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
+            var group = await _emailDistributionService.GetGroup(recipientGroupId);
+            var recipients = await _emailDistributionService.GetGroupRecipients(recipientGroupId);
+
+            var model = new GroupDetailsViewModel
+            {
+                GroupName = group?.GroupName,
+                Recipients = recipients
+            };
+
             ViewData["removedEmail"] = recipientEmail;
-            return View("GroupRecipients", data);
+            return View("GroupRecipients", model);
         }
 
         [HttpPost("remove-group")]

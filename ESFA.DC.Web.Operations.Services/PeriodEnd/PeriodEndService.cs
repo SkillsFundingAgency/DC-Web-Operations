@@ -26,59 +26,59 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task InitialisePeriodEnd(int year, int period, string collectionType, CancellationToken cancellationToken)
+        public async Task InitialisePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken)
         {
             await SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/{collectionType}/initialise", cancellationToken);
         }
 
-        public async Task StartPeriodEnd(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task StartPeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/{collectionType}/start", cancellationToken);
         }
 
-        public async Task CollectionClosedEmailSent(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task CollectionClosedEmailSentAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/collection-closed", cancellationToken);
         }
 
-        public async Task Proceed(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync(_baseUrl + $"/api/period-end/{year}/{period}/{path}/proceed", cancellationToken);
         }
 
-        public async Task ToggleReferenceDataJobs(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ToggleReferenceDataJobsAsync(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync(_baseUrl + $"/api/period-end/reference-data-jobs/{year}/{period}/{pause}", cancellationToken);
         }
 
-        public async Task PublishProviderReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishProviderReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync(_baseUrl + $"/api/period-end/provider-reports/{year}/{period}/publish", cancellationToken);
         }
 
-        public async Task PublishMcaReports(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync(_baseUrl + $"/api/period-end/mca-reports/{year}/{period}/publish", cancellationToken);
         }
 
-        public async Task<string> GetPrepState(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetPrepStateAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + $"/api/period-end/states-prep/{collectionType}/{year}/{period}", cancellationToken);
             return data;
         }
 
-        public async Task<string> GetPathItemStates(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
             string data = await GetDataAsync(_baseUrl + $"/api/period-end/states-main/{collectionType}/{year}/{period}", cancellationToken);
             return data;
         }
 
-        public async Task ClosePeriodEnd(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
             await SendAsync(_baseUrl + $"/api/period-end/{year}/{period}/{collectionType}/close", cancellationToken);
         }
 
-        public async Task ReSubmitFailedJob(long jobId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
             await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);

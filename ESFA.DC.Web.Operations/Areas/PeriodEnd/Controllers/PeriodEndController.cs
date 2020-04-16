@@ -31,28 +31,10 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             _stateService = stateService;
         }
 
-        [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
+        [HttpGet()]
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            //var currentYearPeriod = await _periodService.ReturnPeriod();
-            //currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndViewModel();
-
-            //if (collectionYear != null && period != null)
-            //{
-            //    model.Year = collectionYear.Value;
-            //    model.Period = period.Value;
-            //}
-            //else
-            //{
-            //    model.Year = currentYearPeriod.Year.Value;
-            //    model.Period = currentYearPeriod.Period;
-            //}
-
-            //var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
-
-            //model.IsCurrentPeriod = isCurrentPeriodSelected;
-            //model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
             return View(model);
         }
