@@ -31,7 +31,7 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ILR
         {
             try
             {
-                string state = await _periodEndService.GetPrepState(null, null, CollectionTypes.ILR, cancellationToken);
+                string state = await _periodEndService.GetPrepStateAsync(null, null, CollectionTypes.ILR, cancellationToken);
 
                 // Send JSON to clients.
                 await _periodEndPrepHub.SendMessage(state, cancellationToken);

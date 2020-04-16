@@ -32,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ILR
             try
             {
                 // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStates(null, null, CollectionTypes.ILR, cancellationToken);
+                string pathItemStates = await _periodEndService.GetPathItemStatesAsync(null, null, CollectionTypes.ILR, cancellationToken);
 
                 // Send JSON to clients.
                 await _periodEndHub.SendMessage(pathItemStates, CollectionTypes.ILR, cancellationToken);

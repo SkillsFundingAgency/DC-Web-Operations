@@ -54,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
-            string state = await _periodEndService.GetPrepState(model.Year, model.Period, CollectionTypes.ILR, cancellationToken);
+            string state = await _periodEndService.GetPrepStateAsync(model.Year, model.Period, CollectionTypes.ILR, cancellationToken);
             model.PeriodEndPrepModel = _stateService.GetPrepState(state);
 
             return View(model);
@@ -69,7 +69,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         [HttpPost("resubmitJob")]
         public async Task<IActionResult> ReSubmitJob(int collectionYear, int period, int jobId)
         {
-            await _periodEndService.ReSubmitFailedJob(jobId);
+            await _periodEndService.ReSubmitFailedJobAsync(jobId);
 
             return RedirectToAction("Index", new { collectionYear, period });
         }
