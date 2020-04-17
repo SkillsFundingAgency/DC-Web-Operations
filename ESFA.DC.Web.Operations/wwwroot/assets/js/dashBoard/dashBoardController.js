@@ -24,6 +24,9 @@ class DashBoardController {
         this._lastPeriod = document.getElementById("lastPeriod");
         this._lastHour = document.getElementById("lastHour");
         this._last5Minutes = document.getElementById("last5Minutes");
+        this._ilrReturns = document.getElementById("ilrReturns");
+        this._failedFiles = document.getElementById("failedFiles");
+        this._sldDasMismatches = document.getElementById("sldDasMismatches");
 
         this._queuesSystem = null;
         this._queuesTopics = null;
@@ -153,6 +156,48 @@ class DashBoardController {
 
         if (this._last5Minutes.textContent !== jobStats.todayStatsModel.submissionsLast5Minutes.toString()) {
             this._last5Minutes.textContent = `${jobStats.todayStatsModel.submissionsLast5Minutes}`;
+        }
+
+        let ilrsReturned = "";
+        len = jobStats.currentPeriodIlrModels.length;
+        for (var i = 0; i < len; i++) {
+            ilrsReturned += jobStats.currentPeriodIlrModels[i].countOfSuccessfulIlrProvidersInPeriod;
+
+            if (len > 1) {
+                ilrsReturned += "/" + jobStats.currentPeriodIlrModels[i].periodNumber.toString();
+
+                if (i < len - 1) {
+                    ilrsReturned += " - ";
+                }
+            }
+        }
+
+        if (this._ilrReturns.textContent !== ilrsReturned) {
+            this._ilrReturns.textContent = `${ilrsReturned}`;
+        }
+
+        let failedFiles = "";
+        len = jobStats.jobsCurrentPeriodModels.length;
+        for (var i = 0; i < len; i++) {
+            failedFiles += jobStats.jobsCurrentPeriodModels[i].jobsFailedInPeriod;
+
+            if (len > 1) {
+                failedFiles += "/" + jobStats.jobsCurrentPeriodModels[i].periodNumber.toString();
+
+                if (i < len - 1) {
+                    failedFiles += " - ";
+                }
+            }
+        }
+
+        if (this._failedFiles.textContent !== failedFiles) {
+            this._failedFiles.textContent = `${failedFiles}`;
+        }
+
+        let sldDasMismatches = jobStats.dasPaymentDifferencesModels.length;
+
+        if (this._sldDasMismatches.textContent !== sldDasMismatches) {
+            this._sldDasMismatches.textContent = `${sldDasMismatches}`;
         }
     }
 
