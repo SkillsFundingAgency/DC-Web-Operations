@@ -9,7 +9,7 @@ class client {
 
     startPeriodEnd(collectionYear, period, collectionType) {
         this.jobController.setStartPeriodEndButtonState(false);
-        this.invokeAction("StartPeriodEnd", collectionYear, period, collectionType);
+        this.invokeActionWithType("StartPeriodEnd", collectionYear, period, collectionType);
     }
 
     unPauseReferenceJobs(collectionYear, period) {
@@ -29,7 +29,7 @@ class client {
 
     closePeriodEnd(collectionYear, period, collectionType) {
         this.jobController.setClosePeriodEndButtonState(false);
-        this.invokeAction("ClosePeriodEnd", collectionYear, period, collectionType);
+        this.invokeActionWithType("ClosePeriodEnd", collectionYear, period, collectionType);
     }
 
     resubmitJob(jobId) {
@@ -41,7 +41,7 @@ class client {
 
     collectionClosedEmail(collectionYear, period, collectionType) {
         this.jobController.setCollectionClosedEmailButtonState(false);
-        this.invokeAction("SendCollectionClosedEmail", collectionYear, period, collectionType);
+        this.invokeActionWithType("SendCollectionClosedEmail", collectionYear, period, collectionType);
     }
 
     pauseReferenceDataJobs(collectionYear, period) {
@@ -62,7 +62,7 @@ class client {
             .catch(err => console.error(err.toString()));
     }
 
-    invokeAction(action, collectionYear, period, collectionType) {
+    invokeActionWithType(action, collectionYear, period, collectionType) {
         this.connection
             .invoke(action, collectionYear, period, collectionType)
             .catch(err => console.error(err.toString()));
