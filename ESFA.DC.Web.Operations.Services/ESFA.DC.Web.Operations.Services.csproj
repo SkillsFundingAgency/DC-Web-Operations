@@ -46,6 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Hubs\PeriodEnd\ILR\" />
     <Folder Include="TimedHostedService\ILR\" />
   </ItemGroup>
 

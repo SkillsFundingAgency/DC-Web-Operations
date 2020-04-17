@@ -18,17 +18,16 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
         <ul class="govuk-list">
-            
+            <li>
+                @Html.ActionLink("Reports", "", "PeriodEndReport", new { area = AreaNames.PeriodEndNCS }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("History", "", "History", new { area = AreaNames.PeriodEndNCS }, new { @class = "govuk-link" })
+            </li>
         </ul>
     </div>
 
     <div class="govuk-grid-column-two-thirds">
-
-        <h2 class="govuk-heading-m">MCAs</h2>
-
-        <label id="mcaLabel"></label>
-        <br />
-        <br />
 
         @if (Model != null)
         {
@@ -37,50 +36,6 @@
             </div>
 
             <div id="failedJobContainer"></div>
-        }
-
-        <br />
-        <br />
-
-        @if (Model != null)
-        {
-            <h2 class="govuk-heading-m">Reference data jobs</h2>
-
-            <button class="govuk-button" id="pause-all-jobs" disabled>
-                Pause reference data jobs
-            </button>
-
-            <div class="confirm-pause" id="confirm-pause" style="display: none;">
-                <h3 class="govuk-heading-s">Are you sure?</h3>
-
-                <p>These reference data jobs can’t be resumed until the period end process is complete.</p>
-
-                <p>
-                    <button type="submit" class="govuk-button yes-pause no-left-margin" id="pauseReferenceData"
-                            onclick="window.prepClient.pauseReferenceDataJobs(@Model.Year, @Model.Period);">
-                        Yes, pause jobs.
-                    </button>
-                    &nbsp; &nbsp; &nbsp;
-                    <a href="#" class="govuk-link cancel-pause" id="cancel-pause">Cancel</a>
-                </p>
-
-            </div>
-
-            <div class="govuk-panel govuk-panel--confirmation pause-confirmation" id="pause-confirmation" style="display: none;">
-                <h1 class="govuk-panel__title govuk-!-font-size-27">
-                    All reference data jobs have been paused
-                </h1>
-            </div>
-
-            <table class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col">Job</th>
-                        <th class="govuk-table__header" scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body" id="referenceDataContainer"></tbody>
-            </table>
         }
 
         <br />
@@ -119,16 +74,16 @@
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 
     <script type="module">
-        import JobController from "/assets/js/periodEnd/jobController.js";
-        import Confirm from '/assets/js/periodEnd/confirmationController.js';
+        import JobController from "/assets/js/periodEnd/ncs/jobController.js";
+        import Confirm from '/assets/js/periodEnd/ncs/confirmationController.js';
 
         @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndPrepModel.State.PeriodEndFinished)
         {
-            @Html.Raw("import Client from '/assets/js/periodEnd/client.js';")
+            @Html.Raw("import Client from '/assets/js/periodEnd/ncs/client.js';")
             ;
-            @Html.Raw("import Hub from '/assets/js/hubs/periodEndPrepHub.js';")
+            @Html.Raw("import Hub from '/assets/js/hubs/ncs/periodEndPrepHub.js';")
             ;
-            @Html.Raw("const hub = new Hub('periodEndPrepHub');")
+            @Html.Raw("const hub = new Hub('ncsPeriodEndPrepHub');")
             ;
             @Html.Raw("hub.startHub();")
             ;
@@ -138,11 +93,10 @@
 
         (function() {
             const periodClosed = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosed)';
-            const state = @Json.Serialize(Model?.PeriodEndPrepModel);
             const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
             const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(state, periodClosed, collectionClosedEmailSent, periodEndFinished);
+            confirm.initialiseConfirmation(periodClosed, collectionClosedEmailSent, periodEndFinished);
 
             const jobController = new JobController();
             jobController.renderJobs(state);

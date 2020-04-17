@@ -29,6 +29,7 @@ using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.Processing;
 using ESFA.DC.Web.Operations.Services.Provider;
 using ESFA.DC.Web.Operations.Services.Reports;
@@ -48,6 +49,7 @@ namespace ESFA.DC.Web.Operations.Ioc
         {
            //builder.RegisterType<AuthorizeRepository>().As<IAuthorizeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndService>().As<IPeriodEndService>().InstancePerLifetimeScope();
+            builder.RegisterType<NCSPeriodEndService>().As<INCSPeriodEndService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();

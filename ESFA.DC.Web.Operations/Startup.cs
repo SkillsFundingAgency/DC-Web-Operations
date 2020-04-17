@@ -15,9 +15,13 @@ using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
+using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR;
+using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ILR;
+using ESFA.DC.Web.Operations.Services.TimedHostedService.NCS;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
@@ -95,6 +99,9 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<JobSlowFileTimedHostedService>();
             services.AddHostedService<JobConcernTimedHostedService>();
 
+            services.AddHostedService<NCSPeriodEndPrepTimedHostedService>();
+            services.AddHostedService<NCSPeriodEndTimedHostedService>();
+
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
@@ -108,6 +115,10 @@ namespace ESFA.DC.Web.Operations
                 .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpClient<IFrmService, FrmService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpClient<INCSPeriodEndService, NCSPeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
@@ -220,6 +231,15 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<NCSPeriodEndPrepHub>("/ncsPeriodEndPrepHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+                routes.MapHub<NCSPeriodEndHub>("/ncsPeriodEndHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -260,6 +280,9 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<PeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<PeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<NCSPeriodEndPrepHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<NCSPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
 

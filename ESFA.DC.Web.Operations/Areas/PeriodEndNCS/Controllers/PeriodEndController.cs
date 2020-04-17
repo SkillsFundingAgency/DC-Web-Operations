@@ -15,13 +15,13 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
     public class PeriodEndController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
-        private readonly IPeriodEndService _periodEndService;
+        private readonly INCSPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
 
         public PeriodEndController(
             IPeriodService periodService,
-            IPeriodEndService periodEndService,
+            INCSPeriodEndService periodEndService,
             IEmailService emailService,
             IStateService stateService,
             ILogger logger,
@@ -63,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
-            var pathItemStates = await _periodEndService.GetPathItemStates(collectionYear, period, CollectionTypes.NCS);
+            var pathItemStates = await _periodEndService.GetPathItemStatesAsync(collectionYear, period, CollectionTypes.NCS);
             var state = _stateService.GetMainState(pathItemStates);
 
             var pathModel = new PeriodEndViewModel
