@@ -11,12 +11,12 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.NCS
     public class NCSPeriodEndTimedHostedService : BaseTimedHostedService
     {
         private readonly ILogger _logger;
-        private readonly IPeriodEndService _periodEndService;
+        private readonly INCSPeriodEndService _periodEndService;
         private readonly NCSPeriodEndHub _periodEndHub;
 
         public NCSPeriodEndTimedHostedService(
             ILogger logger,
-            IPeriodEndService periodEndService,
+            INCSPeriodEndService periodEndService,
             IPeriodEndHubEventBase eventBase,
             NCSPeriodEndHub periodEndHub)
             : base("NCS Period End", logger)
@@ -32,10 +32,10 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.NCS
             try
             {
                 // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStatesAsync(null, null, CollectionTypes.ILR, cancellationToken);
+                string pathItemStates = await _periodEndService.GetPathItemStatesAsync(null, null, CollectionTypes.NCS, cancellationToken);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(pathItemStates, CollectionTypes.ILR, cancellationToken);
+                await _periodEndHub.SendMessage(pathItemStates, CollectionTypes.NCS, cancellationToken);
             }
             catch (Exception ex)
             {

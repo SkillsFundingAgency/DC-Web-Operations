@@ -12,7 +12,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
     {
         private readonly IPeriodEndPrepHubEventBase _eventBase;
         private readonly IHubContext<NCSPeriodEndPrepHub> _hubContext;
-        private readonly IPeriodEndService _periodEndService;
+        private readonly INCSPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
         private readonly IPeriodService _periodService;
@@ -21,7 +21,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
         public NCSPeriodEndPrepHub(
             IPeriodEndPrepHubEventBase eventBase,
             IHubContext<NCSPeriodEndPrepHub> hubContext,
-            IPeriodEndService periodEndService,
+            INCSPeriodEndService periodEndService,
             IEmailService emailService,
             IStateService stateService,
             IPeriodService periodService,

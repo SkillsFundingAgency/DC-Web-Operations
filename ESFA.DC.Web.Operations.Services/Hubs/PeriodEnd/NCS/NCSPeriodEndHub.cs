@@ -60,10 +60,10 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
         {
             try
             {
-                await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
+                //await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
                 await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
 
-                await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
+                //await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period);
             }
             catch (Exception e)
             {

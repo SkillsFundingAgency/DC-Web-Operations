@@ -346,7 +346,7 @@ class pathController {
                 title.textContent = path.name;
 
                 let pathFound = true;
-                if (path.pathId !== 0) {
+                if (path.pathId) {
                     let anchorTarget = classScope.getPathItemName(stateModel, path.pathId);
                     if (anchorTarget === "Path0") {
                         pathFound = false;
@@ -371,7 +371,7 @@ class pathController {
                 subItemList.id = `PI-${removeSpaces(path.name)}`;
 
                 pathItems.forEach(function (pathItem) {
-                    if (pathItem.name != undefined && pathItem.name !== "") {
+                    if (pathItem.name) {
                         classScope.renderPathItem.call(classScope, path, pathItem, subItemList);
                         classScope.renderSummaryItem(pathSummaryList, path, pathItem);
                     }
