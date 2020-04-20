@@ -22,7 +22,7 @@
                 <ul class="govuk-list">
                     <li>
                         <h3 class="home-services__heading"><a href="ALLF" class="govuk-link">ALLF</a></h3>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@(Model.ALLFPeriodEndInfo.Period.ToString().PadLeft(2, '0')), @Model.ALLFPeriodEndInfo.Year</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@($"{Model.ALLFPeriodEndInfo.Period:D2}"), @Model.ALLFPeriodEndInfo.Year</p>
 
                     </li>
                     <li>
@@ -37,7 +37,7 @@
                 <ul class="govuk-list">
                     <li>
                         <h3 class="home-services__heading">@Html.ActionLink("ILR", "Index", "PeriodEndPrep", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })</h3>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@(Model.ILRPeriodEndInfo.Period.ToString().PadLeft(2, '0')), @Model.ILRPeriodEndInfo.Year</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@($"{Model.ILRPeriodEndInfo.Period:D2}"), @Model.ILRPeriodEndInfo.Year</p>
                     </li>
 
 
@@ -52,7 +52,7 @@
                 <ul class="govuk-list">
                     <li>
                         <h3 class="home-services__heading"><a href="NCS" class="govuk-link">NCS</a></h3>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@(Model.NCSPeriodEndInfo.Period.ToString().PadLeft(2, '0')), @Model.NCSPeriodEndInfo.Year</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@($"{Model.NCSPeriodEndInfo.Period:D2}"), @Model.NCSPeriodEndInfo.Year</p>
                     </li>
                 </ul>
             </div>
