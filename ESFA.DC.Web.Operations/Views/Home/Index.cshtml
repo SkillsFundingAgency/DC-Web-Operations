@@ -184,6 +184,32 @@
             <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">18</span>
         </div>
     </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top">
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("ILR returners in current period", "IlrReturnsCurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
+            </h2>
+            <span id="ilrReturns" class="govuk-heading-l no-margin-bottom">40</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("Failed files in current period", "FailedFilesCurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
+            </h2>
+            <span id="failedFiles" class="govuk-heading-l no-margin-bottom">7</span>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <div class="border-top ">
+            <h2 class="govuk-heading-m">
+                @Html.ActionLink("SLD/DAS mismatches", "SldDasMismatches", "JobProcessingDetail", new { area = AreaNames.Processing })
+            </h2>
+            <span id="sldDasMismatches" class="govuk-heading-l no-margin-bottom">18</span>
+        </div>
+    </div>
 </div>
 
 <br />
