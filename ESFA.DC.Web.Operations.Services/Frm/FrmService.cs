@@ -21,6 +21,7 @@
     public class FrmService : BaseHttpClientService, IFrmService
     {
         private readonly ILogger _logger;
+        private readonly IFileService _fileService;
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
         private readonly string _periodEndJobApiUrl;
@@ -28,10 +29,12 @@
 
         public FrmService(
             IJsonSerializationService jsonSerializationService,
+            IFileService fileService,
             ApiSettings apiSettings,
             HttpClient httpClient)
             : base(jsonSerializationService, httpClient)
         {
+            _fileService = fileService;
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
             _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
@@ -125,7 +128,11 @@
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
+        }
 
+        public async Task UnpublishSldDeleteFolderAsync(string containerName, string path, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _fileService.
         }
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
