@@ -6,7 +6,7 @@ using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ESFA.DC.Web.Operations.Services.Hubs
+namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
 {
     public class PeriodEndHub : Hub
     {
