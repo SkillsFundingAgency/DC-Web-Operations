@@ -3,8 +3,23 @@
 
 @{
     ViewData["Title"] = "Index";
-    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
 }
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodendilr/periodEndPreparation">ILR</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Period end reports</li>
+    </ol>
+</div>
+
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -83,7 +98,7 @@
                                         <td>@previous.CollectionReturnCode</td>
                                     </tr>
                                     <tr>
-                                        <td>@String.Format("{0:#,###.##}",previous.TotalActualValue)</td>
+                                        <td>@String.Format("{0:#,###.##}", previous.TotalActualValue)</td>
                                     </tr>
                                 </table>
                             </td>
@@ -91,7 +106,7 @@
                                 <table>
                                     <tr>
                                         <td>@current.CollectionReturnCode</td>
-                                      </tr>
+                                    </tr>
                                     <tr>
                                         <td>@String.Format("{0:#,###.##}", current.TotalActualValue)</td>
                                     </tr>
