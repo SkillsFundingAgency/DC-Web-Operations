@@ -51,7 +51,7 @@
             <div class="govuk-grid-column-one-third">
                 <ul class="govuk-list">
                     <li>
-                        <h3 class="home-services__heading"><a href="NCS" class="govuk-link">NCS</a></h3>
+                        <h3 class="home-services__heading">@Html.ActionLink("NCS", "Index", "PeriodEndPrep", new { area = AreaNames.PeriodEndNCS }, new { @class = "govuk-link" })</h3>
                         <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@($"{Model.NCSPeriodEndInfo.Period:D2}"), @Model.NCSPeriodEndInfo.Year</p>
                     </li>
                 </ul>
