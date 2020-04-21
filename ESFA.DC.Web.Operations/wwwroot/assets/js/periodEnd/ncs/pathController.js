@@ -351,11 +351,6 @@ class pathController {
                     if (anchorTarget === "Path0") {
                         pathFound = false;
                     }
-
-                    let anchor = document.createElement("a");
-                    anchor.textContent = "❮ ";
-                    anchor.href = "#" + anchorTarget;
-                    title.prepend(anchor);
                 }
 
                 li.appendChild(title);
