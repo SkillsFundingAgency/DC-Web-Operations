@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
+using ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models;
 using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -11,20 +11,20 @@ using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
+namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 {
-    [Area(AreaNames.PeriodEndILR)]
-    [Route(AreaNames.PeriodEndILR + "/periodEndHistory")]
+    [Area(AreaNames.PeriodEndNCS)]
+    [Route(AreaNames.PeriodEndNCS + "/periodEndHistory")]
     public class HistoryController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
-        private readonly IILRHistoryService _ilrHistoryService;
+        private readonly INCSHistoryService _ncsHistoryService;
 
-        public HistoryController(IPeriodService periodService, IILRHistoryService ilrIlrHistoryService, ILogger logger, TelemetryClient telemetryClient)
+        public HistoryController(IPeriodService periodService, INCSHistoryService ncsHistoryService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _periodService = periodService;
-            _ilrHistoryService = ilrIlrHistoryService;
+            _ncsHistoryService = ncsHistoryService;
         }
 
         public async Task<IActionResult> Index(int? collectionYear, CancellationToken cancellationToken)
@@ -40,8 +40,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
                 Year = collectionYear ?? currentYearPeriod.Year.Value
             };
 
-            model.PeriodHistories = await _ilrHistoryService.GetHistoryDetails(model.Year);
-            model.CollectionYears = await _ilrHistoryService.GetCollectionYears();
+            model.PeriodHistories = await _ncsHistoryService.GetHistoryDetails(model.Year);
+            model.CollectionYears = await _ncsHistoryService.GetCollectionYears();
 
             return View(model);
         }

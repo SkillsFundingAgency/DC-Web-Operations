@@ -1,0 +1,90 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models.HistoryViewModel
+@{
+    ViewData["Title"] = "Index";
+    ViewData[ViewDataConstants.BackLink] = "/periodendncs/periodEndPreparation";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period End History</h1>
+        <br />
+        <h2 class="govuk-heading-l">Collection Year @Model.Year</h2>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    @if (Model?.CollectionYears != null && Model.CollectionYears.Any())
+    {
+        <div class=" history-left">
+        @using (Html.BeginForm("Index", "History", FormMethod.Post))
+        {
+            <label class="govuk-label">Select a collection year</label>
+            <select class="govuk-select" name="collectionYear" onchange="this.form.submit();">
+                @foreach (var year in Model.CollectionYears)
+                {
+                    if (Model.Year == year)
+                    {
+                        <option value="@year" selected>@year</option>
+                    }
+                    else
+                    {
+                        <option value="@year">@year</option>
+                    }
+                }
+            </select>
+        }
+        </div>
+
+        <div class="history-clear">
+            <br />
+            <hr>
+        </div>
+    }
+</div>
+
+<div class="govuk-grid-row">
+    <div>
+        @if (Model?.PeriodHistories != null && Model.PeriodHistories.Any())
+        {
+            foreach (var periodHistory in Model.PeriodHistories)
+            {
+                var period = $"N{periodHistory.Period:D2}";
+                var periodFinished = periodHistory.PeriodEndStart != null && periodHistory.PeriodEndFinish != null;
+
+                var periodDurationSimple = periodHistory.PeriodEndRuntimeDays;
+                var periodDurationBusiness = periodHistory.PeriodEndRuntimeBusinessDays;
+                <div class="history-left">
+                    <h2 class="govuk-heading-m">@period</h2>
+                    <p><strong>Started: </strong>@periodHistory.PeriodEndStart</p>
+                    <p><strong>Finished: </strong>@periodHistory.PeriodEndFinish</p>
+                    @if (periodFinished)
+                    {
+                    <p>
+                        <strong>Duration: </strong> @periodDurationSimple.Value.Days days @periodDurationSimple.Value.Hours hours @periodDurationSimple.Value.Minutes minutes
+                    </p>
+
+                    <p>
+                        <strong>Duration (Business Days): </strong> @periodDurationBusiness.Value.Days days @periodDurationBusiness.Value.Hours hours @periodDurationBusiness.Value.Minutes minutes
+                    </p>
+                    }
+                </div>
+                <div class="history-right">
+                    <div>@Html.ActionLink("Reports", "Index", "PeriodEndReport", new { collectionYear = periodHistory.Year, period = periodHistory.Period })</div>
+                    <div>@Html.ActionLink("Job Breakdown", "Index", "PeriodEnd", new { collectionYear = periodHistory.Year, period = periodHistory.Period })</div>
+                </div>
+                <div class="history-clear">
+                    <hr>
+                </div>
+
+                <br />
+            }
+        }
+        else
+        {
+            <br />
+            <br />
+            <div class="history-clear"> No periods found </div>
+        }
+    </div>
+</div>

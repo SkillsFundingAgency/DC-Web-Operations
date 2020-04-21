@@ -6,15 +6,19 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.Services\Hubs\ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.Services\Hubs\ESFA.DC.Web.Operations.Services.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.Web.Operations.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.63-beta0001" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

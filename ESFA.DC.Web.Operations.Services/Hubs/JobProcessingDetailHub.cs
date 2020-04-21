@@ -12,11 +12,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class JobProcessingDetailHub : Hub
     {
+        private const int LastHour = -60;
+        private const int LastFiveMins = -5;
         private readonly IJobProcessingDetailService _jobProcessingDetailService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
-        private const int LastHour = -60;
-        private const int LastFiveMins = -5;
 
         public JobProcessingDetailHub(
             IJobProcessingDetailService jobProcessingDetailService,
@@ -46,7 +46,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private async Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(int minutes)
         {
             return await _jobProcessingDetailService.GetJobsProcessingDetails(
-                (short) JobStatusType.Completed,
+                (short)JobStatusType.Completed,
                 _dateTimeProvider.GetNowUtc().AddMinutes(minutes),
                 _dateTimeProvider.GetNowUtc());
         }
