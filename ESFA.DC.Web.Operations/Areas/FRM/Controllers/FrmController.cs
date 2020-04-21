@@ -161,11 +161,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
         }
 
-        public async Task<FileResult> GetReportFileAsync(string fileName, FrmReportModel model)
+        public async Task<FileResult> GetReportFileAsync(string fileName, int yearPeriod)
         {
             try
             {
-                var containerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
+                var containerName = string.Format(Utils.Constants.FrmContainerName, yearPeriod);
 
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 

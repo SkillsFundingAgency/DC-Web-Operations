@@ -26,7 +26,7 @@
         <tr class="govuk-table__row">
             <td class="govuk-table__cell">@Model.FrmPeriod</td>
             <td class="govuk-table__cell">
-                @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFileAsync", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv" })
+                @Html.ActionLink($"FrmFailedFiles_{Model.FrmPeriod}.csv", "GetReportFileAsync", new { fileName = $"FrmFailedFiles_{Model.FrmPeriod}.csv", yearPeriod = Model.FrmYearPeriod})
             </td>
             <td class="govuk-table__cell">@Model.FrmCSVValidDate</td>
     </tbody>
