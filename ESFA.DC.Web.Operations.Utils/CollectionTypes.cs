@@ -8,5 +8,6 @@ namespace ESFA.DC.Web.Operations.Utils
     {
         public const string ILR = "ILR";
         public const string NCS = "NCS";
+        public const string ALLF = "Generic";
     }
 }

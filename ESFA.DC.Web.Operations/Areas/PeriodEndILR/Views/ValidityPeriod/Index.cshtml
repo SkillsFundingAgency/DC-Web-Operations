@@ -2,8 +2,22 @@
 @model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.ValidityPeriodViewModel
 @{
     ViewData["Title"] = "Index";
-    ViewData[ViewDataConstants.BackLink] = "/periodendilr/periodEndPreparation";
 }
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodendilr/periodEndPreparation">ILR</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Period end validity periods</li>
+    </ol>
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
