@@ -351,20 +351,9 @@ class pathController {
                     if (anchorTarget === "Path0") {
                         pathFound = false;
                     }
-
-                    let anchor = document.createElement("a");
-                    anchor.textContent = "❮ ";
-                    anchor.href = "#" + anchorTarget;
-                    title.prepend(anchor);
                 }
 
-                if (pathFound === true) {
-                    li.appendChild(title);
-                } else {
-                    let strike = document.createElement("strike");
-                    strike.appendChild(title);
-                    li.appendChild(strike);
-                }
+                li.appendChild(title);
 
                 let subItemList = document.createElement("ul");
                 subItemList.className += "app-task-list__items";

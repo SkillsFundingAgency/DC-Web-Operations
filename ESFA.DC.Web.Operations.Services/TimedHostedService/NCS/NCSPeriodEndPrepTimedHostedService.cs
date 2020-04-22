@@ -11,12 +11,12 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.NCS
     public class NCSPeriodEndPrepTimedHostedService : BaseTimedHostedService
     {
         private readonly ILogger _logger;
-        private readonly IPeriodEndService _periodEndService;
+        private readonly INCSPeriodEndService _periodEndService;
         private readonly NCSPeriodEndPrepHub _periodEndPrepHub;
 
         public NCSPeriodEndPrepTimedHostedService(
             ILogger logger,
-            IPeriodEndService periodEndService,
+            INCSPeriodEndService periodEndService,
             IPeriodEndPrepHubEventBase eventBase,
             NCSPeriodEndPrepHub periodEndPrepHub)
             : base("NCS Period End Prep", logger)

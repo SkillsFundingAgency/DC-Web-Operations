@@ -3,9 +3,19 @@
 @model ESFA.DC.Web.Operations.Models.ServiceFabric.RootObject
 @{
     ViewData["Title"] = "ServiceFabric";
-    ViewData[ViewDataConstants.BackLink] = "/periodend/periodEndPreparation";
 }
 
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Application versions</li>
+    </ol>
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

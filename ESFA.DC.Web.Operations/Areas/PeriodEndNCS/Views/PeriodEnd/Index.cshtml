@@ -5,6 +5,21 @@
     ViewData["Title"] = "Index";
 }
 
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodendncs/periodEndPreparation">NCS</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Period end</li>
+    </ol>
+</div>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
         <ul class="govuk-list">
@@ -16,7 +31,7 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
         <br />
-        <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
+        <h2 class="govuk-heading-l">Period N@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
 
 
         <br />
