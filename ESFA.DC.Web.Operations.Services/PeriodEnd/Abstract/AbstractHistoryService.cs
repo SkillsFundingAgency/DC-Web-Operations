@@ -9,17 +9,18 @@ using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 {
-    public class HistoryService : BaseHttpClientService, IHistoryService
+    public abstract class AbstractHistoryService : BaseHttpClientService, IHistoryService
     {
         private readonly string _baseUrl;
 
-        public HistoryService(
+        protected AbstractHistoryService(
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            string baseUrl)
             : base(jsonSerializationService, httpClient)
         {
-            _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history";
+            _baseUrl = baseUrl; // $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history";
         }
 
         public async Task<IEnumerable<HistoryDetail>> GetHistoryDetails(int year, CancellationToken cancellationToken = default)

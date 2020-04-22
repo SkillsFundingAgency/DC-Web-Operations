@@ -14,8 +14,8 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.NCS
 {
     public class NCSPeriodEndService : BaseHttpClientService, INCSPeriodEndService
     {
-        private readonly string _baseUrl;
         private const string api = "/api/period-end-ncs/";
+        private readonly string _baseUrl;
 
         public NCSPeriodEndService(
             IJsonSerializationService jsonSerializationService,
