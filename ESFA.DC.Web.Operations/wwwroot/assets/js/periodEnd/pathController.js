@@ -507,6 +507,7 @@ class pathController {
         this.setButtonState(mcaEnabled, "publishMcaReports");
         this.setButtonState(providerEnabled, "publishProviderReports");
         this.setButtonState(state.collectionClosed && reportsFinished && !state.periodEndFinished, "closePeriodEnd");
+        
         this.setButtonState(state.collectionClosed && state.periodEndFinished && state.referenceDataJobsPaused, "resumeReferenceData");
 
         this._year = state.year;

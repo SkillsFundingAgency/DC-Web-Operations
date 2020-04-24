@@ -24,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task PublishMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
