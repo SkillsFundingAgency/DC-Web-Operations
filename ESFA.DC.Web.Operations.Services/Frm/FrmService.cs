@@ -123,16 +123,17 @@
 
         }
 
-        public async Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldAsync(string periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
+            string path = $"{yearPeriod}/{periodNumber}";
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UnpublishSldDeleteFolderAsync(string containerName, string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldDeleteFolderAsync(string containerName, string folder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            _fileService.
+            await _fileService.DeleteFolderAsync(folder, containerName, cancellationToken);
         }
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
