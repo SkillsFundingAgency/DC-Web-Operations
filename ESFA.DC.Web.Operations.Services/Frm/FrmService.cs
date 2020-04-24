@@ -13,6 +13,7 @@
     using ESFA.DC.Logging.Interfaces;
     using ESFA.DC.PeriodEnd.Models.Dtos;
     using ESFA.DC.Serialization.Interfaces;
+    using ESFA.DC.Web.Operations.Interfaces;
     using ESFA.DC.Web.Operations.Interfaces.Frm;
     using ESFA.DC.Web.Operations.Settings.Models;
     using ESFA.DC.Web.Operations.Utils;
@@ -29,7 +30,7 @@
 
         public FrmService(
             IJsonSerializationService jsonSerializationService,
-            IFileService fileService,
+            [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService,
             ApiSettings apiSettings,
             HttpClient httpClient)
             : base(jsonSerializationService, httpClient)
