@@ -16,13 +16,11 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
-        private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
 
         public PeriodEndController(
             IPeriodService periodService,
             IPeriodEndService periodEndService,
-            IEmailService emailService,
             IStateService stateService,
             ILogger logger,
             TelemetryClient telemetryClient)
@@ -30,7 +28,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         {
             _periodService = periodService;
             _periodEndService = periodEndService;
-            _emailService = emailService;
             _stateService = stateService;
         }
 
@@ -55,8 +52,10 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             }
 
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
+            var isPreviousPeriod = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period + 1;
+
+            model.IsPreviousPeriod = isPreviousPeriod;
             model.IsCurrentPeriod = isCurrentPeriodSelected;
-            model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return View(model);
         }

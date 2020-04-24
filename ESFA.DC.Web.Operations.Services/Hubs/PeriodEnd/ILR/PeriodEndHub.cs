@@ -116,7 +116,13 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         {
             try
             {
-                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
+                await _hubContext.Clients.All.SendAsync("TurnOffMessage");
+                var paused = await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
+
+                if (paused)
+                {
+                    await _hubContext.Clients.All.SendAsync("ReferenceJobsButtonState");
+                }
             }
             catch (Exception e)
             {
@@ -183,12 +189,6 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             {
                 var closeEnabled = periodClosed && !state.PeriodEndFinished && state.McaReportsPublished && state.ProviderReportsPublished;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
-            }
-
-            if (PeriodEndState.CurrentAction != Constants.Action_ReferenceJobsButton)
-            {
-                var referenceJobsUnPausedEnabled = periodClosed && state.PeriodEndFinished && state.ReferenceDataJobsPaused;
-                await _hubContext.Clients.All.SendAsync(Constants.Action_ReferenceJobsButton, referenceJobsUnPausedEnabled, cancellationToken);
             }
         }
     }

@@ -73,9 +73,10 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync(_baseUrl + $"/api/period-end/{year}/{period}/{collectionType}/close", cancellationToken);
+            var result = await SendAsync(_baseUrl + $"/api/period-end/{year}/{period}/{collectionType}/close", cancellationToken);
+            return Convert.ToBoolean(result);
         }
 
         public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
