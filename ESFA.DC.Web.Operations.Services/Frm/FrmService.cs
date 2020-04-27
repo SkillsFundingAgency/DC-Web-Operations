@@ -122,7 +122,6 @@
             string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
-
         }
 
         public async Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
