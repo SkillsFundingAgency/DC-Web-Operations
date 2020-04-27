@@ -40,6 +40,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken);
 
+        Task<List<SummarisationCollectionReturnCode>> GetSummarisationCollectionCodesAsync(string collectionType, int year, int period, CancellationToken cancellationToken);
+
         Task<List<SummarisationTotal>> GetSummarisationTotalsAsync(List<int> collectionReturnIds, CancellationToken cancellationToken);
     }
 }

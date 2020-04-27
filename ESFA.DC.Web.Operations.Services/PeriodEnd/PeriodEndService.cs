@@ -130,6 +130,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
+        public async Task<List<SummarisationCollectionReturnCode>> GetSummarisationCollectionCodesAsync(string collectionType, int year, int period, CancellationToken cancellationToken)
+        {
+            string url = $"{_baseUrl}/api/summarisation/return-codes-for-period/{collectionType}/{year}/{period}";
+
+            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
+
+            return data;
+        }
+
         public async Task<List<SummarisationTotal>> GetSummarisationTotalsAsync(List<int> collectionReturnIds, CancellationToken cancellationToken)
         {
             var strCollectionReturnIds = string.Join("&collectionReturnIds=", collectionReturnIds).Substring(0);

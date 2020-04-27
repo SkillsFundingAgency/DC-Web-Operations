@@ -19,11 +19,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
     [Route(AreaNames.PeriodEndILR + "/periodEndReports")]
     public class PeriodEndReportController : BaseControllerWithOpsPolicy
     {
-        private const string CollectionType_ILR1920 = "ILR1920";
-        private const string CollectionType_ESF = "ESF";
-        private const string CollectionType_APPS = "APPS";
-        private const int NumberofPreviousReturnPeriods = 2;
-
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
         private readonly IStorageService _storageService;
@@ -77,7 +72,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             model.CollectionStats = collectionStats.Result;
             model.McaReports = mcaReports.Result;
 
-            model.SummarisationTotals = await GetSummarisationTotalsAsync(cancellationToken);
+            model.SummarisationTotals = await GetSummarisationTotalsAsync(model.Year, model.Period, cancellationToken);
 
             return View(model);
         }
@@ -110,13 +105,13 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             return await GetReportFile(collectionYear, fileName, downloadName);
         }
 
-        private async Task<IEnumerable<SummarisationTotal>> GetSummarisationTotalsAsync(CancellationToken cancellationToken)
+        private async Task<IEnumerable<SummarisationTotal>> GetSummarisationTotalsAsync(int collectionYear, int period, CancellationToken cancellationToken)
         {
             var tasks = new List<Task<List<SummarisationCollectionReturnCode>>>();
 
-            tasks.Add(_periodEndService.GetLatestSummarisationCollectionCodesAsync(CollectionType_ILR1920, NumberofPreviousReturnPeriods, cancellationToken));
-            tasks.Add(_periodEndService.GetLatestSummarisationCollectionCodesAsync(CollectionType_ESF, NumberofPreviousReturnPeriods, cancellationToken));
-            tasks.Add(_periodEndService.GetLatestSummarisationCollectionCodesAsync(CollectionType_APPS, NumberofPreviousReturnPeriods, cancellationToken));
+            tasks.Add(_periodEndService.GetSummarisationCollectionCodesAsync(CollectionTypes.ILR, collectionYear, period, cancellationToken));
+            tasks.Add(_periodEndService.GetSummarisationCollectionCodesAsync(CollectionTypes.ESF, collectionYear, period, cancellationToken));
+            tasks.Add(_periodEndService.GetSummarisationCollectionCodesAsync(CollectionTypes.APPS, collectionYear, period, cancellationToken));
 
             await Task.WhenAll(tasks);
 
