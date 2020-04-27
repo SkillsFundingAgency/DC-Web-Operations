@@ -1,0 +1,122 @@
+﻿@using ESFA.DC.Web.Operations.Utils
+@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models.PeriodEndPrepViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">NCS</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
+        <br />
+        <h2 class="govuk-heading-l">Period N@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <ul class="govuk-list">
+            <li>
+                @Html.ActionLink("Reports", "", "PeriodEndReport", new { area = AreaNames.PeriodEndNCS }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("History", "", "periodEndHistory", new { area = AreaNames.PeriodEndNCS }, new { @class = "govuk-link" })
+            </li>
+        </ul>
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+
+        @if (Model != null)
+        {
+            <div class="flex space-between">
+                <h2 class="govuk-heading-m">Failed submissions</h2>
+            </div>
+
+            <div id="failedJobContainer"></div>
+        }
+
+        <br />
+        <br />
+
+        <button class="govuk-button customised" id="collectionClosed"
+                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period, '@CollectionTypes.NCS');" disabled>
+            Send Collection Closed Email
+        </button>
+
+        <br />
+        <br />
+
+        @using (Html.BeginForm("StartPeriodEnd", "PeriodEndPrep", FormMethod.Post, new { @class = "app-task-list__section" }))
+        {
+            <input type="hidden" name="collectionYear" value="@Model.Year" />
+            <input type="hidden" name="period" value="@Model.Period" />
+            <input type="submit" class="govuk-button customised" id="startPeriodEnd" value="Continue" disabled>
+        }
+    </div>
+</div>
+
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+    {
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+
+    <script type="module">
+        import JobController from "/assets/js/periodEnd/ncs/jobController.js";
+        import Confirm from '/assets/js/periodEnd/ncs/confirmationController.js';
+
+        @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndPrepModel.State.PeriodEndFinished)
+        {
+            @Html.Raw("import Client from '/assets/js/periodEnd/ncs/client.js';")
+            ;
+            @Html.Raw("import Hub from '/assets/js/hubs/ncs/periodEndPrepHub.js';")
+            ;
+            @Html.Raw("const hub = new Hub('ncsPeriodEndPrepHub');")
+            ;
+            @Html.Raw("hub.startHub();")
+            ;
+            @Html.Raw("window.prepClient = new Client(hub.getConnection());")
+            ;
+        }
+
+        (function() {
+            const periodClosed = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosed)';
+            const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
+            const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
+            const confirm = new Confirm();
+            confirm.initialiseConfirmation(periodClosed, collectionClosedEmailSent, periodEndFinished);
+
+            const jobController = new JobController();
+            jobController.renderJobs(state);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
+                @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
+            }
+        })();
+
+    </script>
+}

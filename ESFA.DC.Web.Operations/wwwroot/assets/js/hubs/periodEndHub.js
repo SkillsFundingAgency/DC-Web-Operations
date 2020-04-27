@@ -1,6 +1,8 @@
 ﻿class periodEndHub {
     
     constructor(pathController) {
+        this._timerId = 0;
+
         this._pathController = pathController;
         this._connection = new signalR
             .HubConnectionBuilder()
@@ -13,8 +15,10 @@
         return this._connection;
     }
 
-    startHub() {
-        this._connection.on("ReceiveMessage", this._pathController.renderPaths.bind(this._pathController));
+    startHub(stateModel) {
+        if (!stateModel.isPreviousPeriod) {
+            this._connection.on("ReceiveMessage", this._pathController.renderPaths.bind(this._pathController));
+        }
 
         this._connection.on("StartPeriodEndState",
             (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "startPeriodEnd") });
@@ -26,10 +30,17 @@
             (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "publishProviderReports") });
 
         this._connection.on("PeriodClosedState",
-            (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "closePeriodEnd") });
+            (enabled) => {
+                this._pathController.setButtonState.call(this._pathController, enabled, "closePeriodEnd");
+            });
+
+        this._connection.on("TurnOffMessage", () => {
+            this._connection.off("ReceiveMessage");
+            clearInterval(this._timerId);
+        });
 
         this._connection.on("ReferenceJobsButtonState",
-            (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "resumeReferenceData") });
+            () => { this._pathController.setButtonState.call(this._pathController, true, "resumeReferenceData") });
 
         this._connection.on("DisablePathItemProceed",
             (pathItemId) => {
@@ -55,28 +66,39 @@
             this._pathController.displayConnectionState("Closed");
         });
 
-        this.startConnection();
-
+        if (stateModel.isPreviousPeriod) {
+            this.startConnection(null);
+        } else {
+            this.startConnection(this.startTimer);
+        }
     }
 
-    startConnection() {
+    startTimer() {
+        const scope = this;
+        this._timerId =  setInterval(function () {
+            console.log('Attempting to send client handshake as ' + scope._connection.connectionId);
+            scope._connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
+        }, 5*1000);
+    }
+
+    startConnection(delegate) {
         const classScope = this;
 
         try {
             this._connection.start().then(() => {
-                clearTimeout(this.timerId);
-                this.timerId = setInterval(function () {
-                    console.log('Attempting to send client handshake as ' + classScope._connection.connectionId);
-                    classScope._connection.invoke('ReceiveMessage').catch(err => console.error(err.toString()));
-                }, 5*1000);
+                if (delegate) {
+                    delegate.call(classScope);
+                }
+                
                 console.assert(this._connection.state === signalR.HubConnectionState.Connected);
-                console.log("connected");
-                classScope._pathController.displayConnectionState("Connected");
+                var message = delegate ? "Connected" : "Connected minimal";
+                console.log(message);
+                classScope._pathController.displayConnectionState(message);
             });
         } catch (err) {
             console.assert(this._connection.state === signalR.HubConnectionState.Disconnected);
             console.log(err);
-            setTimeout(() => this.startConnection(), 1000);
+            setTimeout(() => this.startConnection(delegate), 1000);
         }
     }
 }

@@ -18,13 +18,13 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
     public class HistoryController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
-        private readonly IHistoryService _historyService;
+        private readonly IILRHistoryService _ilrHistoryService;
 
-        public HistoryController(IPeriodService periodService, IHistoryService historyService, ILogger logger, TelemetryClient telemetryClient)
+        public HistoryController(IPeriodService periodService, IILRHistoryService ilrIlrHistoryService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _periodService = periodService;
-            _historyService = historyService;
+            _ilrHistoryService = ilrIlrHistoryService;
         }
 
         public async Task<IActionResult> Index(int? collectionYear, CancellationToken cancellationToken)
@@ -40,8 +40,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
                 Year = collectionYear ?? currentYearPeriod.Year.Value
             };
 
-            model.PeriodHistories = await _historyService.GetHistoryDetails(model.Year);
-            model.CollectionYears = await _historyService.GetCollectionYears();
+            model.PeriodHistories = await _ilrHistoryService.GetHistoryDetails(model.Year);
+            model.CollectionYears = await _ilrHistoryService.GetCollectionYears();
 
             return View(model);
         }

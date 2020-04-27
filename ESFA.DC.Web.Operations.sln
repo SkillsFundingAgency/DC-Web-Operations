@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B7067B80
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Tests", "ESFA.DC.Web.Operations.Tests\ESFA.DC.Web.Operations.Tests.csproj", "{240A9261-3F04-44FA-997B-FD5737A2D4D6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBCF63B3-5BAC-4AEF-9428-369B3B543820}"
+	ProjectSection(SolutionItems) = preProject
+		ESFA.DC.Web.Operations.ruleset = ESFA.DC.Web.Operations.ruleset
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

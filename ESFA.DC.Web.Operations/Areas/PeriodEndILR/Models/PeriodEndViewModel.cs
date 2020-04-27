@@ -7,6 +7,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models
     {
         public IEnumerable<PathPathItemsModel> Paths { get; set; }
 
+        public bool IsPreviousPeriod { get; set; }
+
         public bool IsCurrentPeriod { get; set; }
 
         public int Period { get; set; }

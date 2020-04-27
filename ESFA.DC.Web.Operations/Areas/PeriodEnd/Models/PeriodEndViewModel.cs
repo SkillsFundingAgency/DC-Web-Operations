@@ -1,11 +1,13 @@
-﻿namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
+﻿using ESFA.DC.PeriodEnd.Models;
+
+namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Models
 {
     public sealed class PeriodEndViewModel
     {
-        public int Period { get; set; }
+      public PathYearPeriod ILRPeriodEndInfo { get; set; }
 
-        public int Year { get; set; }
+      public PathYearPeriod NCSPeriodEndInfo { get; set; }
 
-        public bool Closed { get; set; }
+      public PathYearPeriod ALLFPeriodEndInfo { get; set; }
     }
 }

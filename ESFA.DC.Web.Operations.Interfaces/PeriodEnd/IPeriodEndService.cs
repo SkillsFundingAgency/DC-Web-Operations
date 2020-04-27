@@ -24,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task PublishMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -39,6 +39,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<string> GetPrepStateAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken);
+
+        Task<List<SummarisationCollectionReturnCode>> GetSummarisationCollectionCodesAsync(string collectionType, int year, int period, CancellationToken cancellationToken);
 
         Task<List<SummarisationTotal>> GetSummarisationTotalsAsync(List<int> collectionReturnIds, CancellationToken cancellationToken);
     }

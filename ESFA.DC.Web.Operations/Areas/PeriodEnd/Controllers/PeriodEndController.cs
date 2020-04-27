@@ -31,10 +31,21 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
             _stateService = stateService;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var model = new PeriodEndViewModel();
+            var ilrPeriodEndInfo = _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var ncsPeriodEndInfo = _periodService.ReturnPeriod(CollectionTypes.NCS, cancellationToken);
+            var allfPeriodEndInfo = _periodService.ReturnPeriod(CollectionTypes.ALLF, cancellationToken);
+
+            await Task.WhenAll(ilrPeriodEndInfo, ncsPeriodEndInfo, allfPeriodEndInfo);
+
+            var model = new PeriodEndViewModel
+            {
+                ILRPeriodEndInfo = ilrPeriodEndInfo.Result,
+                NCSPeriodEndInfo = ncsPeriodEndInfo.Result,
+                ALLFPeriodEndInfo = allfPeriodEndInfo.Result
+            };
 
             return View(model);
         }

@@ -9,7 +9,7 @@
     <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="dashboard">Home</a>
+                <a class="govuk-breadcrumbs__link" href="/">Home</a>
             </li>
 
             <li class="govuk-breadcrumbs__list-item" aria-current="page">Period end</li>
@@ -22,16 +22,14 @@
                 <ul class="govuk-list">
                     <li>
                         <h3 class="home-services__heading"><a href="ALLF" class="govuk-link">ALLF</a></h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1"><span class="govuk-!-font-weight-bold">A55</span> open until</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">07 July 2020 18:05pm</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@($"{Model.ALLFPeriodEndInfo.Period:D2}"), @Model.ALLFPeriodEndInfo.Year</p>
+
                     </li>
                     <li>
                         <h3 class="home-services__heading">
                             @Html.ActionLink("Application Version", "Index", "Version", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
                         </h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">1 January 2020 at 12:04pm</p>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by Bernie ODONNELL</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Service fabric application information includes version, health state and status</p>
                     </li>
                 </ul>
             </div>
@@ -39,16 +37,13 @@
                 <ul class="govuk-list">
                     <li>
                         <h3 class="home-services__heading">@Html.ActionLink("ILR", "Index", "PeriodEndPrep", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })</h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1"><span class="govuk-!-font-weight-bold">R06</span> open until</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">22 July 2020 18:05pm</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period R@($"{Model.ILRPeriodEndInfo.Period:D2}"), @Model.ILRPeriodEndInfo.Year</p>
                     </li>
 
 
                     <li>
                         <h3 class="home-services__heading">@Html.ActionLink("Email Distribution", "Index", "List", new { area = AreaNames.EmailDistribution }, new { @class = "govuk-link" })</h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">1 January 2020 at 12:04pm</p>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by Lynne BURDON</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Includes Email distribution list, add new participants and manage email templates.</p>
                     </li>
 
                 </ul>
@@ -56,12 +51,9 @@
             <div class="govuk-grid-column-one-third">
                 <ul class="govuk-list">
                     <li>
-                        <h3 class="home-services__heading"><a href="NCS" class="govuk-link">NCS</a></h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1"><span class="govuk-!-font-weight-bold">N12</span> open until</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">22 March 2020 18:05</p>
+                        <h3 class="home-services__heading">@Html.ActionLink("NCS", "Index", "PeriodEndPrep", new { area = AreaNames.PeriodEndNCS }, new { @class = "govuk-link" })</h3>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-7">Period N@($"{Model.NCSPeriodEndInfo.Period:D2}"), @Model.NCSPeriodEndInfo.Year</p>
                     </li>
-
-
                 </ul>
             </div>
         </div>

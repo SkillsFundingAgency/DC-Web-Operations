@@ -73,9 +73,10 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return data;
         }
 
-        public async Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync(_baseUrl + $"/api/period-end/{year}/{period}/{collectionType}/close", cancellationToken);
+            var result = await SendAsync(_baseUrl + $"/api/period-end/{year}/{period}/{collectionType}/close", cancellationToken);
+            return Convert.ToBoolean(result);
         }
 
         public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
@@ -123,6 +124,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         public async Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken)
         {
             string url = $"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}";
+
+            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
+
+            return data;
+        }
+
+        public async Task<List<SummarisationCollectionReturnCode>> GetSummarisationCollectionCodesAsync(string collectionType, int year, int period, CancellationToken cancellationToken)
+        {
+            string url = $"{_baseUrl}/api/summarisation/return-codes-for-period/{collectionType}/{year}/{period}";
 
             var data = await GetAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
 

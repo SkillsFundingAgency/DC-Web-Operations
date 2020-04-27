@@ -1,0 +1,119 @@
+﻿@using ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models
+@using ESFA.DC.Web.Operations.Utils
+@model ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models.PeriodEndViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodendncs/periodEndPreparation">NCS</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Period end</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
+        <ul class="govuk-list">
+            
+        </ul>
+        <div id="summaryContainer"></div>
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
+        <br />
+        <h2 class="govuk-heading-l">Period N@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
+
+
+        <br />
+        <br />
+
+        <button type="submit" class="govuk-button customised" id="startPeriodEnd"
+                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.NCS');return false;">
+            Start Period End
+        </button>
+
+        <br />
+        <br />
+
+        <div>
+            <ol id="pathContainer" class="app-task-list"></ol>
+        </div>
+
+        <br />
+        <br />
+        
+        <div class="app-task-list__section">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.NCS');return false;" value="Close Period End">
+        </div>
+
+        <br />
+        <br />
+       
+    </div>
+</div>
+
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+            <label id="slowConnection" alt="Connection is slow at the moment"></label>
+            <label id="lastSync"></label>
+            <label id="state"></label>
+        </div>
+    </div>
+
+@section PageScripts
+{
+    @if (Model != null && Model.CollectionClosed)
+    {
+        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    }
+
+<script type="module">
+        import PathController from '/assets/js/periodEnd/ncs/pathController.js';
+
+        @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
+        {
+            @Html.Raw("import Client from '/assets/js/periodEnd/ncs/client.js';")
+            ;
+            @Html.Raw("import Hub from '/assets/js/hubs/ncs/periodEndHub.js';")
+            ;
+        }
+
+        (function() {
+            const stateModel = @Json.Serialize(Model);
+            const pathController = new PathController();
+
+            pathController.initialiseState(stateModel);
+
+            @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
+            {
+                @Html.Raw("const hub = new Hub(pathController);")
+                ;
+                @Html.Raw("hub.startHub();")
+                ;
+                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
+                ;
+            }
+            
+            pathController.renderPaths(stateModel);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
+                    @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
+            }
+        })();
+
+</script>
+}
