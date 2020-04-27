@@ -152,7 +152,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         {
             try
             {
-                await _frmService.UnpublishSldAsync(path);
+                var pathArray = path.Split("/");
+                int yearPeriod = int.Parse(pathArray[0]);
+                int periodNumber = int.Parse(pathArray[1]);
+                await _frmService.UnpublishSldAsync(periodNumber, yearPeriod);
+                string containerName = $"frm{yearPeriod}-files";
+                await _frmService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);
                 return View("UnpublishSuccess");
             }
             catch

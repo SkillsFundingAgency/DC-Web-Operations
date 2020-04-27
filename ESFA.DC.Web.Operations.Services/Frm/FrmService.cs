@@ -8,11 +8,13 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Autofac.Features.AttributeFilters;
+    using Autofac.Features.Indexed;
     using ESFA.DC.FileService.Interface;
     using ESFA.DC.Jobs.Model;
     using ESFA.DC.Logging.Interfaces;
     using ESFA.DC.PeriodEnd.Models.Dtos;
     using ESFA.DC.Serialization.Interfaces;
+    using ESFA.DC.Web.Operations.Interfaces;
     using ESFA.DC.Web.Operations.Interfaces.Frm;
     using ESFA.DC.Web.Operations.Settings.Models;
     using ESFA.DC.Web.Operations.Utils;
@@ -21,6 +23,7 @@
     public class FrmService : BaseHttpClientService, IFrmService
     {
         private readonly ILogger _logger;
+        private readonly IFileService _fileService;
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
         private readonly string _periodEndJobApiUrl;
@@ -28,10 +31,12 @@
 
         public FrmService(
             IJsonSerializationService jsonSerializationService,
+            IIndex<PersistenceStorageKeys, IFileService> fileService,
             ApiSettings apiSettings,
             HttpClient httpClient)
             : base(jsonSerializationService, httpClient)
         {
+            _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
             _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
@@ -119,11 +124,18 @@
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
+            string path = $"{yearPeriod}/{periodNumber}";
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
+        }
+
+        public async Task UnpublishSldDeleteFolderAsync(string containerName, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string folder = $"R{period.ToString("D2")}";
+            await _fileService.DeleteFolderAsync(folder, containerName, cancellationToken);
         }
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()

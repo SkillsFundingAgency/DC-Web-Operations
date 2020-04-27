@@ -20,8 +20,10 @@
 
         Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync();
 
-        Task UnpublishSldAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
+        Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType);
+
+        Task UnpublishSldDeleteFolderAsync(string containerName, int period, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
