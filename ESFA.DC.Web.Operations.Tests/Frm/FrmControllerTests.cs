@@ -220,7 +220,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             var model = SetupModel(1920, 1, 0);
             var controller = SetupControllerWithLogger();
 
-            var result = await controller.UnpublishFrmAsync(null);
+            var result = await controller.UnpublishFrmAsync("1920/4");
             var viewResult = result as ViewResult;
             viewResult.ViewName.Should().Be("UnpublishSuccess");
         }
@@ -342,7 +342,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         {
             var frmServiceMock = new Mock<IFrmService>();
             frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
-            frmServiceMock.Setup(x => x.UnpublishSldAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            frmServiceMock.Setup(x => x.UnpublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var logger = new Mock<ILogger>();
             var controller = new FrmController(logger.Object, frmServiceMock.Object, null, iIndex.Object, null);

@@ -154,7 +154,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             {
                 var pathArray = path.Split("/");
                 int yearPeriod = int.Parse(pathArray[0]);
-                var periodNumber = pathArray[1];
+                int periodNumber = int.Parse(pathArray[1]);
                 await _frmService.UnpublishSldAsync(periodNumber, yearPeriod);
                 string containerName = $"frm{yearPeriod}-files";
                 await _frmService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);

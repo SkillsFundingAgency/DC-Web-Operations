@@ -8,6 +8,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Autofac.Features.AttributeFilters;
+    using Autofac.Features.Indexed;
     using ESFA.DC.FileService.Interface;
     using ESFA.DC.Jobs.Model;
     using ESFA.DC.Logging.Interfaces;
@@ -30,12 +31,12 @@
 
         public FrmService(
             IJsonSerializationService jsonSerializationService,
-            [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService,
+            IIndex<PersistenceStorageKeys, IFileService> fileService,
             ApiSettings apiSettings,
             HttpClient httpClient)
             : base(jsonSerializationService, httpClient)
         {
-            _fileService = fileService;
+            _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
             _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
@@ -124,7 +125,7 @@
 
         }
 
-        public async Task UnpublishSldAsync(string periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             string path = $"{yearPeriod}/{periodNumber}";
             string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
@@ -132,8 +133,9 @@
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UnpublishSldDeleteFolderAsync(string containerName, string folder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldDeleteFolderAsync(string containerName, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
+            string folder = $"R{period.ToString("D2")}";
             await _fileService.DeleteFolderAsync(folder, containerName, cancellationToken);
         }
 
