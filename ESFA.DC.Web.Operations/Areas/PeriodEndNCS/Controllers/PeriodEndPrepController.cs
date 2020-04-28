@@ -15,12 +15,12 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
     public class PeriodEndPrepController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
-        private readonly IPeriodEndService _periodEndService;
+        private readonly INCSPeriodEndService _periodEndService;
         private readonly IStateService _stateService;
 
         public PeriodEndPrepController(
             IPeriodService periodService,
-            IPeriodEndService periodEndService,
+            INCSPeriodEndService periodEndService,
             IStateService stateService,
             ILogger logger,
             TelemetryClient telemetryClient)

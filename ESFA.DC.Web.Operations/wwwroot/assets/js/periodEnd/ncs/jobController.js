@@ -35,11 +35,7 @@ class jobController {
 				        </div>
 				        <div class="govuk-body card-wrapper ilr">
 					        <div class="flex space-between govuk-!-margin-bottom-2">
-						        <span class="wrong-file-name">${job.collectionName}</span>
-						        <div class="submit-and-clear">
-							        <button type="submit" name="jobId" Id="jobButton${job.jobId}"
-                                        onclick="window.prepClient.resubmitJob.call(window.prepClient, ${job.jobId}); return false;">Submit Again</button>
-						        </div>
+						        <span class="wrong-file-name">${job.collectionName}</span>						       
 					        </div>
 					        <div class="flex space-between">
 						        <span class="govuk-!-font-size-16">${job.fileName}</span>

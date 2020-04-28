@@ -104,6 +104,7 @@
 
         (function() {
             const periodClosed = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosed)';
+            const state = @Json.Serialize(Model?.PeriodEndPrepModel);
             const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
             const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
             const confirm = new Confirm();
