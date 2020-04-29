@@ -704,14 +704,12 @@ html {
 @media (min-width: 64em) {
     .signed-in-user {
         display: inline;
-        margin-left: 240px;
     }
 }
 
 @media (min-width: 57.5em) {
     .signed-in-user {
         display: inline;
-        margin-left: 180px;
         margin-bottom: 5px;
         margin-top:0;
     }
@@ -721,6 +719,7 @@ html {
     .signed-in-user {
         display: block;
         margin-top: 5px;
+        float: right;
     }
 }
 
