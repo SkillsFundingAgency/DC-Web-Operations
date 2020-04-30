@@ -88,7 +88,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
         [Route("getSampleReport/{collectionYear}/{period}/{*fileName}")]
         public async Task<FileResult> GetReportFile(int collectionYear, int period, string fileName)
         {
-            var downloadName = $"{fileName.Substring(fileName.IndexOf('/') + 1, 8)}_{collectionYear}_R{period.ToString().PadLeft(2, '0')}_Reports.zip";
+            var downloadName = $"{fileName.Substring(fileName.IndexOf('/') + 1, 8)}_{collectionYear}_N{period.ToString().PadLeft(2, '0')}_Reports.zip";
 
             return await GetReportFile(collectionYear, fileName, downloadName);
         }
