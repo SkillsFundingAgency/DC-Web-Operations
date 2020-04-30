@@ -13,5 +13,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         bool CollectionClosedEmailSent(PeriodEndStateModel periodEndStateModel);
 
         PeriodEndPrepModel GetPrepState(string state);
+
+        bool AllJobsHaveCompleted(PeriodEndStateModel state);
     }
 }

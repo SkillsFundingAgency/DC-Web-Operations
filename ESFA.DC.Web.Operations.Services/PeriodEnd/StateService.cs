@@ -40,5 +40,13 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             return periodEndStateModel.CollectionClosedEmailSent;
         }
+
+        public bool AllJobsHaveCompleted(PeriodEndStateModel state)
+        {
+            return (state?.Paths?.Any() ?? false) &&
+                      state.Paths.All(path => (path.PathItems?.Any() ?? false) &&
+                            path.PathItems.All(pi => (pi.PathItemJobs?.Any() ?? false) &&
+                                pi.PathItemJobs.All(pij => pij.Status == Constants.JobStatus_Completed)));
+        }
     }
 }
