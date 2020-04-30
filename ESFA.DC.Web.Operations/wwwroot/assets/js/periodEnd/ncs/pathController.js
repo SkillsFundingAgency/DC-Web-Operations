@@ -490,7 +490,7 @@ class pathController {
     initialiseState(state) {
 
         this.setButtonState(state.collectionClosed && !state.periodEndStarted, "startPeriodEnd");
-        this.setButtonState(state.collectionClosed && !state.periodEndFinished, "closePeriodEnd");
+        this.setButtonState(state.collectionClosed && !state.periodEndFinished && state.closePeriodEndEnabled, "closePeriodEnd");
 
         this._year = state.year;
         this._period = state.period;

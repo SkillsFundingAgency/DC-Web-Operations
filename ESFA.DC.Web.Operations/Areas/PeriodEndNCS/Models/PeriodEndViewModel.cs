@@ -28,5 +28,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models
         public bool ReferenceDataJobsPaused { get; set; }
 
         public bool CollectionClosed { get; set; }
+
+        public bool ClosePeriodEndEnabled { get; set; }
     }
 }

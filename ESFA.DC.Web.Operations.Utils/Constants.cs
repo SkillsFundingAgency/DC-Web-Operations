@@ -2,6 +2,8 @@
 {
     public class Constants
     {
+        public const int JobStatus_Completed = 4;
+
         public const string IlrCollectionNamePrefix = "ILR";
         public const int YearStartMonth = 8;
         public const int CriticalPathHubId = 0;

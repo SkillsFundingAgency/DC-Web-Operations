@@ -6,21 +6,6 @@
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
 }
 
-<div class="app-masthead">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
-            <vc:provider-search search-type="existing"></vc:provider-search>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div>
-                <a href="#">Advanced search</a>
-                @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
         <h1 class="govuk-heading-xl">

@@ -35,6 +35,10 @@ a:focus, .govuk-list a:focus {
     color: inherit;
 }
 
+.govuk-phase-banner__content {
+    width: 100%;
+}
+
 .govuk-body-m, .govuk-body, p {
     color: $govuk-text-colour;
     font-family: "nta", Arial, sans-serif;

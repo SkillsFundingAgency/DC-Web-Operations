@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models;
@@ -65,6 +66,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
         {
             var pathItemStates = await _periodEndService.GetPathItemStatesAsync(collectionYear, period, CollectionTypes.NCS);
             var state = _stateService.GetMainState(pathItemStates);
+            var lastItemJobsFinished = _stateService.AllJobsHaveCompleted(state);
 
             var pathModel = new PeriodEndViewModel
             {
@@ -78,7 +80,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
                 ProviderReportsReady = state.ProviderReportsReady,
                 ProviderReportsPublished = state.ProviderReportsPublished,
                 PeriodEndFinished = state.PeriodEndFinished,
-                ReferenceDataJobsPaused = state.ReferenceDataJobsPaused
+                ReferenceDataJobsPaused = state.ReferenceDataJobsPaused,
+                ClosePeriodEndEnabled = lastItemJobsFinished
             };
 
             return pathModel;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
@@ -121,7 +122,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, collectionType, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
-            var startEnabled = periodClosed && !state.PeriodEndStarted;
+            var startEnabled = periodClosed && !state.PeriodEndStarted && !state.PeriodEndFinished;
             if (PeriodEndState.CurrentAction != Constants.Action_StartPeriodEndButton)
             {
                 await _hubContext.Clients.All.SendAsync(Constants.Action_StartPeriodEndButton, startEnabled, cancellationToken);
@@ -129,7 +130,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
 
             if (PeriodEndState.CurrentAction != Constants.Action_PeriodClosedButton)
             {
-                var closeEnabled = periodClosed && !state.PeriodEndFinished;
+                var closeEnabled = periodClosed && !state.PeriodEndFinished && _stateService.AllJobsHaveCompleted(state);
                 await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
             }
         }
