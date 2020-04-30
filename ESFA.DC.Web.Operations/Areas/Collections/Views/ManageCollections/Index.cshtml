@@ -14,11 +14,6 @@
         <h1 class="govuk-heading-xl">Manage collections</h1>
         <br><br>
     </div>
-
-    <div class="govuk-grid-column-one-third">
-        <span class="govuk-!-font-size-19"><a class="govuk-button govuk-button--secondary">Add Collection</a></span>
-    </div>
-
 </div>
 
 <input type="hidden" id="highestYear" value="@(Model.Collections.OrderByDescending(o => o.CollectionYear).First().CollectionYear.ToString())" />
