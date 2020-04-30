@@ -130,9 +130,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
 
             if (PeriodEndState.CurrentAction != Constants.Action_PeriodClosedButton)
             {
-                var lastItemJobsFinished = state.Paths.LastOrDefault()?.PathItems.LastOrDefault()?.PathItemJobs.All(pij => pij.Status == Constants.JobStatus_Completed) ?? false;
-
-                var closeEnabled = periodClosed && !state.PeriodEndFinished && lastItemJobsFinished;
+                var closeEnabled = periodClosed && !state.PeriodEndFinished && _stateService.AllJobsHaveCompleted(state);
                 await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
             }
         }

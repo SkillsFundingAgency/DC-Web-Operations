@@ -66,7 +66,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
         {
             var pathItemStates = await _periodEndService.GetPathItemStatesAsync(collectionYear, period, CollectionTypes.NCS);
             var state = _stateService.GetMainState(pathItemStates);
-            var lastItemJobsFinished = state.Paths.LastOrDefault()?.PathItems.LastOrDefault()?.PathItemJobs.All(pij => pij.Status == Utils.Constants.JobStatus_Completed) ?? false;
+            var lastItemJobsFinished = _stateService.AllJobsHaveCompleted(state);
 
             var pathModel = new PeriodEndViewModel
             {
