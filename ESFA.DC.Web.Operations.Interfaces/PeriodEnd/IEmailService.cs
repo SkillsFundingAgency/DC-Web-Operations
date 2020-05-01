@@ -5,6 +5,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IEmailService
     {
-        Task SendEmail(int hubEmailId, int periodNumber, CancellationToken cancellationToken = default);
+        Task SendEmail(int hubEmailId, int periodNumber, string periodPrefix, CancellationToken cancellationToken = default);
     }
 }

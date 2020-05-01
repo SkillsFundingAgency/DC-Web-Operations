@@ -85,7 +85,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
 
                 await _periodEndService.InitialisePeriodEndAsync(year, period, collectionType, CancellationToken.None);
                 await _periodEndService.CollectionClosedEmailSentAsync(year, period);
-                await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period);
+                await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period, "N");
             }
             catch (Exception e)
             {
