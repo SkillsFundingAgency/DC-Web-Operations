@@ -63,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
                 await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
 
-                await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, "R");
+                await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, Constants.IlrPeriodPrefix);
             }
             catch (Exception e)
             {
@@ -90,7 +90,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             try
             {
                 await _periodEndService.PublishProviderReportsAsync(collectionYear, period);
-                await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period, "R");
+                await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period, Constants.IlrPeriodPrefix);
             }
             catch (Exception e)
             {
