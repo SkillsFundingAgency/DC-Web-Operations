@@ -29,7 +29,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 
         public async Task<IActionResult> Index(int? collectionYear, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.NCS, cancellationToken);
             if (currentYearPeriod.Year == null)
             {
                 throw new Exception($"Return period {currentYearPeriod.Period} has no year.");
