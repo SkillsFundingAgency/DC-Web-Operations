@@ -35,5 +35,8 @@
         public static readonly string FrmContainerName = "frm{0}-files";
         public static readonly string FrmValidationKey = "Validation";
         public static readonly string FrmPublishKey = "Publish";
+
+        public static readonly string IlrPeriodPrefix = "R";
+        public static readonly string NcsPeriodPrefix = "N";
     }
 }

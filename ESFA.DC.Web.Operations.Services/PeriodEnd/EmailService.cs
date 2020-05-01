@@ -20,9 +20,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-email";
         }
 
-        public async Task SendEmail(int hubEmailId, int periodNumber, CancellationToken cancellationToken = default)
+        public async Task SendEmail(int hubEmailId, int periodNumber, string periodPrefix, CancellationToken cancellationToken = default)
         {
-            await SendAsync(_baseUrl + $"/{hubEmailId}/{periodNumber}", cancellationToken);
+            await SendAsync(_baseUrl + $"/{hubEmailId}/{periodNumber}/{periodPrefix}", cancellationToken);
         }
     }
 }
