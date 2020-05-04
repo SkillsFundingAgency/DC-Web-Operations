@@ -14,5 +14,8 @@
         public const int ReportsPublishedEmail = 10;
         public const int ReferenceDataCompletedEmail = 11;
         public const int FCSTeamHandoverEmail = 12;
+        public const int MCAReportsAvailableEmail = 13;
+        public const int NCSFCSTeamHandoverEmail = 14;
+        public const int NCSConfirmCollectionClosedEmail = 15;
     }
 }
