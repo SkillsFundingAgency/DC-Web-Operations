@@ -20,7 +20,8 @@ namespace ESFA.DC.Web.Operations.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (_contextAccessor.HttpContext.Request.Path.HasValue && _contextAccessor.HttpContext.Request.Path.Value.Contains(GovUkRequestPathSearchValue))
+            if ((_contextAccessor.HttpContext.Request.Path.HasValue && _contextAccessor.HttpContext.Request.Path.Value.Contains(GovUkRequestPathSearchValue) && GovUkRequestPathSearchValue != "/") ||
+                     GovUkRequestPathSearchValue == "/" && _contextAccessor.HttpContext.Request.Path.HasValue && _contextAccessor.HttpContext.Request.Path.Value.Length == 1)
             {
                 output.Attributes.SetAttribute("class", GovUkHeadingSmallClass + "active");
             }
