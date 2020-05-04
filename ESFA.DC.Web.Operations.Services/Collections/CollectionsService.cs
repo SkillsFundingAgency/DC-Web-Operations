@@ -136,8 +136,8 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 .Select(d => new ReturnPeriod(
                     d.ReturnPeriodId,
                     $"R{d.PeriodNumber:00}",
-                    d.StartDateTimeUtc,
-                    d.EndDateTimeUtc,
+                    _dateTimeProvider.ConvertUtcToUk(d.StartDateTimeUtc),
+                    _dateTimeProvider.ConvertUtcToUk(d.EndDateTimeUtc),
                     (d.StartDateTimeUtc <= now && d.EndDateTimeUtc >= now) || d.StartDateTimeUtc > now))
                 .ToList();
         }
