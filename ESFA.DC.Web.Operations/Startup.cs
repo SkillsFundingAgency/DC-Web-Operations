@@ -98,6 +98,7 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<JobFailedTodayTimedHostedService>();
             services.AddHostedService<JobSlowFileTimedHostedService>();
             services.AddHostedService<JobConcernTimedHostedService>();
+            services.AddHostedService<JobDasMismatchTimedHostedService>();
 
             services.AddHostedService<NCSPeriodEndPrepTimedHostedService>();
             services.AddHostedService<NCSPeriodEndTimedHostedService>();
@@ -240,6 +241,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<JobDasMismatchHub>("/jobDasMismatchHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -293,6 +299,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobFailedTodayHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobSlowFileHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobConcernHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<JobDasMismatchHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);

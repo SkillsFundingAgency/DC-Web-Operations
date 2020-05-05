@@ -1,10 +1,10 @@
 ﻿import HubBase from '/assets/js/hubs/hubBase.js';
 
-class JobConcernHub extends HubBase {
+class JobDasMismatchHub extends HubBase {
 
-    constructor(url, jobConcernController) {
+    constructor(url, jobDasMismatchController) {
         super(url);
-        this._controller = jobConcernController;
+        this._controller = jobDasMismatchController;
     }
 
     startHub() {
@@ -13,4 +13,4 @@ class JobConcernHub extends HubBase {
     }
 }
 
-export default JobConcernHub;
+export default JobDasMismatchHub;
