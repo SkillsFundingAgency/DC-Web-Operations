@@ -35,7 +35,7 @@
                         <a asp-controller="ManageProviders" asp-area="Provider" asp-action="Index" asp-route-ukprn=@Model.Jobs[i].Ukprn>@Model.Jobs[i].ProviderName</a>
                     </td>
                     <td class="govuk-table__cell">
-                        @Model.Jobs[i].DateTimeCreatedUtc.ToShortDateString()
+                        @Model.Jobs[i].DateTimeCreatedUtc.ToString("dd/MM/yyyy")
                     </td>
                     <td class="govuk-table__cell">
                         @Model.Jobs[i].PeriodNumber
