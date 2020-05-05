@@ -4,7 +4,8 @@ class jobController {
 
     constructor() {
         this._slowTimer = null;
-        this._mcaLabel = document.getElementById("mcaLabel")
+        this._mcaLabel = document.getElementById("mcaLabel");
+        this._sldDasLabel = document.getElementById("sldDasMismatch");
     }
 
     renderJobs(state) {
@@ -16,6 +17,7 @@ class jobController {
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
         this.renderMcas(stateModel.mcaDetails);
+        this.renderSLDDASMismatch(stateModel.slddasMismatches);
         this.renderFailedJobs(stateModel.failedJobs);
         this.renderReferenceJobs(stateModel.referenceDataJobs);
     }
@@ -96,16 +98,21 @@ class jobController {
     }
 
     renderMcas(mcadetails) {
-        console.log(mcadetails);
-        var mcaGlaa = []
-        if (mcadetails != null && mcadetails.length > 0) {
-            for (var i = 0; i < mcadetails.length; i++) {
-                var obj = mcadetails[i];
-                var value = obj["code"];
-                mcaGlaa.push(value)
+        const mcaGlaa = [];
+
+        if (mcadetails && mcadetails.length > 0) {
+            for (let i = 0; i < mcadetails.length; i++) {
+                const obj = mcadetails[i];
+                const value = obj["code"];
+                mcaGlaa.push(value);
             }
-            this._mcaLabel.textContent = mcaGlaa.join(", ")
+
+            this._mcaLabel.textContent = mcaGlaa.join(", ");
         }
+    }
+
+    renderSLDDASMismatch(misMatchCount) {
+        this._sldDasLabel.textContent = misMatchCount;
     }
 
     clearContainer(container) {
