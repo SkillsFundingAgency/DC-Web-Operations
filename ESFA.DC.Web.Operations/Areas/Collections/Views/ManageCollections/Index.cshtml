@@ -1,7 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@using ESFA.DC.Web.Operations.Areas.Collections.Models
 @using MoreLinq
-@using Remotion.Linq.Parsing.Structure.IntermediateModel
 @model ESFA.DC.Web.Operations.Areas.Collections.Models.ManageCollectionsViewModel
 
 @{
@@ -16,11 +14,10 @@
     </div>
 </div>
 
-<input type="hidden" id="highestYear" value="@(Model.Collections.OrderByDescending(o => o.CollectionYear).First().CollectionYear.ToString())" />
 @foreach (var year in Model.Collections.DistinctBy(d => d.CollectionYear).OrderByDescending(o => o.CollectionYear).Select(s => s.CollectionYear))
 {
     <div class="govuk-grid-row">
-        <details class="govuk-details" data-module="govuk-details" id="@($"summary_{year}")">
+        <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
                     @($"{year.ToString().Substring(0, 2)}/{year.ToString().Substring(2, 2)}")
@@ -41,15 +38,4 @@
             </div>
         </details>
     </div>
-}
-
-@section PageScripts
-{
-    <script type="module">
-        var firstYear = document.getElementById('highestYear')
-        var span = document.getElementById('summary_' + firstYear.value);
-
-        span.setAttribute("open", "");
-
-    </script>
 }
