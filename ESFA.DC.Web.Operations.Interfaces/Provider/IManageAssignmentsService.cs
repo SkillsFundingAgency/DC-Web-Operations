@@ -13,6 +13,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
 
         Task<IEnumerable<CollectionAssignment>> GetProviderAssignments(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<bool> UpdateProviderAssignments(long ukprn, IEnumerable<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> UpdateProviderAssignments(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
