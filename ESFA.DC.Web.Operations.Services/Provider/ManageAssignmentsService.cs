@@ -70,9 +70,9 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 .ToList();
         }
 
-        public async Task<bool> UpdateProviderAssignments(long ukprn, IEnumerable<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> UpdateProviderAssignments(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
         {
-            _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Total number of updates:{assignments.Count()}");
+            _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Total number of updates:{assignments.Count}");
             var organisationToUpdate = new List<OrganisationCollection>();
             assignments
                 .Where(w => !w.ToBeDeleted)
