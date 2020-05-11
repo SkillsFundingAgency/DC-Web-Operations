@@ -101,7 +101,7 @@
             {
                 @Html.Raw("const hub = new Hub(pathController);")
                 ;
-                @Html.Raw("hub.startHub();")
+                @Html.Raw("hub.startHub(stateModel);")
                 ;
                 @Html.Raw("window.periodEndClient = new Client(hub.getConnection());")
                 ;

@@ -18,8 +18,7 @@
     <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.21-beta0001" />
     <PackageReference Include="ESFA.DC.IO.AzureStorage" Version="0.1.38-beta0001" />
     <PackageReference Include="ESFA.DC.IO.Interfaces" Version="0.1.38-beta0001" />
-    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.71-beta0001" />
-    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.71-beta0001" />
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.73-beta0001" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

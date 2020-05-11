@@ -229,9 +229,7 @@ class pathController {
 
         let itemText = pathItem.name;
 
-        if ((pathItem.ordinal < path.position - 1 ||
-                (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === totalPathItems)) &&
-            (jobItems === undefined || jobItems === null || jobItems.length === 0)) {
+        if (!pathItem.hasJobs && pathItem.ordinal <= path.position - 1) {
             itemText += " - Status : Completed";
         }
 
@@ -438,6 +436,10 @@ class pathController {
     }
 
     pathItemsSame(pathItemOne, pathItemTwo, positionChanged) {
+        if (!pathItemOne.hasJobs) {
+            return false;
+        }
+
         if ((pathItemOne.pathItemJobs !== null && pathItemTwo.pathItemJobs === null) ||
             (pathItemOne.pathItemJobs === null && pathItemTwo.pathItemJobs !== null)) {
             return false;
