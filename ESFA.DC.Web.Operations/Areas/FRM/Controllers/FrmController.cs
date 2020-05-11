@@ -135,11 +135,6 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 model.PublishedFrm = firstYearList.Concat(model.PublishedFrm); // add it to the front of the list
             }
 
-            if (!model.PublishedFrm.Any())
-            {
-                return View("ErrorView");
-            }
-
             return View("SelectUnpublish", model);
         }
 
