@@ -171,7 +171,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             var result = await controller.ReportChoiceSelectionAsync(model);
             var viewResult = result as ViewResult;
 
-            viewResult.ViewName.Should().Be("ErrorView");
+            viewResult.ViewName.Should().Be("SelectUnpublish");
 
         }
 

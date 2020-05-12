@@ -70,8 +70,9 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 .ToList();
         }
 
-        public async Task<bool> UpdateProviderAssignments(long ukprn, IEnumerable<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> UpdateProviderAssignments(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
         {
+            _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Total number of updates:{assignments.Count}");
             var organisationToUpdate = new List<OrganisationCollection>();
             assignments
                 .Where(w => !w.ToBeDeleted)
@@ -93,7 +94,10 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             try
             {
                 await SendDataAsync($"{_baseUrl}/api/org/assignments/delete/{ukprn}", organisationToDelete, cancellationToken);
+                _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Successfully deleted:{organisationToDelete.Count}");
+
                 await SendDataAsync($"{_baseUrl}/api/org/assignments/update/{ukprn}", organisationToUpdate, cancellationToken);
+                _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Successfully updated:{organisationToUpdate.Count}");
                 return true;
             }
             catch (HttpRequestException ex)
