@@ -228,11 +228,4 @@
             dashBoardController.updatePage(data);
         })();
     </script>
-
-    <script>
-        function searchProviderOnConfirm(result) {
-            var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
-            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);
-        }
-    </script>
 }
