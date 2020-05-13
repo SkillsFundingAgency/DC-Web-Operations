@@ -1,10 +1,26 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Utils
 @model ESFA.DC.Web.Operations.Areas.Provider.Models.ProviderViewModel
 
 @{
     ViewData["Title"] = "Add New Provider";
     ViewData[ViewDataConstants.BackLink] = "/";
 }
+
+<div class="app-masthead">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
+            <vc:provider-search search-type="existing"></vc:provider-search>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div>
+                @*<a href="#">Advanced search</a>
+                    @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })*@
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -15,18 +31,18 @@
             {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">
-                        <input asp-for="IsSingleAddNewProviderChoice" value="true" class="govuk-radios__input" type="radio"/>
+                        <input asp-for="IsSingleAddNewProviderChoice" value="true" class="govuk-radios__input" type="radio" />
                         <label class="govuk-label govuk-radios__label">Add one provider</label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input asp-for="IsSingleAddNewProviderChoice" value="false" class="govuk-radios__input" type="radio"/>
+                        <input asp-for="IsSingleAddNewProviderChoice" value="false" class="govuk-radios__input" type="radio" />
                         <label class="govuk-label govuk-radios__label">Add multiple providers/collection assignments</label>
                     </div>
                 </div>
                 <br />
                 <br />
                 <button type="submit" class="govuk-button" formaction="AddNewChoiceSubmit">Continue</button>
-                <br/>
+                <br />
                 <p>
                     <a class="govuk-back-link" onclick="goBack()">Cancel</a>
                 </p>
@@ -35,3 +51,12 @@
     </div>
 </div>
 
+@section PageScripts
+{
+    <script>
+        function searchProviderOnConfirm(result) {
+            var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
+            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);
+        }
+    </script>
+}
