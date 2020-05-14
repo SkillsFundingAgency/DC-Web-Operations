@@ -65,7 +65,7 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
             if (model.SelectedGroupIds.Any(x => x == 0))
             {
                 var groups = await _emailDistributionService.GetEmailRecipientGroups();
-                recipientGroupIds = groups.ToList().Select(x => x.RecipientGroupId).ToList();
+                recipientGroupIds = groups.Select(x => x.RecipientGroupId).ToList();
             }
             else
             {
