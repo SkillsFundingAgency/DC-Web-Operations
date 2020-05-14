@@ -18,6 +18,7 @@ using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
+using ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ILR;
@@ -123,6 +124,10 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddHttpClient<IALLFPeriodEndService, ALLFPeriodEndService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
             _logger.LogDebug("End of ConfigureServices");
             return ConfigureAutofac(services);
         }
@@ -141,30 +146,6 @@ namespace ESFA.DC.Web.Operations
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            //log errors
-            //app.UseExceptionHandler(handler =>
-            //{
-            //    handler.Run(context =>
-            //    {
-            //        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-            //        if (exception == null)
-            //            return Task.CompletedTask;
-
-            //        try
-            //        {
-            //            //log error
-            //            handler.ApplicationServices.GetService<ILogger>().LogError(exception.Message, exception);
-            //        }
-            //        finally
-            //        {
-            //            //rethrow the exception to show the error page
-            //            ExceptionDispatchInfo.Throw(exception);
-            //        }
-
-            //        return Task.CompletedTask;
-            //    });
-            //});
 
             app.UseAuthentication();
 

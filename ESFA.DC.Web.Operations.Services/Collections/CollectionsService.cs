@@ -41,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 await GetDataAsync($"{_baseUrl}/api/collections/for-year/{year}", cancellationToken));
 
             return data.Where(c => !_collectionsTypesToExclude.Contains(c.CollectionType))
-                .Select(collection => new CollectionSummary()
+                .Select(collection => new CollectionSummary
                 {
                     CollectionId = collection.CollectionId,
                     CollectionYear = year,

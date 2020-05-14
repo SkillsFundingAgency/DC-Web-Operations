@@ -1,0 +1,17 @@
+﻿namespace ESFA.DC.Web.Operations.Models
+{
+    public class FileUploadJobMetaDataModel
+    {
+        public long JobId { get; set; }
+
+        public int JobStatus { get; set; }
+
+        public string FileName { get; set; }
+
+       public int RecordCount { get; set; }
+
+       public int WarningCount { get; set; }
+
+       public string ReportName { get; set; }
+    }
+}

@@ -12,5 +12,6 @@
         public const string Processing = "processing";
         public const string PeriodEndILR = "periodendilr";
         public const string PeriodEndNCS = "periodendncs";
+        public const string PeriodEndALLF = "periodendallf";
     }
 }
