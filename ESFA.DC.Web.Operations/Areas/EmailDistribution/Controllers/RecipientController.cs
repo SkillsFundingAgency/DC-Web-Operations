@@ -61,41 +61,50 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
                 return View("Index", model);
             }
 
-            var recipient = new Recipient()
-            {
-                EmailAddress = model.Email,
-            };
-
+            List<int> recipientGroupIds;
             if (model.SelectedGroupIds.Any(x => x == 0))
             {
                 var groups = await _emailDistributionService.GetEmailRecipientGroups();
-                recipient.RecipientGroupIds = groups.ToList().Select(x => x.RecipientGroupId).ToList();
+                recipientGroupIds = groups.Select(x => x.RecipientGroupId).ToList();
             }
             else
             {
-                recipient.RecipientGroupIds = model.SelectedGroupIds.ToList();
+                recipientGroupIds = model.SelectedGroupIds.ToList();
             }
 
-            var httpRawResponse = await _emailDistributionService.SaveRecipientAsync(recipient);
-
-            if (httpRawResponse.StatusCode == (int)HttpStatusCode.Conflict)
+            var newRecipients = model.Email.Split(";");
+            foreach (var newRecipient in newRecipients)
             {
-                var recipientGroups = _jsonSerializationService.Deserialize<List<RecipientGroup>>(httpRawResponse.Content);
-                if (recipient.RecipientGroupIds.All(x => recipientGroups.Select(y => y.RecipientGroupId).Contains(x)))
+                var recipient = new Recipient()
                 {
-                    AddError(ErrorMessageKeys.Recipient_EmailFieldKey, "Email already exists in the selected distribution groups");
-                    AddError(ErrorMessageKeys.ErrorSummaryKey, "Email already exists in the selected distribution groups");
+                    EmailAddress = newRecipient,
+                    RecipientGroupIds = recipientGroupIds
+                };
+
+                var httpRawResponse = await _emailDistributionService.SaveRecipientAsync(recipient);
+
+                if (httpRawResponse.StatusCode == (int)HttpStatusCode.Conflict)
+                {
+                    var recipientGroups =
+                        _jsonSerializationService.Deserialize<List<RecipientGroup>>(httpRawResponse.Content);
+                    if (recipient.RecipientGroupIds.All(
+                        x => recipientGroups.Select(y => y.RecipientGroupId).Contains(x)))
+                    {
+                        AddError(ErrorMessageKeys.Recipient_EmailFieldKey, $"Email {newRecipient} already exists in the selected distribution groups");
+                        AddError(ErrorMessageKeys.ErrorSummaryKey, $"Email {newRecipient} already exists in the selected distribution groups");
+                    }
+                    else
+                    {
+                        AddError(ErrorMessageKeys.WarningSummaryKey, $"Email {newRecipient} already associated to some of the distribution groups selected. Non-associated have been successfully added.");
+                        model.IsAdd = true;
+                    }
                 }
                 else
                 {
-                    AddError(ErrorMessageKeys.WarningSummaryKey, "Email already associated to some of the distribution groups selected. Non-associated have been successfully added.");
+                    model.IsAdd = true;
                 }
-
-                model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
-                return View("Index", model);
             }
 
-            model.IsAdd = true;
             model.RecipientGroups = await _emailDistributionService.GetEmailRecipientGroups();
             return View("Index", model);
         }
