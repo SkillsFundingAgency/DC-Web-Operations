@@ -65,20 +65,7 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
             return View("Index", model);
         }
 
-        [HttpGet("IlrReturnsCurrentPeriod")]
         public IActionResult IlrReturnsCurrentPeriod()
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("FailedFilesCurrentPeriod")]
-        public IActionResult FailedFilesCurrentPeriod()
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("SldDasMismatches")]
-        public IActionResult SldDasMismatches()
         {
             throw new NotImplementedException();
         }

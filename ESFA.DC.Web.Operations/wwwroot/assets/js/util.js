@@ -62,6 +62,17 @@ export function getFormattedDatetimeString(dateString) {
     return `${dateObject.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
+export function getFormattedTimeString(dateString) {
+    var dateObject = getDatetimeFromString(dateString);
+
+    var hour = padLeft(dateObject.getHours(), '0', 2);
+    var minute = padLeft(dateObject.getMinutes(), '0', 2);
+    var second = padLeft(dateObject.getSeconds(), '0', 2);
+
+    return `${hour}:${minute}:${second}`;
+}
+
+
 export function setControlEnabledState(enabledState, controlId) {
     const control = document.getElementById(controlId);
     if (control) {
