@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
@@ -25,9 +26,9 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View("Index", await _jobFailedCurrentPeriodService.GetJobsFailedCurrentPeriod());
+            return View("Index", await _jobFailedCurrentPeriodService.GetJobsFailedCurrentPeriodAsync(cancellationToken));
         }
     }
 }
