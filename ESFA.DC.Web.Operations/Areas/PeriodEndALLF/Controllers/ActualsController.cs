@@ -60,37 +60,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
         public async Task<IActionResult> Upload(IFormFile file)
         {
             var fileName = Path.GetFileName(file?.FileName);
-            //var collection = await _collectionService.GetCollectionAsync(ProvidersUploadCollectionName);
-            //if (collection == null || !collection.IsOpen)
-            //{
-            //    _logger.LogWarning($"collection {ProvidersUploadCollectionName} is not open/available, but file is being uploaded");
-            //    ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, $"collection {ProvidersUploadCollectionName} is not open/available.");
-            //    return View();
-            //}
 
-            //var validationResult = await _fileNameValidationService.ValidateFileNameAsync(ProvidersUploadCollectionName, collection.FileNameRegex, fileName?.ToUpper(), file?.Length);
-
-            //if (validationResult.ValidationResult != FileNameValidationResult.Valid)
-            //{
-            //    ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, validationResult.FieldError);
-            //    ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, validationResult.SummaryError);
-
-            //    _logger.LogWarning($"User uploaded invalid file with name :{fileName}");
-            //    return View();
-            //}
-
-            //await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
-
-            //var jobId = await _jobService.SubmitJob(new JobSubmission
-            //{
-            //    CollectionName = ProvidersUploadCollectionName,
-            //    FileName = fileName,
-            //    FileSizeBytes = file.Length,
-            //    SubmittedBy = User.Name(),
-            //    NotifyEmail = User.Email(),
-            //    StorageReference = collection.StorageReference
-            //});
-
+            // Do stuff with the upload
             var jobId = 1;
             return RedirectToAction("InProgress", new { jobId });
         }
@@ -100,21 +71,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             ViewBag.AutoRefresh = true;
             return View();
 
-            //var jobStatus = await _jobService.GetJobStatus(jobId);
-
-            //if (jobStatus == JobStatusType.Failed || jobStatus == JobStatusType.FailedRetry)
-            //{
-            //    _logger.LogError($"Loading in progress page for job id : {jobId}, job is in status ; {jobStatus} - user will be sent to service error page");
-            //    TempData["JobFailed"] = $"Job {jobId} has failed";
-            //    return RedirectToAction("BulkUpload");
-            //}
-
-            //if (jobStatus != JobStatusType.Completed)
-            //{
-            //    return View();
-            //}
-
-            //return RedirectToAction("DownloadResults", new { jobId });
+            // Need to check the status of the upload
         }
     }
 }
