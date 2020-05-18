@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models.Summarisation;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 {
@@ -81,8 +83,20 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
-            await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
+            var rawjob = await GetDataAsync(_baseUrl + $"/api/job/{jobId}", cancellationToken);
+            var oldJob = _jsonSerializationService.Deserialize<FileUploadJob>(rawjob);
+
+            if (oldJob.CollectionName == Constants.DASSubmission)
+            {
+                // For DAS jobs, issue a clone command
+                await SendDataAsync($"{_baseUrl}/api/job/clone-job", jobId, cancellationToken);
+            }
+            else
+            {
+                // For all others, reset the status back to 1
+                var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
+                await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
+            }
         }
 
         public async Task<IEnumerable<ReportDetails>> GetPeriodEndReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))

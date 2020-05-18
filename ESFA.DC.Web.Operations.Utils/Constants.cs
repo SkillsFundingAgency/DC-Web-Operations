@@ -36,6 +36,8 @@
         public static readonly string FrmValidationKey = "Validation";
         public static readonly string FrmPublishKey = "Publish";
 
+        public static readonly string DASSubmission = @"PE-DAS-Submission1920";
+
         public static readonly string IlrPeriodPrefix = "R";
         public static readonly string NcsPeriodPrefix = "N";
     }
