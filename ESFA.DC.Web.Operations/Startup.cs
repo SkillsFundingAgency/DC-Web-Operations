@@ -251,6 +251,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<ProvidersReturnedCurrentPeriodHub>("/jobProvidersReturnedCurrentPeriodHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -306,6 +311,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobConcernHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobDasMismatchHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobFailedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<ProvidersReturnedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);

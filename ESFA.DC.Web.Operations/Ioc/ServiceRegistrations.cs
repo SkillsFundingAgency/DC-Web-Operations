@@ -67,6 +67,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobConcernHubEventBase>().As<IJobConcernHubEventBase>().SingleInstance();
             builder.RegisterType<JobDasMismatchHubEventBase>().As<IJobDasMismatchHubEventBase>().SingleInstance();
             builder.RegisterType<JobFailedCurrentPeriodHubEventBase>().As<IJobFailedCurrentPeriodHubEventBase>().SingleInstance();
+            builder.RegisterType<ProvidersReturnedCurrentPeriodHubEventBase>().As<IJobProvidersReturnedCurrentPeriodHubEventBase>().SingleInstance();
             builder.RegisterType<ValidityPeriodHubEventBase>().As<IValidityPeriodHubEventBase>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
@@ -106,6 +107,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobConcernService>().As<IJobConcernService>().InstancePerLifetimeScope();
             builder.RegisterType<JobDasMismatchService>().As<IJobDasMismatchService>().InstancePerLifetimeScope();
             builder.RegisterType<JobFailedCurrentPeriodService>().As<IJobFailedCurrentPeriodService>().InstancePerLifetimeScope();
+            builder.RegisterType<ProvidersReturnedCurrentPeriodService>().As<IJobProvidersReturnedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidityPeriodService>().As<IValidityPeriodService>().InstancePerLifetimeScope();
 
             // DB Contexts
