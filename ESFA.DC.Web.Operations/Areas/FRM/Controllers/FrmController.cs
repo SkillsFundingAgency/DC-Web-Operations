@@ -59,12 +59,12 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         public async Task<IActionResult> HoldingPageAsync(FrmReportModel model)
         {
             var frmStatus = (JobStatusType)await _frmService.GetFrmStatusAsync(model.FrmJobId);
-
+            string errorMessage;
             switch (frmStatus)
             {
                 case JobStatusType.Failed:
                 case JobStatusType.FailedRetry:
-                    string errorMessage = $"The status was '{frmStatus}' for frm job '{model.FrmJobId}'";
+                    errorMessage = $"The job status was '{frmStatus}' for FRM job with ID: '{model.FrmJobId}'";
                     _logger.LogError(errorMessage);
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
@@ -80,8 +80,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                     {
                         await _frmService.PublishSldAsync(model.FrmYearPeriod, model.FrmPeriodNumber);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        errorMessage = $"The FRM Reports were not able to be published to SLD";
+                        _logger.LogError(errorMessage, ex);
+                        TempData["Error"] = errorMessage;
                         return View("ErrorView");
                     }
 
@@ -155,8 +158,11 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 await _frmService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);
                 return View("UnpublishSuccess");
             }
-            catch
+            catch (Exception ex)
             {
+                string errorMessage = $"The FRM Reports were not able to be unpublished from SLD";
+                _logger.LogError(errorMessage, ex);
+                TempData["Error"] = errorMessage;
                 return View("ErrorView");
             }
         }
