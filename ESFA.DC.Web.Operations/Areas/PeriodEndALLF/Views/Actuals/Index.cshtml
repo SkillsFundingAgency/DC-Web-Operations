@@ -1,0 +1,119 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@using ESFA.DC.Web.Operations.Utils
+@model ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models.ActualsViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">ALLF</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column">
+        <h1 class="govuk-heading-xl">ALLF summarised actuals</h1>
+        <p class="tight-subheading">Current Return number <strong> @Model.CurrentReturn</strong> Open until <strong>@Model.OpenUntil.ToString("dd MMM yyyy")</strong></p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <ul class="govuk-list">
+            <li>
+                @Html.ActionLink("ALLF History", "Index", "History", new { area = AreaNames.PeriodEndALLF }, new { @class = "govuk-link" })
+            </li>
+        </ul>
+    </div>
+</div>
+
+<form asp-controller="Actuals" asp-action="Upload" method="post" enctype="multipart/form-data" id="providersUploadForm">
+
+    @Html.AntiForgeryToken()
+   
+    <p class="govuk-heading-m">Choose ALLF reference data file to upload</p>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
+                <label class="govuk-label" for="file">
+                    <strong>Upload a file</strong>
+                </label>
+                <div error-field-name="@ErrorMessageKeys.Submission_FileFieldKey"></div>
+                <input class="govuk-file-upload" id="file" name="file" type="file">
+            </div>
+            <button class="govuk-button">
+                Upload file
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="govuk-grid-row">
+
+    <div>
+        @if (Model?.History != null && Model.History.Any())
+        {
+            <div class="govuk-grid-column">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col">File</th>
+                            <th class="govuk-table__header" scope="col" style="min-width: 150px">Status</th>
+                            <th class="govuk-table__header" scope="col">Reports</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var periodHistory in @Model.History)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    @Html.ActionLink(periodHistory.File, "GetReportFile", "History", new { fileName = periodHistory.File })
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @if (periodHistory.Status == 0)
+                                    {
+                                        <strong class="report-success">Job Finished</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong class="report-fail">Job Failed</strong>
+                                    }
+                                    <br />
+                                    <strong>
+                                        @if (periodHistory.Records > 0)
+                                        {<span>@periodHistory.Records records</span>}
+                                    </strong><br />
+                                    <strong>
+                                        @if (periodHistory.Warnings > 0)
+                                        {
+                                            <span>@periodHistory.Warnings warnings</span>}
+                                    </strong>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @Html.ActionLink(periodHistory.ReportFile, "GetReportFile", "History", new { fileName = periodHistory.ReportFile })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+        }
+        else
+        {
+            <br />
+            <br />
+            <div class="history-clear"> No periods found </div>
+        }
+    </div>
+</div>
