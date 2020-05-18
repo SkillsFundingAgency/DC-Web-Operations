@@ -1,0 +1,93 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@using ESFA.DC.Web.Operations.Utils
+@model ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models.HistoryViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodendallf/actuals">ALLF</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">ALLF history</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column">
+        <h1 class="govuk-heading-xl">ALLF history</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div>
+        @if (Model?.PeriodHistories != null && Model.PeriodHistories.Any())
+        {
+            <div class="govuk-grid-column">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col">Date</th>
+                            <th class="govuk-table__header" scope="col">Submitted By</th>
+                            <th class="govuk-table__header" scope="col">File</th>
+                            <th class="govuk-table__header" scope="col">Period end</th>
+                            <th class="govuk-table__header" scope="col">Return</th>
+                            <th class="govuk-table__header" scope="col" style="min-width: 150px">Status</th>
+                            <th class="govuk-table__header" scope="col">Reports</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var periodHistory in @Model.PeriodHistories)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell"><strong>@periodHistory.Date.ToString("dd MMMM")<br />@periodHistory.Date.ToString("yyyy 'at' HH:mm tt")</strong></td>
+                                <td class="govuk-table__cell">@periodHistory.SubmittedBy</td>
+                                <td class="govuk-table__cell">
+                                    @Html.ActionLink(periodHistory.File, "GetReportFile", new { fileName = periodHistory.File })
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @if (periodHistory.PeriodEnd)
+                                    {
+                                        <svg width="20" height="20" viewBox="0 0 1024 1024"><g fill="green"><path d="M864 128l-480 480-224-224-160 160 384 384 640-640z"></path></g></svg>
+                                    }
+                                </td>
+                                <td class="govuk-table__cell">@periodHistory.Return</td>
+                                <td class="govuk-table__cell">
+                                    @if (periodHistory.Status == 0)
+                                    {
+                                        <strong class="report-success">Job Finished</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong class="report-fail">Job Failed</strong>
+                                    }<br/>
+                                    <strong>@if (periodHistory.Records > 0) {<span>@periodHistory.Records records</span>}</strong><br/>
+                                    <strong>@if (periodHistory.Warnings > 0) { <span>@periodHistory.Warnings warnings</span>}</strong>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @Html.ActionLink(periodHistory.ReportFile, "GetReportFile",  new { fileName = periodHistory.ReportFile })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+        }
+        else
+        {
+            <br />
+            <br />
+            <div class="history-clear"> No periods found </div>
+        }
+    </div>
+</div>

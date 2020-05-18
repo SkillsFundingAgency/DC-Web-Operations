@@ -817,3 +817,16 @@ progress::-moz-progress-bar { background: white; }
     display: inline !important;
     float: left;
 }
+
+.report-success {
+    color: govuk-colour("green")
+}
+
+.report-fail {
+    color: govuk-colour("red")
+}
+
+.tight-subheading {
+    margin-top: -45px;
+    color: govuk-colour("grey-2")
+}
