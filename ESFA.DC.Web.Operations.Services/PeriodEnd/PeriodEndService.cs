@@ -86,7 +86,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             var rawjob = await GetDataAsync(_baseUrl + $"/api/job/{jobId}", cancellationToken);
             var oldJob = _jsonSerializationService.Deserialize<FileUploadJob>(rawjob);
 
-            if (oldJob.CollectionName == Constants.DASSubmission)
+            if (oldJob.CollectionName.Contains(Constants.DASSubmission))
             {
                 // For DAS jobs, issue a clone command
                 await SendDataAsync($"{_baseUrl}/api/job/clone-job", jobId, cancellationToken);
