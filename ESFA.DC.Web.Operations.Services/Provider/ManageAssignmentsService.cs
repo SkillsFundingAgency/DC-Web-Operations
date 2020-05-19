@@ -75,8 +75,6 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         {
             _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Total number of updates:{assignments.Count}");
 
-            CultureInfo.CurrentCulture = new CultureInfo("en-GB");
-
             var organisationToUpdate = new List<OrganisationCollection>();
             assignments
                 .Where(w => !w.ToBeDeleted)

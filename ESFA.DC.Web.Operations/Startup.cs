@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -66,6 +67,8 @@ namespace ESFA.DC.Web.Operations
                     }
                 },
                 new ExecutionContext());
+
+            CultureInfo.CurrentCulture = new CultureInfo("en-GB");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
