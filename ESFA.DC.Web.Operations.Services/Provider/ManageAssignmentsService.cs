@@ -82,7 +82,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             {
                 CollectionId = a.CollectionId,
                 StartDate = _dateTimeProvider.ConvertUkToUtc(a.StartDate.GetValueOrDefault()),
-                EndDate = _dateTimeProvider.ConvertUkToUtc(a.EndDate.GetValueOrDefault())
+                EndDate = a.EndDate.HasValue ? _dateTimeProvider.ConvertUkToUtc(a.EndDate.Value) : new DateTime(2600, 7, 31)
             }));
 
             var organisationToDelete = new List<OrganisationCollection>();
