@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.Web.Operations.Services.Provider
+﻿using ESFA.DC.DateTimeProvider.Interface;
+
+namespace ESFA.DC.Web.Operations.Services.Provider
 {
     using System.Net.Http;
     using ESFA.DC.Logging.Interfaces;
@@ -12,8 +14,9 @@
             ILogger logger,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(logger, jsonSerializationService, apiSettings, httpClient)
+            HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider)
+            : base(logger, jsonSerializationService, apiSettings, httpClient, dateTimeProvider)
         {
         }
     }

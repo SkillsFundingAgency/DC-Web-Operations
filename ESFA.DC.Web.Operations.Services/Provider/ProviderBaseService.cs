@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -20,16 +21,19 @@ namespace ESFA.DC.Web.Operations.Services.Provider
     {
         private readonly ILogger _logger;
         private readonly string _baseUrl;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public ProviderBaseService(
             ILogger logger,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider)
             : base(jsonSerializationService, httpClient)
         {
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<Models.Provider.Provider> GetProvider(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
@@ -50,8 +54,8 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             {
                 CollectionId = p.CollectionId,
                 Name = p.CollectionName,
-                StartDate = p.StartDate,
-                EndDate = p.EndDate,
+                StartDate = _dateTimeProvider.ConvertUtcToUk(p.StartDate),
+                EndDate = _dateTimeProvider.ConvertUtcToUk(p.EndDate.GetValueOrDefault()),
                 DisplayOrder = SetDisplayOrder(p.CollectionType, p.CollectionName),
                 ToBeDeleted = false
             });
