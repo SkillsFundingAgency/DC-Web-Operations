@@ -13,6 +13,7 @@ using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Enums;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 using MoreLinq;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
 
@@ -82,7 +83,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             {
                 CollectionId = a.CollectionId,
                 StartDate = _dateTimeProvider.ConvertUkToUtc(a.StartDate.GetValueOrDefault()),
-                EndDate = a.EndDate.HasValue ? _dateTimeProvider.ConvertUkToUtc(a.EndDate.Value) : new DateTime(2600, 7, 31)
+                EndDate = a.EndDate.HasValue ? _dateTimeProvider.ConvertUkToUtc(a.EndDate.Value) : Constants.MaxDateTime,
             }));
 
             var organisationToDelete = new List<OrganisationCollection>();

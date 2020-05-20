@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.Web.Operations.Utils
+﻿using System;
+
+namespace ESFA.DC.Web.Operations.Utils
 {
     public class Constants
     {
@@ -38,5 +40,7 @@
 
         public static readonly string IlrPeriodPrefix = "R";
         public static readonly string NcsPeriodPrefix = "N";
+
+        public static readonly DateTime MaxDateTime = new DateTime(2600, 7, 31);
     }
 }
