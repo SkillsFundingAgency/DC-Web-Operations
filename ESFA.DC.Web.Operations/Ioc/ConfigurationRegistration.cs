@@ -38,6 +38,10 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.Register(c =>
                 configuration.GetConfigSection<ServiceBusSettings>())
                 .As<ServiceBusSettings>().SingleInstance();
+
+            builder.Register(c =>
+                    configuration.GetConfigSection<AuthorizationSettings>())
+                .As<AuthorizationSettings>().SingleInstance();
         }
     }
 }
