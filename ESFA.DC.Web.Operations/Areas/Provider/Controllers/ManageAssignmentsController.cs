@@ -10,7 +10,6 @@ using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
-using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
