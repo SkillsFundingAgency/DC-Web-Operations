@@ -5,10 +5,8 @@ using Autofac.Features.AttributeFilters;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Settings.Models;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -16,14 +14,11 @@ namespace ESFA.DC.Web.Operations.Services.Storage
 {
     public class StorageService : IStorageService
     {
-        private readonly IJsonSerializationService _serializationService;
         private readonly IFileService _fileService;
 
         public StorageService(
-            IJsonSerializationService serializationService,
             [KeyFilter(PersistenceStorageKeys.OperationsAzureStorage)] IFileService fileService)
         {
-            _serializationService = serializationService;
             _fileService = fileService;
         }
 
@@ -39,20 +34,6 @@ namespace ESFA.DC.Web.Operations.Services.Storage
                     fileName,
                     containerName,
                     cancellationToken);
-        }
-
-        public async Task GetFilesFromFolder(string containerName, string prefix, bool includeSubFolders, CancellationToken cancellationToken)
-        {
-            var fileReferences = await _fileService.GetFileReferencesAsync(containerName, prefix, includeSubFolders, cancellationToken);
-
-            foreach (var reference in fileReferences)
-            {
-                using (var fileStream = await GetFile(containerName, reference, cancellationToken))
-                {
-                    // TODO remove this stub method if not using JSON stats file
-                    _serializationService.Deserialize<SubmissionSummary>(fileStream);
-                }
-            }
         }
 
         public string GetMimeTypeFromFileName(string fileName)

@@ -14,7 +14,10 @@
             <h1 class="govuk-heading-xl">
                 Choose ALLF reference data file to upload
             </h1>
-            
+
+            <input type="hidden" name="collectionYear" value="@Model.Year" />
+            <input type="hidden" name="period" value="@Model.Period" />
+
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
                 <label class="govuk-label govuk-!-font-weight-bold" for="file">
                     Upload a file
@@ -29,3 +32,74 @@
         </form>
     </div>
 </div>
+
+<div class="govuk-grid-row">
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Reports</th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        @foreach (var file in Model.Files)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@file.FileName</td>
+                <td class="govuk-table__cell">
+                    <span>@file.JobStatus</span> <br />
+                    <span class="govuk-!-font-weight-bold">@file.RecordCount records</span> <br />
+                    <span class="govuk-!-font-weight-bold">@file.ErrorCount errors</span> <br />
+                </td>
+                <td class="govuk-table__cell">@file.ReportName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+
+    <script type="module">
+        import PathController from '/assets/js/periodEnd/allf/pathController.js';
+
+        @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished) {
+            @Html.Raw("import Client from '/assets/js/periodEnd/allf/client.js';");
+            @Html.Raw("import Hub from '/assets/js/hubs/allf/periodEndHub.js';");
+        }
+
+        (function() {
+            const stateModel = @Json.Serialize(Model);
+            const pathController = new PathController();
+
+            pathController.initialiseState(stateModel);
+
+            @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished) {
+                @Html.Raw("const hub = new Hub(pathController);");
+                @Html.Raw("hub.startHub(stateModel);");
+                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());");
+            }
+            
+            pathController.renderPaths(stateModel);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
+                @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
+            }
+        });
+    </script>
+}

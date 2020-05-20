@@ -2,9 +2,9 @@
 {
     public class SubmissionSummary
     {
-        public int RecordCount { get; set; }
+        public string ReportName { get; set; }
 
-        public int WarningCount { get; set; }
+        public int RecordCount { get; set; }
 
         public int ErrorCount { get; set; }
     }

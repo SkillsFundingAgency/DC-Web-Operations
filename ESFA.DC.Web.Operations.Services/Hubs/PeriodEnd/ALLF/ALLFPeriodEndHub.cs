@@ -6,23 +6,21 @@ using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
+namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
 {
-    public class NCSPeriodEndHub : Hub
+    public class ALLFPeriodEndHub : Hub
     {
         private readonly IPeriodEndHubEventBase _eventBase;
-        private readonly IHubContext<NCSPeriodEndHub> _hubContext;
-        private readonly INCSPeriodEndService _periodEndService;
-        private readonly IEmailService _emailService;
+        private readonly IHubContext<ALLFPeriodEndHub> _hubContext;
+        private readonly IALLFPeriodEndService _periodEndService;
         private readonly IStateService _stateService;
         private readonly IPeriodService _periodService;
         private readonly ILogger _logger;
 
-        public NCSPeriodEndHub(
+        public ALLFPeriodEndHub(
             IPeriodEndHubEventBase eventBase,
-            IHubContext<NCSPeriodEndHub> hubContext,
-            INCSPeriodEndService periodEndService,
-            IEmailService emailService,
+            IHubContext<ALLFPeriodEndHub> hubContext,
+            IALLFPeriodEndService periodEndService,
             IStateService stateService,
             IPeriodService periodService,
             ILogger logger)
@@ -30,7 +28,6 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             _eventBase = eventBase;
             _hubContext = hubContext;
             _periodEndService = periodEndService;
-            _emailService = emailService;
             _stateService = stateService;
             _periodService = periodService;
             _logger = logger;
@@ -60,7 +57,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
         {
             try
             {
-                await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
+                // await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
             }
             catch (Exception e)
             {
@@ -74,7 +71,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             try
             {
                 await _hubContext.Clients.All.SendAsync("TurnOffMessage");
-                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
+                // await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
             }
             catch (Exception e)
             {
@@ -88,7 +85,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisablePathItemProceed", pathItemId);
-                await _periodEndService.ProceedAsync(collectionYear, period, pathId);
+                // await _periodEndService.ProceedAsync(collectionYear, period, pathId);
             }
             catch (Exception e)
             {
@@ -102,7 +99,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
-                await _periodEndService.ReSubmitFailedJobAsync(jobId);
+                // await _periodEndService.ReSubmitFailedJobAsync(jobId);
             }
             catch (Exception e)
             {

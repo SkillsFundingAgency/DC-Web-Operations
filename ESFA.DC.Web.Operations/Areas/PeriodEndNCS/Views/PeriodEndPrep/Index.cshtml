@@ -90,16 +90,11 @@
 
         @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndPrepModel.State.PeriodEndFinished)
         {
-            @Html.Raw("import Client from '/assets/js/periodEnd/ncs/client.js';")
-            ;
-            @Html.Raw("import Hub from '/assets/js/hubs/ncs/periodEndPrepHub.js';")
-            ;
-            @Html.Raw("const hub = new Hub('ncsPeriodEndPrepHub');")
-            ;
-            @Html.Raw("hub.startHub();")
-            ;
-            @Html.Raw("window.prepClient = new Client(hub.getConnection());")
-            ;
+            @Html.Raw("import Client from '/assets/js/periodEnd/ncs/client.js';");
+            @Html.Raw("import Hub from '/assets/js/hubs/ncs/periodEndPrepHub.js';");
+            @Html.Raw("const hub = new Hub('ncsPeriodEndPrepHub');");
+            @Html.Raw("hub.startHub();");
+            @Html.Raw("window.prepClient = new Client(hub.getConnection());");
         }
 
         (function() {

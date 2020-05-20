@@ -55,7 +55,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<EmailDistributionService>().As<IEmailDistributionService>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodService>().As<IPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
-            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
+            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().As<ISerializationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<PeriodEndHubEventBase>().As<IPeriodEndHubEventBase>().SingleInstance();
             builder.RegisterType<PeriodEndPrepHubEventBase>().As<IPeriodEndPrepHubEventBase>().SingleInstance();
