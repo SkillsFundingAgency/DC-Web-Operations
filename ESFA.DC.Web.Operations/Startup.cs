@@ -126,6 +126,8 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddHttpContextAccessor();
+
             _logger.LogDebug("End of ConfigureServices");
             return ConfigureAutofac(services);
         }

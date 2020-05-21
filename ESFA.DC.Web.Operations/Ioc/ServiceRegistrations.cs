@@ -12,7 +12,6 @@ using ESFA.DC.ReferenceData.Organisations.Model;
 using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
-using ESFA.DC.Web.Operations.Areas.Frm.Controllers;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
@@ -20,7 +19,6 @@ using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
-using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Services;
@@ -33,12 +31,10 @@ using ESFA.DC.Web.Operations.Services.PeriodEnd.ILR;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.Processing;
 using ESFA.DC.Web.Operations.Services.Provider;
-using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.TagHelpers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using JobQueueDataContext = ESFA.DC.Web.Operations.Topics.Data.JobQueueDataContext;
 
@@ -91,8 +87,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
-
-            builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
             builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
 
