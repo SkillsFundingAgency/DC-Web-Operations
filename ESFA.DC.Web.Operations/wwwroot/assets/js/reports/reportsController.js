@@ -1,5 +1,5 @@
 ﻿class ReportsController {
-
+    
     constructor() {
         this._reportSelection = document.getElementById('reportSelection');
         this._yearSelection = document.getElementById('collectionYears');
@@ -19,6 +19,7 @@
         this._reportGenerationUrl = null;
         this._reportsUrl = null;
         this._reportsDownloadUrl = null;
+        this.ValidationDetailReport = "RuleValidationDetailReport";
     }
 
     displayConnectionState(state) {
@@ -44,6 +45,10 @@
         this._yearSelected = document.getElementById('collectionYears').value;
         this._periodSelected = document.getElementById('collectionPeriod').value;
         window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
+
+        if (this._reportSelection.length === 1 && this._reportSelection.value === this.ValidationDetailReport) {
+            this._reportSelection.dispatchEvent(new Event('change'));
+        }
     }
 
     hideValidationRuleDetailReportSection() {
@@ -71,7 +76,7 @@
 
     onReportSelection(e) {
         var reportSelected = this._reportSelection.value;
-        if (reportSelected === 'RuleValidationDetailReport') {
+        if (reportSelected === this.ValidationDetailReport) {
             this.showValidationRuleDetailReportSection();
         } else {
             this.hideValidationRuleDetailReportSection();
@@ -82,7 +87,7 @@
         var reportSelected = this._reportSelection.value;
         this._yearSelected = this._yearSelection.value;
         this._periodSelected = this._periodSelection.value;
-        if (reportSelected === 'RuleValidationDetailReport') {
+        if (reportSelected === this.ValidationDetailReport) {
             this.removeElementsByClass('autocomplete__wrapper');
             this._spinner.style.visibility = 'visible';
             this._generateValidationReportButton.disabled = true;
