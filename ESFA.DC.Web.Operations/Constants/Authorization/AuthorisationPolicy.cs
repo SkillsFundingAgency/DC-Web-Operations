@@ -9,6 +9,7 @@ namespace ESFA.DC.Web.Operations.Constants.Authorization
     {
         public const string DevOpsPolicy = "DevOpsPolicy";
         public const string OpsPolicy = "OpsPolicy";
+        public const string AdvancedSupportPolicy = "AdvancedSupportPolicy";
         public const string ReportsPolicy = "ReportsPolicy";
     }
 }

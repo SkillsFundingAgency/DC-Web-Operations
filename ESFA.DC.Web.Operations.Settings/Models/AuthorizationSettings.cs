@@ -12,6 +12,9 @@ namespace ESFA.DC.Web.Operations.Settings.Models
         public string DevOpsClaim { get; set; }
 
         [JsonRequired]
+        public string AdvancedSupportClaim { get; set; }
+
+        [JsonRequired]
         public string ReportsClaim { get; set; }
     }
 }

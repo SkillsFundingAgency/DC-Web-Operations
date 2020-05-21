@@ -21,6 +21,11 @@ namespace ESFA.DC.Web.Operations.StartupConfiguration
                         "http://schemas.portal.com/service",
                         authSettings.DevOpsClaim));
 
+                options.AddPolicy(AuthorisationPolicy.AdvancedSupportPolicy, policy =>
+                    policy.RequireClaim(
+                        "http://schemas.portal.com/service",
+                        authSettings.AdvancedSupportClaim));
+
                 options.AddPolicy(AuthorisationPolicy.ReportsPolicy, policy =>
                     policy.RequireClaim(
                         "http://schemas.portal.com/service",
