@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
     [Area(AreaNames.Reports)]
     [Route(AreaNames.Reports)]
-    [Authorize]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.ReportsPolicy)]
     public class ReportsController : Controller
     {
         private readonly ILogger _logger;
