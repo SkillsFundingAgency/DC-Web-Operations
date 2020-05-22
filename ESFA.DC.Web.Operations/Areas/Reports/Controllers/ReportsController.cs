@@ -44,6 +44,10 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             ViewBag.Error = TempData["error"];
             ReportsViewModel reportsViewModel = new ReportsViewModel();
 
+            var currentYearPeriod1 = await _periodService.GetRecentlyClosedPeriodAsync();
+            reportsViewModel.CurrentCollectionYear = currentYearPeriod1.CollectionYear;
+            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod1.PeriodNumber;
+
             // validate parameters
             if (collectionYear.HasValue && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 14)
             {
