@@ -6,14 +6,12 @@ using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
-using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
@@ -56,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             {
                 // get the current period
                 var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
-                if (currentYearPeriods == null || !EnumerableExtensions.Any(currentYearPeriods))
+                if (currentYearPeriods == null || !currentYearPeriods.Any())
                 {
                     string errorMessage = $"Call to get open return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                     _logger.LogError(errorMessage);
