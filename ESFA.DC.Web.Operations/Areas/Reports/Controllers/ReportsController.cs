@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
-using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -53,13 +53,15 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             else
             {
                 // get the current period
-                var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
-                if (currentYearPeriod == null)
+                var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
+                if (currentYearPeriods == null || !currentYearPeriods.Any())
                 {
-                    string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
+                    string errorMessage = $"Call to get open return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                     _logger.LogError(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
+
+                var currentYearPeriod = currentYearPeriods.First();
 
                 reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
                 reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
