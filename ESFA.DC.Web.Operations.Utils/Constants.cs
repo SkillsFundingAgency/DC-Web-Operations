@@ -29,6 +29,8 @@
 
         public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
 
+        public const string ALLFStorageContainerName = "allf-files";
+
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
 

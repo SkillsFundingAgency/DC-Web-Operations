@@ -57,7 +57,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
         {
             try
             {
-                // await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
+                await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -71,7 +71,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             try
             {
                 await _hubContext.Clients.All.SendAsync("TurnOffMessage");
-                // await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
+                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -85,7 +85,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisablePathItemProceed", pathItemId);
-                // await _periodEndService.ProceedAsync(collectionYear, period, pathId);
+                await _periodEndService.ProceedAsync(collectionYear, period, pathId, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -99,7 +99,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableJobReSubmit", jobId);
-                // await _periodEndService.ReSubmitFailedJobAsync(jobId);
+                await _periodEndService.ReSubmitFailedJobAsync(jobId, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -113,7 +113,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             var period = await _periodService.ReturnPeriod(collectionType, cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, collectionType, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year ?? 0, period.Period, collectionType, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted && !state.PeriodEndFinished;

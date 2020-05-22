@@ -1,9 +1,44 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
+@using ESFA.DC.Web.Operations.Utils
 @model ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models.PeriodEndViewModel
 @{
     ViewData["Title"] = "Index";
 }
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">ALLF Period end</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
+        <br />
+        <h2 class="govuk-heading-l">Period A@(Model.Period.ToString().PadLeft(2, '0'))</h2>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <ul class="govuk-list">
+
+            <li>
+                @Html.ActionLink("History", "Index", "periodEndHistory", new { area = AreaNames.PeriodEndALLF }, new { @class = "govuk-link" })
+            </li>
+        </ul>
+    </div>
+</div>
+
+<br />
+<br />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -11,7 +46,7 @@
 
             @Html.AntiForgeryToken()
 
-            <h1 class="govuk-heading-xl">
+            <h1 class="govuk-heading-m">
                 Choose ALLF reference data file to upload
             </h1>
 
@@ -34,45 +69,64 @@
 </div>
 
 <div class="govuk-grid-row">
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">File</th>
-            <th scope="col" class="govuk-table__header">Status</th>
-            <th scope="col" class="govuk-table__header">Reports</th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        @foreach (var file in Model.Files)
-        {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@file.FileName</td>
-                <td class="govuk-table__cell">
-                    <span>@file.JobStatus</span> <br />
-                    <span class="govuk-!-font-weight-bold">@file.RecordCount records</span> <br />
-                    <span class="govuk-!-font-weight-bold">@file.ErrorCount errors</span> <br />
-                </td>
-                <td class="govuk-table__cell">@file.ReportName</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div class="govuk-grid-column-two-thirds">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">File</th>
+                    <th scope="col" class="govuk-table__header table-width-min">Status</th>
+                    <th scope="col" class="govuk-table__header">Reports</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="fileContainer"></tbody>
+        </table>
+    </div>
 </div>
 
 <br />
+<br />
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-        <label id="slowConnection" alt="Connection is slow at the moment"></label>
-        <label id="lastSync"></label>
-        <label id="state"></label>
+
+        <button type="submit" class="govuk-button customised" id="startPeriodEnd"
+                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ALLF');return false;">
+            Start Period End
+        </button>
+
+        <br />
+        <br />
+
+        <div>
+            <ol id="pathContainer" class="app-task-list"></ol>
+        </div>
+
+
+        <div class="app-task-list__section">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ALLF');return false;" value="Close Period End">
+        </div>
+
+        <br />
+        <br />
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-third">&nbsp;</div>
+            <div class="govuk-grid-column-two-thirds">
+                <label id="slowConnection" alt="Connection is slow at the moment"></label>
+                <label id="lastSync"></label>
+                <label id="state"></label>
+            </div>
+        </div>
+
     </div>
 </div>
 
 @section PageScripts
 {
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    @if (Model != null && Model.CollectionClosed)
+    {
+        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    }
 
     <script type="module">
         import PathController from '/assets/js/periodEnd/allf/pathController.js';
@@ -86,6 +140,7 @@
             const stateModel = @Json.Serialize(Model);
             const pathController = new PathController();
 
+
             pathController.initialiseState(stateModel);
 
             @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished) {
@@ -93,13 +148,14 @@
                 @Html.Raw("hub.startHub(stateModel);");
                 @Html.Raw("window.periodEndClient = new Client(hub.getConnection());");
             }
-            
+
+            pathController.renderFiles(stateModel);
             pathController.renderPaths(stateModel);
 
             @if (!Model?.IsCurrentPeriod ?? false) {
                 @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
                 @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
             }
-        });
+        })();
     </script>
 }

@@ -8,7 +8,6 @@ class pathController {
         this._slowTimer = null;
         this._year = 0;
         this._period = 0;
-        this.lastMessage = null;
     }
 
     pathItemCompare(a, b) {
@@ -211,10 +210,6 @@ class pathController {
         item.id = removeSpaces(pathItem.name);
         item.className += "app-task-list__item";
 
-        if (pathItem.subPaths !== null) {
-            itemText = `${itemText} <a href="#Path${pathItem.subPaths[0]}">❯</a>`;
-        }
-
         if (currentItem) {
             itemText = `<b>${itemText}</b>`;
         }
@@ -266,6 +261,36 @@ class pathController {
         stateLabel.textContent = `Status: ${state}`;
     }
 
+    renderFiles(state) {
+        updateSync.call(this);
+
+        if (state === "" || state === undefined) {
+            return;
+        }
+
+        const stateModel = typeof state === 'object' ? state : JSON.parse(state);
+
+        let fileContainer = document.getElementById('fileContainer');
+        let currentContent = fileContainer.innerHTML;
+        let classScope = this;
+        let updatedContent = currentContent;
+        stateModel.files.forEach(function(file) {
+            const content = 
+                `<tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.fileName}">${file.fileName}</a></td>
+                    <td class="govuk-table__cell">
+                        <span>${classScope.jobStatusConvertor(file.jobStatus)}</span> <br />
+                        <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
+                        <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
+                    </td>
+                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.reportName}/${stateModel.period}/${file.jobId}">${file.reportName}</a></td>
+                </tr>`;
+            updatedContent += content;
+        });
+
+        fileContainer.innerHTML = updatedContent;
+    }
+
     renderPaths(state) {
         updateSync.call(this);
 
@@ -275,35 +300,14 @@ class pathController {
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
 
-        if (this.lastMessage !== null) {
-            this.updatePaths(stateModel);
-            return;
-        }
-
         let pathContainer = document.getElementById("pathContainer");
         while (pathContainer.firstChild) {
             pathContainer.removeChild(pathContainer.firstChild);
         }
 
-        let summaryContainer = document.getElementById("summaryContainer");
-        while (summaryContainer.firstChild) {
-            summaryContainer.removeChild(summaryContainer.firstChild);
-        }
-
         let classScope = this;
         stateModel.paths.forEach(function (path) {
             let pathItems = path.pathItems;
-
-            let pathSummaryTitle = document.createElement("a");
-            pathSummaryTitle.className += "govuk-heading-s";
-            pathSummaryTitle.textContent = path.name;
-            pathSummaryTitle.href = "#Path" + path.pathId;
-
-            let pathSummary = document.createElement("span");
-            pathSummary.className += "nav";
-            let pathSummaryList = document.createElement("ul");
-            pathSummaryList.id = `ST-${removeSpaces(path.name)}`;
-            pathSummaryList.className += "govuk-list";
 
             if (pathItems != undefined && pathItems.length > 0) {
                 pathItems.sort(classScope.pathItemCompare);
@@ -326,52 +330,14 @@ class pathController {
                 pathItems.forEach(function (pathItem) {
                     if (pathItem.name) {
                         classScope.renderPathItem.call(classScope, path, pathItem, subItemList);
-                        classScope.renderSummaryItem(pathSummaryList, path, pathItem);
                     }
                 });
-
-                pathSummary.appendChild(pathSummaryList);
-
-                summaryContainer.appendChild(pathSummaryTitle);
-                summaryContainer.appendChild(pathSummary);
 
                 li.appendChild(subItemList);
 
                 pathContainer.appendChild(li);
             }
         });
-
-        this.lastMessage = stateModel;
-    }
-
-    updatePaths(stateModel) {
-        let classScope = this;
-        stateModel.paths.forEach(function(path) {
-            const oldPath = classScope.getPath(classScope.lastMessage, path.pathId);
-
-            if (path.position !== oldPath.position) {
-                classScope.renderSummaryPath(path);
-                
-                let i = Math.max(oldPath.position - 1, 0), len = path.position, original = i, proceed = path.position - 1;
-                let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
-                for (; i < len; i++) {
-                    if (original === i || proceed === i || !classScope.pathItemsSame(path.pathItems[i], oldPath.pathItems[i], true)) {
-                        console.log(`Rendering ${path.pathItems[i].name} as position has incremented`);
-                        classScope.deleteItem(pathList, path.pathItems[i].name);
-                        classScope.renderPathItem(path, path.pathItems[i], pathList);
-                    }
-                }
-            } else {
-                if (path.position > 0 && !classScope.pathItemsSame(path.pathItems[path.position - 1], oldPath.pathItems[oldPath.position - 1], false)) {
-                    console.log(`Rendering ${path.pathItems[path.position - 1].name} as item has changed`);
-                    let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
-                    classScope.deleteItem(pathList, path.pathItems[path.position - 1].name);
-                    classScope.renderPathItem(path, path.pathItems[path.position - 1], pathList);
-                }
-            }
-        });
-
-        this.lastMessage = stateModel;
     }
 
     deleteItem(pathList, pathItemName) {
@@ -381,49 +347,6 @@ class pathController {
         }
 
         pathList.removeChild(itemToDelete);
-    }
-
-    pathItemsSame(pathItemOne, pathItemTwo, positionChanged) {
-        if (!pathItemOne.hasJobs) {
-            return false;
-        }
-
-        if ((pathItemOne.pathItemJobs !== null && pathItemTwo.pathItemJobs === null) ||
-            (pathItemOne.pathItemJobs === null && pathItemTwo.pathItemJobs !== null)) {
-            return false;
-        }
-
-        if ((pathItemOne.pathItemJobSummary === null && pathItemTwo.pathItemJobSummary !== null) ||
-            (pathItemOne.pathItemJobSummary !== null && pathItemTwo.pathItemJobSummary === null)) {
-            return false;
-        }
-
-        if (pathItemOne.pathItemJobs !== null && pathItemTwo.pathItemJobs !== null) {
-            if (pathItemOne.pathItemJobs.length !== pathItemTwo.pathItemJobs.length) {
-                return false;
-            }
-
-            let i = 0, len = pathItemOne.pathItemJobs.length;
-            for (; i < len; i++) {
-                if (pathItemOne.pathItemJobs[i].jobId !== pathItemTwo.pathItemJobs[i].jobId ||
-                    pathItemOne.pathItemJobs[i].status !== pathItemTwo.pathItemJobs[i].status) {
-                    return false;
-                }
-            }
-        }
-
-        if (pathItemOne.pathItemJobSummary !== null && pathItemTwo.pathItemJobSummary !== null) {
-            return pathItemOne.pathItemJobSummary.numberOfWaitingJobs === pathItemTwo.pathItemJobSummary.numberOfWaitingJobs
-                && pathItemOne.pathItemJobSummarynumberOfRunningJobs === pathItemTwo.pathItemJobSummarynumberOfRunningJobs
-                && pathItemOne.pathItemJobSummary.numberOfFailedJobs === pathItemTwo.pathItemJobSummary.numberOfFailedJobs
-                && pathItemOne.pathItemJobSummary.numberOfCompleteJobs === pathItemTwo.pathItemJobSummary.numberOfCompleteJobs;
-        }
-
-        if (positionChanged && pathItemOne.pathItemJobs === null) {
-            return false;
-        }
-
-        return true;
     }
 
     getPath(stateModel, pathId) {

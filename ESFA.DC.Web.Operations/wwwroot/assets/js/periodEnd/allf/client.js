@@ -8,12 +8,10 @@ class client {
     }
 
     startPeriodEnd(collectionYear, period, collectionType) {
-        //this.jobController.setStartPeriodEndButtonState(false);
         this.invokeActionWithType("StartPeriodEnd", collectionYear, period, collectionType);
     }
 
     closePeriodEnd(collectionYear, period, collectionType) {
-        //this.jobController.setClosePeriodEndButtonState(false);
         this.invokeActionWithType("ClosePeriodEnd", collectionYear, period, collectionType);
     }
 

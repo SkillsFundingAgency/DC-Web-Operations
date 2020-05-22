@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -15,6 +17,7 @@ using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
@@ -22,7 +25,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
     public class ALLFPeriodEndService : BaseHttpClientService, IALLFPeriodEndService
     {
         private const string Api = "/api/period-end-allf/";
-        private const string StorageContainerName = "allf-files";
         private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
         private const string ResultReportName = "Upload Result Report";
 
@@ -56,10 +58,36 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
+        public async Task InitialisePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken)
+        {
+            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/initialise", cancellationToken);
+        }
+
+        public async Task StartPeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/start", cancellationToken);
+        }
+
+        public async Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendAsync(_baseUrl + $"{Api}{year}/{period}/{collectionType}/close", cancellationToken);
+        }
+
+        public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SendAsync(_baseUrl + $"{Api}{year}/{period}/{path}/proceed", cancellationToken);
+        }
+
         public async Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken)
         {
             var data = await GetDataAsync(_baseUrl + $"{Api}states-main/{collectionType}/{year}/{period}", cancellationToken);
             return data;
+        }
+
+        public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
+            await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
         }
 
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(int year, int period, CancellationToken cancellationToken)
@@ -103,7 +131,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
                     FileSizeBytes = file.Length,
                     SubmittedBy = userName,
                     NotifyEmail = email,
-                    StorageReference = collection.StorageReference
+                    StorageReference = collection.StorageReference,
+                    Period = period,
+                    CollectionYear = collection.CollectionYear
                 };
 
                 // add to the queue
@@ -124,7 +154,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             file.ReportName = $"{GenericActualsCollectionErrorReportName} {file.FileName}";
 
             var resultFileName = $@"A{period}\{file.JobId}\{ResultReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
-            var resultStream = await _storageService.GetFile(StorageContainerName, resultFileName, cancellationToken);
+            var resultStream = await _storageService.GetFile(Constants.ALLFStorageContainerName, resultFileName, cancellationToken);
 
             if (resultStream == null)
             {
