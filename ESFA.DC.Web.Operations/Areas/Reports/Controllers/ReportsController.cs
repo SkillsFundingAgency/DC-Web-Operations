@@ -44,9 +44,19 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             ViewBag.Error = TempData["error"];
             ReportsViewModel reportsViewModel = new ReportsViewModel();
 
-            var currentYearPeriod1 = await _periodService.GetRecentlyClosedPeriodAsync();
-            reportsViewModel.CurrentCollectionYear = currentYearPeriod1.CollectionYear;
-            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod1.PeriodNumber;
+            // get the current period
+            var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
+            if (currentYearPeriods == null || !currentYearPeriods.Any())
+            {
+                string errorMessage = $"Call to get open return periods failed";
+                _logger.LogError(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
+
+            var currentYearPeriod = currentYearPeriods.First();
+
+            reportsViewModel.CurrentCollectionYear = currentYearPeriod.CollectionYear;
+            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.PeriodNumber;
 
             // validate parameters
             if (collectionYear.HasValue && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 14)
@@ -56,17 +66,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
             else
             {
-                // get the current period
-                var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
-                if (currentYearPeriods == null || !currentYearPeriods.Any())
-                {
-                    string errorMessage = $"Call to get open return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
-                    _logger.LogError(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
-
-                var currentYearPeriod = currentYearPeriods.First();
-
                 reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
                 reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
             }
