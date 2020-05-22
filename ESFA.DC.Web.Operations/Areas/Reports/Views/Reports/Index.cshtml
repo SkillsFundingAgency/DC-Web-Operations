@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-
+@using ESFA.DC.Web.Operations.Constants.Authorization
 @model ESFA.DC.Web.Operations.Areas.Reports.Models.ReportsViewModel
 
 @{
@@ -7,7 +7,7 @@
     ViewData[ViewDataConstants.BackLink] = "/Home";
 }
 
-<br/>
+<br />
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
@@ -47,13 +47,15 @@
     <div class="govuk-grid-column-full">
         <h3>Create new report for:</h3>
         <select id="reportSelection" asp-for="ReportType" class="govuk-select govuk-input--width-20 form-control">
-            <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
-            <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
-            <option value="PeriodEndMetricsReport">Period End Metrics Report</option>
-            <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
-            <option value="InternalDataMatchReport">Internal Data Match Report</option>
-            <option value="ACTCountReport">ACT Count Report</option>
-            <option value="RuleValidationDetailReport">Rule Validation Detail Report</option>
+            <div policy="@AuthorisationPolicy.AdvancedSupportDevOpsPolicy">
+                <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
+                <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
+                <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
+                <option value="InternalDataMatchReport">Internal Data Match Report</option>
+                <option value="ACTCountReport">ACT Count Report</option>
+            </div>
+            <option policy="@AuthorisationPolicy.ReportsPolicy" value="RuleValidationDetailReport">Rule Validation Detail Report</option>
+
         </select>
         <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
     </div>

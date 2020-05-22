@@ -17,6 +17,7 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -24,6 +25,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
     [Area(AreaNames.Reports)]
     [Route(AreaNames.Reports)]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.ReportsPolicy)]
     public class RuleValidationController : Controller
     {
         private readonly string validationRuleDetailsReportJson = "Reports/{0}/Validation Rule Details.json";
