@@ -91,7 +91,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
         [Route("getReportFile/{fileName}/{period?}/{jobId?}")]
         public async Task<FileResult> GetReportFile(string fileName, int? period, long? jobId)
         {
-            fileName = period != null && jobId != null ? $@"A{period}\{jobId}\{fileName}" : fileName;
+            var reportFile = period != null && jobId != null;
+            fileName = reportFile ? $@"{Utils.Constants.ALLFPeriodPrefix}{period}\{jobId}\{fileName}" : fileName;
             try
             {
                 var blobStream = await _storageService.GetFile(Utils.Constants.ALLFStorageContainerName, fileName, CancellationToken.None);

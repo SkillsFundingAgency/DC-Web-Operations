@@ -14,10 +14,8 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
-using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
@@ -25,11 +23,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
     public class ALLFPeriodEndService : BaseHttpClientService, IALLFPeriodEndService
     {
         private const string Api = "/api/period-end-allf/";
-        private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
-        private const string ResultReportName = "Upload Result Report";
 
         private readonly IStorageService _storageService;
-        private readonly ISerializationService _serializationService;
+        private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly ICollectionsService _collectionService;
         private readonly IJobService _jobService;
         private readonly ILogger _logger;
@@ -39,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
         public ALLFPeriodEndService(
             IStorageService storageService,
-            ISerializationService serializationService,
+            IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
             ICollectionsService collectionService,
             IJobService jobService,
@@ -50,7 +46,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             : base(jsonSerializationService, httpClient)
         {
             _storageService = storageService;
-            _serializationService = serializationService;
+            _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
             _collectionService = collectionService;
             _jobService = jobService;
             _logger = logger;
@@ -70,17 +66,17 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
         public async Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync(_baseUrl + $"{Api}{year}/{period}/{collectionType}/close", cancellationToken);
+            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/close", cancellationToken);
         }
 
         public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync(_baseUrl + $"{Api}{year}/{period}/{path}/proceed", cancellationToken);
+            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{path}/proceed", cancellationToken);
         }
 
         public async Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync(_baseUrl + $"{Api}states-main/{collectionType}/{year}/{period}", cancellationToken);
+            var data = await GetDataAsync($"{_baseUrl}{Api}states-main/{collectionType}/{year}/{period}", cancellationToken);
             return data;
         }
 
@@ -98,7 +94,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             // get file info from result report
             await Task.WhenAll(
                 files.Where(f => f.JobStatus == 4)
-                    .Select(file => GetResults(file, period, cancellationToken)));
+                    .Select(file => _fileUploadJobMetaDataModelBuilderService.PopulateFileUploadJobMetaDataModel(file, period, cancellationToken)));
 
             return files;
         }
@@ -147,29 +143,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
                 _logger.LogError($"Error trying to submit ALLF file with name : {file.Name}", ex);
                 throw;
             }
-        }
-
-        private async Task GetResults(FileUploadJobMetaDataModel file, int period, CancellationToken cancellationToken)
-        {
-            file.ReportName = $"{GenericActualsCollectionErrorReportName} {file.FileName}";
-
-            var resultFileName = $@"A{period}\{file.JobId}\{ResultReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
-            var resultStream = await _storageService.GetFile(Constants.ALLFStorageContainerName, resultFileName, cancellationToken);
-
-            if (resultStream == null)
-            {
-                return;
-            }
-
-            var result = _serializationService.Deserialize<SubmissionSummary>(resultStream);
-
-            if (result == null)
-            {
-                return;
-            }
-
-            file.RecordCount = result.RecordCount;
-            file.ErrorCount = result.ErrorCount;
         }
     }
 }

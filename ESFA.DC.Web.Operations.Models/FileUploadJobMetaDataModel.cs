@@ -10,10 +10,10 @@ namespace ESFA.DC.Web.Operations.Models
 
         public string FileName { get; set; }
 
-       public int RecordCount { get; set; }
+        public int RecordCount { get; set; }
 
-       public int ErrorCount { get; set; }
+        public int ErrorCount { get; set; }
 
-       public string ReportName { get; set; }
+        public string ReportName { get; set; }
     }
 }
