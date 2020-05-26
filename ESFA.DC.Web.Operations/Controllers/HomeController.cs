@@ -40,8 +40,6 @@ namespace ESFA.DC.Web.Operations.Controllers
                 DashboardStats = await _dashBoardService.GetStatsAsync(cancellationToken)
             };
 
-            model.IsUserDevOpsOrAdvancedSupport = _httpContextAccessor.HttpContext.User.Claims.Any(c => c.Value == _authorizationSettings.DevOpsClaim || c.Value == _authorizationSettings.AdvancedSupportClaim);
-
             return View("Index", model);
         }
 
