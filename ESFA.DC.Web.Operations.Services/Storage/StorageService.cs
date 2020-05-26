@@ -8,7 +8,6 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace ESFA.DC.Web.Operations.Services.Storage

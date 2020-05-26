@@ -19,6 +19,7 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string Action_MCAReportsButton = "MCAReportsState";
         public const string Action_ProviderReportsButton = "ProviderReportsState";
         public const string Action_PeriodClosedButton = "PeriodClosedState";
+        public const string Action_UploadFileButton = "UploaddState";
 
         public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report1920";
         public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report1920";
@@ -31,6 +32,8 @@ namespace ESFA.DC.Web.Operations.Utils
 
         public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
 
+        public const string ALLFStorageContainerName = "allf-files";
+
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
 
@@ -42,6 +45,7 @@ namespace ESFA.DC.Web.Operations.Utils
 
         public static readonly string IlrPeriodPrefix = "R";
         public static readonly string NcsPeriodPrefix = "N";
+        public static readonly string ALLFPeriodPrefix = "A";
 
         public static readonly DateTime MaxDateTime = new DateTime(2600, 7, 31);
     }
