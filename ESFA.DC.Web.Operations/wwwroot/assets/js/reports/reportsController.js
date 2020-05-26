@@ -1,5 +1,5 @@
 ﻿class ReportsController {
-
+    
     constructor() {
         this._reportSelection = document.getElementById('reportSelection');
         this._yearSelection = document.getElementById('collectionYears');
@@ -7,6 +7,7 @@
         this._ruleValidationDetailReportSection = document.getElementById('ruleValidationDetailReportSection');
         this._createReportBtn = document.getElementById('createReport');
         this._generateValidationReportButton = document.getElementById("generateValidationReport");
+        this._createReportButton = document.getElementById("createReport");
         this._element = document.querySelector('#tt-overlay');
         this._id = 'autocomplete-overlay';
         this._spinner = document.getElementById('spinner');
@@ -15,10 +16,13 @@
         this._rulesByYear = {};
         this._yearSelected = null;
         this._periodSelected = null;
+        this._currentYear= null;
+        this._currentPeriod= null;
         this._validationReportGenerationUrl = null;
         this._reportGenerationUrl = null;
         this._reportsUrl = null;
         this._reportsDownloadUrl = null;
+        this.ValidationDetailReport = "RuleValidationDetailReport";
     }
 
     displayConnectionState(state) {
@@ -43,7 +47,22 @@
         this._reportsLoadingSpinner.style.visibility = 'visible';
         this._yearSelected = document.getElementById('collectionYears').value;
         this._periodSelected = document.getElementById('collectionPeriod').value;
+
+        this._currentYear = document.getElementById('currentyear').value;;
+        this._currentPeriod = document.getElementById('currentperiod').value;;
+        if (this._currentYear == this._yearSelected && this._currentPeriod == this._periodSelected) {
+            this._generateValidationReportButton.disabled = false;
+            this._createReportButton.disabled = false;
+        } else {
+            this._generateValidationReportButton.disabled = true;
+            this._createReportButton.disabled = true;
+        }
+
         window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
+
+        if (this._reportSelection.length === 1 && this._reportSelection.value === this.ValidationDetailReport) {
+            this._reportSelection.dispatchEvent(new Event('change'));
+        }
     }
 
     hideValidationRuleDetailReportSection() {
@@ -71,7 +90,7 @@
 
     onReportSelection(e) {
         var reportSelected = this._reportSelection.value;
-        if (reportSelected === 'RuleValidationDetailReport') {
+        if (reportSelected === this.ValidationDetailReport) {
             this.showValidationRuleDetailReportSection();
         } else {
             this.hideValidationRuleDetailReportSection();
@@ -82,7 +101,7 @@
         var reportSelected = this._reportSelection.value;
         this._yearSelected = this._yearSelection.value;
         this._periodSelected = this._periodSelection.value;
-        if (reportSelected === 'RuleValidationDetailReport') {
+        if (reportSelected === this.ValidationDetailReport) {
             this.removeElementsByClass('autocomplete__wrapper');
             this._spinner.style.visibility = 'visible';
             this._generateValidationReportButton.disabled = true;

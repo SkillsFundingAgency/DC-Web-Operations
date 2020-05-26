@@ -1,6 +1,7 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Utils
-@model string
+@model ESFA.DC.Web.Operations.ViewModels.HomeViewModel
+
 @{
     ViewData["Title"] = "Index";
     ViewData[ViewDataConstants.DashBoard] = "Dashboard";
@@ -80,21 +81,21 @@
         </section>
     </div>
 
-    <div class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-third" hidden-if-notauthorised="@Model.IsUserDevOpsOrAdvancedSupport">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Queues</a></h2>
             <canvas id="queueSystem" width="200" height="200"></canvas>
         </section>
     </div>
 
-    <div class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-third" hidden-if-notauthorised="@Model.IsUserDevOpsOrAdvancedSupport">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">Topics</a></h2>
             <canvas id="queueTopics" width="200" height="200"></canvas>
         </section>
     </div>
 
-    <div class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-third" hidden-if-notauthorised="@Model.IsUserDevOpsOrAdvancedSupport">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text"><a href="submissions-v2">ILR</a></h2>
             <canvas id="queueIlr" width="200" height="200"></canvas>
@@ -133,7 +134,7 @@
                 @Html.ActionLink("Concerns", "Index", "JobConcern", new { area = AreaNames.Processing })
             </h2>
             <span id="concerns" class="govuk-heading-l no-margin-bottom">3</span>
-            <span class="govuk-body-s">Providers with rejected files and no successful submission this period</span>
+            <span class="govuk-body-s">Providers where their last submitted file was unsuccessful</span>
         </div>
     </div>
 </div>
@@ -172,7 +173,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("ILR returners in current period", "IlrReturnsCurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
+                @Html.ActionLink("ILR returners in current period", "Index", "JobProvidersReturnedCurrentPeriod", new { area = AreaNames.Processing })
             </h2>
             <span id="ilrReturns" class="govuk-heading-l no-margin-bottom">40</span>
         </div>
@@ -181,7 +182,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Failed files in current period", "FailedFilesCurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
+                @Html.ActionLink("Failed files in current period", "Index", "JobFailedCurrentPeriod", new { area = AreaNames.Processing })
             </h2>
             <span id="failedFiles" class="govuk-heading-l no-margin-bottom">7</span>
         </div>
@@ -223,16 +224,9 @@
         const dashBoardController = new DashBoardController();
 
         (function() {
-            const data = '@Html.Raw(Model)';
+            const data = '@Html.Raw(Model.DashboardStats)';
 
             dashBoardController.updatePage(data);
         })();
-    </script>
-
-    <script>
-        function searchProviderOnConfirm(result) {
-            var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
-            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);
-        }
     </script>
 }

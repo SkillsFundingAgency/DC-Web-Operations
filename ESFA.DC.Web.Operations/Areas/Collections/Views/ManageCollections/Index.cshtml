@@ -31,7 +31,7 @@
                             <h2 class="govuk-heading-m "><a class="govuk-link" asp-controller="ManageCollections" asp-area="Collections" asp-action="Index" asp-route-collectionId="@collection.CollectionId">@collection.CollectionName</a></h2>
                             <span class="govuk-body-s">Submissions @(@collection.IsCollectionOpen ? "open" : "closed")</span><br>
                             <span class="govuk-body-s">@collection.ManageCollectionsPeriodDisplayValue</span><br>
-                            <span class="govuk-body-s">@collection.ManageCollectionsPeriodDateDisplayValue</span>
+                            <span class="govuk-body-s">@collection.ManageCollectionsPeriodDateDisplayValue</span><br/>
                         </div>
                     </div>
                 }

@@ -154,23 +154,29 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
         [HttpPost]
         public async Task<IActionResult> IndividualCollectionsSubmit(ManageReturnPeriodViewModel model)
         {
-            var startTimeSpan = TimeSpan.Parse(model.OpeningTime);
-            var endTimeSpan = TimeSpan.Parse(model.ClosingTime);
+            var openDateTime = model.OpeningDate.Add(TimeSpan.Parse(model.OpeningTime));
+            var closeDateTime = model.ClosingDate.Add(TimeSpan.Parse(model.ClosingTime));
+
+            if (openDateTime > closeDateTime)
+            {
+                ModelState.AddModelError("Summary", "Error - close date time should be greater than the open date time.");
+                return View("IndividualPeriod", model);
+            }
 
             var returnPeriod = new ReturnPeriod()
             {
                 ReturnPeriodId = model.ReturnPeriodId,
-                OpenDate = model.OpeningDate.Add(startTimeSpan),
-                CloseDate = model.ClosingDate.Add(endTimeSpan)
+                OpenDate = openDateTime,
+                CloseDate = closeDateTime
             };
 
-            if (!await _collectionsService.UpdateReturnPeriod(returnPeriod))
+            if (ModelState.IsValid && await _collectionsService.UpdateReturnPeriod(returnPeriod))
             {
-                ModelState.AddModelError("Summary", "Error updating return period.");
-                return View("IndividualPeriod", model);
+                return RedirectToAction("Index", new { collectionId = model.CollectionId });
             }
 
-            return RedirectToAction("Index", new { collectionId = model.CollectionId });
+            ModelState.AddModelError("Summary", "Error updating return period.");
+            return View("IndividualPeriod", model);
         }
 
         private string SetOverrideValue(bool? processingOverride)

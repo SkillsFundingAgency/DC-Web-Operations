@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
+using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.ViewModels;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
@@ -15,17 +16,33 @@ namespace ESFA.DC.Web.Operations.Controllers
     {
         private readonly IDashBoardService _dashBoardService;
         private readonly ILogger _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthorizationSettings _authorizationSettings;
 
-        public HomeController(IDashBoardService dashBoardService, ILogger logger, TelemetryClient telemetryClient)
+        public HomeController(
+            IDashBoardService dashBoardService,
+            ILogger logger,
+            TelemetryClient telemetryClient,
+            IHttpContextAccessor httpContextAccessor,
+            AuthorizationSettings authorizationSettings)
             : base(logger, telemetryClient)
         {
             _dashBoardService = dashBoardService;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
+            _authorizationSettings = authorizationSettings;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View((object)await _dashBoardService.GetStatsAsync());
+            var model = new HomeViewModel
+            {
+                DashboardStats = await _dashBoardService.GetStatsAsync(cancellationToken)
+            };
+
+            model.IsUserDevOpsOrAdvancedSupport = _httpContextAccessor.HttpContext.User.Claims.Any(c => c.Value == _authorizationSettings.DevOpsClaim || c.Value == _authorizationSettings.AdvancedSupportClaim);
+
+            return View("Index", model);
         }
 
         [Route("/NotAuthorized")]

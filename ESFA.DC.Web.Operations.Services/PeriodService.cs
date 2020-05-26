@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,6 +56,20 @@ namespace ESFA.DC.Web.Operations.Services
             }
 
             return period;
+        }
+
+        public async Task<List<ReturnPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default)
+        {
+            var periods = _jsonSerializationService.Deserialize<List<ReturnPeriod>>(
+                await GetDataAsync($"{_baseUrl}/api/returns-calendar/open", cancellationToken));
+
+            if (periods == null)
+            {
+                _logger.LogError(NoPeriodError);
+                throw new Exception(NoPeriodError);
+            }
+
+            return periods;
         }
     }
 }

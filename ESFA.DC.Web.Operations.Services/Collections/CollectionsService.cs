@@ -18,7 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
     public class CollectionsService : BaseHttpClientService, ICollectionsService
     {
         private readonly string _baseUrl;
-        private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM" };
+        private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM", "OP" };
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
 

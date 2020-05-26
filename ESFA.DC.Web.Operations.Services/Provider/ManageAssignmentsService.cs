@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -12,6 +13,7 @@ using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Enums;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 using MoreLinq;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
 
@@ -30,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(logger, jsonSerializationService, apiSettings, httpClient)
+            : base(logger, jsonSerializationService, apiSettings, httpClient, dateTimeProvider)
         {
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
@@ -73,14 +75,15 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         public async Task<bool> UpdateProviderAssignments(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
         {
             _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Total number of updates:{assignments.Count}");
+
             var organisationToUpdate = new List<OrganisationCollection>();
             assignments
                 .Where(w => !w.ToBeDeleted)
                 .ForEach(a => organisationToUpdate.Add(new OrganisationCollection()
             {
                 CollectionId = a.CollectionId,
-                StartDate = a.StartDate.Value,
-                EndDate = a.EndDate
+                StartDate = _dateTimeProvider.ConvertUkToUtc(a.StartDate.GetValueOrDefault()),
+                EndDate = a.EndDate.HasValue ? _dateTimeProvider.ConvertUkToUtc(a.EndDate.Value) : Constants.MaxDateTime,
             }));
 
             var organisationToDelete = new List<OrganisationCollection>();

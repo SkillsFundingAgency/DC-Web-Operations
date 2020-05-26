@@ -101,9 +101,10 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         {
             IEnumerable<ReportDetails> reportDetailsList = null;
             var fileLocation = Constants.ReportsBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString());
+            var reportTypeCount = 3;
 
             // get all reports
-            string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}";
+            string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}/{reportTypeCount}";
 
             var file = await GetDataAsync(reportsUrl, cancellationToken);
             if (!string.IsNullOrEmpty(file))

@@ -28,7 +28,8 @@
     }
 }
 
-<h1 class="govuk-heading-xl">Enter the recipient's email address</h1>
+<h1 class="govuk-heading-xl">Enter the recipient's email address(es)</h1>
+<p>Please enter one or more valid email addresses, seperated by ;</p>
 <form asp-controller="Recipient" asp-action="Submit" method="post" id="choiceform">
 
     <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Recipient_EmailFieldKey)" id="controls">

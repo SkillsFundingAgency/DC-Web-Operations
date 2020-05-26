@@ -19,8 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.DashBoard
 
         public async Task<string> GetStatsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync($"{_baseUrl}/api/dashboard/stats", cancellationToken);
-            return data;
+            return await GetDataAsync($"{_baseUrl}/api/dashboard/stats", cancellationToken);
         }
     }
 }

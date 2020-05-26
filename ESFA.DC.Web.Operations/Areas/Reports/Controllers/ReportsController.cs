@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
-using ESFA.DC.Web.Operations.Constants.Authorization;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
     [Area(AreaNames.Reports)]
     [Route(AreaNames.Reports)]
-    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.ReportsPolicy)]
     public class ReportsController : Controller
     {
         private readonly ILogger _logger;
@@ -44,6 +44,20 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             ViewBag.Error = TempData["error"];
             ReportsViewModel reportsViewModel = new ReportsViewModel();
 
+            // get the current period
+            var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
+            if (currentYearPeriods == null || !currentYearPeriods.Any())
+            {
+                string errorMessage = $"Call to get open return periods failed";
+                _logger.LogError(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
+
+            var currentYearPeriod = currentYearPeriods.First();
+
+            reportsViewModel.CurrentCollectionYear = currentYearPeriod.CollectionYear;
+            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.PeriodNumber;
+
             // validate parameters
             if (collectionYear.HasValue && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 14)
             {
@@ -52,15 +66,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
             else
             {
-                // get the current period
-                var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
-                if (currentYearPeriod == null)
-                {
-                    string errorMessage = $"Call to get current return period failed - collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
-                    _logger.LogError(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
-
                 reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
                 reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
             }

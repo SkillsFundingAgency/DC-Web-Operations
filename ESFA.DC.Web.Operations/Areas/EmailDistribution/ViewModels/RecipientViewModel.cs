@@ -28,14 +28,22 @@ namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.ViewModels
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!IsValidEmail(Email))
+            var emails = Email.Split(";");
+            foreach (var email in emails)
             {
-                yield return new ValidationResult($"Please enter valid email address", new[] { ErrorMessageKeys.Recipient_EmailFieldKey, ErrorMessageKeys.ErrorSummaryKey });
+                if (!IsValidEmail(email))
+                {
+                    yield return new ValidationResult(
+                        $"Please enter valid email address ({email})",
+                        new[] { ErrorMessageKeys.Recipient_EmailFieldKey, ErrorMessageKeys.ErrorSummaryKey });
+                }
             }
 
             if (SelectedGroupIds == null || !SelectedGroupIds.Any())
             {
-                yield return new ValidationResult($"Please select at least one group", new[] { ErrorMessageKeys.Recipient_GroupsKey, ErrorMessageKeys.ErrorSummaryKey });
+                yield return new ValidationResult(
+                    $"Please select at least one group",
+                    new[] { ErrorMessageKeys.Recipient_GroupsKey, ErrorMessageKeys.ErrorSummaryKey });
             }
         }
 

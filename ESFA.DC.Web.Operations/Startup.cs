@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -69,6 +70,8 @@ namespace ESFA.DC.Web.Operations
                     }
                 },
                 new ExecutionContext());
+
+            CultureInfo.CurrentCulture = new CultureInfo("en-GB");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -131,6 +134,8 @@ namespace ESFA.DC.Web.Operations
             services.AddHttpClient<IALLFPeriodEndService, ALLFPeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpContextAccessor();
 
             _logger.LogDebug("End of ConfigureServices");
             return ConfigureAutofac(services);
@@ -236,6 +241,16 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<JobFailedCurrentPeriodHub>("/jobFailedCurrentPeriodHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
+                routes.MapHub<ProvidersReturnedCurrentPeriodHub>("/jobProvidersReturnedCurrentPeriodHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -292,6 +307,8 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobSlowFileHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobConcernHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<JobDasMismatchHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<JobFailedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<ProvidersReturnedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
