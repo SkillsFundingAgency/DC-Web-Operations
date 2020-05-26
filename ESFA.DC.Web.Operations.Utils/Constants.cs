@@ -17,6 +17,7 @@
         public const string Action_MCAReportsButton = "MCAReportsState";
         public const string Action_ProviderReportsButton = "ProviderReportsState";
         public const string Action_PeriodClosedButton = "PeriodClosedState";
+        public const string Action_UploadFileButton = "UploaddState";
 
         public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report1920";
         public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report1920";

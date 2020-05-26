@@ -19,7 +19,7 @@
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
         <br />
         <h2 class="govuk-heading-l">Period A@(Model.Period.ToString().PadLeft(2, '0'))</h2>
@@ -27,7 +27,7 @@
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <ul class="govuk-list">
 
             <li>
@@ -41,7 +41,7 @@
 <br />
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <form asp-controller="SubmissionAuthorised" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
 
             @Html.AntiForgeryToken()
@@ -61,7 +61,7 @@
                 <input class="govuk-file-upload" name="file" id="file" type="file" accept=".csv">
             </div>
 
-            <button class="govuk-button">
+            <button class="govuk-button" id="uploadFile">
                 Upload
             </button>
         </form>
@@ -69,7 +69,7 @@
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -87,7 +87,7 @@
 <br />
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
 
         <button type="submit" class="govuk-button customised" id="startPeriodEnd"
                 onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ALLF');return false;">
@@ -105,19 +105,14 @@
         <div class="app-task-list__section">
             <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ALLF');return false;" value="Close Period End">
         </div>
+    </div>
+</div>
 
-        <br />
-        <br />
-
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-third">&nbsp;</div>
-            <div class="govuk-grid-column-two-thirds">
-                <label id="slowConnection" alt="Connection is slow at the moment"></label>
-                <label id="lastSync"></label>
-                <label id="state"></label>
-            </div>
-        </div>
-
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
     </div>
 </div>
 

@@ -117,6 +117,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted && !state.PeriodEndFinished;
+
+            if (PeriodEndState.CurrentAction != Constants.Action_UploadFileButton)
+            {
+                await _hubContext.Clients.All.SendAsync(Constants.Action_UploadFileButton, !state.PeriodEndFinished, cancellationToken);
+            }
+
             if (PeriodEndState.CurrentAction != Constants.Action_StartPeriodEndButton)
             {
                 await _hubContext.Clients.All.SendAsync(Constants.Action_StartPeriodEndButton, startEnabled, cancellationToken);

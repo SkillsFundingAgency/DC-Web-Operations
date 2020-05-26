@@ -20,6 +20,9 @@
             this._connection.on("ReceiveMessage", this._pathController.renderPaths.bind(this._pathController));
         }
 
+        this._connection.on("UploadState",
+            (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "uploadFile") });
+
         this._connection.on("StartPeriodEndState",
             (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "startPeriodEnd") });
 
@@ -33,7 +36,11 @@
         );
         
         this._connection.on("TurnOffMessage", () => {
+            this._connection.off("UploadState");
+            this._connection.off("StartPeriodEndState");
+            this._connection.off("PeriodClosedState");
             this._connection.off("ReceiveMessage");
+
             clearInterval(this._timerId);
         });
 

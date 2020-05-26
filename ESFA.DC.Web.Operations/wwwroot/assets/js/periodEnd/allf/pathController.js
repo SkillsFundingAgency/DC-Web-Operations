@@ -275,15 +275,17 @@ class pathController {
         let classScope = this;
         let updatedContent = currentContent;
         stateModel.files.forEach(function(file) {
+            var fileName = file.fileName ? file.fileName : '';
+            var reportName = file.reportName ? file.reportName : '';
             const content = 
                 `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.fileName}">${file.fileName}</a></td>
+                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.fileName}">${fileName}</a></td>
                     <td class="govuk-table__cell">
                         <span>${classScope.jobStatusConvertor(file.jobStatus)}</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
                     </td>
-                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.reportName}/${stateModel.period}/${file.jobId}">${file.reportName}</a></td>
+                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.reportName}/${stateModel.period}/${file.jobId}">${reportName}</a></td>
                 </tr>`;
             updatedContent += content;
         });
@@ -362,6 +364,7 @@ class pathController {
 
     initialiseState(state) {
 
+        this.setButtonState(!state.periodEndFinished, "uploadFile");
         this.setButtonState(state.collectionClosed && !state.periodEndStarted, "startPeriodEnd");
         this.setButtonState(state.collectionClosed && !state.periodEndFinished && state.closePeriodEndEnabled, "closePeriodEnd");
 

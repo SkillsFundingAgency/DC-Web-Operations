@@ -8,10 +8,13 @@ class client {
     }
 
     startPeriodEnd(collectionYear, period, collectionType) {
+        this.pathController.setButtonState(false, "startPeriodEnd");
         this.invokeActionWithType("StartPeriodEnd", collectionYear, period, collectionType);
     }
 
     closePeriodEnd(collectionYear, period, collectionType) {
+        this.pathController.setButtonState(false, "closePeriodEnd");
+        this.pathController.setButtonState(false, "uploadFile");
         this.invokeActionWithType("ClosePeriodEnd", collectionYear, period, collectionType);
     }
 

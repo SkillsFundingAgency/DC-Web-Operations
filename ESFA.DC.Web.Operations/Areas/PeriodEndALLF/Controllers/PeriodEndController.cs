@@ -45,8 +45,10 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
         }
 
         [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
+            var cancellationToken = CancellationToken.None;
+
             var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ALLF, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
 
@@ -73,8 +75,9 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
         [HttpPost]
         [RequestSizeLimit(524_288_000)]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Index([FromForm]int collectionYear, [FromForm]int period, IFormFile file, CancellationToken cancellationToken)
+        public async Task<IActionResult> Index([FromForm]int collectionYear, [FromForm]int period, IFormFile file)
         {
+            var cancellationToken = CancellationToken.None;
             if (file != null)
             {
                 await _periodEndService.InitialisePeriodEndAsync(collectionYear, period, CollectionTypes.ALLF, cancellationToken);
