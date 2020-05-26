@@ -34,7 +34,7 @@
 
     <tbody class="govuk-table__body" id="recipients">
 
-        @foreach (var recipient in Model.Recipients)
+        @foreach (var recipient in Model.Recipients.OrderBy(o => o.EmailAddress))
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@recipient.EmailAddress</td>
