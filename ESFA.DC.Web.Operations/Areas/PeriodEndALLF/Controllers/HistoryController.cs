@@ -5,6 +5,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +17,20 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
     public class HistoryController : BaseControllerWithOpsPolicy
     {
         private readonly IPeriodService _periodService;
+        private readonly IStorageService _storageService;
         private readonly IALLFHistoryService _allfHistoryService;
         private readonly ILogger _logger;
 
-        public HistoryController(IPeriodService periodService, IALLFHistoryService allfHistoryService, ILogger logger, TelemetryClient telemetryClient)
+        public HistoryController(
+            IPeriodService periodService,
+            IStorageService storageService,
+            IALLFHistoryService allfHistoryService,
+            ILogger logger,
+            TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _periodService = periodService;
+            _storageService = storageService;
             _allfHistoryService = allfHistoryService;
             _logger = logger;
         }
@@ -45,19 +53,18 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             return View(model);
         }
 
-        [Route("getReportFile/{fileName}")]
-        public async Task<FileResult> GetReportFile(string fileName)
+        [Route("getReportFile/{fileName}/{period?}/{jobId?}")]
+        public async Task<FileResult> GetReportFile(string fileName, int? period, long? jobId)
         {
+            fileName = $@"{Utils.Constants.ALLFPeriodPrefix}{period}\{jobId}\{fileName}";
             try
             {
-                //var containerName = Utils.Constants.PeriodEndBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
-                //var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
+                var blobStream = await _storageService.GetFile(Utils.Constants.ALLFStorageContainerName, fileName, CancellationToken.None);
 
-                //return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
-                //{
-                //    FileDownloadName = string.IsNullOrEmpty(downloadName) ? fileName : downloadName
-                //};
-                return null;
+                return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
+                {
+                    FileDownloadName = fileName
+                };
             }
             catch (Exception e)
             {
