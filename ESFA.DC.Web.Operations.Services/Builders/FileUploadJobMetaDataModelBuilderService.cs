@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.ALLF;
@@ -9,7 +10,7 @@ using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Builders
 {
-    public class FileUploadJobMetaDataModelBuilderService
+    public class FileUploadJobMetaDataModelBuilderService : IFileUploadJobMetaDataModelBuilderService
     {
         private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
         private const string ResultReportName = "Upload Result Report";
@@ -25,7 +26,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             _serializationService = serializationService;
         }
 
-        private async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(FileUploadJobMetaDataModel file, int period, CancellationToken cancellationToken)
+        public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(FileUploadJobMetaDataModel file, int period, CancellationToken cancellationToken)
         {
             file.ReportName = $"{GenericActualsCollectionErrorReportName} {file.FileName}";
 
