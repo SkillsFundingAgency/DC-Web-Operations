@@ -7,6 +7,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
+using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 
@@ -28,9 +29,9 @@ namespace ESFA.DC.Web.Operations.Services.ValidationRules
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<string>> GetValidationRules(int year, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ValidationRule>> GetValidationRules(int year, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<string>>(await GetDataAsync($"{_baseUrl}/api/validationrules/{year}", cancellationToken));
+            var data = _jsonSerializationService.Deserialize<IEnumerable<ValidationRule>>(await GetDataAsync($"{_baseUrl}/api/validationrules/{year}", cancellationToken));
             return data;
         }
 

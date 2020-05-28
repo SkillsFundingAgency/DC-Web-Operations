@@ -7,6 +7,7 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
+using ESFA.DC.Web.Operations.Models.Reports;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
@@ -45,10 +46,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             return collectionYears.OrderByDescending(x => x).ToList();
         }
 
-        public async Task<IEnumerable<string>> GetValidationRules(int year)
+        public async Task<IEnumerable<ValidationRule>> GetValidationRules(int year)
         {
-            var validationRules = await _validationRulesService.GetValidationRules(year);
-            return validationRules.OrderBy(x => x);
+            return await _validationRulesService.GetValidationRules(year);
         }
     }
 }
