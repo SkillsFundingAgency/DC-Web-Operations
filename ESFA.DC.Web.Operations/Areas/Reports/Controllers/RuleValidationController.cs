@@ -62,7 +62,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             var model = new RuleSearchViewModel();
             var collectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypeConstants.Ilr);
             model.CollectionYears = collectionYears.OrderByDescending(x => x).ToList();
-            model.Rules = await _validationRulesService.GetValidationRules(year);
             ViewData["years"] = model.CollectionYears.Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() }).ToList();
             var jobId = await _validationRulesService.GenerateReport(rule, year, User.Name());
             return RedirectToAction("InProgress", new { jobId });
