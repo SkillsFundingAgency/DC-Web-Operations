@@ -12,7 +12,7 @@
             <a class="govuk-breadcrumbs__link" href="/periodend/periodEnd">Period end</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="/periodendallf/actuals">ALLF</a>
+            <a class="govuk-breadcrumbs__link" href="/periodendallf/periodEnd">ALLF</a>
         </li>
         <li class="govuk-breadcrumbs__list-item" aria-current="page">ALLF history</li>
     </ol>
@@ -65,7 +65,8 @@
                                     else
                                     {
                                         <strong class="report-fail">Job Failed</strong>
-                                    }<br/>
+                                    }
+                                    <br />
                                     <strong>@if (periodHistory.Records > 0) {<span>@periodHistory.Records records</span>}</strong><br/>
                                     <strong>@if (periodHistory.Warnings > 0) { <span>@periodHistory.Warnings warnings</span>}</strong>
                                 </td>
