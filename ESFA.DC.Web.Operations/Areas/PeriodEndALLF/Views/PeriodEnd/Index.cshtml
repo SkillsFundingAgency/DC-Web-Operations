@@ -31,7 +31,7 @@
         <ul class="govuk-list">
 
             <li>
-                @Html.ActionLink("History", "Index", "periodEndHistory", new { area = AreaNames.PeriodEndALLF }, new { @class = "govuk-link" })
+                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEndALLF }, new { @class = "govuk-link" })
             </li>
         </ul>
     </div>
@@ -118,15 +118,12 @@
 
 @section PageScripts
 {
-    @if (Model != null && Model.CollectionClosed)
-    {
-        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    }
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 
     <script type="module">
         import PathController from '/assets/js/periodEnd/allf/pathController.js';
 
-        @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished) {
+        @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndFinished) {
             @Html.Raw("import Client from '/assets/js/periodEnd/allf/client.js';");
             @Html.Raw("import Hub from '/assets/js/hubs/allf/periodEndHub.js';");
         }
@@ -135,10 +132,9 @@
             const stateModel = @Json.Serialize(Model);
             const pathController = new PathController();
 
-
             pathController.initialiseState(stateModel);
 
-            @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished) {
+            @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndFinished) {
                 @Html.Raw("const hub = new Hub(pathController);");
                 @Html.Raw("hub.startHub(stateModel);");
                 @Html.Raw("window.periodEndClient = new Client(hub.getConnection());");
