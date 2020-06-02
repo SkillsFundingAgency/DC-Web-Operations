@@ -159,8 +159,12 @@
             displayMenu: 'overlay',
             confirmOnBlur: false,
             showNoOptionsFound: false,
-            source: rules,
+            source: this.customRulesSuggest.bind(this),
             onConfirm: this.searchRulesOnConfirm.bind(this),
+            templates: {
+                inputValue: this.searchRuleInputValueTemplate.bind(this),
+                suggestion: this.searchRuleSuggestionTemplate.bind(this)
+            },
             placeholder: 'e.g Rule_01'
         });
         var autocompleteElement = document.getElementById('autocomplete-overlay');
@@ -168,6 +172,30 @@
         autocompleteElement.maxLength = "100";
         this._spinner.style.visibility = 'hidden';
     }
+
+     customRulesSuggest(query, syncResults) {
+         var results = this._rulesByYear[this._yearSelected];
+         syncResults(query
+             ? results.filter(function(result) {
+                 var resultContains = result.ruleName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+                 return resultContains;
+             })
+             : []
+         );
+     }
+
+     searchRuleInputValueTemplate(result) {
+         return result && result.ruleName;
+     }
+
+     searchRuleSuggestionTemplate(result) {
+         if (result.isTriggered === true) {
+             return result.ruleName + '<strong> - [Triggered]</strong>';
+         }
+         else {
+             return result.ruleName;
+         }
+     }
 
     onautocompleteblur() {
         if (this._id) {
