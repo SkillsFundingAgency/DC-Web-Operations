@@ -203,6 +203,10 @@ class DashBoardController {
     }
 
     updateServiceBusStats(serviceBusStats) {
+        if (this._serviceBusStatistics == null) {
+            return;
+        }
+
         let labelQueue = [], labelTopic = [], labelIlr = [];
         let dataQueue = [], dataTopic = [], dataIlr = [];
         let dataQueueDeadLetter = [], dataTopicDeadLetter = [], dataIlrDeadLetter = [];
@@ -225,10 +229,6 @@ class DashBoardController {
             labelIlr.push(serviceBusStats.ilr[i].name);
             dataIlr.push(serviceBusStats.ilr[i].messageCount);
             dataIlrDeadLetter.push(serviceBusStats.ilr[i].deadLetterMessageCount);
-        }
-
-        if (this._serviceBusStatistics == null) {
-            return;
         }
 
         if (this._queuesSystem == null) {
