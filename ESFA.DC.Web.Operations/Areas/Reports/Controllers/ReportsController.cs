@@ -50,7 +50,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             ViewBag.Error = TempData["error"];
             ReportsViewModel reportsViewModel = new ReportsViewModel()
             {
-                ReportPeriods = await _periodService.GetAllPeriods(IlrCollectionType, cancellationToken),
+                ReportPeriods = await _periodService.GetAllPeriodsAsync(IlrCollectionType, cancellationToken),
                 CollectionYears = await _collectionsService.GetCollectionYearsByType(IlrCollectionType, cancellationToken)
             };
 
