@@ -27,6 +27,7 @@ class DashBoardController {
         this._ilrReturns = document.getElementById("ilrReturns");
         this._failedFiles = document.getElementById("failedFiles");
         this._sldDasMismatches = document.getElementById("sldDasMismatches");
+        this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
 
         this._queuesSystem = null;
         this._queuesTopics = null;
@@ -226,8 +227,11 @@ class DashBoardController {
             dataIlrDeadLetter.push(serviceBusStats.ilr[i].deadLetterMessageCount);
         }
 
-        if (document.getElementById('serviceBusStatistics') === null) {
-            return;
+        if (this._serviceBusStatistics == null) {
+            this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
+            if (this._serviceBusStatistics == null) {
+                return;
+            }
         }
 
         if (this._queuesSystem == null) {
