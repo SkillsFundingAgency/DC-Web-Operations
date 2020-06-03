@@ -73,7 +73,7 @@ namespace ESFA.DC.Web.Operations.Services
             return periods;
         }
 
-        public async Task<IDictionary<string, int>> GetAllPeriods(string ilrCollectionType, CancellationToken cancellationToken = default)
+        public async Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken = default)
         {
             var maxIlrPeriods = _jsonSerializationService.Deserialize<int>(
                 await GetDataAsync($"{_baseUrl}/api/returnperiod/maxPeriod/{ilrCollectionType}", cancellationToken));
