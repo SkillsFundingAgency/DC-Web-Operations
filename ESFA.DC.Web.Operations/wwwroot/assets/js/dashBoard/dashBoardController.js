@@ -226,31 +226,29 @@ class DashBoardController {
             dataIlrDeadLetter.push(serviceBusStats.ilr[i].deadLetterMessageCount);
         }
 
+        if (document.getElementById('serviceBusStatistics') === null) {
+            return;
+        }
+
         if (this._queuesSystem == null) {
-            if (document.getElementById('queueSystem') !== null) {
-                ctx = document.getElementById('queueSystem').getContext('2d');
-                this._queuesSystem = this.buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
-            }
+            ctx = document.getElementById('queueSystem').getContext('2d');
+            this._queuesSystem = this.buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
         }
         else {
             this.updateChart(this._queuesSystem, labelQueue, dataQueue, dataQueueDeadLetter);
         }
 
         if (this._queuesTopics == null) {
-            if (document.getElementById('queueTopics') !== null) {
-                ctx = document.getElementById('queueTopics').getContext('2d');
-                this._queuesTopics = this.buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
-            }
+            ctx = document.getElementById('queueTopics').getContext('2d');
+            this._queuesTopics = this.buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
         }
         else {
             this.updateChart(this._queuesTopics, labelTopic, dataTopic, dataTopicDeadLetter);
         }
 
         if (this._queuesIlr == null) {
-            if (document.getElementById('queueIlr') !== null) {
-                ctx = document.getElementById('queueIlr').getContext('2d');
-                this._queuesIlr = this.buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
-            }
+            ctx = document.getElementById('queueIlr').getContext('2d');
+            this._queuesIlr = this.buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
         } else {
             this.updateChart(this._queuesIlr, labelIlr, dataIlr, dataIlrDeadLetter);
         }
