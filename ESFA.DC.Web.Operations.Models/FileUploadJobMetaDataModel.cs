@@ -8,6 +8,8 @@ namespace ESFA.DC.Web.Operations.Models
 
         public int JobStatus { get; set; }
 
+        public int PeriodNumber { get; set; }
+
         public string FileName { get; set; }
 
         public int RecordCount { get; set; }
@@ -15,5 +17,11 @@ namespace ESFA.DC.Web.Operations.Models
         public int ErrorCount { get; set; }
 
         public string ReportName { get; set; }
+
+        public bool UsedForPeriodEnd { get; set; }
+
+        public DateTime SubmissionDate { get; set; }
+
+        public string SubmittedBy { get; set; }
     }
 }

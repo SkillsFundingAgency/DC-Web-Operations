@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.Web.Operations.Models.PeriodEnd;
+using ESFA.DC.Web.Operations.Models;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models
 {
@@ -9,6 +9,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models
 
         public IEnumerable<int> CollectionYears { get; set; }
 
-        public IEnumerable<ALLFHistoryDetail> PeriodHistories { get; set; }
+        public IEnumerable<FileUploadJobMetaDataModel> PeriodHistories { get; set; }
     }
 }
