@@ -6,6 +6,7 @@ using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -23,26 +24,35 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         private readonly ILogger _logger;
         private readonly IStorageService _storageService;
         private readonly IPeriodService _periodService;
+        private readonly ICollectionsService _collectionsService;
         private readonly IReportsService _reportsService;
 
         public ReportsController(
             ILogger logger,
             IStorageService storageService,
             IPeriodService periodService,
-            IReportsService reportsService)
+            IReportsService reportsService,
+            ICollectionsService collectionsService)
         {
             _logger = logger;
             _storageService = storageService;
             _periodService = periodService;
             _reportsService = reportsService;
+            _collectionsService = collectionsService;
         }
 
         [HttpGet("")]
         [HttpGet("Index")]
-        public async Task<IActionResult> Index(int? collectionYear, int? collectionPeriod)
+        public async Task<IActionResult> Index(int? collectionYear, int? collectionPeriod, CancellationToken cancellationToken)
         {
+            const string IlrCollectionType = "ILR";
+
             ViewBag.Error = TempData["error"];
-            ReportsViewModel reportsViewModel = new ReportsViewModel();
+            ReportsViewModel reportsViewModel = new ReportsViewModel()
+            {
+                ReportPeriods = await _periodService.GetAllPeriods(IlrCollectionType, cancellationToken),
+                CollectionYears = await _collectionsService.GetCollectionYearsByType(IlrCollectionType, cancellationToken)
+            };
 
             // get the current period
             var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
@@ -53,7 +63,10 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 throw new InvalidOperationException(errorMessage);
             }
 
-            var currentYearPeriod = currentYearPeriods.First();
+            var currentYearPeriod = currentYearPeriods
+                .OrderByDescending(o => o.CollectionYear)
+                .ThenByDescending(t => t.PeriodNumber)
+                .First();
 
             reportsViewModel.CurrentCollectionYear = currentYearPeriod.CollectionYear;
             reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.PeriodNumber;
