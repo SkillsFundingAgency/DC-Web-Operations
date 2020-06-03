@@ -227,26 +227,31 @@ class DashBoardController {
         }
 
         if (this._queuesSystem == null) {
-            ctx = document.getElementById('queueSystem').getContext('2d');
-            this._queuesSystem = this.buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
+            if (document.getElementById('queueSystem') !== null) {
+                ctx = document.getElementById('queueSystem').getContext('2d');
+                this._queuesSystem = this.buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
+            }
         }
         else {
             this.updateChart(this._queuesSystem, labelQueue, dataQueue, dataQueueDeadLetter);
         }
 
         if (this._queuesTopics == null) {
-            ctx = document.getElementById('queueTopics').getContext('2d');
-            this._queuesTopics = this.buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
+            if (document.getElementById('queueTopics') !== null) {
+                ctx = document.getElementById('queueTopics').getContext('2d');
+                this._queuesTopics = this.buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
+            }
         }
         else {
             this.updateChart(this._queuesTopics, labelTopic, dataTopic, dataTopicDeadLetter);
         }
 
         if (this._queuesIlr == null) {
-            ctx = document.getElementById('queueIlr').getContext('2d');
-            this._queuesIlr = this.buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
-        }
-        else {
+            if (document.getElementById('queueIlr') !== null) {
+                ctx = document.getElementById('queueIlr').getContext('2d');
+                this._queuesIlr = this.buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
+            }
+        } else {
             this.updateChart(this._queuesIlr, labelIlr, dataIlr, dataIlrDeadLetter);
         }
     }
