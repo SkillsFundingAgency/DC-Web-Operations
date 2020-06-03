@@ -228,10 +228,7 @@ class DashBoardController {
         }
 
         if (this._serviceBusStatistics == null) {
-            this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
-            if (this._serviceBusStatistics == null) {
-                return;
-            }
+            return;
         }
 
         if (this._queuesSystem == null) {
