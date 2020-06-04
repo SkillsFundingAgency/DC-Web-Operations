@@ -21,10 +21,10 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h3>Period:</h3>
-        <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years">
+        <select id="collectionYears" asp-for="CurrentCollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years">
         </select>
 
-        <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
+        <select id="collectionPeriod" asp-for="CurrentCollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
         </select>
 
     </div>
