@@ -17,13 +17,18 @@ using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 {
     public class ALLFPeriodEndService : BaseHttpClientService, IALLFPeriodEndService
     {
         private const string Api = "/api/period-end-allf/";
+        private const string GenericActualsCollectionErrorReportName = "";
+        private const string ResultReportName = "";
 
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
@@ -91,28 +96,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         {
             var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
             await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
-        }
-
-        public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(int year, int period, CancellationToken cancellationToken)
-        {
-            // get job info from db
-            var files = (await GetSubmittedFilesPerPeriodAsync(year, period, cancellationToken)).ToList();
-
-            // get file info from result report
-            await Task.WhenAll(
-                files.Where(f => f.JobStatus == 4)
-                    .Select(file => _fileUploadJobMetaDataModelBuilderService.PopulateFileUploadJobMetaDataModel(file, period, cancellationToken)));
-
-            return files;
-        }
-
-        public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerPeriodAsync(int collectionYear, int period, CancellationToken cancellationToken)
-        {
-            var url = $"{_baseUrl}{Api}file-uploads/{collectionYear}/{period}";
-
-            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
-
-            return data;
         }
 
         public async Task SubmitJob(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken)

@@ -1,44 +1,56 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.ALLF;
-using ESFA.DC.Web.Operations.Utils;
+using ESFA.DC.Web.Operations.Settings.Models;
+using Microsoft.Azure.Storage.Blob;
+using Microsoft.Azure.Storage.RetryPolicies;
 
 namespace ESFA.DC.Web.Operations.Services.Builders
 {
     public class FileUploadJobMetaDataModelBuilderService : IFileUploadJobMetaDataModelBuilderService
     {
-        private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
-        private const string ResultReportName = "Upload Result Report";
-
-        private readonly IStorageService _storageService;
+        private readonly AzureStorageSection _azureStorageConfig;
         private readonly ISerializationService _serializationService;
 
+        private readonly BlobRequestOptions _requestOptions = new BlobRequestOptions
+        {
+            RetryPolicy = new LinearRetry(TimeSpan.FromSeconds(5.0), 3),
+            DisableContentMD5Validation = true,
+            StoreBlobContentMD5 = false
+        };
+
         public FileUploadJobMetaDataModelBuilderService(
-            IStorageService storageService,
+            AzureStorageSection azureStorageConfig,
             ISerializationService serializationService)
         {
-            _storageService = storageService;
+            _azureStorageConfig = azureStorageConfig;
             _serializationService = serializationService;
         }
 
-        public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(FileUploadJobMetaDataModel file, int period, CancellationToken cancellationToken)
+        public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(
+            FileUploadJobMetaDataModel file,
+            string reportName,
+            string resultsReportName,
+            CloudBlobContainer container,
+            string periodPrefix,
+            CancellationToken cancellationToken)
         {
-            file.ReportName = $"{GenericActualsCollectionErrorReportName} {file.FileName}";
+            file.ReportName = $"{reportName} {file.FileName}";
 
-            var resultFileName = $@"{Constants.ALLFPeriodPrefix}{period}\{file.JobId}\{ResultReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
-            var resultStream = await _storageService.GetFile(Constants.ALLFStorageContainerName, resultFileName, cancellationToken);
+            var resultFileName = $"{periodPrefix}{file.PeriodNumber}/{file.JobId}/{resultsReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
-            if (resultStream == null)
+            SubmissionSummary result;
+            using (var stream = await container
+                .GetBlockBlobReference(resultFileName)
+                .OpenReadAsync(null, _requestOptions, null, cancellationToken))
             {
-                return file;
+                result = _serializationService.Deserialize<SubmissionSummary>(stream);
             }
-
-            var result = _serializationService.Deserialize<SubmissionSummary>(resultStream);
 
             if (result == null)
             {
