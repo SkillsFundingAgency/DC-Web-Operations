@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +71,14 @@ namespace ESFA.DC.Web.Operations.Services
             }
 
             return periods;
+        }
+
+        public async Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken)
+        {
+            var maxIlrPeriods = _jsonSerializationService.Deserialize<int>(
+                await GetDataAsync($"{_baseUrl}/api/returnperiod/maxPeriod/{ilrCollectionType}", cancellationToken));
+
+            return Enumerable.Range(1, maxIlrPeriods).ToDictionary(x => $"R{x:00}");
         }
     }
 }
