@@ -14,6 +14,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<List<ReturnPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default);
 
-        Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken = default);
+        Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken);
     }
 }
