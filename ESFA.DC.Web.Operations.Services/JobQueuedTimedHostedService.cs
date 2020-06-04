@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Services.Hubs;
 
@@ -17,8 +18,9 @@ namespace ESFA.DC.Web.Operations.Services
             IJobQueuedService jobQueuedService,
             IJobQueuedHubEventBase hubEventBase,
             JobQueuedHub jobQueuedHub,
+            ISerialisationHelperService serialisationHelperService,
             ILogger logger)
-            : base("Job Queued", logger)
+            : base("Job Queued", logger, serialisationHelperService)
         {
             hubEventBase.ClientHeartbeatCallback += RegisterClient;
             _jobQueuedService = jobQueuedService;

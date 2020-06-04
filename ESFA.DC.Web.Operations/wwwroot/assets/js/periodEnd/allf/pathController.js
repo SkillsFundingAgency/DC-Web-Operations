@@ -271,9 +271,8 @@ class pathController {
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
 
         let fileContainer = document.getElementById('fileContainer');
-        let currentContent = fileContainer.innerHTML;
         let classScope = this;
-        let updatedContent = currentContent;
+        let updatedContent = '';
         stateModel.files.forEach(function(file) {
             var fileName = file.fileName ? file.fileName : '';
             var reportName = file.reportName ? file.reportName : '';

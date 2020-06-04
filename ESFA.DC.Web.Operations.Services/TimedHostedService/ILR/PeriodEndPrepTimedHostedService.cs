@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR;
 using ESFA.DC.Web.Operations.Utils;
 
@@ -19,8 +18,9 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ILR
             ILogger logger,
             IPeriodEndService periodEndService,
             IPeriodEndPrepHubEventBase eventBase,
+            ISerialisationHelperService serialisationHelperService,
             PeriodEndPrepHub periodEndPrepHub)
-        : base("Period End Prep", logger)
+        : base("Period End Prep", logger, serialisationHelperService)
         {
             _logger = logger;
             _periodEndService = periodEndService;

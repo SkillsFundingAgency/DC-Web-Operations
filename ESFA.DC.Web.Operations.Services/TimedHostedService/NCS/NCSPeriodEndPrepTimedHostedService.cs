@@ -18,8 +18,9 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.NCS
             ILogger logger,
             INCSPeriodEndService periodEndService,
             IPeriodEndPrepHubEventBase eventBase,
+            ISerialisationHelperService serialisationHelperService,
             NCSPeriodEndPrepHub periodEndPrepHub)
-            : base("NCS Period End Prep", logger)
+            : base("NCS Period End Prep", logger, serialisationHelperService)
         {
             _logger = logger;
             _periodEndService = periodEndService;

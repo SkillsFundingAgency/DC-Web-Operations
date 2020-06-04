@@ -18,8 +18,9 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF
             ILogger logger,
             IALLFPeriodEndService periodEndService,
             IPeriodEndHubEventBase eventBase,
+            ISerialisationHelperService serialisationHelperService,
             ALLFPeriodEndHub periodEndHub)
-            : base("ALLF Period End", logger)
+            : base("ALLF Period End", logger, serialisationHelperService)
         {
             _logger = logger;
             _periodEndService = periodEndService;
@@ -32,10 +33,12 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF
             try
             {
                 // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStatesAsync(null, null, CollectionTypes.ALLF, cancellationToken);
+                var model = await _periodEndService.GetPathState(null, null, cancellationToken);
+
+                var state = SerialiseToCamelCase(model);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(pathItemStates, CollectionTypes.ALLF, cancellationToken);
+                await _periodEndHub.SendMessage(state, CollectionTypes.ALLF, cancellationToken);
             }
             catch (Exception ex)
             {
