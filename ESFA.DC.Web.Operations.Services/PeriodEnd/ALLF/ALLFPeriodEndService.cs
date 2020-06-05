@@ -18,8 +18,6 @@ using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 {
@@ -32,6 +30,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly ICollectionsService _collectionService;
+        private readonly ICloudStorageService _cloudStorageService;
         private readonly IJobService _jobService;
         private readonly ILogger _logger;
         private readonly AzureStorageSection _azureStorageConfig;
@@ -43,6 +42,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
             ICollectionsService collectionService,
+            ICloudStorageService cloudStorageService,
             IJobService jobService,
             ILogger logger,
             AzureStorageSection azureStorageConfig,
@@ -54,6 +54,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
 
             _collectionService = collectionService;
+            _cloudStorageService = cloudStorageService;
             _jobService = jobService;
             _logger = logger;
             _azureStorageConfig = azureStorageConfig;
@@ -149,7 +150,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
                 file.UsedForPeriodEnd = true;
             }
 
-            var container = CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(Constants.ALLFStorageContainerName);
+            var container = _cloudStorageService.GetStorageContainer();
 
             // get file info from result report
             await Task.WhenAll(
