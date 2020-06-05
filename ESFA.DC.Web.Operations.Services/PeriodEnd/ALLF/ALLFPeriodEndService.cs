@@ -27,14 +27,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
     public class ALLFPeriodEndService : BaseHttpClientService, IALLFPeriodEndService
     {
         private const string Api = "/api/period-end-allf/";
-        private const string GenericActualsCollectionErrorReportName = "";
-        private const string ResultReportName = "";
+        private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
+        private const string ResultReportName = "Upload Result Report";
 
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly ICollectionsService _collectionService;
         private readonly IPeriodService _periodService;
         private readonly IStateService _stateService;
+        private readonly ICloudStorageService _cloudStorageService;
         private readonly IJobService _jobService;
         private readonly ILogger _logger;
         private readonly AzureStorageSection _azureStorageConfig;
@@ -48,6 +49,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             ICollectionsService collectionService,
             IPeriodService periodService,
             IStateService stateService,
+            ICloudStorageService cloudStorageService,
             IJobService jobService,
             ILogger logger,
             AzureStorageSection azureStorageConfig,
@@ -57,9 +59,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         {
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
+
             _collectionService = collectionService;
             _periodService = periodService;
             _stateService = stateService;
+            _cloudStorageService = cloudStorageService;
             _jobService = jobService;
             _logger = logger;
             _azureStorageConfig = azureStorageConfig;
@@ -202,6 +206,52 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return model;
+        }
+
+        private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerPeriodAsync(int collectionYear, int period, CancellationToken cancellationToken)
+        {
+            var url = $"{_baseUrl}{Api}file-uploads/{collectionYear}/{period}";
+
+            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
+
+            return data;
+        }
+
+        public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
+            int year,
+            int period,
+            bool includeAll = false,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // get job info from db
+            var files = (await GetSubmittedFilesPerPeriodAsync(year, period, cancellationToken))
+                .Take(Constants.MaxFilesToDisplay)
+                .ToList();
+
+            foreach (var foundPeriod in files.GroupBy(f => f.PeriodNumber).Select(f => f.Key))
+            {
+                var file = files
+                    .Where(f => f.PeriodNumber == foundPeriod)
+                    .OrderByDescending(f => f.SubmissionDate)
+                    .First();
+                file.UsedForPeriodEnd = true;
+            }
+
+            var container = _cloudStorageService.GetStorageContainer();
+
+            // get file info from result report
+            await Task.WhenAll(
+                files.Where(f => includeAll || f.JobStatus == 4)
+                    .Select(file => _fileUploadJobMetaDataModelBuilderService
+                        .PopulateFileUploadJobMetaDataModel(
+                            file,
+                            GenericActualsCollectionErrorReportName,
+                            ResultReportName,
+                            container,
+                            Constants.ALLFPeriodPrefix,
+                            cancellationToken)));
+
+            return files;
         }
 
         private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerPeriodAsync(int collectionYear, int period, CancellationToken cancellationToken)

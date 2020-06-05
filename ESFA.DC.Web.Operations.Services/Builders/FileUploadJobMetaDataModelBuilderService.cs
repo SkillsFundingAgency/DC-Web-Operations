@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.ALLF;
@@ -14,6 +13,8 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 {
     public class FileUploadJobMetaDataModelBuilderService : IFileUploadJobMetaDataModelBuilderService
     {
+        private readonly ICloudStorageService _cloudStorageService;
+
         private readonly AzureStorageSection _azureStorageConfig;
         private readonly ISerializationService _serializationService;
 
@@ -26,10 +27,12 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
         public FileUploadJobMetaDataModelBuilderService(
             AzureStorageSection azureStorageConfig,
-            ISerializationService serializationService)
+            ISerializationService serializationService,
+            ICloudStorageService cloudStorageService)
         {
             _azureStorageConfig = azureStorageConfig;
             _serializationService = serializationService;
+            _cloudStorageService = cloudStorageService;
         }
 
         public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(
@@ -44,14 +47,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             var resultFileName = $"{periodPrefix}{file.PeriodNumber}/{file.JobId}/{resultsReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
-            SubmissionSummary result;
-            using (var stream = await container
-                .GetBlockBlobReference(resultFileName)
-                .OpenReadAsync(null, _requestOptions, null, cancellationToken))
-            {
-                result = _serializationService.Deserialize<SubmissionSummary>(stream);
-            }
-
+            var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
             if (result == null)
             {
                 return file;

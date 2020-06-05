@@ -47,57 +47,55 @@
                         @foreach (var periodHistory in @Model.PeriodHistories)
                         {
                             var period = Constants.ALLFPeriodPrefix + periodHistory.PeriodNumber;
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell"><strong>@periodHistory.SubmissionDate.ToString("dd MMMM")<br />@periodHistory.SubmissionDate.ToString("yyyy 'at' HH:mm tt")</strong></td>
-                                <td class="govuk-table__cell">@periodHistory.SubmittedBy</td>
-                                <td class="govuk-table__cell">
-                                    @if (!string.IsNullOrEmpty(periodHistory.FileName))
-                                    {
-                                        @Html.ActionLink(periodHistory.FileName, "GetReportFile", new { fileName = periodHistory.FileName })
-                                    }
-                                </td>
-                                <td class="govuk-table__cell">
-                                    @if (periodHistory.UsedForPeriodEnd)
-                                    {
-                                        <svg width="20" height="20" viewBox="0 0 1024 1024"><g fill="green"><path d="M864 128l-480 480-224-224-160 160 384 384 640-640z"></path></g></svg>
-                                    }
-                                </td>
-                                <td class="govuk-table__cell">@period</td>
-                                <td class="govuk-table__cell">@periodHistory.JobId</td>
-                                <td class="govuk-table__cell">
-                                    @periodHistory.JobStatus
-                                    @*The code below needs more thought around how the RAG status is displayed just displaying the actual status for now*@
-                                    @*@if (periodHistory.JobStatus == 4)
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell"><strong>@periodHistory.SubmissionDate.ToString("dd MMMM")<br />@periodHistory.SubmissionDate.ToString("yyyy 'at' HH:mm tt")</strong></td>
+                            <td class="govuk-table__cell">@periodHistory.SubmittedBy</td>
+                            <td class="govuk-table__cell">
+                                @if (!string.IsNullOrEmpty(periodHistory.FileName))
+                                {
+                                    @Html.ActionLink(periodHistory.FileName, "GetReportFile", new { fileName = periodHistory.FileName })
+                                }
+                            </td>
+                            <td class="govuk-table__cell">
+                                @if (periodHistory.UsedForPeriodEnd)
+                                {
+                                    <svg width="20" height="20" viewBox="0 0 1024 1024"><g fill="green"><path d="M864 128l-480 480-224-224-160 160 384 384 640-640z"></path></g></svg>
+                                }
+                            </td>
+                            <td class="govuk-table__cell">@period</td>
+                            <td class="govuk-table__cell">@periodHistory.JobId</td>
+                            <td class="govuk-table__cell">
+                                @periodHistory.JobStatus
+                                @*The code below needs more thought around how the RAG status is displayed just displaying the actual status for now*@
+                                @*@if (periodHistory.JobStatus == 4)
+                                {
+                                    <strong class="report-success">Job Finished</strong>
+                                }
+                                else
+                                {
+                                    <strong class="report-fail">Job Failed</strong>
+                                }*@
+                                <br/>
+                                <strong>
+                                    <span>@periodHistory.RecordCount records</span>
+                                </strong><br/>
+                                <strong>
+                                    <span>@periodHistory.ErrorCount errors</span>
+                                </strong>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @if (!string.IsNullOrEmpty(periodHistory.ReportName))
+                                {
+                                    @Html.ActionLink(periodHistory.ReportName, "GetReportFile",
+                                        new
                                         {
-                                            <strong class="report-success">Job Finished</strong>
-                                        }
-                                        else
-                                        {
-                                            <strong class="report-fail">Job Failed</strong>
-                                        }*@
-                                    <br />
-                                    <strong>
-                                        @if (periodHistory.RecordCount > 0)
-                                        {<span>@periodHistory.RecordCount records</span>}
-                                    </strong><br />
-                                    <strong>
-                                        @if (periodHistory.ErrorCount > 0)
-                                        {<span>@periodHistory.ErrorCount errors</span>}
-                                    </strong>
-                                </td>
-                                <td class="govuk-table__cell">
-                                    @if (!string.IsNullOrEmpty(periodHistory.ReportName))
-                                    {
-                                        @Html.ActionLink(periodHistory.ReportName, "GetReportFile",
-                                            new
-                                            {
-                                                fileName = periodHistory.ReportName,
-                                                Period = periodHistory.PeriodNumber,
-                                                JobId = periodHistory.JobId
-                                            })
-                                    }
-                                </td>
-                            </tr>
+                                            fileName = periodHistory.ReportName,
+                                            Period = periodHistory.PeriodNumber,
+                                            JobId = periodHistory.JobId
+                                        })
+                                }
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

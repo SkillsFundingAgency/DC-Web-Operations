@@ -18,7 +18,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient)
-            : base(logger, telemetryClient)
+        : base(logger, telemetryClient)
         {
             _storageService = storageService;
             _logger = logger;

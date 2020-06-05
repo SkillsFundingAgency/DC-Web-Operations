@@ -7,6 +7,8 @@ namespace ESFA.DC.Web.Operations.Utils
         public const int JobStatus_Completed = 4;
         public const int MaxFilesToDisplay = 15;
 
+        public const int MaxFilesToDisplay = 15;
+
         public const string IlrCollectionNamePrefix = "ILR";
         public const int YearStartMonth = 8;
         public const int CriticalPathHubId = 0;
