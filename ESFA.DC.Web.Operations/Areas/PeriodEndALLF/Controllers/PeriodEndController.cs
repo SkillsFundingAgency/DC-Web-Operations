@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
@@ -20,10 +17,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
     public class PeriodEndController : BaseALLFController
     {
         private readonly IALLFPeriodEndService _periodEndService;
-        private readonly IPeriodService _periodService;
-        private readonly IStateService _stateService;
-        private readonly IStorageService _storageService;
-        private readonly ILogger _logger;
 
         public PeriodEndController(
             IALLFPeriodEndService periodEndService,
@@ -33,10 +26,6 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             : base(storageService, logger, telemetryClient)
         {
             _periodEndService = periodEndService;
-            _periodService = periodService;
-            _stateService = stateService;
-            _storageService = storageService;
-            _logger = logger;
         }
 
         [HttpGet("{collectionYear?}/{period?}")]

@@ -19,8 +19,6 @@ using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 {
@@ -139,43 +137,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             }
         }
 
-        public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
-            int year,
-            int period,
-            bool includeAll = false,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            // get job info from db
-            var files = (await GetSubmittedFilesPerPeriodAsync(year, period, cancellationToken))
-                .Take(Constants.MaxFilesToDisplay)
-                .ToList();
-
-            foreach (var foundPeriod in files.GroupBy(f => f.PeriodNumber).Select(f => f.Key))
-            {
-                var file = files
-                    .Where(f => f.PeriodNumber == foundPeriod)
-                    .OrderByDescending(f => f.SubmissionDate)
-                    .First();
-                file.UsedForPeriodEnd = true;
-            }
-
-            var container = CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(Constants.ALLFStorageContainerName);
-
-            // get file info from result report
-            await Task.WhenAll(
-                files.Where(f => includeAll || f.JobStatus == 4)
-                    .Select(file => _fileUploadJobMetaDataModelBuilderService
-                        .PopulateFileUploadJobMetaDataModel(
-                            file,
-                            GenericActualsCollectionErrorReportName,
-                            ResultReportName,
-                            container,
-                            Constants.ALLFPeriodPrefix,
-                            cancellationToken)));
-
-            return files;
-        }
-
         public async Task<PeriodEndViewModel> GetPathState(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ALLF, cancellationToken);
@@ -206,15 +167,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
 
             return model;
-        }
-
-        private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerPeriodAsync(int collectionYear, int period, CancellationToken cancellationToken)
-        {
-            var url = $"{_baseUrl}{Api}file-uploads/{collectionYear}/{period}";
-
-            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
-
-            return data;
         }
 
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
