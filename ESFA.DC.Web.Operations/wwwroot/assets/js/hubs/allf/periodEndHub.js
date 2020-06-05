@@ -17,6 +17,7 @@
 
     startHub(stateModel) {
         if (!stateModel.isPreviousPeriod) {
+            this._connection.on("ReceiveMessage", this._pathController.renderFiles.bind(this._pathController));
             this._connection.on("ReceiveMessage", this._pathController.renderPaths.bind(this._pathController));
         }
 

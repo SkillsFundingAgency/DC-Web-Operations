@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Services.Hubs;
 
@@ -17,8 +18,9 @@ namespace ESFA.DC.Web.Operations.Services
             IJobDasMismatchService jobDasMismatchService,
             IJobDasMismatchHubEventBase hubEventBase,
             JobDasMismatchHub jobDasMismatchHub,
+            ISerialisationHelperService serialisationHelperService,
             ILogger logger)
-            : base("Job DasMismatch", logger)
+            : base("Job DasMismatch", logger, serialisationHelperService)
         {
             hubEventBase.ClientHeartbeatCallback += RegisterClient;
             _jobDasMismatchService = jobDasMismatchService;

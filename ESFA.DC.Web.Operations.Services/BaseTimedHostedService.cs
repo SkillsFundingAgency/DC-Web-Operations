@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Event;
 using Microsoft.Extensions.Hosting;
 
@@ -14,6 +15,7 @@ namespace ESFA.DC.Web.Operations.Services
 
         private readonly string _logPrefix;
         private readonly ILogger _logger;
+        private readonly ISerialisationHelperService _serialisationHelperService;
         private readonly ManualResetEvent _timerResetEvent = new ManualResetEvent(false);
         private readonly object _timerStopLock = new object();
         private readonly object _timerChangeLock = new object();
@@ -22,10 +24,14 @@ namespace ESFA.DC.Web.Operations.Services
         private CancellationTokenSource _cancellationTokenSource;
         private DateTime _lastClientTimestamp = DateTime.MinValue;
 
-        protected BaseTimedHostedService(string logPrefix, ILogger logger)
+        protected BaseTimedHostedService(
+            string logPrefix,
+            ILogger logger,
+            ISerialisationHelperService serialisationHelperService)
         {
             _logPrefix = logPrefix;
             _logger = logger;
+            _serialisationHelperService = serialisationHelperService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -52,9 +58,22 @@ namespace ESFA.DC.Web.Operations.Services
             return Task.CompletedTask;
         }
 
+        public virtual string SerialiseToCamelCase<T>(T model)
+        {
+            return _serialisationHelperService.SerialiseToCamelCase(model);
+        }
+
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool flag)
+        {
             StopTimer();
+            _timerResetEvent?.Dispose();
+            _cancellationTokenSource?.Dispose();
         }
 
         protected abstract Task DoWork(CancellationToken cancellationToken);

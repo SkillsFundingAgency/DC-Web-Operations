@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Models;
+using ESFA.DC.Web.Operations.Models.ALLF;
 using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
@@ -19,6 +20,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken);
 
         Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken);
+
+        Task<PeriodEndViewModel> GetPathState(int? collectionYear, int? period, CancellationToken cancellationToken);
 
         Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
             int year,

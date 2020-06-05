@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.73-beta0001" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,6 +25,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ESFA.DC.PeriodEnd.Models">
+      <HintPath>..\..\..\NugetTemp\esfa.dc.periodend.models\0.2.73-beta0001\lib\netstandard2.0\ESFA.DC.PeriodEnd.Models.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

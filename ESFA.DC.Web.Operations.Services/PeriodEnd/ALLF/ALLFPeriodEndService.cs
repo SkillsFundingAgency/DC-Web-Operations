@@ -14,6 +14,7 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
+using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
@@ -30,6 +31,8 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly ICollectionsService _collectionService;
+        private readonly IPeriodService _periodService;
+        private readonly IStateService _stateService;
         private readonly ICloudStorageService _cloudStorageService;
         private readonly IJobService _jobService;
         private readonly ILogger _logger;
@@ -42,6 +45,8 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
             ICollectionsService collectionService,
+            IPeriodService periodService,
+            IStateService stateService,
             ICloudStorageService cloudStorageService,
             IJobService jobService,
             ILogger logger,
@@ -54,6 +59,8 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
 
             _collectionService = collectionService;
+            _periodService = periodService;
+            _stateService = stateService;
             _cloudStorageService = cloudStorageService;
             _jobService = jobService;
             _logger = logger;
@@ -128,6 +135,38 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
                 _logger.LogError($"Error trying to submit ALLF file with name : {file.Name}", ex);
                 throw;
             }
+        }
+
+        public async Task<PeriodEndViewModel> GetPathState(int? collectionYear, int? period, CancellationToken cancellationToken)
+        {
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ALLF, cancellationToken);
+            currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
+
+            collectionYear = collectionYear ?? currentYearPeriod.Year.Value;
+            period = period ?? currentYearPeriod.Period;
+
+            var pathItemStates = await GetPathItemStatesAsync(collectionYear, period, CollectionTypes.ALLF, cancellationToken);
+            var state = _stateService.GetMainState(pathItemStates);
+            var lastItemJobsFinished = _stateService.AllJobsHaveCompleted(state);
+
+            var files = await GetSubmissionsPerPeriodAsync(collectionYear.Value, period.Value, false, cancellationToken);
+
+            var model = new PeriodEndViewModel
+            {
+                Period = period.Value,
+                Year = collectionYear.Value,
+                Paths = state.Paths,
+                PeriodEndStarted = state.PeriodEndStarted,
+                PeriodEndFinished = state.PeriodEndFinished,
+                ClosePeriodEndEnabled = lastItemJobsFinished,
+                Files = files
+            };
+
+            var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
+            model.IsCurrentPeriod = isCurrentPeriodSelected;
+            model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
+
+            return model;
         }
 
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(

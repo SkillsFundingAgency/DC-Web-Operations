@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.PeriodEnd.Models.Dtos;
-using ESFA.DC.Web.Operations.Models;
 
-namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Models
+namespace ESFA.DC.Web.Operations.Models.ALLF
 {
     public class PeriodEndViewModel
     {

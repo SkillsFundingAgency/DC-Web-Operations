@@ -5,7 +5,6 @@ namespace ESFA.DC.Web.Operations.Utils
     public class Constants
     {
         public const int JobStatus_Completed = 4;
-
         public const int MaxFilesToDisplay = 15;
 
         public const string IlrCollectionNamePrefix = "ILR";
