@@ -54,6 +54,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<CloudStorageService>().As<ICloudStorageService>().InstancePerLifetimeScope();
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().As<ISerializationService>().InstancePerLifetimeScope();
+            builder.RegisterType<SerialisationHelperService>().As<ISerialisationHelperService>().InstancePerLifetimeScope();
 
             builder.RegisterType<PeriodEndHubEventBase>().As<IPeriodEndHubEventBase>().SingleInstance();
             builder.RegisterType<PeriodEndPrepHubEventBase>().As<IPeriodEndPrepHubEventBase>().SingleInstance();
