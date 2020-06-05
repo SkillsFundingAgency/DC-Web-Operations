@@ -1,45 +1,35 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
-using ESFA.DC.Web.Operations.Models.ALLF;
-using ESFA.DC.Web.Operations.Utils;
+using Microsoft.Azure.Storage.Blob;
 
 namespace ESFA.DC.Web.Operations.Services.Builders
 {
     public class FileUploadJobMetaDataModelBuilderService : IFileUploadJobMetaDataModelBuilderService
     {
-        private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
-        private const string ResultReportName = "Upload Result Report";
-
-        private readonly IStorageService _storageService;
-        private readonly ISerializationService _serializationService;
+        private readonly ICloudStorageService _cloudStorageService;
 
         public FileUploadJobMetaDataModelBuilderService(
-            IStorageService storageService,
-            ISerializationService serializationService)
+            ICloudStorageService cloudStorageService)
         {
-            _storageService = storageService;
-            _serializationService = serializationService;
+            _cloudStorageService = cloudStorageService;
         }
 
-        public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(FileUploadJobMetaDataModel file, int period, CancellationToken cancellationToken)
+        public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(
+            FileUploadJobMetaDataModel file,
+            string reportName,
+            string resultsReportName,
+            CloudBlobContainer container,
+            string periodPrefix,
+            CancellationToken cancellationToken)
         {
-            file.ReportName = $"{GenericActualsCollectionErrorReportName} {file.FileName}";
+            file.ReportName = $"{reportName} {file.FileName}";
 
-            var resultFileName = $@"{Constants.ALLFPeriodPrefix}{period}\{file.JobId}\{ResultReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
-            var resultStream = await _storageService.GetFile(Constants.ALLFStorageContainerName, resultFileName, cancellationToken);
+            var resultFileName = $"{periodPrefix}{file.PeriodNumber}/{file.JobId}/{resultsReportName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
-            if (resultStream == null)
-            {
-                return file;
-            }
-
-            var result = _serializationService.Deserialize<SubmissionSummary>(resultStream);
-
+            var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
             if (result == null)
             {
                 return file;

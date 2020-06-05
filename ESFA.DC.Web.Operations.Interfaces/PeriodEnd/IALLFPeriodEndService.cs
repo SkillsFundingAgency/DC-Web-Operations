@@ -20,9 +20,11 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken);
 
-        Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerPeriodAsync(int collectionYear, int period, CancellationToken cancellationToken);
-
-        Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(int year, int period, CancellationToken cancellationToken);
+        Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
+            int year,
+            int period,
+            bool includeAll = false,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         Task SubmitJob(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken);
     }
