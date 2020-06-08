@@ -19,6 +19,7 @@ using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Services;
@@ -33,6 +34,7 @@ using ESFA.DC.Web.Operations.Services.PeriodEnd.ILR;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.Processing;
 using ESFA.DC.Web.Operations.Services.Provider;
+using ESFA.DC.Web.Operations.Services.ReferenceData;
 using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -89,6 +91,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
+            builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 

@@ -7,5 +7,7 @@
         public const string EsfR1Collection = "ESFR1";
 
         public const string EsfR2Collection = "ESFR2";
+
+        public const string ReferenceDataCampusIdentifiers = "REF-CAMP";
     }
 }

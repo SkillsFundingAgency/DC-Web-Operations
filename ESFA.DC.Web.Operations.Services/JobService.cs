@@ -67,5 +67,12 @@ namespace ESFA.DC.Web.Operations.Services
             var data = await GetDataAsync($"{_baseUrl}/api/job/{ukprn}/{jobId}", cancellationToken);
             return _jsonSerializationService.Deserialize<SubmittedJob>(data);
         }
+
+        public async Task<SubmittedJob> GetLatestJobForCollectionAsync(string collectionName, CancellationToken cancellationToken)
+        {
+            var data = await GetDataAsync($"{_baseUrl}/api/job/{collectionName}/latest", cancellationToken);
+
+            return data == null ? null : _jsonSerializationService.Deserialize<SubmittedJob>(data);
+        }
     }
 }

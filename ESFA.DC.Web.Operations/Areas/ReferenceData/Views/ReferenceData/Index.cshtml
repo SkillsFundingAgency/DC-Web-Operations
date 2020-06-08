@@ -1,0 +1,34 @@
+﻿@using System.Globalization
+@using ESFA.DC.Web.Operations.Utils
+@model ESFA.DC.Web.Operations.Areas.ReferenceData.Models.ReferenceDataIndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-width-container">
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="/">Home</a>
+            </li>
+
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">Reference Data</li>
+        </ol>
+    </div>
+
+    <main class="govuk-main-wrapper">
+        <div class="govuk-grid-row govuk-!-margin-top-6">
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
+                        <h3 class="home-services__heading">@Html.ActionLink("Campus Identifiers", "Index", "CampusIdentifiers", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.CampusIdentifiers.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.CampusIdentifiers.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.CampusIdentifiers.LastUpdatedByWho</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</div>

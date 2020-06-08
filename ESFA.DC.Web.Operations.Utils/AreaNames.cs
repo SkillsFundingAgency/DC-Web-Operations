@@ -13,5 +13,6 @@
         public const string PeriodEndILR = "periodendilr";
         public const string PeriodEndNCS = "periodendncs";
         public const string PeriodEndALLF = "periodendallf";
+        public const string ReferenceData = "referencedata";
     }
 }
