@@ -9,5 +9,6 @@
         public const string EsfR2Collection = "ESFR2";
 
         public const string ReferenceDataCampusIdentifiers = "REF-CAMP";
+        public const string ReferenceDataConditionsOfFundingRemoval = "CoFRemoval";
     }
 }
