@@ -12,5 +12,7 @@ namespace ESFA.DC.Web.Operations.Interfaces
         Task<JobStatusType> GetJobStatus(long jobId, CancellationToken cancellationToken = default);
 
         Task<SubmittedJob> GetJob(long ukprn, long jobId, CancellationToken cancellationToken = default);
+
+        Task<SubmittedJob> GetLatestJobForCollectionAsync(string collectionName, CancellationToken cancellationToken);
     }
 }
