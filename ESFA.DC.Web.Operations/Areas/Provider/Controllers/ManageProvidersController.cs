@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
-    public class ManageProvidersController : BaseControllerWithOpsPolicy
+    public class ManageProvidersController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly ILogger _logger;
         private readonly IManageProvidersService _manageProvidersService;

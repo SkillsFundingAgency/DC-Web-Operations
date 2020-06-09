@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
 {
     [Area(AreaNames.Collections)]
-    public class ManageCollectionsController : BaseControllerWithOpsPolicy
+    public class ManageCollectionsController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly ICollectionsService _collectionsService;
         private readonly IDateTimeProvider _dateTimeProvider;

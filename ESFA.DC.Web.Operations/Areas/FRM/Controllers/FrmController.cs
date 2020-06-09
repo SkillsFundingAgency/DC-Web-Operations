@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 {
     [Area(AreaNames.Frm)]
-    public class FrmController : BaseControllerWithOpsPolicy
+    public class FrmController : BaseControllerWithAdvancedSupportPolicy
     {
         private readonly IFrmService _frmService;
         private readonly ILogger _logger;

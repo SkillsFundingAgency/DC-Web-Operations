@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 {
     [Area(AreaNames.PeriodEndNCS)]
     [Route(AreaNames.PeriodEndNCS + "/periodEndReports")]
-    public class PeriodEndReportController : BaseControllerWithOpsPolicy
+    public class PeriodEndReportController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IPeriodService _periodService;
         private readonly INCSPeriodEndService _periodEndService;
