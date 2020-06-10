@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    [Authorize(Policy = AuthorisationPolicy.OpsPolicy)]
+    [Authorize(Policy = AuthorisationPolicy.AdvancedSupportPolicy)]
 
-    public abstract class BaseControllerWithOpsPolicy : BaseController
+    public abstract class BaseControllerWithAdvancedSupportPolicy : BaseController
     {
-        public BaseControllerWithOpsPolicy(ILogger logger, TelemetryClient telemetryClient)
+        public BaseControllerWithAdvancedSupportPolicy(ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
         }

@@ -12,7 +12,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
     [Area(AreaNames.PeriodEnd)]
     [Route(AreaNames.PeriodEnd + "/periodEnd")]
-    public class PeriodEndController : BaseControllerWithOpsPolicy
+    public class PeriodEndController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;

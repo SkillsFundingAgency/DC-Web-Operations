@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 {
     [Area(AreaNames.PeriodEndILR)]
     [Route(AreaNames.PeriodEndILR + "/periodEndReports")]
-    public class PeriodEndReportController : BaseControllerWithOpsPolicy
+    public class PeriodEndReportController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;

@@ -7,13 +7,13 @@
 
     <div class="main-nav">
         <a govuk-request-path-search-text="/" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        <a policy="@AuthorisationPolicy.AnySupportedPolicy" govuk-request-path-search-text="/provider" class="govuk-heading-s" asp-area="provider" asp-controller="AddNew" asp-action="AddNewOption">Providers</a>
-        <a policy="@AuthorisationPolicy.AnySupportedPolicy" govuk-request-path-search-text="/collections" class="govuk-heading-s" asp-area="collections" asp-controller="ManageCollections" asp-action="Index" asp-route-collectionId="">Collections</a>
-        <a policy="@AuthorisationPolicy.AnySupportedPolicy" govuk-request-path-search-text="/notifications" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Notifications</a>
-        <a policy="@AuthorisationPolicy.AnySupportedPolicy" govuk-request-path-search-text="/periodEnd" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEnd" asp-action="Index">Period end</a>
-        <a policy="@AuthorisationPolicy.AnySupportedPolicy" govuk-request-path-search-text="/frm" class="govuk-heading-s" asp-area="frm" asp-controller="Frm" asp-action="Index">FRM</a>
-        <a policy="@AuthorisationPolicy.ReportsPolicy" govuk-request-path-search-text="/reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
-        <a policy="@AuthorisationPolicy.AdvancedSupportDevOpsPolicy" govuk-request-path-search-text="/referenceData" class="govuk-heading-s" asp-area="ReferenceData" asp-controller="ReferenceData" asp-action="Index">Reference Data</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/provider" class="govuk-heading-s" asp-area="provider" asp-controller="AddNew" asp-action="AddNewOption">Providers</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/collections" class="govuk-heading-s" asp-area="collections" asp-controller="ManageCollections" asp-action="Index" asp-route-collectionId="">Collections</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/notifications" class="govuk-heading-s" asp-area="" asp-controller="Home" asp-action="Index">Notifications</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/periodEnd" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEnd" asp-action="Index">Period end</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/frm" class="govuk-heading-s" asp-area="frm" asp-controller="Frm" asp-action="Index">FRM</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsOrReportsPolicy" govuk-request-path-search-text="/reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/referenceData" class="govuk-heading-s" asp-area="ReferenceData" asp-controller="ReferenceData" asp-action="Index">Reference Data</a>
     </div>
 
 @if (!(ViewData.ContainsKey(ViewDataConstants.DashBoard) || ViewData.ContainsKey(ViewDataConstants.LoadingPage)))

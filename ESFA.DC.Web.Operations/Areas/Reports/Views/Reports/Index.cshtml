@@ -34,7 +34,7 @@
     <div class="govuk-grid-column-full">
         <h3>Create new report for:</h3>
         <select id="reportSelection" asp-for="ReportType" class="govuk-select govuk-input--width-20 form-control">
-            <div policy="@AuthorisationPolicy.AdvancedSupportDevOpsPolicy">
+            <div policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy">
                 <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
                 <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
                 <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>

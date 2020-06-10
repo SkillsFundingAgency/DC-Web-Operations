@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
-    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.OpsPolicy)]
-    public abstract class BaseDistributionController : BaseControllerWithOpsPolicy
+    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy)]
+    public abstract class BaseDistributionController : BaseControllerWithAdvancedSupportPolicy
     {
         private readonly ILogger _logger;
 

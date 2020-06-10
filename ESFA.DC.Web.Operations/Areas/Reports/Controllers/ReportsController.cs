@@ -6,11 +6,13 @@ using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +20,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
     [Area(AreaNames.Reports)]
     [Route(AreaNames.Reports)]
-    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.ReportsPolicy)]
-    public class ReportsController : Controller
+    public class ReportsController : BaseControllerWithDevOpsOrAdvancedSupportOrReportsPolicy
     {
         private readonly ILogger _logger;
         private readonly IStorageService _storageService;
@@ -32,7 +33,9 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             IStorageService storageService,
             IPeriodService periodService,
             IReportsService reportsService,
-            ICollectionsService collectionsService)
+            ICollectionsService collectionsService,
+            TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _logger = logger;
             _storageService = storageService;

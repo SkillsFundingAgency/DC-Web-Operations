@@ -31,15 +31,6 @@ namespace ESFA.DC.Web.Operations.Controllers
             return View();
         }
 
-        [Route("claims/ops")]
-        [Authorize(Policy = AuthorisationPolicy.OpsPolicy)]
-        public IActionResult Ops()
-        {
-            Message = "Ops";
-            _telemetryClient.TrackEvent($"Authed User : {User.Identity.Name} has {Message} Claim.");
-            return View("Index");
-        }
-
         [Route("claims/devops")]
         [Authorize(Policy = AuthorisationPolicy.DevOpsPolicy)]
         public IActionResult DevOps()

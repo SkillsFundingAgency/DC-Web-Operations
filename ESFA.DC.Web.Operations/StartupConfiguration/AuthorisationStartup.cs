@@ -10,12 +10,6 @@ namespace ESFA.DC.Web.Operations.StartupConfiguration
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(AuthorisationPolicy.OpsPolicy, policy =>
-                    policy.RequireClaim(
-                        "http://schemas.portal.com/service",
-                        authSettings.OpsClaim,
-                        authSettings.DevOpsClaim));
-
                 options.AddPolicy(AuthorisationPolicy.DevOpsPolicy, policy =>
                     policy.RequireClaim(
                         "http://schemas.portal.com/service",
@@ -33,18 +27,17 @@ namespace ESFA.DC.Web.Operations.StartupConfiguration
                         authSettings.DevOpsClaim,
                         authSettings.AdvancedSupportClaim));
 
-                options.AddPolicy(AuthorisationPolicy.AdvancedSupportDevOpsPolicy, policy =>
+                options.AddPolicy(AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy, policy =>
                     policy.RequireClaim(
                         "http://schemas.portal.com/service",
                         authSettings.DevOpsClaim,
                         authSettings.AdvancedSupportClaim));
 
-                options.AddPolicy(AuthorisationPolicy.AnySupportedPolicy, policy =>
+                options.AddPolicy(AuthorisationPolicy.AdvancedSupportOrDevOpsOrReportsPolicy, policy =>
                     policy.RequireClaim(
                         "http://schemas.portal.com/service",
                         authSettings.DevOpsClaim,
                         authSettings.AdvancedSupportClaim,
-                        authSettings.OpsClaim,
                         authSettings.ReportsClaim));
             });
         }
