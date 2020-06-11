@@ -49,10 +49,10 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             string collectionName,
             CancellationToken cancellationToken)
         {
-            var dateString = file.SubmissionDate.ToString("YYYYMMddhhmmss");
+            var dateSection = file.FileName.Substring(file.FileName.IndexOf('-'));
 
-            file.ReportName = $"{resultsReportName}{dateString}.csv";
-            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName}{dateString}.json";
+            file.ReportName = $"{resultsReportName}{dateSection}.csv";
+            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName}{dateSection}.json";
 
             var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
             if (result == null)
