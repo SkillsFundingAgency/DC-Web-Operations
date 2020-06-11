@@ -8,6 +8,8 @@ namespace ESFA.DC.Web.Operations.Models
 
         public int JobStatus { get; set; }
 
+        public string DisplayStatus { get; set; }
+
         public int PeriodNumber { get; set; }
 
         public string FileName { get; set; }

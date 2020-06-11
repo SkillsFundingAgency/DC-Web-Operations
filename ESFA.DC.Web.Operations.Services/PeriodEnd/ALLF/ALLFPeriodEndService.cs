@@ -149,7 +149,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             var state = _stateService.GetMainState(pathItemStates);
             var lastItemJobsFinished = _stateService.AllJobsHaveCompleted(state);
 
-            var files = await GetSubmissionsPerPeriodAsync(collectionYear.Value, period.Value, false, cancellationToken);
+            var files = await GetSubmissionsPerPeriodAsync(collectionYear.Value, period.Value, cancellationToken);
 
             var model = new PeriodEndViewModel
             {
@@ -172,7 +172,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
             int year,
             int period,
-            bool includeAll = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             // get job info from db
@@ -194,8 +193,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
             // get file info from result report
             await Task.WhenAll(
-                files.Where(f => includeAll || f.JobStatus == 4)
-                    .Select(file => _fileUploadJobMetaDataModelBuilderService
+                files.Select(file => _fileUploadJobMetaDataModelBuilderService
                         .PopulateFileUploadJobMetaDataModel(
                             file,
                             GenericActualsCollectionErrorReportName,

@@ -46,7 +46,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return (state?.Paths?.Any() ?? false) &&
                       state.Paths.All(path => (path.PathItems?.Any() ?? false) &&
                             path.PathItems.All(pi => !pi.HasJobs || ((pi.PathItemJobs?.Any() ?? false) &&
-                                                     pi.PathItemJobs.All(pij => pij.Status == Constants.JobStatus_Completed))));
+                                                     pi.PathItemJobs.All(pij => pij.Status == JobStatuses.JobStatus_Completed))));
         }
     }
 }

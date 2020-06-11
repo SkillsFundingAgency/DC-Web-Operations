@@ -25,7 +25,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
         public new Task<IEnumerable<FileUploadJobMetaDataModel>> GetHistoryDetails(int year, CancellationToken cancellationToken)
         {
-            return _periodEndService.GetSubmissionsPerPeriodAsync(year, 0, true, cancellationToken);
+            return _periodEndService.GetSubmissionsPerPeriodAsync(year, 0, cancellationToken);
         }
     }
 }
