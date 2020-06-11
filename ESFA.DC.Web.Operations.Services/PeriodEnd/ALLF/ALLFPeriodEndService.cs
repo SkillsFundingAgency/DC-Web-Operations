@@ -177,6 +177,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         {
             // get job info from db
             var files = (await GetSubmittedFilesPerPeriodAsync(year, period, cancellationToken))
+                .OrderByDescending(f => f.SubmissionDate)
                 .Take(Constants.MaxFilesToDisplay)
                 .ToList();
 
