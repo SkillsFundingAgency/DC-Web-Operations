@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
