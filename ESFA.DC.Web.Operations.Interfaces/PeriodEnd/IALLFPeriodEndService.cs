@@ -26,7 +26,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
             int year,
             int period,
-            bool includeAll = false,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task SubmitJob(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken);
