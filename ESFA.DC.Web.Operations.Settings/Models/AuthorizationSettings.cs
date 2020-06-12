@@ -6,9 +6,6 @@ namespace ESFA.DC.Web.Operations.Settings.Models
     public class AuthorizationSettings : ISettings
     {
         [JsonRequired]
-        public string OpsClaim { get; set; }
-
-        [JsonRequired]
         public string DevOpsClaim { get; set; }
 
         [JsonRequired]

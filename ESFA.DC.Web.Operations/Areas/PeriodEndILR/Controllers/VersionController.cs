@@ -20,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 {
     [Area(AreaNames.PeriodEndILR)]
     [Route(AreaNames.PeriodEndILR + "/periodEndVersion")]
-    public class VersionController : BaseControllerWithOpsPolicy
+    public class VersionController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly ILogger _logger;
         private readonly JobQueueApiSettings _apiSettings;

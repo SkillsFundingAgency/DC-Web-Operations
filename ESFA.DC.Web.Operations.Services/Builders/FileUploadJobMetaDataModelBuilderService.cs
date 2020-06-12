@@ -9,11 +9,14 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 {
     public class FileUploadJobMetaDataModelBuilderService : IFileUploadJobMetaDataModelBuilderService
     {
+        private readonly IJobStatusService _jobStatusService;
         private readonly ICloudStorageService _cloudStorageService;
 
         public FileUploadJobMetaDataModelBuilderService(
+            IJobStatusService jobStatusService,
             ICloudStorageService cloudStorageService)
         {
+            _jobStatusService = jobStatusService;
             _cloudStorageService = cloudStorageService;
         }
 
@@ -37,6 +40,8 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
+
+            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
         }

@@ -271,16 +271,21 @@ class pathController {
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
 
         let fileContainer = document.getElementById('fileContainer');
-        let classScope = this;
+
         let updatedContent = '';
         stateModel.files.forEach(function(file) {
             var fileName = file.fileName ? file.fileName : '';
             var reportName = file.reportName ? file.reportName : '';
+            var statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
+                : file.displayStatus === 'Job Rejected' ? 'jobRejected'
+                : file.displayStatus === 'Job Failed' ? 'jobFailed'
+                : '';
+
             const content = 
                 `<tr class="govuk-table__row">
                     <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.fileName}">${fileName}</a></td>
                     <td class="govuk-table__cell">
-                        <span>${classScope.jobStatusConvertor(file.jobStatus)}</span> <br />
+                        <span class="${statusClass}">${file.displayStatus}</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
                     </td>

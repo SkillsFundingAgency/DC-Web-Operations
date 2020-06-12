@@ -27,7 +27,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
     [Area(AreaNames.Provider)]
-    public class AddNewController : BaseControllerWithOpsPolicy
+    public class AddNewController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private const string TemplatesPath = @"\\templates";
         private const string BulkUploadFileName = @"MultipleProvidersTemplate.csv";

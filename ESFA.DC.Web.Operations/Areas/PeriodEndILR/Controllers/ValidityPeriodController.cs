@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEnd.Controllers
 {
     [Area(AreaNames.PeriodEndILR)]
     [Route(AreaNames.PeriodEndILR + "/validityPeriod")]
-    public class ValidityPeriodController : BaseControllerWithOpsPolicy
+    public class ValidityPeriodController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly ILogger _logger;
         private readonly IPeriodService _periodService;

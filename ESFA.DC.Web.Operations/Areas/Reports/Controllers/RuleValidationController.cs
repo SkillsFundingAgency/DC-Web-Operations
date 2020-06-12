@@ -11,13 +11,14 @@ using ESFA.DC.Operations.Reports.Model;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
 using ESFA.DC.Web.Operations.Constants;
+using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -25,8 +26,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
     [Area(AreaNames.Reports)]
     [Route(AreaNames.Reports)]
-    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.ReportsPolicy)]
-    public class RuleValidationController : Controller
+    public class RuleValidationController : BaseControllerWithDevOpsOrAdvancedSupportOrReportsPolicy
     {
         private readonly string validationRuleDetailsReportJson = "Reports/{0}/Validation Rule Details.json";
         private readonly string validationRuleDetailsReportCsv = "Reports/{0}/Validation Rule Details.csv";
@@ -45,7 +45,9 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             IJobService jobService,
             IStorageService storageService,
             IJsonSerializationService jsonSerializationService,
-            IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
+            IIndex<PersistenceStorageKeys, IFileService> operationsFileService,
+            TelemetryClient telemetryClient)
+            : base(logger, telemetryClient)
         {
             _logger = logger;
             _collectionsService = collectionsService;

@@ -47,6 +47,9 @@
                         @foreach (var periodHistory in @Model.PeriodHistories)
                         {
                             var period = Constants.ALLFPeriodPrefix + periodHistory.PeriodNumber;
+                            var statusClass = periodHistory.DisplayStatus == JobStatuses.JobCompleted ? "jobCompleted"
+                                    : periodHistory.DisplayStatus == JobStatuses.JobRejected ? "jobRejected"
+                                    : periodHistory.DisplayStatus == JobStatuses.JobFailed ? "jobFailed" : string.Empty;
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell"><strong>@periodHistory.SubmissionDate.ToString("dd MMMM")<br />@periodHistory.SubmissionDate.ToString("yyyy 'at' HH:mm tt")</strong></td>
                             <td class="govuk-table__cell">@periodHistory.SubmittedBy</td>
@@ -64,17 +67,7 @@
                             </td>
                             <td class="govuk-table__cell">@period</td>
                             <td class="govuk-table__cell">@periodHistory.JobId</td>
-                            <td class="govuk-table__cell">
-                                @periodHistory.JobStatus
-                                @*The code below needs more thought around how the RAG status is displayed just displaying the actual status for now*@
-                                @*@if (periodHistory.JobStatus == 4)
-                                {
-                                    <strong class="report-success">Job Finished</strong>
-                                }
-                                else
-                                {
-                                    <strong class="report-fail">Job Failed</strong>
-                                }*@
+                            <td class="govuk-table__cell @statusClass">@periodHistory.DisplayStatus
                                 <br/>
                                 <strong>
                                     <span>@periodHistory.RecordCount records</span>

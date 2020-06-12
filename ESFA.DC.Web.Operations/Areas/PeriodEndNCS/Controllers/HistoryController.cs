@@ -15,7 +15,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 {
     [Area(AreaNames.PeriodEndNCS)]
     [Route(AreaNames.PeriodEndNCS + "/periodEndHistory")]
-    public class HistoryController : BaseControllerWithOpsPolicy
+    public class HistoryController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IPeriodService _periodService;
         private readonly INCSHistoryService _ncsHistoryService;

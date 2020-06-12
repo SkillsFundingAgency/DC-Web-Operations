@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Controllers
 {
-    public class ProviderController : BaseControllerWithOpsPolicy
+    public class ProviderController : BaseControllerWithAdvancedSupportPolicy
     {
         public ProviderController(ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)

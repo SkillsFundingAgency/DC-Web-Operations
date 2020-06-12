@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
 {
-    public class BaseALLFController : BaseControllerWithOpsPolicy
+    public class BaseALLFController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IStorageService _storageService;
         private readonly ILogger _logger;

@@ -1,23 +1,32 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
     [Area(AreaNames.ReferenceData)]
     [Route(AreaNames.ReferenceData + "/referenceData")]
-    public class ReferenceDataController : Controller
+    public class ReferenceDataController : BaseReferenceDataController
     {
         private const string CreatedByPlaceHolder = "Data unavailable";
 
         private readonly IJobService _jobService;
 
-        public ReferenceDataController(IJobService jobService)
+        public ReferenceDataController(
+            IStorageService storageService,
+            ILogger logger,
+            TelemetryClient telemetryClient,
+            IJobService jobService)
+            : base(storageService, logger, telemetryClient)
         {
             _jobService = jobService;
         }
