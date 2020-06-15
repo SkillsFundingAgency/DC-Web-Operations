@@ -11,13 +11,13 @@
                         <text> UKPRN:@User.Ukprn() </text>
                     }
                 </span>
-                <a class="account-link" asp-controller="Account" asp-action="SignOut">Sign out</a>
+                <a class="account-link" asp-area="" asp-controller="Account" asp-action="SignOut">Sign out</a>
             </span>
         }
         else
         {
             <span class="govuk-body govuk-!-font-size-16 signed-in-user">
-                <a class="account-link" asp-controller="Account" asp-action="SignIn">Sign in</a>
+                <a class="account-link" asp-area="" asp-controller="Account" asp-action="SignIn">Sign in</a>
             </span>
         }
     </p>
