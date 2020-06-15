@@ -9,6 +9,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
     {
         CloudBlobContainer GetStorageContainer();
 
+        CloudBlobContainer GetReferenceDataStorageContainer();
+
         Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken);
     }
 }

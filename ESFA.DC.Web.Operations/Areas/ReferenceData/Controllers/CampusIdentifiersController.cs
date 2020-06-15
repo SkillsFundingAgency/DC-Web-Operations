@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
@@ -19,7 +20,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     [Route(AreaNames.ReferenceData + "/campusIdentifiers")]
     public class CampusIdentifiersController : BaseReferenceDataController
     {
+        private const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
         private readonly IReferenceDataService _referenceDataService;
+        private readonly IStorageService _storageService;
+        private readonly ILogger _logger;
 
         public CampusIdentifiersController(
             IStorageService storageService,
@@ -28,12 +32,23 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             IReferenceDataService referenceDataService)
             : base(storageService, logger, telemetryClient)
         {
+            _storageService = storageService;
             _referenceDataService = referenceDataService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View();
+            var model = new CampusIdentifiersModel()
+            {
+                Files = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+                                    CollectionNames.ReferenceDataCampusIdentifiers,
+                                    CampusIdentifiersReportName,
+                            false,
+                                    cancellationToken)
+            };
+
+            return View("Index", model);
         }
 
         [RequestSizeLimit(524_288_000)]
@@ -49,6 +64,27 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             }
 
             return View("Index");
+        }
+
+        [Route("getReportFile/{jobId?}")]
+        public async Task<FileResult> GetReportFile(long? jobId)
+        {
+            var reportFile = jobId != null;
+            var fileName = $@"{jobId}\{CampusIdentifiersReportName}";
+            try
+            {
+                var blobStream = await _storageService.GetFile(Utils.Constants.ReferenceDataStorageContainerName, fileName, CancellationToken.None);
+
+                return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
+                {
+                    FileDownloadName = fileName
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Download report failed for file name : {fileName}", e);
+                throw;
+            }
         }
     }
 }

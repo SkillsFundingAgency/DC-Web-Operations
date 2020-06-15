@@ -14,5 +14,13 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
             CloudBlobContainer container,
             string periodPrefix,
             CancellationToken cancellationToken);
+
+        Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModelForReferenceData(
+            FileUploadJobMetaDataModel file,
+            string resultsReportName,
+            string summaryFileName,
+            CloudBlobContainer container,
+            string collectionName,
+            CancellationToken cancellationToken);
     }
 }
