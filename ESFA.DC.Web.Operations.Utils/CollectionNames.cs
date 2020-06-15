@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.Web.Operations.Constants
+﻿namespace ESFA.DC.Web.Operations.Utils
 {
     public class CollectionNames
     {

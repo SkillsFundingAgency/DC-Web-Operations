@@ -1,6 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
-@model ESFA.DC.Web.Operations.Models.ALLF.PeriodEndViewModel
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -21,7 +21,6 @@
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
         <br />
-        <h2 class="govuk-heading-l">Period A@(Model.Period.ToString().PadLeft(2, '0'))</h2>
     </div>
 </div>
 
@@ -67,3 +66,33 @@
         </table>
     </div>
 </div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+
+    <script type="module">
+        import Controller from '/assets/js/referenceData/referenceDataController.js';
+        import Hub from '/assets/js/hubs/referenceData/referenceDataHub.js';
+
+        (function() {
+            const model = @Json.Serialize(Model);
+            const controller = new Controller();
+            const hub = new Hub(pathController);
+            hub.startHub(stateModel);
+            
+            controller.renderFiles(stateModel);
+
+            const dateLabel = document.getElementById(`lastSync`);
+            dateLabel.textContent = `Updates disabled as historical period end`;            
+        })();
+    </script>
+}

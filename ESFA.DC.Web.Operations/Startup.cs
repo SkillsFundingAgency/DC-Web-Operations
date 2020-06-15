@@ -19,6 +19,7 @@ using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS;
+using ESFA.DC.Web.Operations.Services.Hubs.ReferenceData;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
@@ -251,6 +252,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<ConditionOfFundingRemovalHub>("/conditionOfFundingRemovalHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -310,6 +316,8 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobFailedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ProvidersReturnedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<ConditionOfFundingRemovalHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

@@ -21,7 +21,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 {
     public class ReferenceDataService : BaseHttpClientService, IReferenceDataService
     {
-        private const string Api = "/api/reference-data/";
+        private const string Api = "/api/reference-data-uploads/";
         private const string SummaryFileName = "Upload Result Report";
 
         private readonly ICollectionsService _collectionsService;
@@ -99,7 +99,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerCollectionAsync(
             string collectionName,
             string reportName,
-            bool includeAll = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             // get job info from db
@@ -111,8 +110,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
             // get file info from result report
             await Task.WhenAll(
-                files.Where(f => includeAll || f.JobStatus == 4)
-                    .Select(file => _fileUploadJobMetaDataModelBuilderService
+                files.Select(file => _fileUploadJobMetaDataModelBuilderService
                         .PopulateFileUploadJobMetaDataModelForReferenceData(
                             file,
                             reportName,

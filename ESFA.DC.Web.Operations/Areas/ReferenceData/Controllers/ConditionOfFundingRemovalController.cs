@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +16,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     [Route(AreaNames.ReferenceData + "/conditionOfFundingRemoval")]
     public class ConditionOfFundingRemovalController : BaseReferenceDataController
     {
-        private const string ConditionOfFundingRemovalReportName = "CoFRemovalRD-ValidationReport";
         private readonly IReferenceDataService _referenceDataService;
 
         public ConditionOfFundingRemovalController(
@@ -33,11 +32,13 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             var cancellationToken = CancellationToken.None;
 
-            var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+            var submissions = await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 CollectionNames.ReferenceDataConditionsOfFundingRemoval,
-                ConditionOfFundingRemovalReportName,
-                true,
+                ReportTypes.ConditionOfFundingRemovalReportName,
                 cancellationToken);
+
+            var model = new ReferenceDataViewModel();
+            model.FileUploads = submissions;
 
             return View(model);
         }
