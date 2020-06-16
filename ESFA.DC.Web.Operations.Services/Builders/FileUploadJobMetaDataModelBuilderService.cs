@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -68,6 +69,10 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
+
+            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
+
+            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
 
             return file;
         }

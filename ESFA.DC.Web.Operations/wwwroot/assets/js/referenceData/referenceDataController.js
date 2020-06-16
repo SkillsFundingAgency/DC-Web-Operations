@@ -13,29 +13,6 @@ class referenceDataController {
         stateLabel.textContent = `Status: ${state}`;
     }
 
-    jobStatusConvertor(status) {
-        switch (status) {
-        case jobStatus.ready:
-            return "Ready";
-        case jobStatus.movedForProcessing:
-            return "Moved For Processing";
-        case jobStatus.processing:
-            return "Processing";
-        case jobStatus.completed:
-            return "Completed";
-        case jobStatus.failedRetry:
-            return "Failed Retry";
-        case jobStatus.failed:
-            return "Failed";
-        case jobStatus.paused:
-            return "Paused";
-        case jobStatus.waiting:
-            return "Waiting";
-        default:
-            return "";
-        }
-    }
-
     renderFiles(state) {
         updateSync.call(this);
 
@@ -53,12 +30,12 @@ class referenceDataController {
             var reportName = file.reportName ? file.reportName : '';
             const content = 
                 `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-!-font-weight-bold">${file.submissionDate}</td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">${file.displayDate}</td>
                     <td class="govuk-table__cell">${file.submittedBy}</td>
                     <td class="govuk-table__cell"><a href="/referenceData/campusIdentifiers/getReportFile/${file.fileName}">${fileName}</a></td>
-                    <td class="govuk-table__cell">${file.periodNumber}</td>
+                    <td class="govuk-table__cell">${file.jobId}</td>
                     <td class="govuk-table__cell">
-                        <span>${classScope.jobStatusConvertor(file.jobStatus)}</span> <br />
+                        <span>${file.displayStatus}</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
                     </td>
