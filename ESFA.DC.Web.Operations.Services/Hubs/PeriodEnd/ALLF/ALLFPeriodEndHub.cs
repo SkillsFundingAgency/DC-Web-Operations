@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.SignalR;
@@ -10,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
 {
     public class ALLFPeriodEndHub : Hub
     {
-        private readonly IPeriodEndHubEventBase _eventBase;
+        private readonly IHubEventBase _eventBase;
         private readonly IHubContext<ALLFPeriodEndHub> _hubContext;
         private readonly IALLFPeriodEndService _periodEndService;
         private readonly IStateService _stateService;
@@ -18,7 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
         private readonly ILogger _logger;
 
         public ALLFPeriodEndHub(
-            IPeriodEndHubEventBase eventBase,
+            IHubEventBase eventBase,
             IHubContext<ALLFPeriodEndHub> hubContext,
             IALLFPeriodEndService periodEndService,
             IStateService stateService,
@@ -44,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
         {
             try
             {
-                _eventBase.TriggerPeriodEnd(Context.ConnectionId);
+                _eventBase.TriggerHub(Context.ConnectionId);
             }
             catch (Exception e)
             {

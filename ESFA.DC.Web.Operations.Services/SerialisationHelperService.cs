@@ -1,4 +1,4 @@
-﻿using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+﻿using ESFA.DC.Web.Operations.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

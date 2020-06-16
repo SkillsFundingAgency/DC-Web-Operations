@@ -13,7 +13,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
         Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerCollectionAsync(
             string collectionName,
             string reportName,
-            bool includeAll = false,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.Web.Operations.Constants
+﻿namespace ESFA.DC.Web.Operations.Utils
 {
     public class CollectionNames
     {
@@ -9,5 +9,7 @@
         public const string EsfR2Collection = "ESFR2";
 
         public const string ReferenceDataCampusIdentifiers = "CampusIdentifier";
+
+        public const string ReferenceDataConditionsOfFundingRemoval = "CoFRemoval";
     }
 }

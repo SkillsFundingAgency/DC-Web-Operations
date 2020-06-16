@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.SignalR;
@@ -10,19 +11,17 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
 {
     public class NCSPeriodEndHub : Hub
     {
-        private readonly IPeriodEndHubEventBase _eventBase;
+        private readonly IHubEventBase _eventBase;
         private readonly IHubContext<NCSPeriodEndHub> _hubContext;
         private readonly INCSPeriodEndService _periodEndService;
-        private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
         private readonly IPeriodService _periodService;
         private readonly ILogger _logger;
 
         public NCSPeriodEndHub(
-            IPeriodEndHubEventBase eventBase,
+            IHubEventBase eventBase,
             IHubContext<NCSPeriodEndHub> hubContext,
             INCSPeriodEndService periodEndService,
-            IEmailService emailService,
             IStateService stateService,
             IPeriodService periodService,
             ILogger logger)
@@ -30,7 +29,6 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             _eventBase = eventBase;
             _hubContext = hubContext;
             _periodEndService = periodEndService;
-            _emailService = emailService;
             _stateService = stateService;
             _periodService = periodService;
             _logger = logger;
@@ -47,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
         {
             try
             {
-                _eventBase.TriggerPeriodEnd(Context.ConnectionId);
+                _eventBase.TriggerHub(Context.ConnectionId);
             }
             catch (Exception e)
             {

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
@@ -24,15 +22,15 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
     public class ReferenceDataService : BaseHttpClientService, IReferenceDataService
     {
         private const string Api = "/api/reference-data-uploads/";
-        private const string SummaryFileName = "Upload Result Report CampusIdentifier";
+        private const string SummaryFileName = "Upload Result Report";
 
         private readonly ICollectionsService _collectionsService;
         private readonly IJobService _jobService;
         private readonly IStorageService _storageService;
-        private readonly AzureStorageSection _azureStorageConfig;
-        private readonly ILogger _logger;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly ICloudStorageService _cloudStorageService;
+        private readonly AzureStorageSection _azureStorageConfig;
+        private readonly ILogger _logger;
 
         private readonly string _baseUrl;
 
@@ -40,22 +38,23 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             ICollectionsService collectionsService,
             IJobService jobService,
             IStorageService storageService,
-            AzureStorageSection azureStorageConfig,
+            IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
+            ICloudStorageService cloudStorageService,
             ApiSettings apiSettings,
             HttpClient httpClient,
-            ILogger logger,
-            IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
-            ICloudStorageService cloudStorageService)
-            : base(jsonSerializationService, httpClient)
+            AzureStorageSection azureStorageConfig,
+            ILogger logger)
+        : base(jsonSerializationService, httpClient)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;
             _storageService = storageService;
-            _azureStorageConfig = azureStorageConfig;
-            _logger = logger;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
             _cloudStorageService = cloudStorageService;
+            _azureStorageConfig = azureStorageConfig;
+            _logger = logger;
+
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -100,7 +99,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerCollectionAsync(
             string collectionName,
             string reportName,
-            bool includeAll = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             // get job info from db
@@ -108,12 +106,11 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 .Take(Constants.MaxFilesToDisplay)
                 .ToList();
 
-            var container = _cloudStorageService.GetReferenceDataStorageContainer();
+            var container = _cloudStorageService.GetStorageContainer();
 
             // get file info from result report
             await Task.WhenAll(
-                files.Where(f => includeAll || f.JobStatus == 4)
-                    .Select(file => _fileUploadJobMetaDataModelBuilderService
+                files.Select(file => _fileUploadJobMetaDataModelBuilderService
                         .PopulateFileUploadJobMetaDataModelForReferenceData(
                             file,
                             reportName,
@@ -130,8 +127,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
 
             var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
-
-            data = ProvideData();
 
             return data;
         }

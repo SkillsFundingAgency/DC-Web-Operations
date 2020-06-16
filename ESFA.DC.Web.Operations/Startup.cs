@@ -116,6 +116,8 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<ALLFPeriodEndTimedHostedService>();
             services.AddHostedService<CampusIdentifiersTimedHostedService>();
 
+            services.AddHostedService<ReferenceDataTimedHostedService>();
+
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
@@ -265,6 +267,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<ConditionOfFundingRemovalHub>("/conditionOfFundingRemovalHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -325,6 +332,8 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobFailedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ProvidersReturnedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<ConditionOfFundingRemovalHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces.Processing;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
@@ -13,7 +13,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private readonly IValidityPeriodService _validityPeriodService;
 
         public ValidityPeriodHub(
-            IValidityPeriodHubEventBase eventBase,
+            IHubEventBase eventBase,
             IHubContext<ValidityPeriodHub> hubContext,
             ILogger logger,
             IValidityPeriodService validityPeriodService)

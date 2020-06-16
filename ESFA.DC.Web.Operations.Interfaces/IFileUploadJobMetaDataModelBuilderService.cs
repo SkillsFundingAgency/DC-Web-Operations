@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Models;
 using Microsoft.Azure.Storage.Blob;
 
-namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
+namespace ESFA.DC.Web.Operations.Interfaces
 {
     public interface IFileUploadJobMetaDataModelBuilderService
     {

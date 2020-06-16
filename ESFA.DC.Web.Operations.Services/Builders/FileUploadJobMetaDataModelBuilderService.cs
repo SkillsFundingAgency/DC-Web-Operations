@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models;
 using Microsoft.Azure.Storage.Blob;
 
@@ -69,8 +68,6 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
-
-            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
 
