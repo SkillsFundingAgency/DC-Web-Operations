@@ -1,5 +1,6 @@
 ﻿@model ESFA.DC.Web.Operations.Areas.Provider.Models.ManageProviderViewModel
 @using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
 
 @{
     ViewData["Title"] = "Manage Providers";
@@ -36,20 +37,23 @@
         <p class="govuk-heading-s">Active</p>
         <span id="noActive" class="@("govuk-body " + (Model.CollectionAssignments.Any() ? "hidden" : string.Empty))">No active assignments</span>
 
-        <table class="govuk-table">
-            <tbody class="govuk-table__body" id="providerDetails">
-                @foreach (var providerAssignment in Model.CollectionAssignments)
-                {
-                    <tr class="govuk-table__row" id="assignments">
-                        <td class="govuk-table__cell">
-                            <p class="govuk-body">
-                                <span>@providerAssignment.Name</span><br>
-                                <span>Start date: @providerAssignment.StartDate.Value.ToString("dd-MM-yyyy")</span><br>
-                                <span>End date: @(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToString("dd-MM-yyyy") : string.Empty)</span>
-                            </p>
-                        </td>
-                    </tr>
-                }
+        <table class="govuk-table" id="providerDetails">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">COLLECTION</th>
+                <th scope="col" class="govuk-table__header govuk-table__header">START DATE</th>
+                <th scope="col" class="govuk-table__header govuk-table__header">END DATE</th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            @foreach (var providerAssignment in Model.CollectionAssignments)
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header"> @providerAssignment.Name</th>
+                    <td class="govuk-table__cell govuk-table__cell"> @providerAssignment.StartDate.Value.ToDateString()</td>
+                    <td class="govuk-table__cell govuk-table__cell">@(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToDateString() : string.Empty)</td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
