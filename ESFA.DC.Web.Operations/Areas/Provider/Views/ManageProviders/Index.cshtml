@@ -1,5 +1,6 @@
 ﻿@model ESFA.DC.Web.Operations.Areas.Provider.Models.ManageProviderViewModel
 @using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
 
 @{
     ViewData["Title"] = "Manage Providers";
@@ -49,8 +50,8 @@
             {
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header"> @providerAssignment.Name</th>
-                    <td class="govuk-table__cell govuk-table__cell"> @providerAssignment.StartDate.Value.ToString("dd-MM-yyyy")</td>
-                    <td class="govuk-table__cell govuk-table__cell">@(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToString("dd-MM-yyyy") : string.Empty)</td>
+                    <td class="govuk-table__cell govuk-table__cell"> @providerAssignment.StartDate.Value.ToDateString()</td>
+                    <td class="govuk-table__cell govuk-table__cell">@(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToDateString() : string.Empty)</td>
                 </tr>
             }
             </tbody>
