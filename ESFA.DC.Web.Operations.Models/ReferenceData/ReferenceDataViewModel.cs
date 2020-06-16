@@ -4,6 +4,6 @@ namespace ESFA.DC.Web.Operations.Models.ReferenceData
 {
     public class ReferenceDataViewModel
     {
-        public IEnumerable<FileUploadJobMetaDataModel> FileUploads { get; set; }
+        public IEnumerable<FileUploadJobMetaDataModel> Files { get; set; }
     }
 }

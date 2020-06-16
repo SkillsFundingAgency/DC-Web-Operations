@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Services.Event;
 using Microsoft.Extensions.Hosting;
 
@@ -95,6 +95,10 @@ namespace ESFA.DC.Web.Operations.Services
             }
         }
 
+        protected virtual void StopWork()
+        {
+        }
+
         /// <summary>
         /// This method is always called within _timerStopLock.
         /// </summary>
@@ -141,6 +145,7 @@ namespace ESFA.DC.Web.Operations.Services
                     _logger.LogWarning($"{_logPrefix} Timed SignalR Background Service did not terminate correctly");
                 }
 
+                StopWork();
                 _timer?.Dispose();
                 _timer = null;
             }

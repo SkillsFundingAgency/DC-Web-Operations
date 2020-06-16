@@ -38,7 +38,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 cancellationToken);
 
             var model = new ReferenceDataViewModel();
-            model.FileUploads = submissions;
+            model.Files = submissions;
 
             return View(model);
         }

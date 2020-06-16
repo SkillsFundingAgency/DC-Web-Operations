@@ -6,6 +6,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
+using ESFA.DC.Web.Operations.Services.HubUserHandlers;
 
 namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ReferenceData
 {
@@ -39,6 +40,11 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ReferenceData
             {
                 _logger.LogError($"Failed to {nameof(DoWork)} in {nameof(ReferenceDataTimedHostedService)}", ex);
             }
+        }
+
+        protected override void StopWork()
+        {
+            ReferenceDataHubUserHandler.ClearAll();
         }
     }
 }

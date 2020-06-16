@@ -27,6 +27,7 @@ using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ILR;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.NCS;
+using ESFA.DC.Web.Operations.Services.TimedHostedService.ReferenceData;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
@@ -111,6 +112,8 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<NCSPeriodEndTimedHostedService>();
 
             services.AddHostedService<ALLFPeriodEndTimedHostedService>();
+
+            services.AddHostedService<ReferenceDataTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes

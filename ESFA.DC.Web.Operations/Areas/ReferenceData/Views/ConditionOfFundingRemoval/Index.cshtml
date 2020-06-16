@@ -34,7 +34,7 @@
             @Html.AntiForgeryToken()
 
             <h1 class="govuk-heading-m">
-                Choose Condition of funding removal reference data file to upload
+                Choose condition of funding removal reference data file to upload
             </h1>
 
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
@@ -81,15 +81,15 @@
 
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/referenceDataHub.js';
+        import Hub from '/assets/js/hubs/referenceData/conditionOfFundingRemovalHub.js';
 
         (function() {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-            const hub = new Hub(pathController);
-            hub.startHub(stateModel);
+            const hub = new Hub(controller);
+            hub.startHub(model);
             
-            controller.renderFiles(stateModel);
+            controller.renderFiles(model);
 
             const dateLabel = document.getElementById(`lastSync`);
             dateLabel.textContent = `Updates disabled as historical period end`;            

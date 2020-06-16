@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Services.HubUserHandlers;
 using ESFA.DC.Web.Operations.Utils;
@@ -14,6 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
 {
     public class ConditionOfFundingRemovalHub : BaseReferenceDataHub, IReferenceDataHub
     {
+        private readonly ISerialisationHelperService _serialisationHelperService;
         private readonly IHubContext<ConditionOfFundingRemovalHub> _hubContext;
         private readonly IReferenceDataService _referenceDataService;
 
@@ -23,27 +21,16 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
             IHubContext<ConditionOfFundingRemovalHub> hubContext,
             IReferenceDataService referenceDataService,
             ILogger logger)
-        : base(serialisationHelperService, eventBase, logger)
+        : base(eventBase, logger, ReferenceDataTypes.ConditionOfFundingRemoval)
         {
+            _serialisationHelperService = serialisationHelperService;
             _hubContext = hubContext;
             _referenceDataService = referenceDataService;
         }
 
-        public override Task OnConnectedAsync()
-        {
-            ReferenceDataHubUserHandler.CoFRConnectedIds.Add(Context.ConnectionId);
-            return base.OnConnectedAsync();
-        }
-
-        public override Task OnDisconnectedAsync(Exception exception)
-        {
-            ReferenceDataHubUserHandler.CoFRConnectedIds.Remove(Context.ConnectionId);
-            return base.OnDisconnectedAsync(exception);
-        }
-
         public async Task SendMessage(CancellationToken cancellationToken)
         {
-            if (!ReferenceDataHubUserHandler.CoFRConnectedIds.Any())
+            if (!ReferenceDataHubUserHandler.AnyConnectionIds(ReferenceDataTypes.ConditionOfFundingRemoval))
             {
                 return;
             }
@@ -53,7 +40,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
                     ReportTypes.ConditionOfFundingRemovalReportName,
                     cancellationToken);
 
-            var state = SerialiseToCamelCase(stateModel);
+            var state = _serialisationHelperService.SerialiseToCamelCase(stateModel);
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", state, cancellationToken);
         }

@@ -1,13 +1,13 @@
-﻿class periodEndHub {
+﻿class conditionOfFundingRemovalHub {
     
-    constructor(pathController) {
+    constructor(controller) {
         this._timerId = 0;
 
-        this._pathController = pathController;
+        this._controller = controller;
         this._connection = new signalR
             .HubConnectionBuilder()
             .withAutomaticReconnect()
-            .withUrl("/referenceDataHub", { transport: signalR.HttpTransportType.WebSockets }) 
+            .withUrl("/conditionOfFundingRemovalHub", { transport: signalR.HttpTransportType.WebSockets }) 
             .build();
     }
 
@@ -17,11 +17,11 @@
 
     startHub(stateModel) {
         if (!stateModel.isPreviousPeriod) {
-            this._connection.on("ReceiveMessage", this._pathController.renderFiles.bind(this._pathController));
+            this._connection.on("ReceiveMessage", this._controller.renderFiles.bind(this._controller));
         }
 
         this._connection.on("UploadState",
-            (enabled) => { this._pathController.setButtonState.call(this._pathController, enabled, "uploadFile") });
+            (enabled) => { this._controller.setButtonState.call(this._controller, enabled, "uploadFile") });
 
         this._connection.on("TurnOffMessage", () => {
             this._connection.off("UploadState");
@@ -33,19 +33,19 @@
         this._connection.onreconnecting((error) => {
             console.assert(this._connection.state === signalR.HubConnectionState.Reconnecting);
             console.log("Reconnecting - " + error);
-            this._pathController.displayConnectionState("Reconnecting");
+            this._controller.displayConnectionState("Reconnecting");
         });
 
         this._connection.onreconnected((connectionId) => {
             console.assert(this._connection.state === signalR.HubConnectionState.Connected);
             console.log("Connected - " + connectionId);
-            this._pathController.displayConnectionState("Connected");
+            this._controller.displayConnectionState("Connected");
         });
 
         this._connection.onclose((error) => {
             console.assert(this._connection.state === signalR.HubConnectionState.Disconnected);
             console.log("Closed - " + error);
-            this._pathController.displayConnectionState("Closed");
+            this._controller.displayConnectionState("Closed");
         });
 
         this.startConnection(this.startTimer);
@@ -71,7 +71,7 @@
                 console.assert(this._connection.state === signalR.HubConnectionState.Connected);
                 var message = delegate ? "Connected" : "Connected minimal";
                 console.log(message);
-                classScope._pathController.displayConnectionState(message);
+                classScope._controller.displayConnectionState(message);
             });
         } catch (err) {
             console.assert(this._connection.state === signalR.HubConnectionState.Disconnected);
@@ -81,4 +81,4 @@
     }
 }
 
-export default periodEndHub;
+export default conditionOfFundingRemovalHub;
