@@ -16,9 +16,7 @@
     }
 
     startHub(stateModel) {
-        if (!stateModel.isPreviousPeriod) {
-            this._connection.on("ReceiveMessage", this._controller.renderFiles.bind(this._controller));
-        }
+        this._connection.on("ReceiveMessage", this._controller.renderFiles.bind(this._controller));
 
         this._connection.on("UploadState",
             (enabled) => { this._controller.setButtonState.call(this._controller, enabled, "uploadFile") });

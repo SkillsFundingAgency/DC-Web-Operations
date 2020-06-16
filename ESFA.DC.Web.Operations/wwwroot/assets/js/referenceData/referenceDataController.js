@@ -19,10 +19,14 @@ class referenceDataController {
         }
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
+        if (!stateModel || !stateModel.files) {
+            return;
+        }
 
         let fileContainer = document.getElementById('fileContainer');
 
         let updatedContent = '';
+
         stateModel.files.forEach(function(file) {
             var fileName = file.fileName ? file.fileName : '';
             var reportName = file.reportName ? file.reportName : '';

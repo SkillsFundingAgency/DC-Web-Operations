@@ -110,7 +110,9 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
             // get file info from result report
             await Task.WhenAll(
-                files.Select(file => _fileUploadJobMetaDataModelBuilderService
+                files
+                    .Where(f => f.JobStatus == JobStatuses.JobStatus_Completed)
+                    .Select(file => _fileUploadJobMetaDataModelBuilderService
                         .PopulateFileUploadJobMetaDataModelForReferenceData(
                             file,
                             reportName,
