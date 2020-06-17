@@ -1,5 +1,4 @@
 ﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
-import { getUkDateString } from '/assets/js/util.js';
 
 class referenceDataController {
 
@@ -36,11 +35,9 @@ class referenceDataController {
                 : file.displayStatus === 'Job Failed' ? 'jobFailed'
                 : '';
 
-            const submittedDate = getUkDateString(file.submissionDate);
-
             const content = 
                 `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell">${submittedDate}</td>
+                    <td class="govuk-table__cell">${file.displayDate}</td>
                     <td class="govuk-table__cell">${file.submittedBy}</td>
                     <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${fileName}</a></td>
                     <td class="govuk-table__cell">${file.jobId}</td>

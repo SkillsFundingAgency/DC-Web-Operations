@@ -26,6 +26,6 @@ namespace ESFA.DC.Web.Operations.Models
 
         public string SubmittedBy { get; set; }
 
-        public string CollectionName { get; set; }
+        public string DisplayDate { get; set; }
     }
 }
