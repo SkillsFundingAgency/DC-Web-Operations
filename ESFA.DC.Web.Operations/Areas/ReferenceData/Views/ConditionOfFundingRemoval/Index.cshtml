@@ -87,9 +87,9 @@
             const model = @Json.Serialize(Model);
             const controller = new Controller();
             const hub = new Hub(controller);
-            hub.startHub(model);
+            hub.startHub();
             
-            controller.renderFiles(model);
+            controller.renderFiles('ConditionOfFundingRemoval', model);
 
             const dateLabel = document.getElementById(`lastSync`);
             dateLabel.textContent = `Updates disabled as historical period end`;            

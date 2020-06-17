@@ -97,6 +97,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         }
 
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerCollectionAsync(
+            string containerName,
             string collectionName,
             string reportName,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -106,7 +107,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 .Take(Constants.MaxFilesToDisplay)
                 .ToList();
 
-            var container = _cloudStorageService.GetStorageContainer();
+            var container = _cloudStorageService.GetStorageContainer(containerName);
 
             // get file info from result report
             await Task.WhenAll(

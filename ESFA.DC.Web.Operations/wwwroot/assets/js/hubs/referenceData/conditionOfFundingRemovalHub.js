@@ -15,8 +15,9 @@
         return this._connection;
     }
 
-    startHub(stateModel) {
-        this._connection.on("ReceiveMessage", this._controller.renderFiles.bind(this._controller));
+    startHub() {
+        this._connection.on("ReceiveMessage",
+            (state) => { this._controller.renderFiles.call(this._controller, 'ConditionOfFundingRemoval' ,state) });
 
         this._connection.on("UploadState",
             (enabled) => { this._controller.setButtonState.call(this._controller, enabled, "uploadFile") });

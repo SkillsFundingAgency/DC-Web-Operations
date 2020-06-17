@@ -11,6 +11,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
         Task SubmitJob(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken);
 
         Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerCollectionAsync(
+            string containerName,
             string collectionName,
             string reportName,
             CancellationToken cancellationToken = default(CancellationToken));
