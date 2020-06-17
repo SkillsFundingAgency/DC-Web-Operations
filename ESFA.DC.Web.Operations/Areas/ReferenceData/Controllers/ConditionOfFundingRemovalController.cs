@@ -4,7 +4,6 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +49,8 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             if (file != null)
             {
-                await _referenceDataService.SubmitJob(period, CollectionNames.ReferenceDataConditionsOfFundingRemoval, User.Name(), User.Email(), file, CancellationToken.None);
+                await _referenceDataService.SubmitJob(
+                    period, CollectionNames.ReferenceDataConditionsOfFundingRemoval, User.Name(), User.Email(), file, CancellationToken.None);
             }
 
             return View("Index");

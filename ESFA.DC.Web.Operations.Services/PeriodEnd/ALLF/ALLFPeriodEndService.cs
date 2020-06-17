@@ -109,10 +109,12 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
             var collection = await _collectionService.GetCollectionAsync(collectionName, cancellationToken);
 
+            var fileName = Path.GetFileName(file.FileName);
+            await (await _storageService.GetAzureStorageReferenceService(_azureStorageConfig.ConnectionString, collection.StorageReference))
+                .SaveAsync(fileName, file.OpenReadStream(), cancellationToken);
+
             try
             {
-                var fileName = Path.GetFileName(file.FileName);
-
                 var job = new JobSubmission {
                     CollectionName = collection.CollectionTitle,
                     FileName = fileName,
@@ -126,9 +128,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
                 // add to the queue
                 await _jobService.SubmitJob(job, cancellationToken);
-
-                await (await _storageService.GetAzureStorageReferenceService(_azureStorageConfig.ConnectionString, collection.StorageReference))
-                    .SaveAsync(fileName, file.OpenReadStream(), cancellationToken);
             }
             catch (Exception ex)
             {
@@ -193,7 +192,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
             // get file info from result report
             await Task.WhenAll(
-                files.Select(file => _fileUploadJobMetaDataModelBuilderService
+                files
+                    .Where(f => f.JobStatus == JobStatuses.JobStatus_Completed)
+                    .Select(file => _fileUploadJobMetaDataModelBuilderService
                         .PopulateFileUploadJobMetaDataModel(
                             file,
                             GenericActualsCollectionErrorReportName,
