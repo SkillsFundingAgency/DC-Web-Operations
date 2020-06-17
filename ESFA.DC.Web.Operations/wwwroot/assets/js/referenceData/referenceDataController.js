@@ -23,14 +23,14 @@ class referenceDataController {
             return;
         }
 
-        let fileContainer = document.getElementById('fileContainer');
+        const fileContainer = document.getElementById('fileContainer');
 
         let updatedContent = '';
 
         stateModel.files.forEach(function(file) {
-            var fileName = file.fileName ? file.fileName : '';
-            var reportName = file.reportName ? file.reportName : '';
-            var statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
+            const fileName = file.fileName ? file.fileName : '';
+            const reportName = file.reportName ? file.reportName : '';
+            const statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
                 : file.displayStatus === 'Job Rejected' ? 'jobRejected'
                 : file.displayStatus === 'Job Failed' ? 'jobFailed'
                 : '';
