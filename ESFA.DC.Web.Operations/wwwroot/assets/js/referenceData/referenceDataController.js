@@ -44,6 +44,7 @@ class referenceDataController {
                     <td class="govuk-table__cell">
                         <span class="${statusClass}">${file.displayStatus}</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
+                        <span class="govuk-!-font-weight-bold">${file.warningCount} warnings</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
                     </td>
                     <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.reportName}/${file.jobId}">${reportName}</a></td>

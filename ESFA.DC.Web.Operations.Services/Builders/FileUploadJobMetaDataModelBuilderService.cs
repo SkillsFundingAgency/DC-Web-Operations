@@ -81,6 +81,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
                 return file;
             }
 
+            file.WarningCount = result.WarningCount;
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
 
