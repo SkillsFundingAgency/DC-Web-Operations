@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Utils;
@@ -17,7 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF
         public ALLFPeriodEndTimedHostedService(
             ILogger logger,
             IALLFPeriodEndService periodEndService,
-            IPeriodEndHubEventBase eventBase,
+            IHubEventBase eventBase,
             ISerialisationHelperService serialisationHelperService,
             ALLFPeriodEndHub periodEndHub)
             : base("ALLF Period End", logger, serialisationHelperService)
@@ -25,7 +26,7 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF
             _logger = logger;
             _periodEndService = periodEndService;
             _periodEndHub = periodEndHub;
-            eventBase.PeriodEndHubCallback += RegisterClient;
+            eventBase.HubCallback += RegisterClient;
         }
 
         protected override async Task DoWork(CancellationToken cancellationToken)

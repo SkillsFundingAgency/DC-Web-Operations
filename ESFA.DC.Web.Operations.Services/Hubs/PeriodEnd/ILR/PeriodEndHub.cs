@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.SignalR;
@@ -10,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
 {
     public class PeriodEndHub : Hub
     {
-        private readonly IPeriodEndHubEventBase _eventBase;
+        private readonly IHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
@@ -19,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         private readonly ILogger _logger;
 
         public PeriodEndHub(
-            IPeriodEndHubEventBase eventBase,
+            IHubEventBase eventBase,
             IHubContext<PeriodEndHub> hubContext,
             IPeriodEndService periodEndService,
             IEmailService emailService,
@@ -47,7 +48,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         {
             try
             {
-                _eventBase.TriggerPeriodEnd(Context.ConnectionId);
+                _eventBase.TriggerHub(Context.ConnectionId);
             }
             catch (Exception e)
             {

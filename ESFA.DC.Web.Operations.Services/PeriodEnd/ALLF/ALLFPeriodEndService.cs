@@ -188,7 +188,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
                 file.UsedForPeriodEnd = true;
             }
 
-            var container = _cloudStorageService.GetStorageContainer();
+            var container = _cloudStorageService.GetStorageContainer(Constants.ALLFStorageContainerName);
 
             // get file info from result report
             await Task.WhenAll(

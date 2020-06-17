@@ -25,5 +25,7 @@ namespace ESFA.DC.Web.Operations.Models
         public DateTime SubmissionDate { get; set; }
 
         public string SubmittedBy { get; set; }
+
+        public string DisplayDate { get; set; }
     }
 }

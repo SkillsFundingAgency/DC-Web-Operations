@@ -19,6 +19,7 @@ using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS;
+using ESFA.DC.Web.Operations.Services.Hubs.ReferenceData;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
@@ -26,6 +27,7 @@ using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ILR;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.NCS;
+using ESFA.DC.Web.Operations.Services.TimedHostedService.ReferenceData;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
@@ -110,6 +112,8 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<NCSPeriodEndTimedHostedService>();
 
             services.AddHostedService<ALLFPeriodEndTimedHostedService>();
+
+            services.AddHostedService<ReferenceDataTimedHostedService>();
 
             services.AddHttpClient<IPeriodEndService, PeriodEndService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
@@ -251,6 +255,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<ConditionOfFundingRemovalHub>("/conditionOfFundingRemovalHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -310,6 +319,8 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobFailedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ProvidersReturnedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
+
+            containerBuilder.RegisterType<ConditionOfFundingRemovalHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

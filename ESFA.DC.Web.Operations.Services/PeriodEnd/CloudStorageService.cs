@@ -2,10 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Azure.Storage.RetryPolicies;
@@ -32,9 +31,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _azureStorageConfig = azureStorageConfig;
         }
 
-        public CloudBlobContainer GetStorageContainer()
+        public CloudBlobContainer GetStorageContainer(string containerName)
         {
-            return CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(Constants.ALLFStorageContainerName);
+            return CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(containerName);
         }
 
         public async Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken)

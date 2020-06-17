@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
+﻿namespace ESFA.DC.Web.Operations.Interfaces
 {
     public interface ISerialisationHelperService
     {

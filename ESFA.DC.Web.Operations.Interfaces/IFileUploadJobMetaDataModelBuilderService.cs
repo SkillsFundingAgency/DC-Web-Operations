@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Models;
 using Microsoft.Azure.Storage.Blob;
 
-namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
+namespace ESFA.DC.Web.Operations.Interfaces
 {
     public interface IFileUploadJobMetaDataModelBuilderService
     {
@@ -13,6 +13,14 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
             string resultsReportName,
             CloudBlobContainer container,
             string periodPrefix,
+            CancellationToken cancellationToken);
+
+        Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModelForReferenceData(
+            FileUploadJobMetaDataModel file,
+            string resultsReportName,
+            string summaryFileName,
+            CloudBlobContainer container,
+            string collectionName,
             CancellationToken cancellationToken);
     }
 }
