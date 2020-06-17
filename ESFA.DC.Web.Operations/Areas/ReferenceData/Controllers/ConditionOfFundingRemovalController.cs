@@ -57,9 +57,9 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         }
 
         [Route("getReportFile/{fileName}/{jobId?}")]
-        public async Task<FileResult> GetReportFile(string fileName, long? jobId)
+        public async Task<FileResult> GetReportFileAsync(string fileName, long? jobId, CancellationToken cancellationToken)
         {
-            return await GetReportFile(CollectionNames.ReferenceDataConditionsOfFundingRemoval, fileName, jobId);
+            return await GetReportFileAsync(CollectionNames.ReferenceDataConditionsOfFundingRemoval, fileName, jobId, cancellationToken);
         }
     }
 }

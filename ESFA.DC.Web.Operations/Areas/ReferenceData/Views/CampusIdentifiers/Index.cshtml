@@ -83,17 +83,17 @@
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 
     <script type="module">
-        import PathController from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/referenceDataHub.js';
+        import Controller from '/assets/js/referenceData/referenceDataController.js';
+        import Hub from '/assets/js/hubs/referenceData/campusIdentifiersHub.js';
 
         (function() {
-            const stateModel = @Json.Serialize(Model);
-            const pathController = new PathController();
+            const model = @Json.Serialize(Model);
+            const controller = new Controller();
 
-            const hub = new Hub(pathController);
-            hub.startHub(stateModel);
+            const hub = new Hub(controller);
+            hub.startHub(model);
 
-            pathController.renderFiles(stateModel);
+            controller.renderFiles('CampusIdentifiers', model);
         })();
     </script>
 }

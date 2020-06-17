@@ -7,6 +7,7 @@ using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -37,13 +38,11 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var model = new CampusIdentifiersModel()
-            {
-                Files = await _referenceDataService.GetSubmissionsPerCollectionAsync(
-                                    CollectionNames.ReferenceDataCampusIdentifiers,
-                                    CampusIdentifiersReportName,
-                                    cancellationToken)
-            };
+            var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+                    Utils.Constants.ReferenceDataStorageContainerName,
+                    CollectionNames.ReferenceDataCampusIdentifiers,
+                    ReportTypes.CampusIdentifiersReportName,
+                    cancellationToken);
 
             return View("Index", model);
         }
@@ -63,25 +62,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             return View("Index");
         }
 
-        [Route("getReportFile/{jobId?}")]
-        public async Task<FileResult> GetReportFile(long? jobId)
+        [Route("getReportFile/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetReportFileAsync(string fileName, long? jobId, CancellationToken cancellationToken)
         {
-            var reportFile = jobId != null;
-            var fileName = $@"{jobId}\{CampusIdentifiersReportName}";
-            try
-            {
-                var blobStream = await _storageService.GetFile(Utils.Constants.ReferenceDataStorageContainerName, fileName, CancellationToken.None);
-
-                return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
-                {
-                    FileDownloadName = fileName
-                };
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Download report failed for file name : {fileName}", e);
-                throw;
-            }
+            return await GetReportFileAsync(CollectionNames.ReferenceDataCampusIdentifiers, fileName, jobId, cancellationToken);
         }
     }
 }

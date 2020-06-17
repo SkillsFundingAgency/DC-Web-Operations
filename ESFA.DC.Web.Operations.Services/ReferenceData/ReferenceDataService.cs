@@ -70,7 +70,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
             try
             {
-                var fileName = Path.GetFileName(file.FileName);
+                var fileName = $"{collectionName}/{Path.GetFileName(file.FileName)}";
 
                 var job = new JobSubmission
                 {
@@ -149,7 +149,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     ReportName = "Upload Result Report CampusIdentifier",
                     ErrorCount = 1,
-                    FileName = "CampusIdentifierRD-202003060900",
+                    FileName = "CampusIdentifierRD-202003060900.csv",
                     JobId = 6101,
                     JobStatus = 4,
                     PeriodNumber = 1,

@@ -247,7 +247,7 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
 
-                routes.MapHub<CampusIdentifiersHub>("/referenceDataHub", options =>
+                routes.MapHub<CampusIdentifiersHub>("/campusIdentifiersHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });

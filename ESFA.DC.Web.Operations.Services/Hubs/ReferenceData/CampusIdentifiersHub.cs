@@ -36,6 +36,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
             }
 
             var stateModel = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+                Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataCampusIdentifiers,
                 ReportTypes.CampusIdentifiersReportName,
                 cancellationToken);

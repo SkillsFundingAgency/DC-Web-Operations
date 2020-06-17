@@ -36,11 +36,6 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(containerName);
         }
 
-        public CloudBlobContainer GetReferenceDataStorageContainer()
-        {
-            return CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(Constants.ReferenceDataStorageContainerName);
-        }
-
         public async Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken)
         {
             using (var stream = await container

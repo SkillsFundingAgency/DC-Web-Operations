@@ -9,8 +9,6 @@ namespace ESFA.DC.Web.Operations.Interfaces
     {
         CloudBlobContainer GetStorageContainer(string containerName);
 
-        CloudBlobContainer GetReferenceDataStorageContainer();
-
         Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken);
     }
 }
