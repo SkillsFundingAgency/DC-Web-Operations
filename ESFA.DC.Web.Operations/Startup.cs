@@ -11,6 +11,7 @@ using ESFA.DC.Logging.Enums;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
@@ -23,6 +24,7 @@ using ESFA.DC.Web.Operations.Services.Hubs.ReferenceData;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
+using ESFA.DC.Web.Operations.Services.ReferenceData;
 using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF;
 using ESFA.DC.Web.Operations.Services.TimedHostedService.ILR;
@@ -139,6 +141,10 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddHttpClient<IReferenceDataService, ReferenceDataService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
             services.AddHttpContextAccessor();
 
             _logger.LogDebug("End of ConfigureServices");
@@ -241,6 +247,11 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
 
+                routes.MapHub<CampusIdentifiersHub>("/campusIdentifiersHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
                 routes.MapHub<JobDasMismatchHub>("/jobDasMismatchHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
@@ -305,6 +316,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<NCSPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ALLFPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<CampusIdentifiersHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
 

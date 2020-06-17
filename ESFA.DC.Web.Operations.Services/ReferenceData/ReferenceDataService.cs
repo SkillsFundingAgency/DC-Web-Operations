@@ -133,9 +133,31 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
 
-            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
+            var data = ProvideData();
+
+            // await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
 
             return data;
+        }
+
+        private IEnumerable<FileUploadJobMetaDataModel> ProvideData()
+        {
+            return new List<FileUploadJobMetaDataModel>()
+            {
+                new FileUploadJobMetaDataModel()
+                {
+                    ReportName = "Upload Result Report CampusIdentifier",
+                    ErrorCount = 1,
+                    FileName = "CampusIdentifierRD-202003060900.csv",
+                    JobId = 6101,
+                    JobStatus = 4,
+                    PeriodNumber = 1,
+                    RecordCount = 10,
+                    SubmissionDate = DateTime.Now,
+                    SubmittedBy = "Me",
+                    UsedForPeriodEnd = false
+                }
+            };
         }
     }
 }

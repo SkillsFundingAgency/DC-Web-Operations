@@ -24,13 +24,13 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             _logger = logger;
         }
 
-        protected async Task<FileResult> GetReportFile(string folderName, string fileName, long? jobId)
+        protected async Task<FileResult> GetReportFileAsync(string folderName, string fileName, long? jobId, CancellationToken cancellationToken)
         {
             var reportFile = jobId != null;
             fileName = reportFile ? $@"{folderName}\{jobId}\{fileName}" : $@"{folderName}\{fileName}";
             try
             {
-                var blobStream = await _storageService.GetFile(Utils.Constants.ReferenceDataStorageContainerName, fileName, CancellationToken.None);
+                var blobStream = await _storageService.GetFile(Utils.Constants.ReferenceDataStorageContainerName, fileName, cancellationToken);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {

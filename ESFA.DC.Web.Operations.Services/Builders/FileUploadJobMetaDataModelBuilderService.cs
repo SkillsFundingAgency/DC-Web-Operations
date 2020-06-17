@@ -85,6 +85,9 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
 
+            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
+            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
+
             return file;
         }
     }

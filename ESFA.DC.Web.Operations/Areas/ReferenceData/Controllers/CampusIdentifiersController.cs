@@ -1,10 +1,13 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +19,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     [Route(AreaNames.ReferenceData + "/campusIdentifiers")]
     public class CampusIdentifiersController : BaseReferenceDataController
     {
+        private const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
         private readonly IReferenceDataService _referenceDataService;
+        private readonly IStorageService _storageService;
+        private readonly ILogger _logger;
 
         public CampusIdentifiersController(
             IStorageService storageService,
@@ -25,12 +31,20 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             IReferenceDataService referenceDataService)
             : base(storageService, logger, telemetryClient)
         {
+            _storageService = storageService;
             _referenceDataService = referenceDataService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View();
+            var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+                    Utils.Constants.ReferenceDataStorageContainerName,
+                    CollectionNames.ReferenceDataCampusIdentifiers,
+                    ReportTypes.CampusIdentifiersReportName,
+                    cancellationToken);
+
+            return View("Index", model);
         }
 
         [RequestSizeLimit(524_288_000)]
@@ -46,6 +60,12 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             }
 
             return View("Index");
+        }
+
+        [Route("getReportFile/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetReportFileAsync(string fileName, long? jobId, CancellationToken cancellationToken)
+        {
+            return await GetReportFileAsync(CollectionNames.ReferenceDataCampusIdentifiers, fileName, jobId, cancellationToken);
         }
     }
 }

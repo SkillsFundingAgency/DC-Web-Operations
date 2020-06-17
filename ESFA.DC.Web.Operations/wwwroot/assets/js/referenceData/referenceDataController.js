@@ -11,6 +11,13 @@ class referenceDataController {
         stateLabel.textContent = `Status: ${state}`;
     }
 
+    sortByDate(stateModel) {
+
+        stateModel.files.sort(function (a, b) {
+            return Number(a.submissionDate) - Number(b.submissionDate);
+        });
+    }
+
     renderFiles(controllerName, state) {
         updateSync.call(this);
 
@@ -22,6 +29,8 @@ class referenceDataController {
         if (!stateModel || !stateModel.files) {
             return;
         }
+
+        this.sortByDate(stateModel);
 
         const fileContainer = document.getElementById('fileContainer');
 
@@ -37,7 +46,7 @@ class referenceDataController {
 
             const content = 
                 `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell">${file.displayDate}</td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">${file.displayDate}</td>
                     <td class="govuk-table__cell">${file.submittedBy}</td>
                     <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${fileName}</a></td>
                     <td class="govuk-table__cell">${file.jobId}</td>
