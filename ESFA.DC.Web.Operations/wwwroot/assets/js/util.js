@@ -50,6 +50,12 @@ export function getDatetimeFromString(dateString) {
     return new Date(dateString);
 }
 
+export function getUkDateString(dateString) {
+    const dateSplit = dateString.substring(0, dateString.indexOf('T')).split('-');
+    const formattedString = dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0];
+    return formattedString;
+}
+
 export function getFormattedDatetimeString(dateString) {
     var dateObject = getDatetimeFromString(dateString);
 

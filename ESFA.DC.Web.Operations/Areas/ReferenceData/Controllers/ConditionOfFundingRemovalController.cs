@@ -32,14 +32,11 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             var cancellationToken = CancellationToken.None;
 
-            var submissions = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+            var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataConditionsOfFundingRemoval,
                 ReportTypes.ConditionOfFundingRemovalReportName,
                 cancellationToken);
-
-            var model = new ReferenceDataViewModel();
-            model.Files = submissions;
 
             return View(model);
         }
