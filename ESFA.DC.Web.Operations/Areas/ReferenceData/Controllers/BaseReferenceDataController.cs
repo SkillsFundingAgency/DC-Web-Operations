@@ -27,7 +27,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         protected async Task<FileResult> GetReportFile(string folderName, string fileName, long? jobId)
         {
             var reportFile = jobId != null;
-            fileName = reportFile ? $@"{folderName}\{jobId}\{fileName}" : fileName;
+            fileName = reportFile ? $@"{folderName}\{jobId}\{fileName}" : $@"{folderName}\{fileName}";
             try
             {
                 var blobStream = await _storageService.GetFile(Utils.Constants.ReferenceDataStorageContainerName, fileName, CancellationToken.None);

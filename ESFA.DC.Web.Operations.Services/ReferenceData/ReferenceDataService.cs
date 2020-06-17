@@ -75,7 +75,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 var job = new JobSubmission
                 {
                     CollectionName = collection.CollectionTitle,
-                    FileName = fileName,
+                    FileName = $"{collectionName}/{fileName}",
                     FileSizeBytes = file.Length,
                     SubmittedBy = userName,
                     NotifyEmail = email,

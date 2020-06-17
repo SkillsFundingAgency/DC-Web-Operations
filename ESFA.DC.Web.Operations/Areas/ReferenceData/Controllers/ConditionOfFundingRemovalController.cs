@@ -50,7 +50,8 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             if (file != null)
             {
-                await _referenceDataService.SubmitJob(period, CollectionNames.ReferenceDataConditionsOfFundingRemoval, User.Name(), User.Email(), file, CancellationToken.None);
+                await _referenceDataService.SubmitJob(
+                    period, CollectionNames.ReferenceDataConditionsOfFundingRemoval, User.Name(), User.Email(), file, CancellationToken.None);
             }
 
             return View("Index");
