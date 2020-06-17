@@ -70,12 +70,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
             try
             {
-                var fileName = Path.GetFileName(file.FileName);
+                var fileName = $"{collectionName}/{Path.GetFileName(file.FileName)}";
 
                 var job = new JobSubmission
                 {
                     CollectionName = collection.CollectionTitle,
-                    FileName = $"{collectionName}/{fileName}",
+                    FileName = fileName,
                     FileSizeBytes = file.Length,
                     SubmittedBy = userName,
                     NotifyEmail = email,
