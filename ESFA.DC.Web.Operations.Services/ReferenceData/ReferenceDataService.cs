@@ -126,7 +126,9 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
 
-            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
+            var data = ProvideData();
+
+            // await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
 
             return data;
         }

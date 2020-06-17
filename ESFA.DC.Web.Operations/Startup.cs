@@ -114,7 +114,6 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<NCSPeriodEndTimedHostedService>();
 
             services.AddHostedService<ALLFPeriodEndTimedHostedService>();
-            services.AddHostedService<CampusIdentifiersTimedHostedService>();
 
             services.AddHostedService<ReferenceDataTimedHostedService>();
 
@@ -248,7 +247,7 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
 
-                routes.MapHub<ReferenceDataHub>("/referenceDataHub", options =>
+                routes.MapHub<CampusIdentifiersHub>("/referenceDataHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
@@ -317,7 +316,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<NCSPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ALLFPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
-            containerBuilder.RegisterType<ReferenceDataHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<CampusIdentifiersHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
 

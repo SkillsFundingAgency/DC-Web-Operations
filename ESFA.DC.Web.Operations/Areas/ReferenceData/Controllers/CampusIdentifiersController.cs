@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
@@ -41,7 +42,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 Files = await _referenceDataService.GetSubmissionsPerCollectionAsync(
                                     CollectionNames.ReferenceDataCampusIdentifiers,
                                     CampusIdentifiersReportName,
-                            false,
                                     cancellationToken)
             };
 
