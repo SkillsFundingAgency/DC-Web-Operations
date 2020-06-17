@@ -57,7 +57,10 @@
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Date</th>
+                    <th scope="col" class="govuk-table__header">Submitted by</th>
                     <th scope="col" class="govuk-table__header">File</th>
+                    <th scope="col" class="govuk-table__header">Job ID</th>
                     <th scope="col" class="govuk-table__header table-width-min">Status</th>
                     <th scope="col" class="govuk-table__header">Reports</th>
                 </tr>
@@ -87,9 +90,9 @@
             const model = @Json.Serialize(Model);
             const controller = new Controller();
             const hub = new Hub(controller);
-            hub.startHub(model);
+            hub.startHub();
             
-            controller.renderFiles(model);
+            controller.renderFiles('ConditionOfFundingRemoval', model);
 
             const dateLabel = document.getElementById(`lastSync`);
             dateLabel.textContent = `Updates disabled as historical period end`;            

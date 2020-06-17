@@ -1,4 +1,5 @@
 ﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
+import { getUkDateString } from '/assets/js/util.js';
 
 class referenceDataController {
 
@@ -11,7 +12,7 @@ class referenceDataController {
         stateLabel.textContent = `Status: ${state}`;
     }
 
-    renderFiles(state) {
+    renderFiles(controllerName, state) {
         updateSync.call(this);
 
         if (state === "" || state === undefined) {
@@ -19,27 +20,36 @@ class referenceDataController {
         }
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
+        if (!stateModel || !stateModel.files) {
+            return;
+        }
 
-        let fileContainer = document.getElementById('fileContainer');
+        const fileContainer = document.getElementById('fileContainer');
 
         let updatedContent = '';
+
         stateModel.files.forEach(function(file) {
-            var fileName = file.fileName ? file.fileName : '';
-            var reportName = file.reportName ? file.reportName : '';
-            var statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
+            const fileName = file.fileName ? file.fileName : '';
+            const reportName = file.reportName ? file.reportName : '';
+            const statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
                 : file.displayStatus === 'Job Rejected' ? 'jobRejected'
                 : file.displayStatus === 'Job Failed' ? 'jobFailed'
                 : '';
 
+            const submittedDate = getUkDateString(file.submissionDate);
+
             const content = 
                 `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.fileName}">${fileName}</a></td>
+                    <td class="govuk-table__cell">${submittedDate}</td>
+                    <td class="govuk-table__cell">${file.submittedBy}</td>
+                    <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${fileName}</a></td>
+                    <td class="govuk-table__cell">${file.jobId}</td>
                     <td class="govuk-table__cell">
                         <span class="${statusClass}">${file.displayStatus}</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
                         <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
                     </td>
-                    <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/${file.reportName}/${stateModel.period}/${file.jobId}">${reportName}</a></td>
+                    <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.reportName}/${file.jobId}">${reportName}</a></td>
                 </tr>`;
             updatedContent += content;
         });

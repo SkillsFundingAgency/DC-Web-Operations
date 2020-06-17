@@ -32,13 +32,11 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             var cancellationToken = CancellationToken.None;
 
-            var submissions = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+            var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+                Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataConditionsOfFundingRemoval,
                 ReportTypes.ConditionOfFundingRemovalReportName,
                 cancellationToken);
-
-            var model = new ReferenceDataViewModel();
-            model.Files = submissions;
 
             return View(model);
         }
@@ -56,6 +54,12 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             }
 
             return View("Index");
+        }
+
+        [Route("getReportFile/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetReportFile(string fileName, long? jobId)
+        {
+            return await GetReportFile(CollectionNames.ReferenceDataConditionsOfFundingRemoval, fileName, jobId);
         }
     }
 }

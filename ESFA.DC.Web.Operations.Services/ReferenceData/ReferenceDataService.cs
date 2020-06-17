@@ -13,6 +13,7 @@ using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Job;
+using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
@@ -96,21 +97,27 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             }
         }
 
-        public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerCollectionAsync(
+        public async Task<ReferenceDataViewModel> GetSubmissionsPerCollectionAsync(
+            string containerName,
             string collectionName,
             string reportName,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            var model = new ReferenceDataViewModel();
+
             // get job info from db
             var files = (await GetSubmittedFilesPerCollectionAsync(collectionName, cancellationToken))
+                .OrderByDescending(f => f.SubmissionDate)
                 .Take(Constants.MaxFilesToDisplay)
                 .ToList();
 
-            var container = _cloudStorageService.GetStorageContainer();
+            var container = _cloudStorageService.GetStorageContainer(containerName);
 
             // get file info from result report
             await Task.WhenAll(
-                files.Select(file => _fileUploadJobMetaDataModelBuilderService
+                files
+                    .Where(f => f.JobStatus == JobStatuses.JobStatus_Completed)
+                    .Select(file => _fileUploadJobMetaDataModelBuilderService
                         .PopulateFileUploadJobMetaDataModelForReferenceData(
                             file,
                             reportName,
@@ -119,7 +126,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                             collectionName,
                             cancellationToken)));
 
-            return files;
+            model.Files = files;
+            return model;
         }
 
         private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerCollectionAsync(string collectionName, CancellationToken cancellationToken)

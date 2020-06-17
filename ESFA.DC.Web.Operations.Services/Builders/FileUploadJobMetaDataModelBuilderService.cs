@@ -55,10 +55,10 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             string collectionName,
             CancellationToken cancellationToken)
         {
-            var dateSection = file.FileName.Substring(file.FileName.IndexOf('-'));
+            var dateSection = Path.GetFileNameWithoutExtension(file.FileName).Substring(file.FileName.IndexOf('-'));
 
             file.ReportName = $"{resultsReportName}{dateSection}.csv";
-            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName}{dateSection}.json";
+            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName).Replace("RD", string.Empty)}.json";
 
             var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
             if (result == null)
@@ -66,6 +66,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
                 return file;
             }
 
+            file.CollectionName = collectionName;
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
 

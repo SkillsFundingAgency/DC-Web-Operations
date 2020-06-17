@@ -7,7 +7,7 @@ namespace ESFA.DC.Web.Operations.Interfaces
 {
     public interface ICloudStorageService
     {
-        CloudBlobContainer GetStorageContainer();
+        CloudBlobContainer GetStorageContainer(string containerName);
 
         CloudBlobContainer GetReferenceDataStorageContainer();
 
