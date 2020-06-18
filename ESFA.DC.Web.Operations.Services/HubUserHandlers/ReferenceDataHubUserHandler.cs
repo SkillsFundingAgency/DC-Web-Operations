@@ -20,6 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.HubUserHandlers
                     connectionIds = new HashSet<string>();
                     ReferenceDataConnectedIds.Add(ReferenceDataTypes.ConditionOfFundingRemoval, connectionIds);
                     ReferenceDataConnectedIds.Add(ReferenceDataTypes.CampusIdentifier, connectionIds);
+                    ReferenceDataConnectedIds.Add(ReferenceDataTypes.ValidationMessages2021, connectionIds);
                 }
 
                 connectionIds.Add(connectionId);
