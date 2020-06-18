@@ -74,6 +74,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidityPeriodHubEventBase>().As<IValidityPeriodHubEventBase>().SingleInstance();
 
             builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 

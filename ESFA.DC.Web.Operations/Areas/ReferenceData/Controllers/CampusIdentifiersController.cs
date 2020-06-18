@@ -59,7 +59,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 await _referenceDataService.SubmitJob(period, CollectionNames.ReferenceDataCampusIdentifiers, User.Name(), User.Email(), file, cancellationToken);
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [Route("getReportFile/{fileName}/{jobId?}")]

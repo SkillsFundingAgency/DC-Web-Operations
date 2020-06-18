@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,6 +65,8 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
+
+            file.FileName = file.FileName.Substring(file.FileName.IndexOf("/", StringComparison.InvariantCulture) + 1);
 
             if (file.JobStatus != JobStatuses.JobStatus_Completed)
             {

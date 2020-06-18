@@ -54,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                     period, CollectionNames.ReferenceDataValidationMessages2021, User.Name(), User.Email(), file, CancellationToken.None);
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [Route("getReportFile/{fileName}/{jobId?}")]
