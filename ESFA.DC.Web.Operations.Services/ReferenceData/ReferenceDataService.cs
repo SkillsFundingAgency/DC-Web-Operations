@@ -101,6 +101,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             string containerName,
             string collectionName,
             string reportName,
+            int maxRows = Constants.MaxFilesToDisplay,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var model = new ReferenceDataViewModel();
@@ -108,7 +109,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             // get job info from db
             var files = (await GetSubmittedFilesPerCollectionAsync(collectionName, cancellationToken))
                 .OrderByDescending(f => f.SubmissionDate)
-                .Take(Constants.MaxFilesToDisplay)
+                .Take(maxRows)
                 .ToList();
 
             var container = _cloudStorageService.GetStorageContainer(containerName);

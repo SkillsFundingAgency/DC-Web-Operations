@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Models.ReferenceData;
+using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
@@ -13,6 +14,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
             string containerName,
             string collectionName,
             string reportName,
+            int maxRows = Constants.MaxFilesToDisplay,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

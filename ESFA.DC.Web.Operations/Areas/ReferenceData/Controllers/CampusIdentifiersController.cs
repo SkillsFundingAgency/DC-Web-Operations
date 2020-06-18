@@ -42,7 +42,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                     Utils.Constants.ReferenceDataStorageContainerName,
                     CollectionNames.ReferenceDataCampusIdentifiers,
                     ReportTypes.CampusIdentifiersReportName,
-                    cancellationToken);
+                    cancellationToken: cancellationToken);
 
             return View("Index", model);
         }

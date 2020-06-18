@@ -35,6 +35,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataValidationMessages2021,
                 ReportTypes.ValidationMessagesReportName,
+                Utils.Constants.ValidationMessagesMaxFilesToDisplay,
                 cancellationToken);
 
             return View(model);

@@ -5,6 +5,7 @@ namespace ESFA.DC.Web.Operations.Utils
     public class Constants
     {
         public const int MaxFilesToDisplay = 15;
+        public const int ValidationMessagesMaxFilesToDisplay = 25;
 
         public const string IlrCollectionNamePrefix = "ILR";
         public const int YearStartMonth = 8;
