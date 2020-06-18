@@ -1,38 +1,40 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
-
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
 @{
     ViewData["Title"] = "Index";
 }
 
-<div class="govuk-width-container">
-    <div class="govuk-breadcrumbs">
-        <ol class="govuk-breadcrumbs__list">
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="/">Home</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item" aria-current="page">Campus identifiers</li>
-        </ol>
-    </div>
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Validation messages 20-21</li>
+    </ol>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Campus identifiers</h1>
+        <h1 class="govuk-heading-xl heading-bottom-margin">Validation messages 20-21</h1>
+        <br />
     </div>
 </div>
 
+<br />
+<br />
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="CampusIdentifiers" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
+        <form asp-controller="ValidationMessages2021" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
 
             @Html.AntiForgeryToken()
 
             <h1 class="govuk-heading-m">
-                Choose Campus Identifiers reference data file to upload
+                Choose validation messages 20-21 reference data file to upload
             </h1>
 
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
@@ -56,10 +58,10 @@
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Date</th>
-                    <th scope="col" class="govuk-table__header table-width-min">Submitted by</th>
+                    <th scope="col" class="govuk-table__header">Submitted by</th>
                     <th scope="col" class="govuk-table__header">File</th>
-                    <th scope="col" class="govuk-table__header">Job Id</th>
-                    <th scope="col" class="govuk-table__header">Status</th>
+                    <th scope="col" class="govuk-table__header">Job ID</th>
+                    <th scope="col" class="govuk-table__header table-width-min">Status</th>
                     <th scope="col" class="govuk-table__header">Reports</th>
                 </tr>
             </thead>
@@ -82,16 +84,15 @@
 
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/campusIdentifiersHub.js';
+        import Hub from '/assets/js/hubs/referenceData/validationMessages2021Hub.js';
 
         (function() {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-
             const hub = new Hub(controller);
-            hub.startHub(model);
-
-            controller.renderFiles('CampusIdentifiers', model);
+            hub.startHub();
+            
+            controller.renderFiles('ValidationMessages2021', model);  
         })();
     </script>
 }
