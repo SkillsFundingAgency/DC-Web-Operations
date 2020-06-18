@@ -21,7 +21,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
             IHubContext<ValidationErrorMessages2021Hub> hubContext,
             IReferenceDataService referenceDataService,
             ILogger logger)
-        : base(eventBase, logger, ReferenceDataTypes.ConditionOfFundingRemoval)
+        : base(eventBase, logger, ReferenceDataTypes.ValidationMessages2021)
         {
             _serialisationHelperService = serialisationHelperService;
             _hubContext = hubContext;
