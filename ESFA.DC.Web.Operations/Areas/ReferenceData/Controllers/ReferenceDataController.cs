@@ -33,11 +33,13 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             var CITask = _jobService.GetLatestJobForCollectionAsync(CollectionNames.ReferenceDataCampusIdentifiers, cancellationToken);
             var CoFRTask = _jobService.GetLatestJobForCollectionAsync(CollectionNames.ReferenceDataConditionsOfFundingRemoval, cancellationToken);
+            var Val2021Task = _jobService.GetLatestJobForCollectionAsync(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken);
 
-            await Task.WhenAll(CITask, CoFRTask);
+            await Task.WhenAll(CITask, CoFRTask, Val2021Task);
 
             var latestSuccessfulCIJob = CITask.Result;
             var latestSuccessfulCoFRJob = CoFRTask.Result;
+            var latestSuccessfulVal2021Job = Val2021Task.Result;
 
             var model = new ReferenceDataIndexModel
             {
@@ -50,6 +52,11 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 {
                     LastUpdatedDateTime = latestSuccessfulCoFRJob?.DateTimeCreatedUtc ?? DateTime.MinValue,
                     LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder
+                },
+                ValidationMessages2021 = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = latestSuccessfulVal2021Job?.DateTimeCreatedUtc ?? DateTime.MinValue,
+                    LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder
                 }
             };
 
