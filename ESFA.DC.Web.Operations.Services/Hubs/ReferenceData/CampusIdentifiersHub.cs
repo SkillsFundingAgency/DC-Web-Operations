@@ -39,7 +39,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
                 Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataCampusIdentifiers,
                 ReportTypes.CampusIdentifiersReportName,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             var state = _serialisationHelperService.SerialiseToCamelCase(stateModel);
 

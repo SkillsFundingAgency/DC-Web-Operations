@@ -39,6 +39,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
                     Constants.ReferenceDataStorageContainerName,
                     CollectionNames.ReferenceDataValidationMessages2021,
                     ReportTypes.ValidationMessagesReportName,
+                    Constants.ValidationMessagesMaxFilesToDisplay,
                     cancellationToken);
 
             var state = _serialisationHelperService.SerialiseToCamelCase(stateModel);

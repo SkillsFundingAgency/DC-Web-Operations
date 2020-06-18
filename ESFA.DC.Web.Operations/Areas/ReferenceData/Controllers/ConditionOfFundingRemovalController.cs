@@ -35,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataConditionsOfFundingRemoval,
                 ReportTypes.ConditionOfFundingRemovalReportName,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             return View(model);
         }
