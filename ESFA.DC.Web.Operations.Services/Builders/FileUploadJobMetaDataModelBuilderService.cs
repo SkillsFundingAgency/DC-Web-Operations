@@ -62,7 +62,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             string collectionName,
             CancellationToken cancellationToken)
         {
-            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
+            file.DisplayDate = string.Concat(file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower());
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
@@ -87,9 +87,6 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.WarningCount = result.WarningCount;
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
-
-            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
-            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
         }
