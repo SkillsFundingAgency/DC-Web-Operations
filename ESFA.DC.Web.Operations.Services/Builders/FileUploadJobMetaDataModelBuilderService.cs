@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             string collectionName,
             CancellationToken cancellationToken)
         {
-            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
+            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)} at {file.SubmissionDate.ToString("h:mm tt", CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture)}";
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
@@ -70,10 +71,11 @@ namespace ESFA.DC.Web.Operations.Services.Builders
                 return file;
             }
 
-            var dateSection = Path.GetFileNameWithoutExtension(file.FileName).Substring(file.FileName.IndexOf('-'));
+            var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+            var dateSection = fileName.Substring(fileName.IndexOf('-'));
 
             file.ReportName = $"{resultsReportName}{dateSection}.csv";
-            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName).Replace("RD", string.Empty)}.json";
+            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
             var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
             if (result == null)
@@ -84,8 +86,9 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.WarningCount = result.WarningCount;
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
+            file.FileName = Path.GetFileName(file.FileName);
 
-            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()}";
+            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)} at {file.SubmissionDate.ToString("h:mm tt", CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture)}";
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
