@@ -7,5 +7,6 @@
         public const string ALLF = "Generic";
         public const string ESF = "ESF";
         public const string APPS = "APPS";
+        public const string ReferenceData = "REF";
     }
 }

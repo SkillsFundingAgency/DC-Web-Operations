@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -24,11 +25,13 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
     {
         private const string Api = "/api/reference-data-uploads/";
         private const string SummaryFileName = "Upload Result Report";
+        private const string CreatedByPlaceHolder = "Data unavailable";
 
         private readonly ICollectionsService _collectionsService;
         private readonly IJobService _jobService;
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICloudStorageService _cloudStorageService;
         private readonly AzureStorageSection _azureStorageConfig;
         private readonly ILogger _logger;
@@ -41,6 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
+            IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
             ApiSettings apiSettings,
             HttpClient httpClient,
@@ -52,6 +56,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _jobService = jobService;
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
+            _dateTimeProvider = dateTimeProvider;
             _cloudStorageService = cloudStorageService;
             _azureStorageConfig = azureStorageConfig;
             _logger = logger;
@@ -127,6 +132,36 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                             cancellationToken)));
 
             model.Files = files;
+            return model;
+        }
+
+        public async Task<ReferenceDataIndexModel> GetLatestReferenceDataJobs(CancellationToken cancellationToken)
+        {
+            var jobs = await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken);
+
+            var latestSuccessfulCIJob = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
+            var latestSuccessfulCoFRJob = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
+            var latestSuccessfulVal2021Job = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
+
+            var model = new ReferenceDataIndexModel
+            {
+                CampusIdentifiers = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = latestSuccessfulCIJob.DateTimeSubmittedUtc != null ? _dateTimeProvider.ConvertUtcToUk(latestSuccessfulCIJob.DateTimeSubmittedUtc) : DateTime.MinValue,
+                    LastUpdatedByWho = latestSuccessfulCIJob?.CreatedBy ?? CreatedByPlaceHolder
+                },
+                ConditionOfFundingRemoval = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = latestSuccessfulCoFRJob?.DateTimeSubmittedUtc != null ? _dateTimeProvider.ConvertUtcToUk(latestSuccessfulCoFRJob.DateTimeSubmittedUtc) : DateTime.MinValue,
+                    LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder
+                },
+                ValidationMessages2021 = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = latestSuccessfulVal2021Job?.DateTimeSubmittedUtc != null ? _dateTimeProvider.ConvertUtcToUk(latestSuccessfulVal2021Job.DateTimeSubmittedUtc) : DateTime.MinValue,
+                    LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder
+                }
+            };
+
             return model;
         }
 

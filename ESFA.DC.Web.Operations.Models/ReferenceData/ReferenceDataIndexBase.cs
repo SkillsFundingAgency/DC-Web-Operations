@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Models
+namespace ESFA.DC.Web.Operations.Models.ReferenceData
 {
     public class ReferenceDataIndexBase
     {

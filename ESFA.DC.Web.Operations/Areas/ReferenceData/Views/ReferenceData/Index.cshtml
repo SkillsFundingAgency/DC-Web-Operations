@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
 @using ESFA.DC.Web.Operations.Utils
-@model ESFA.DC.Web.Operations.Areas.ReferenceData.Models.ReferenceDataIndexModel
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -46,8 +46,8 @@
                     <li>
                         <h3 class="home-services__heading">@Html.ActionLink("Validation Messages 20-21", "Index", "ValidationMessages2021", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ConditionOfFundingRemoval.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.ConditionOfFundingRemoval.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ConditionOfFundingRemoval.LastUpdatedByWho</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ValidationMessages2021.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.ValidationMessages2021.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ValidationMessages2021.LastUpdatedByWho</p>
                     </li>
                 </ul>
             </div>
