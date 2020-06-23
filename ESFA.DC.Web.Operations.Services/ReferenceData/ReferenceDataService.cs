@@ -137,7 +137,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         public async Task<ReferenceDataIndexModel> GetLatestReferenceDataJobs(CancellationToken cancellationToken)
         {
-            var jobs = await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken);
+            var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken)).ToList();
 
             var latestSuccessfulCIJob = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
             var latestSuccessfulCoFRJob = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
@@ -147,17 +147,17 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             {
                 CampusIdentifiers = new ReferenceDataIndexBase
                 {
-                    LastUpdatedDateTime = latestSuccessfulCIJob.DateTimeSubmittedUtc != null ? _dateTimeProvider.ConvertUtcToUk(latestSuccessfulCIJob.DateTimeSubmittedUtc) : DateTime.MinValue,
+                    LastUpdatedDateTime = GetDate(latestSuccessfulCIJob?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulCIJob?.CreatedBy ?? CreatedByPlaceHolder
                 },
                 ConditionOfFundingRemoval = new ReferenceDataIndexBase
                 {
-                    LastUpdatedDateTime = latestSuccessfulCoFRJob?.DateTimeSubmittedUtc != null ? _dateTimeProvider.ConvertUtcToUk(latestSuccessfulCoFRJob.DateTimeSubmittedUtc) : DateTime.MinValue,
+                    LastUpdatedDateTime = GetDate(latestSuccessfulCoFRJob?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder
                 },
                 ValidationMessages2021 = new ReferenceDataIndexBase
                 {
-                    LastUpdatedDateTime = latestSuccessfulVal2021Job?.DateTimeSubmittedUtc != null ? _dateTimeProvider.ConvertUtcToUk(latestSuccessfulVal2021Job.DateTimeSubmittedUtc) : DateTime.MinValue,
+                    LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder
                 }
             };
@@ -172,6 +172,11 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
 
             return data;
+        }
+
+        private DateTime GetDate(DateTime? date)
+        {
+            return date != null ? _dateTimeProvider.ConvertUtcToUk(date.Value) : DateTime.MinValue;
         }
     }
 }
