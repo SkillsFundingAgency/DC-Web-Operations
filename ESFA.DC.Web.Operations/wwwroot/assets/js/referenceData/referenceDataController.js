@@ -37,7 +37,6 @@ class referenceDataController {
         let updatedContent = '';
 
         stateModel.files.forEach(function(file) {
-            const fileName = file.fileName ? file.fileName : '';
             const reportName = file.reportName ? file.reportName : '';
             const statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
                 : file.displayStatus === 'Job Rejected' ? 'jobRejected'
@@ -46,9 +45,9 @@ class referenceDataController {
 
             const content = 
                 `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-!-font-weight-bold">${file.displayDate}</td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" govuk-!-width-one-quarter>${file.displayDate}</td>
                     <td class="govuk-table__cell">${file.submittedBy}</td>
-                    <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${fileName}</a></td>
+                    <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${file.fileName}</a></td>
                     <td class="govuk-table__cell">${file.jobId}</td>
                     <td class="govuk-table__cell">
                         <span class="${statusClass}">${file.displayStatus}</span> <br />
