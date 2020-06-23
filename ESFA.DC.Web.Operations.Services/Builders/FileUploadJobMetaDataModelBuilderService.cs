@@ -63,8 +63,8 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             CancellationToken cancellationToken)
         {
             file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)} at {file.SubmissionDate.ToString("h:mm tt", CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture)}";
-
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
+            file.FileName = Path.GetFileName(file.FileName);
 
             if (file.JobStatus != JobStatuses.JobStatus_Completed)
             {
@@ -86,10 +86,6 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.WarningCount = result.WarningCount;
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
-            file.FileName = Path.GetFileName(file.FileName);
-
-            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)} at {file.SubmissionDate.ToString("h:mm tt", CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture)}";
-            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
         }
