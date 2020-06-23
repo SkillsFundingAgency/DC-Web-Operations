@@ -137,32 +137,44 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         public async Task<ReferenceDataIndexModel> GetLatestReferenceDataJobs(CancellationToken cancellationToken)
         {
-            var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken)).ToList();
+            var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken))?.ToList();
 
-            var latestSuccessfulCIJob = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
-            var latestSuccessfulCoFRJob = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
-            var latestSuccessfulVal2021Job = jobs.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
+            var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
+            var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
+            var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
 
             var model = new ReferenceDataIndexModel
             {
                 CampusIdentifiers = new ReferenceDataIndexBase
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulCIJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulCIJob?.CreatedBy ?? CreatedByPlaceHolder
+                    LastUpdatedByWho = latestSuccessfulCIJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
                 },
                 ConditionOfFundingRemoval = new ReferenceDataIndexBase
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulCoFRJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder
+                    LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
                 },
                 ValidationMessages2021 = new ReferenceDataIndexBase
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder
+                    LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = !(await IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
                 }
             };
 
             return model;
+        }
+
+        private async Task<bool> IsReferenceDataCollectionExpired(string collectionName, CancellationToken cancellationToken)
+        {
+            var url = $"{_baseUrl}/returns-calendar/expired/{collectionName}";
+
+            var data = await GetAsync<bool>(url, cancellationToken);
+
+            return data;
         }
 
         private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerCollectionAsync(string collectionName, CancellationToken cancellationToken)
