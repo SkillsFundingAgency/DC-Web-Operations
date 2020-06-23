@@ -10,7 +10,7 @@
 
         public const string ReferenceDataCampusIdentifiers = "CampusIdentifier";
 
-        public const string ReferenceDataConditionsOfFundingRemoval = "COFRemoval";
+        public const string ReferenceDataConditionsOfFundingRemoval = "CoFRemoval";
 
         public const string ReferenceDataValidationMessages2021 = "ValidationMessages2021";
     }
