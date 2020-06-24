@@ -170,7 +170,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         private async Task<bool> IsReferenceDataCollectionExpired(string collectionName, CancellationToken cancellationToken)
         {
-            var url = $"{_baseUrl}/returns-calendar/expired/{collectionName}";
+            var url = $"{_baseUrl}/api/returns-calendar/expired/{collectionName}";
 
             var data = await GetAsync<bool>(url, cancellationToken);
 
