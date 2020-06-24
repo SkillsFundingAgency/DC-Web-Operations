@@ -25,7 +25,7 @@
                     <li>
                         <h3 class="home-services__heading">@Html.ActionLink("Campus Identifiers", "Index", "CampusIdentifiers", new {area = AreaNames.ReferenceData}, new {@class = "govuk-link"})</h3>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.CampusIdentifiers.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.CampusIdentifiers.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.CampusIdentifiers.LastUpdatedDateTimeFormattedDisplay</p>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.CampusIdentifiers.LastUpdatedByWho</p>
                     </li>
                 </ul>
@@ -36,7 +36,7 @@
                     <li>
                         <h3 class="home-services__heading">@Html.ActionLink("Conditions of Funding Removal", "Index", "ConditionOfFundingRemoval", new {area = AreaNames.ReferenceData}, new {@class = "govuk-link"})</h3>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ConditionOfFundingRemoval.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.ConditionOfFundingRemoval.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ConditionOfFundingRemoval.LastUpdatedDateTimeFormattedDisplay</p>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ConditionOfFundingRemoval.LastUpdatedByWho</p>
                     </li>
                 </ul>

@@ -65,6 +65,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.DisplayDate = string.Concat(file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower());
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
+            file.FileName = Path.GetFileName(file.FileName);
 
             file.FileName = file.FileName.Substring(file.FileName.IndexOf("/", StringComparison.InvariantCulture) + 1);
 
@@ -76,7 +77,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             var dateSection = Path.GetFileNameWithoutExtension(file.FileName).Substring(file.FileName.IndexOf('-'));
 
             file.ReportName = $"{resultsReportName}{dateSection}.csv";
-            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName).Replace("RD", string.Empty)}.json";
+            var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
             var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
             if (result == null)
