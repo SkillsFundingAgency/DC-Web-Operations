@@ -16,5 +16,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
             string reportName,
             int maxRows = Constants.MaxFilesToDisplay,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReferenceDataIndexModel> GetLatestReferenceDataJobs(CancellationToken cancellationToken);
     }
 }

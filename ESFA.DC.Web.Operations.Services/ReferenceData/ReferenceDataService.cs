@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -24,11 +25,13 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
     {
         private const string Api = "/api/reference-data-uploads/";
         private const string SummaryFileName = "Upload Result Report";
+        private const string CreatedByPlaceHolder = "Data unavailable";
 
         private readonly ICollectionsService _collectionsService;
         private readonly IJobService _jobService;
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICloudStorageService _cloudStorageService;
         private readonly AzureStorageSection _azureStorageConfig;
         private readonly ILogger _logger;
@@ -41,6 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
+            IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
             ApiSettings apiSettings,
             HttpClient httpClient,
@@ -52,6 +56,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _jobService = jobService;
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
+            _dateTimeProvider = dateTimeProvider;
             _cloudStorageService = cloudStorageService;
             _azureStorageConfig = azureStorageConfig;
             _logger = logger;
@@ -130,6 +135,48 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             return model;
         }
 
+        public async Task<ReferenceDataIndexModel> GetLatestReferenceDataJobs(CancellationToken cancellationToken)
+        {
+            var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken))?.ToList();
+
+            var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
+            var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
+            var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
+
+            var model = new ReferenceDataIndexModel
+            {
+                CampusIdentifiers = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulCIJob?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulCIJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                ConditionOfFundingRemoval = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulCoFRJob?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                ValidationMessages2021 = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = !(await IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
+                }
+            };
+
+            return model;
+        }
+
+        private async Task<bool> IsReferenceDataCollectionExpired(string collectionName, CancellationToken cancellationToken)
+        {
+            var url = $"{_baseUrl}/api/returns-calendar/expired/{collectionName}";
+
+            var data = await GetAsync<bool>(url, cancellationToken);
+
+            return data;
+        }
+
         private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerCollectionAsync(string collectionName, CancellationToken cancellationToken)
         {
             var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
@@ -137,6 +184,11 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
 
             return data;
+        }
+
+        private DateTime GetDate(DateTime? date)
+        {
+            return date != null ? _dateTimeProvider.ConvertUtcToUk(date.Value) : DateTime.MinValue;
         }
     }
 }

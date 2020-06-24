@@ -1,13 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
-using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +15,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     [Route(AreaNames.ReferenceData + "/campusIdentifiers")]
     public class CampusIdentifiersController : BaseReferenceDataController
     {
-        private const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IStorageService _storageService;
-        private readonly ILogger _logger;
 
         public CampusIdentifiersController(
             IStorageService storageService,
@@ -31,9 +24,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             IReferenceDataService referenceDataService)
             : base(storageService, logger, telemetryClient)
         {
-            _storageService = storageService;
             _referenceDataService = referenceDataService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -59,7 +50,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 await _referenceDataService.SubmitJob(period, CollectionNames.ReferenceDataCampusIdentifiers, User.Name(), User.Email(), file, cancellationToken);
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [Route("getReportFile/{fileName}/{jobId?}")]

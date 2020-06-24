@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.ALLF;
@@ -13,8 +15,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 {
     public class CloudStorageService : ICloudStorageService
     {
+        private readonly ILogger _logger;
         private readonly ISerializationService _serializationService;
         private readonly AzureStorageSection _azureStorageConfig;
+
+        private CloudBlobContainer _containerReference;
 
         private readonly BlobRequestOptions _requestOptions = new BlobRequestOptions
         {
@@ -24,25 +29,53 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         };
 
         public CloudStorageService(
+            ILogger logger,
             ISerializationService serializationService,
             AzureStorageSection azureStorageConfig)
         {
+            _logger = logger;
             _serializationService = serializationService;
             _azureStorageConfig = azureStorageConfig;
+
+            ServicePointManager.DefaultConnectionLimit = 100;
+            ThreadPool.SetMinThreads(100, 100);
         }
 
         public CloudBlobContainer GetStorageContainer(string containerName)
         {
-            return CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(containerName);
+            if (_containerReference != null)
+            {
+                return _containerReference;
+            }
+
+            try
+            {
+                _containerReference = CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(containerName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Unable to open blob container: {containerName}", e);
+                throw;
+            }
+
+            return _containerReference;
         }
 
         public async Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken)
         {
-            using (var stream = await container
-                .GetBlockBlobReference(fileName)
-                .OpenReadAsync(null, _requestOptions, null, cancellationToken))
+            try
             {
-                return _serializationService.Deserialize<SubmissionSummary>(stream);
+                using (var stream = await container
+                    .GetBlockBlobReference(fileName)
+                    .OpenReadAsync(null, _requestOptions, null, cancellationToken))
+                {
+                    return _serializationService.Deserialize<SubmissionSummary>(stream);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Unable to read blob: {fileName}", e);
+                throw;
             }
         }
     }

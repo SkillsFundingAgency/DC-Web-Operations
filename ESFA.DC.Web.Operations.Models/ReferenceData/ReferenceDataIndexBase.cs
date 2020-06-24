@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Models
+namespace ESFA.DC.Web.Operations.Models.ReferenceData
 {
     public class ReferenceDataIndexBase
     {
@@ -11,5 +11,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Models
 
         public string LastUpdatedDateTimeFormattedDisplay =>
             $"{LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {LastUpdatedDateTime.ToString("h:mm tt", CultureInfo.InvariantCulture).ToLower(CultureInfo.CurrentCulture)}";
+
+        public bool Valid { get; set; }
     }
 }

@@ -53,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                     period, CollectionNames.ReferenceDataConditionsOfFundingRemoval, User.Name(), User.Email(), file, CancellationToken.None);
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [Route("getReportFile/{fileName}/{jobId?}")]

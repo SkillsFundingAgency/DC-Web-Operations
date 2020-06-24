@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services
 {
@@ -34,7 +36,7 @@ namespace ESFA.DC.Web.Operations.Services
                 throw new ArgumentException("submission message should have file name");
             }
 
-            var job = new FileUploadJob()
+            var job = new FileUploadJob
             {
                 Ukprn = submittedJobSubmission.Ukprn,
                 Priority = 1,
@@ -68,11 +70,11 @@ namespace ESFA.DC.Web.Operations.Services
             return _jsonSerializationService.Deserialize<SubmittedJob>(data);
         }
 
-        public async Task<SubmittedJob> GetLatestJobForCollectionAsync(string collectionName, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SubmittedJob>> GetLatestJobForReferenceDataCollectionsAsync(string collectionType, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/{collectionName}/latest", cancellationToken);
+            var data = await GetDataAsync($"{_baseUrl}/api/job/{collectionType}/latestByType", cancellationToken);
 
-            return data == null ? null : _jsonSerializationService.Deserialize<SubmittedJob>(data);
+            return data == null ? null : _jsonSerializationService.Deserialize<IEnumerable<SubmittedJob>>(data);
         }
     }
 }

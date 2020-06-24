@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
 @using ESFA.DC.Web.Operations.Utils
-@model ESFA.DC.Web.Operations.Areas.ReferenceData.Models.ReferenceDataIndexModel
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -19,21 +19,22 @@
 
     <main class="govuk-main-wrapper">
         <div class="govuk-grid-row govuk-!-margin-top-6">
+            
             <div class="govuk-grid-column-one-third">
                 <ul class="govuk-list">
                     <li>
-                        <h3 class="home-services__heading">@Html.ActionLink("Campus Identifiers", "Index", "CampusIdentifiers", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
+                        <h3 class="home-services__heading">@Html.ActionLink("Campus Identifiers", "Index", "CampusIdentifiers", new {area = AreaNames.ReferenceData}, new {@class = "govuk-link"})</h3>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
                         <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.CampusIdentifiers.LastUpdatedDateTimeFormattedDisplay</p>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.CampusIdentifiers.LastUpdatedByWho</p>
                     </li>
                 </ul>
             </div>
-
+        
             <div class="govuk-grid-column-one-third">
                 <ul class="govuk-list">
                     <li>
-                        <h3 class="home-services__heading">@Html.ActionLink("Conditions of Funding Removal", "Index", "ConditionOfFundingRemoval", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
+                        <h3 class="home-services__heading">@Html.ActionLink("Conditions of Funding Removal", "Index", "ConditionOfFundingRemoval", new {area = AreaNames.ReferenceData}, new {@class = "govuk-link"})</h3>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
                         <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ConditionOfFundingRemoval.LastUpdatedDateTimeFormattedDisplay</p>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ConditionOfFundingRemoval.LastUpdatedByWho</p>
@@ -41,16 +42,19 @@
                 </ul>
             </div>
 
-            <div class="govuk-grid-column-one-third">
-                <ul class="govuk-list">
-                    <li>
-                        <h3 class="home-services__heading">@Html.ActionLink("Validation Messages 20-21", "Index", "ValidationMessages2021", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ConditionOfFundingRemoval.LastUpdatedDateTimeFormattedDisplay</p>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ConditionOfFundingRemoval.LastUpdatedByWho</p>
-                    </li>
-                </ul>
-            </div>
+            @if(Model.ValidationMessages2021.Valid)
+            {
+                <div class="govuk-grid-column-one-third">
+                    <ul class="govuk-list">
+                        <li>
+                            <h3 class="home-services__heading">@Html.ActionLink("Validation Messages 20-21", "Index", "ValidationMessages2021", new {area = AreaNames.ReferenceData}, new {@class = "govuk-link"})</h3>
+                            <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ValidationMessages2021.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.ValidationMessages2021.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
+                            <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ValidationMessages2021.LastUpdatedByWho</p>
+                        </li>
+                    </ul>
+                </div>
+            }
         </div>
     </main>
 </div>

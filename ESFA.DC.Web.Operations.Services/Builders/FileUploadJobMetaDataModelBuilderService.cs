@@ -62,17 +62,19 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             string collectionName,
             CancellationToken cancellationToken)
         {
-            file.DisplayDate = $"{file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.CurrentCulture)} at {file.SubmissionDate.ToString("h:mm tt", CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture)}";
+            file.DisplayDate = string.Concat(file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower());
+
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
             file.FileName = Path.GetFileName(file.FileName);
+
+            file.FileName = file.FileName.Substring(file.FileName.IndexOf("/", StringComparison.InvariantCulture) + 1);
 
             if (file.JobStatus != JobStatuses.JobStatus_Completed)
             {
                 return file;
             }
 
-            var fileName = Path.GetFileNameWithoutExtension(file.FileName);
-            var dateSection = fileName.Substring(fileName.IndexOf('-'));
+            var dateSection = Path.GetFileNameWithoutExtension(file.FileName).Substring(file.FileName.IndexOf('-'));
 
             file.ReportName = $"{resultsReportName}{dateSection}.csv";
             var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
