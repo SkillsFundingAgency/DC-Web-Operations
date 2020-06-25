@@ -89,6 +89,8 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
 
+            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
+
             return file;
         }
     }
