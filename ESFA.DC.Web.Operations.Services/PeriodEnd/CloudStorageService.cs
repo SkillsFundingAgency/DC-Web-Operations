@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         private readonly ISerializationService _serializationService;
         private readonly AzureStorageSection _azureStorageConfig;
 
-        private CloudBlobContainer _containerReference;
+        private Dictionary<string, CloudBlobContainer> _containerReferences = new Dictionary<string, CloudBlobContainer>();
 
         private readonly BlobRequestOptions _requestOptions = new BlobRequestOptions
         {
@@ -43,22 +44,24 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public CloudBlobContainer GetStorageContainer(string containerName)
         {
-            if (_containerReference != null)
+            CloudBlobContainer containerReference;
+
+            if (_containerReferences.TryGetValue(containerName, out containerReference))
             {
-                return _containerReference;
+                return containerReference;
             }
 
             try
             {
-                _containerReference = CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(containerName);
+                _containerReferences.Add(containerName, CloudStorageAccount.Parse(_azureStorageConfig.ConnectionString).CreateCloudBlobClient().GetContainerReference(containerName));
+
+                return _containerReferences[containerName];
             }
             catch (Exception e)
             {
                 _logger.LogError($"Unable to open blob container: {containerName}", e);
                 throw;
             }
-
-            return _containerReference;
         }
 
         public async Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken)
