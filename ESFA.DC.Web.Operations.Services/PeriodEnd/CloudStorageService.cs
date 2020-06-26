@@ -74,7 +74,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             }
             catch (Exception e)
             {
-                _logger.LogError($"Unable to read blob: {fileName}", e);
+                _logger.LogError($"Unable to read blob: {fileName} Container:{container.Name} ContainerUri:{container.Uri}", e);
                 throw;
             }
         }
