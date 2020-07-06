@@ -42,6 +42,10 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.Register(c =>
                     configuration.GetConfigSection<AuthorizationSettings>())
                 .As<AuthorizationSettings>().SingleInstance();
+
+            builder.Register(c =>
+                    configuration.GetConfigSection<FeatureFlags>())
+                .As<FeatureFlags>().SingleInstance();
         }
     }
 }
