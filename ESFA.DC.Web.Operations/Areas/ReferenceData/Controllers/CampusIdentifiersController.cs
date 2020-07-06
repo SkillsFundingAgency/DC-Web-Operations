@@ -24,7 +24,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     {
         private readonly IReferenceDataService _referenceDataService;
         private readonly IFileNameValidationService _fileNameValidationService;
-        private readonly ILogger _logger;
 
         public CampusIdentifiersController(
             IStorageService storageService,
@@ -34,7 +33,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             IIndex<string, IFileNameValidationService> fileNameValidationService)
             : base(storageService, logger, telemetryClient)
         {
-            _logger = logger;
             _referenceDataService = referenceDataService;
             _fileNameValidationService = fileNameValidationService[CollectionNames.ReferenceDataCampusIdentifiers];
         }
@@ -60,20 +58,19 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
-            const int period = 0;
-            var fileName = Path.GetFileName(file?.FileName);
-            var validationResult = await _fileNameValidationService.ValidateFileNameAsync(CollectionNames.ReferenceDataCampusIdentifiers, fileName, file?.Length, cancellationToken);
+            var validationResult = await ValidateFileName(
+                _fileNameValidationService,
+                CollectionNames.ReferenceDataCampusIdentifiers,
+                file.FileName,
+                file.Length,
+                cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {
-                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, validationResult.FieldError);
-                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, validationResult.SummaryError);
-
-                _logger.LogWarning($"User uploaded invalid file with name :{fileName}");
                 return View();
             }
 
-            await _referenceDataService.SubmitJob(period, CollectionNames.ReferenceDataCampusIdentifiers, User.Name(), User.Email(), file, cancellationToken);
+            await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataCampusIdentifiers, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index");
         }

@@ -11,6 +11,7 @@ using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021
 {
@@ -26,7 +27,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021
         {
         }
 
-        protected override IEnumerable<string> FileNameExtensions => new List<string>() { ".CSV" };
+        protected override string FileNameFormat => "ValidationMessages-YYYYMMDDHHMM.csv";
 
         public override async Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, long? fileSize, CancellationToken cancellationToken)
         {
@@ -37,7 +38,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021
             }
 
             string ext = Path.GetExtension(fileName);
-            result = ValidateExtension(ext, "Your file must be in a CSV format");
+            result = ValidateExtension(ext, string.Format(FileNameValidationConsts.FileMustBeInFormat, string.Join(",", FileNameExtensions)));
             if (result != null)
             {
                 return result;
@@ -45,7 +46,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021
 
             var fileNameRegex = await GetFileNameRegexAsync(collectionName, cancellationToken);
 
-            result = ValidateRegex(fileNameRegex, fileName, $"File name should use the format ValidationMessages-YYYYMMDDHHMM.csv");
+            result = ValidateRegex(fileNameRegex, fileName, string.Format(FileNameValidationConsts.FileNameMustBeInFormat, FileNameFormat));
             if (result != null)
             {
                 return result;

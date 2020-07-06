@@ -38,7 +38,9 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
             _azureStorageConfig = azureStorageConfig;
         }
 
-        protected abstract IEnumerable<string> FileNameExtensions { get; }
+        protected virtual IEnumerable<string> FileNameExtensions => new List<string>() { ".CSV" };
+
+        protected abstract string FileNameFormat { get; }
 
         public abstract Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, long? fileSize, CancellationToken cancellationToken);
 

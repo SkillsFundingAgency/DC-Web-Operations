@@ -22,7 +22,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     {
         private readonly IReferenceDataService _referenceDataService;
         private readonly IFileNameValidationService _fileNameValidationService;
-        private readonly ILogger _logger;
 
         public ValidationMessages2021Controller(
             IStorageService storageService,
@@ -32,7 +31,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             IIndex<string, IFileNameValidationService> fileNameValidationService)
             : base(storageService, logger, telemetryClient)
         {
-            _logger = logger;
             _referenceDataService = referenceDataService;
             _fileNameValidationService = fileNameValidationService[CollectionNames.ReferenceDataValidationMessages2021];
         }
@@ -61,24 +59,19 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
-            const int period = 0;
-            var fileName = Path.GetFileName(file?.FileName);
-            var validationResult = await _fileNameValidationService.ValidateFileNameAsync(CollectionNames.ReferenceDataValidationMessages2021, fileName, file?.Length, cancellationToken);
+            var validationResult = await ValidateFileName(
+                _fileNameValidationService,
+                CollectionNames.ReferenceDataValidationMessages2021,
+                file.FileName,
+                file.Length,
+                cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {
-                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, validationResult.FieldError);
-                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, validationResult.SummaryError);
-
-                _logger.LogWarning($"User uploaded invalid file with name :{fileName}");
                 return View();
             }
 
-            if (file != null)
-            {
-                await _referenceDataService.SubmitJob(
-                    period, CollectionNames.ReferenceDataValidationMessages2021, User.Name(), User.Email(), file, CancellationToken.None);
-            }
+            await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataValidationMessages2021, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index");
         }
