@@ -4,6 +4,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -16,15 +17,18 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class CampusIdentifiersController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public CampusIdentifiersController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
-            IReferenceDataService referenceDataService)
+            IReferenceDataService referenceDataService,
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(storageService, logger, telemetryClient)
         {
             _referenceDataService = referenceDataService;
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -43,12 +47,26 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([FromForm] IFormFile file, CancellationToken cancellationToken)
         {
-            const int period = 0;
-
-            if (file != null)
+            if (file == null)
             {
-                await _referenceDataService.SubmitJob(period, CollectionNames.ReferenceDataCampusIdentifiers, User.Name(), User.Email(), file, cancellationToken);
+                return RedirectToAction("Index");
             }
+
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataCampusIdentifiers);
+
+            var validationResult = await ValidateFileName(
+                fileNameValidationService,
+                CollectionNames.ReferenceDataCampusIdentifiers,
+                file.FileName,
+                file.Length,
+                cancellationToken);
+
+            if (validationResult.ValidationResult != FileNameValidationResult.Valid)
+            {
+                return View();
+            }
+
+            await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataCampusIdentifiers, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index");
         }

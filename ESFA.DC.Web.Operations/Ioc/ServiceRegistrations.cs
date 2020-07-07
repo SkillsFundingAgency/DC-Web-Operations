@@ -26,6 +26,11 @@ using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
+using ESFA.DC.Web.Operations.Services.FileValidation;
+using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
+using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
+using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
+using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
 using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.ReferenceData;
@@ -40,6 +45,7 @@ using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.TagHelpers;
+using ESFA.DC.Web.Operations.Utils;
 using Microsoft.EntityFrameworkCore;
 using JobQueueDataContext = ESFA.DC.Web.Operations.Topics.Data.JobQueueDataContext;
 
@@ -96,9 +102,14 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ManageAssignmentsService>().As<IManageAssignmentsService>().InstancePerLifetimeScope();
             builder.RegisterType<CollectionsService>().As<ICollectionsService>().InstancePerLifetimeScope();
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
-            builder.RegisterType<FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<CampusIdentifiersFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationMessages2021FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<BulkProviderUploadFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 

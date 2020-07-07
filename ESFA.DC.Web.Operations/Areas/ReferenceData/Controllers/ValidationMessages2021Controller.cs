@@ -4,6 +4,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
@@ -16,15 +17,18 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class ValidationMessages2021Controller : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public ValidationMessages2021Controller(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
-            IReferenceDataService referenceDataService)
+            IReferenceDataService referenceDataService,
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(storageService, logger, telemetryClient)
         {
             _referenceDataService = referenceDataService;
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         public async Task<IActionResult> Index()
@@ -44,15 +48,28 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         [RequestSizeLimit(524_288_000)]
         [AutoValidateAntiforgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Index([FromForm] IFormFile file)
+        public async Task<IActionResult> Index([FromForm] IFormFile file, CancellationToken cancellationToken)
         {
-            const int period = 0;
-
-            if (file != null)
+            if (file == null)
             {
-                await _referenceDataService.SubmitJob(
-                    period, CollectionNames.ReferenceDataValidationMessages2021, User.Name(), User.Email(), file, CancellationToken.None);
+                return RedirectToAction("Index");
             }
+
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataValidationMessages2021);
+
+            var validationResult = await ValidateFileName(
+                fileNameValidationService,
+                CollectionNames.ReferenceDataValidationMessages2021,
+                file.FileName,
+                file.Length,
+                cancellationToken);
+
+            if (validationResult.ValidationResult != FileNameValidationResult.Valid)
+            {
+                return View();
+            }
+
+            await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataValidationMessages2021, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index");
         }
