@@ -105,6 +105,10 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
 
+            builder.RegisterType<CampusIdentifiersFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationMessages2021FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<BulkProviderUploadFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -109,7 +110,12 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> BulkUpload(IFormFile file, CancellationToken cancellationToken)
         {
-            var fileName = Path.GetFileName(file?.FileName);
+            if (file == null)
+            {
+                return View("BulkUpload");
+            }
+
+            var fileName = Path.GetFileName(file.FileName);
             var collection = await _collectionService.GetCollectionAsync(ProvidersUploadCollectionName);
             if (collection == null || !collection.IsOpen)
             {
@@ -120,7 +126,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
             var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataOps);
 
-            var validationResult = await fileNameValidationService.ValidateFileNameAsync(ProvidersUploadCollectionName, fileName?.ToUpper(), file?.Length, cancellationToken);
+            var validationResult = await fileNameValidationService.ValidateFileNameAsync(fileName.ToUpper(CultureInfo.CurrentUICulture), file.Length, cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {
@@ -133,7 +139,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
             await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
 
-            var jobId = await _jobService.SubmitJob(new JobSubmission
+            var jobId = await _jobService.SubmitJob(
+                new JobSubmission
             {
                 CollectionName = ProvidersUploadCollectionName,
                 FileName = fileName,
@@ -141,7 +148,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 SubmittedBy = User.Name(),
                 NotifyEmail = User.Email(),
                 StorageReference = collection.StorageReference
-            });
+            }, cancellationToken);
 
             return RedirectToAction("InProgress", new { jobId });
         }

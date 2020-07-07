@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -26,9 +26,11 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.Providers
         {
         }
 
+        public override string CollectionName => CollectionNames.ReferenceDataOps;
+
         protected override string FileNameFormat => "PROVIDERS-yyyymmdd-hhmmss.csv";
 
-        public override async Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, long? fileSize, CancellationToken cancellationToken)
+        public override async Task<FileNameValidationResultModel> ValidateFileNameAsync(string fileName, long? fileSize, CancellationToken cancellationToken)
         {
             var result = ValidateEmptyFile(fileName, fileSize);
             if (result != null)
@@ -37,15 +39,15 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.Providers
             }
 
             string ext = Path.GetExtension(fileName);
-            result = ValidateExtension(ext, string.Format(FileNameValidationConsts.FileMustBeInFormat, string.Join(",", FileNameExtensions)));
+            result = ValidateExtension(ext, string.Format(CultureInfo.CurrentCulture, FileNameValidationConsts.FileMustBeInFormat, string.Join(",", FileNameExtensions)));
             if (result != null)
             {
                 return result;
             }
 
-            var fileNameRegex = await GetFileNameRegexAsync(collectionName, cancellationToken);
+            var fileNameRegex = await GetFileNameRegexAsync(CollectionName, cancellationToken);
 
-            result = ValidateRegex(fileNameRegex, fileName, string.Format(FileNameValidationConsts.FileNameMustBeInFormat, FileNameFormat));
+            result = ValidateRegex(fileNameRegex, fileName, string.Format(CultureInfo.CurrentCulture, FileNameValidationConsts.FileNameMustBeInFormat, FileNameFormat));
             if (result != null)
             {
                 return result;
@@ -64,7 +66,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.Providers
             return DateTime.ParseExact(
                 $"{matches.Groups[4].Value}-{matches.Groups[8].Value}",
                 "yyyyMMdd-HHmmss",
-                System.Globalization.CultureInfo.InvariantCulture);
+                CultureInfo.InvariantCulture);
         }
     }
 }

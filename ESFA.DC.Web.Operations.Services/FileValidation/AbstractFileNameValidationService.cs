@@ -38,11 +38,13 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
             _azureStorageConfig = azureStorageConfig;
         }
 
+        public abstract string CollectionName { get; }
+
         protected virtual IEnumerable<string> FileNameExtensions => new List<string>() { ".CSV" };
 
         protected abstract string FileNameFormat { get; }
 
-        public abstract Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, long? fileSize, CancellationToken cancellationToken);
+        public abstract Task<FileNameValidationResultModel> ValidateFileNameAsync(string fileName, long? fileSize, CancellationToken cancellationToken);
 
         public abstract DateTime GetFileDateTime(Regex fileNameRegex, string fileName);
 

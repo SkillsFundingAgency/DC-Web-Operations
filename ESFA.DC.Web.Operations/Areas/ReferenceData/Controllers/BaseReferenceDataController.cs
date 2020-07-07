@@ -9,7 +9,6 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Enums;
-using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,15 +51,20 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             }
         }
 
-        protected async virtual Task<FileNameValidationResultModel> ValidateFileName(
+        protected virtual async Task<FileNameValidationResultModel> ValidateFileName(
             IFileNameValidationService fileNameValidationService,
             string collectionName,
             string rawFileName,
             long? fileLength,
             CancellationToken cancellationToken)
         {
+            if (fileNameValidationService == null)
+            {
+                throw new ArgumentNullException(nameof(fileNameValidationService));
+            }
+
             var fileName = Path.GetFileName(rawFileName);
-            var validationResult = await fileNameValidationService.ValidateFileNameAsync(collectionName, fileName, fileLength, cancellationToken);
+            var validationResult = await fileNameValidationService.ValidateFileNameAsync(fileName, fileLength, cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {
