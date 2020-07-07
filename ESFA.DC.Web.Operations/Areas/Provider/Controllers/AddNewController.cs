@@ -15,6 +15,7 @@ using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Job;
@@ -41,7 +42,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         private readonly IJobService _jobService;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IAddNewProviderService _addNewProviderService;
-        private readonly IFileNameValidationService _fileNameValidationService;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public AddNewController(
             ILogger logger,
@@ -50,7 +51,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             IStorageService storageService,
             OpsDataLoadServiceConfigSettings opsDataLoadServiceConfigSettings,
             IJobService jobService,
-            IIndex<string, IFileNameValidationService> fileNameValidationServices,
+            IFileNameValidationServiceProvider fileNameValidationServicesProvider,
             IJsonSerializationService jsonSerializationService,
             TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
@@ -62,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             _jobService = jobService;
             _jsonSerializationService = jsonSerializationService;
             _addNewProviderService = addNewProviderService;
-            _fileNameValidationService = fileNameValidationServices[CollectionNames.ReferenceDataOps];
+            _fileNameValidationServiceProvider = fileNameValidationServicesProvider;
         }
 
         [HttpGet]
@@ -117,7 +118,9 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 return View();
             }
 
-            var validationResult = await _fileNameValidationService.ValidateFileNameAsync(ProvidersUploadCollectionName, fileName?.ToUpper(), file?.Length, cancellationToken);
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataOps);
+
+            var validationResult = await fileNameValidationService.ValidateFileNameAsync(ProvidersUploadCollectionName, fileName?.ToUpper(), file?.Length, cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {

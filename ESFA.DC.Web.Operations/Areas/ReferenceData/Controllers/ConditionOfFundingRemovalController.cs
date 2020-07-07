@@ -21,18 +21,18 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class ConditionOfFundingRemovalController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IFileNameValidationService _fileNameValidationService;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public ConditionOfFundingRemovalController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            IIndex<string, IFileNameValidationService> fileNameValidationService)
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(storageService, logger, telemetryClient)
         {
             _referenceDataService = referenceDataService;
-            _fileNameValidationService = fileNameValidationService[CollectionNames.ReferenceDataConditionsOfFundingRemoval];
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         public async Task<IActionResult> Index()
@@ -58,8 +58,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataConditionsOfFundingRemoval);
+
             var validationResult = await ValidateFileName(
-                _fileNameValidationService,
+                fileNameValidationService,
                 CollectionNames.ReferenceDataConditionsOfFundingRemoval,
                 file.FileName,
                 file.Length,

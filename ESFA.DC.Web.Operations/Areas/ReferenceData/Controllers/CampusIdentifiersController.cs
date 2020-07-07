@@ -1,13 +1,7 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.Indexed;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
-using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.Enums;
@@ -23,18 +17,18 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class CampusIdentifiersController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IFileNameValidationService _fileNameValidationService;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public CampusIdentifiersController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            IIndex<string, IFileNameValidationService> fileNameValidationService)
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(storageService, logger, telemetryClient)
         {
             _referenceDataService = referenceDataService;
-            _fileNameValidationService = fileNameValidationService[CollectionNames.ReferenceDataCampusIdentifiers];
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -58,8 +52,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataCampusIdentifiers);
+
             var validationResult = await ValidateFileName(
-                _fileNameValidationService,
+                fileNameValidationService,
                 CollectionNames.ReferenceDataCampusIdentifiers,
                 file.FileName,
                 file.Length,

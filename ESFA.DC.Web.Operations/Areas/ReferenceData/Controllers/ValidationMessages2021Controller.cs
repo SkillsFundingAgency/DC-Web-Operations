@@ -1,11 +1,7 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.Indexed;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
-using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.Enums;
@@ -21,18 +17,18 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class ValidationMessages2021Controller : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IFileNameValidationService _fileNameValidationService;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public ValidationMessages2021Controller(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            IIndex<string, IFileNameValidationService> fileNameValidationService)
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(storageService, logger, telemetryClient)
         {
             _referenceDataService = referenceDataService;
-            _fileNameValidationService = fileNameValidationService[CollectionNames.ReferenceDataValidationMessages2021];
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         public async Task<IActionResult> Index()
@@ -59,8 +55,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataValidationMessages2021);
+
             var validationResult = await ValidateFileName(
-                _fileNameValidationService,
+                fileNameValidationService,
                 CollectionNames.ReferenceDataValidationMessages2021,
                 file.FileName,
                 file.Length,

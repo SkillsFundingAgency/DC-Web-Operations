@@ -26,6 +26,7 @@ using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
+using ESFA.DC.Web.Operations.Services.FileValidation;
 using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
 using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
@@ -104,10 +105,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<CampusIdentifiersFileNameValidationService>().Keyed<IFileNameValidationService>(CollectionNames.ReferenceDataCampusIdentifiers).WithAttributeFiltering().InstancePerLifetimeScope();
-            builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().Keyed<IFileNameValidationService>(CollectionNames.ReferenceDataConditionsOfFundingRemoval).WithAttributeFiltering().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationMessages2021FileNameValidationService>().Keyed<IFileNameValidationService>(CollectionNames.ReferenceDataValidationMessages2021).WithAttributeFiltering().InstancePerLifetimeScope();
-            builder.RegisterType<BulkProviderUploadFileNameValidationService>().Keyed<IFileNameValidationService>(CollectionNames.ReferenceDataOps).WithAttributeFiltering().InstancePerLifetimeScope();
+            builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 
