@@ -67,9 +67,9 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<T>(await GetDataAsync(url, cancellationToken));
+            var data = await GetDataAsync(url, cancellationToken);
 
-            return data;
+            return string.IsNullOrWhiteSpace(data) ? default(T) : _jsonSerializationService.Deserialize<T>(data);
         }
 
         public async Task<string> PutDataAsync(string url, object data, CancellationToken cancellationToken)
