@@ -2,7 +2,8 @@
     [Id] [int] IDENTITY(1,1),
     [EventId] [int] NOT NULL,
     [EventTitle] [nvarchar](max) NOT NULL,
-    [EventDescription] [nvarchar](max) NOT NULL
+    [EventDescription] [nvarchar](max) NOT NULL, 
+    [EventOperationType] NVARCHAR(MAX) NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[AuditEventType] ADD PRIMARY KEY CLUSTERED 
