@@ -71,7 +71,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
             else
             {
-                reportsViewModel.CollectionYear = currentYearPeriod.Year.Value;
+                reportsViewModel.CollectionYear = currentYearPeriod.Year ?? 0;
                 reportsViewModel.CollectionPeriod = currentYearPeriod.Period;
             }
 
