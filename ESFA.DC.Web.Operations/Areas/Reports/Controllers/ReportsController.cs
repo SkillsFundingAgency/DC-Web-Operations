@@ -58,21 +58,10 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             };
 
             // get the current period
-            var currentYearPeriods = await _periodService.GetOpenPeriodsAsync();
-            if (currentYearPeriods == null || !currentYearPeriods.Any())
-            {
-                string errorMessage = $"Call to get open return periods failed";
-                _logger.LogError(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
 
-            var currentYearPeriod = currentYearPeriods
-                .OrderByDescending(o => o.CollectionYear)
-                .ThenByDescending(t => t.PeriodNumber)
-                .First();
-
-            reportsViewModel.CurrentCollectionYear = currentYearPeriod.CollectionYear;
-            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.PeriodNumber;
+            reportsViewModel.CurrentCollectionYear = currentYearPeriod.Year ?? 0;
+            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.Period;
 
             // validate parameters
             if (collectionYear.HasValue && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 14)
@@ -82,13 +71,13 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
             else
             {
-                reportsViewModel.CollectionYear = currentYearPeriod.CollectionYear;
-                reportsViewModel.CollectionPeriod = currentYearPeriod.PeriodNumber;
+                reportsViewModel.CollectionYear = currentYearPeriod.Year ?? 0;
+                reportsViewModel.CollectionPeriod = currentYearPeriod.Period;
             }
 
             reportsViewModel.ReportAction = ReportActions.GetReportDetails;
 
-            return View(model: reportsViewModel);
+            return View(reportsViewModel);
         }
 
         [HttpGet("RunReport")]
