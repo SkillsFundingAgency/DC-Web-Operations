@@ -11,7 +11,8 @@ Post-Deployment Script Template
 */
 BEGIN
 
-	DECLARE @SummaryOfChanges_AuditEventType TABLE (EventId int, EventTitle nvarchar(MAX), EventDescription nvarchar(MAX) , [Action] VARCHAR(100));
+	DECLARE @SummaryOfChanges_AuditEventType TABLE (EventId int, EventTitle nvarchar(MAX), 
+    EventDescription nvarchar(MAX), EventOperationType nvarchar(MAX));
 
 	MERGE INTO [dbo].[AuditEventType] AS Target
 	USING (VALUES
