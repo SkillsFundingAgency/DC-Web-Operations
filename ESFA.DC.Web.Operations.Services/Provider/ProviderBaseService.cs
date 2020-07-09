@@ -15,7 +15,7 @@ using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {
-    public class ProviderBaseService : BaseHttpClientService
+    public abstract class ProviderBaseService : BaseHttpClientService
     {
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
