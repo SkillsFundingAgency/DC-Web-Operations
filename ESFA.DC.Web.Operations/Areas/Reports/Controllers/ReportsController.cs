@@ -60,7 +60,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             // get the current period
             var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
 
-            reportsViewModel.CurrentCollectionYear = currentYearPeriod.Year.Value;
+            reportsViewModel.CurrentCollectionYear = currentYearPeriod.Year ?? 0;
             reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.Period;
 
             // validate parameters
