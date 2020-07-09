@@ -16,7 +16,7 @@ BEGIN
 	MERGE INTO [dbo].[AuditEventType] AS Target
 	USING (VALUES
 			(0, 'FailJob','User selects to fail individual job', 'U') ,
-        (1, 'ManagingPeriodCollection', 'Time and date of given collection edited to users choice'),
+        (1, 'ManagingPeriodCollection', 'Time and date of given collection edited to users choice', 'U'),
         (2, 'SelectOverride', 'Override status updated', 'U'),
         (3, 'FrmPublish','User published a period of FRM Reports', 'U'),
         (4, 'FrmUnpublish', 'User unpublished a period of FRM Reports', 'D'),
