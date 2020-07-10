@@ -1,0 +1,98 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Funding Claims Provider Data</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Funding Claims Provider Data</h1>
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form asp-controller="FundingClaimsProviderData" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
+
+            @Html.AntiForgeryToken()
+
+            <h1 class="govuk-heading-m">
+                Choose funding claims provider reference data file to upload
+            </h1>
+
+            <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
+                <label class="govuk-label govuk-!-font-weight-bold" for="file">
+                    Upload a file
+                </label>
+                <div error-field-name="@ErrorMessageKeys.Submission_FileFieldKey"></div>
+                <input class="govuk-file-upload" name="file" id="file" type="file" accept=".csv">
+            </div>
+
+            <button class="govuk-button" id="uploadFile">
+                Upload
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Date</th>
+                    <th scope="col" class="govuk-table__header">Submitted by</th>
+                    <th scope="col" class="govuk-table__header">File</th>
+                    <th scope="col" class="govuk-table__header">Job ID</th>
+                    <th scope="col" class="govuk-table__header table-width-min">Status</th>
+                    <th scope="col" class="govuk-table__header">Reports</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="fileContainer"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+
+    <script type="module">
+        import Controller from '/assets/js/referenceData/referenceDataController.js';
+        import Hub from '/assets/js/hubs/referenceData/fundingClaimdsProviderDataHub.js';
+
+        (function() {
+            const model = @Json.Serialize(Model);
+            const controller = new Controller();
+            const hub = new Hub(controller);
+            hub.startHub();
+            
+            controller.renderFiles('ConditionOfFundingRemoval', model);       
+        })();
+    </script>
+}
