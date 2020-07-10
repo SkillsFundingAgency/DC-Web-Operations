@@ -8,13 +8,16 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Models
     {
         public ManageAssignmentsViewModel()
         {
-            CollectionsAssignments = new List<CollectionAssignment>();
+            ActiveCollectionsAssignments = new List<CollectionAssignment>();
+            InactiveCollectionAssignments = new List<CollectionAssignment>();
         }
 
         public long Ukprn { get; set; }
 
         public string ProviderName { get; set; }
 
-        public IList<CollectionAssignment> CollectionsAssignments { get; set; }
+        public IList<CollectionAssignment> ActiveCollectionsAssignments { get; set; }
+
+        public IList<CollectionAssignment> InactiveCollectionAssignments { get; set; }
     }
 }

@@ -7,8 +7,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
 {
     public interface IManageProvidersService
     {
-        Task<Models.Provider.Provider> GetProvider(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Models.Provider.Provider> GetProviderAsync(long ukprn, CancellationToken cancellationToken);
 
-        Task<IEnumerable<CollectionAssignment>> GetProviderAssignments(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<CollectionAssignment>> GetProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken);
     }
 }

@@ -7,36 +7,31 @@ using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Extensions;
 using ESFA.DC.Web.Operations.Settings.Models;
-using MoreLinq;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {
-    public class ProviderBaseService : BaseHttpClientService
+    public abstract class ProviderBaseService : BaseHttpClientService
     {
-        private readonly ILogger _logger;
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public ProviderBaseService(
-            ILogger logger,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient,
             IDateTimeProvider dateTimeProvider)
             : base(jsonSerializationService, httpClient)
         {
-            _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<Models.Provider.Provider> GetProvider(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Models.Provider.Provider> GetProviderAsync(long ukprn, CancellationToken cancellationToken)
         {
             var data = _jsonSerializationService.Deserialize<ProviderDetail>(
                 await GetDataAsync($"{_baseUrl}/api/org/{ukprn}", cancellationToken));
@@ -44,7 +39,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, data.IsMCA);
         }
 
-        public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignments(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken)
         {
             var response = await GetDataAsync(_baseUrl + $"/api/org/assignments/{ukprn}", cancellationToken);
 
@@ -61,7 +56,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             });
         }
 
-        public int SetDisplayOrder(CollectionsManagement.Models.Enums.CollectionType collectionType, string collectionName)
+        public int SetDisplayOrder(CollectionType collectionType, string collectionName)
         {
             switch (collectionType)
             {

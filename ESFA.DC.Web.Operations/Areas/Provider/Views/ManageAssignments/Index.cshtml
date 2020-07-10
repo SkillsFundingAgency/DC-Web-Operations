@@ -1,11 +1,13 @@
 ﻿@model ESFA.DC.Web.Operations.Areas.Provider.Models.ManageAssignmentsViewModel
 @using ESFA.DC.Web.Operations.Constants
-@using ESFA.DC.Web.Operations.Utils
 
 @{
     ViewData["Title"] = "Manage assignments";
     ViewData[ViewDataConstants.BackLink] = "/provider/ManageProviders?ukprn=" + Model.Ukprn;
 }
+
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<META HTTP-EQUIV="EXPIRES" CONTENT="0">
 
 <br>
 <form asp-area="Provider" asp-controller="ManageAssignments" asp-action="Submit" method="post">
@@ -13,47 +15,78 @@
     <input asp-for="ProviderName" type="hidden" />
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-caption-xl">@Model.ProviderName</h2>
-            <h1 class="govuk-heading-xl">Manage assignments</h1>
+            <p class="govuk-heading-xl govuk-!-margin-bottom-0">Manage assignments</p>
+            <p>@Model.ProviderName, @Model.Ukprn</p>
+            <div class="govuk-!-font-weight-bold">Edit active assignments</div>
             <table class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header">Collection</th>
                         <th scope="col" class="govuk-table__header">Start date</th>
                         <th scope="col" class="govuk-table__header">End date</th>
+                        <th scope="col" class="govuk-table__header"></th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body" id="assignments">
-                    @for (int i = 0; i < Model.CollectionsAssignments.Count; i++)
+                    @for (int i = 0; i < Model.ActiveCollectionsAssignments.Count; i++)
                     {
-                        <input asp-for="@Model.CollectionsAssignments[i].CollectionId" type="hidden" />
-                        <input asp-for="@Model.CollectionsAssignments[i].Name" type="hidden" />
-                        <input asp-for="@Model.CollectionsAssignments[i].DisplayOrder" type="hidden" />
                         <tr class="govuk-table__row">
+                            <input asp-for="@Model.ActiveCollectionsAssignments[i].CollectionId" type="hidden" />
+                            <input asp-for="@Model.ActiveCollectionsAssignments[i].Name" type="hidden" />
+                            <input asp-for="@Model.ActiveCollectionsAssignments[i].DisplayOrder" type="hidden" />
                             <td class="govuk-table__cell table">
-                                @Model.CollectionsAssignments[i].Name
+                                @Model.ActiveCollectionsAssignments[i].Name
                             </td>
                             <td class="govuk-table__cell">
-                                <input asp-for="@Model.CollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
+                                <input asp-for="@Model.ActiveCollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
                             </td>
                             <td class="govuk-table__cell">
-                                <input asp-for="@Model.CollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
+                                <input asp-for="@Model.ActiveCollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
+                            </td>
+                            <td class="govuk-table__cell">
+                                <button data-prevent-double-click="true" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-top-0" asp-controller="ManageAssignments" asp-action="Remove" asp-route-collectionId="@Model.ActiveCollectionsAssignments[i].CollectionId">Remove</button>
                             </td>
                         </tr>
                     }
                 </tbody>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="govuk-border-coloure govuk-!-font-size-14">Null value will default to '2600-07-31'</td>
+            </table>
+            <div class="govuk-!-font-weight-bold">Add assignments</div>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Collection</th>
+                        <th scope="col" class="govuk-table__header">Start date</th>
+                        <th scope="col" class="govuk-table__header">End date</th>
+                        <th scope="col" class="govuk-table__header"></th>
                     </tr>
+                </thead>
+                <tbody class="govuk-table__body" id="assignments">
+                    @for (int i = 0; i < Model.InactiveCollectionAssignments.Count; i++)
+                    {
+                        <tr class="govuk-table__row">
+                            <input asp-for="@Model.InactiveCollectionAssignments[i].CollectionId" type="hidden" />
+                            <input asp-for="@Model.InactiveCollectionAssignments[i].Name" type="hidden" />
+                            <input asp-for="@Model.InactiveCollectionAssignments[i].DisplayOrder" type="hidden" />
+                            <td class="govuk-table__cell table">
+                                @Model.InactiveCollectionAssignments[i].Name
+                            </td>
+                            <td class="govuk-table__cell">
+                                <input asp-for="@Model.InactiveCollectionAssignments[i].StartDate" type="date" class="govuk-input" />
+                            </td>
+                            <td class="govuk-table__cell">
+                                <input asp-for="@Model.InactiveCollectionAssignments[i].EndDate" type="date" class="govuk-input" />
+                            </td>
+                            <td class="govuk-table__cell">
+                                <button data-prevent-double-click="true" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-top-0" asp-controller="ManageAssignments" asp-action="Add" asp-route-collectionId="@Model.InactiveCollectionAssignments[i].CollectionId">Add</button>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
     <div class="govuk-grid-row">
-        <button asp-controller="ManageAssignments" asp-action="Submit" class="govuk-button">Save</button>
+        <button asp-controller="ManageAssignments" asp-action="Submit" class="govuk-button">Save changes</button>
     </div>
     <div class="govuk-grid-row">
         <a class="govuk-back-link" href="/provider/ManageProviders?ukprn=@Model.Ukprn">Cancel</a>
