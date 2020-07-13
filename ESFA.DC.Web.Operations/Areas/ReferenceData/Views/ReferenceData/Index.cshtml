@@ -42,16 +42,7 @@
                 </ul>
             </div>
 
-            <div class="govuk-grid-column-one-third">
-                <ul class="govuk-list">
-                    <li>
-                        <h3 class="home-services__heading">@Html.ActionLink("Funding Claims Provider Data", "Index", "FundingClaimsProviderData", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.FundingClaimsProviderData.LastUpdatedDateTimeFormattedDisplay</p>
-                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.FundingClaimsProviderData.LastUpdatedByWho</p>
-                    </li>
-                </ul>
-            </div>
+           
 
             @if (Model.ValidationMessages2021.Valid)
             {
@@ -66,6 +57,18 @@
                     </ul>
                 </div>
             }
+        </div>
+        <div class="govuk-grid-row govuk-!-margin-top-6">
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
+                        <h3 class="home-services__heading">@Html.ActionLink("Funding Claims Provider Data", "Index", "FundingClaimsProviderData", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.FundingClaimsProviderData.LastUpdatedDateTimeFormattedDisplay</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.FundingClaimsProviderData.LastUpdatedByWho</p>
+                    </li>
+                </ul>
+            </div>
         </div>
     </main>
 </div>
