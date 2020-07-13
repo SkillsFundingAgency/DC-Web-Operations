@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Provider.Models;
 using ESFA.DC.Web.Operations.Controllers;
@@ -12,21 +13,19 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
     [Area(AreaNames.Provider)]
     public class ManageProvidersController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
-        private readonly ILogger _logger;
         private readonly IManageProvidersService _manageProvidersService;
 
         public ManageProvidersController(ILogger logger, IManageProvidersService manageProvidersService, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
-            _logger = logger;
             _manageProvidersService = manageProvidersService;
         }
 
-        public async Task<IActionResult> Index(long ukprn)
+        public async Task<IActionResult> Index(long ukprn, CancellationToken cancellationToken)
         {
             var viewModel = new ManageProviderViewModel();
-            var provider = await _manageProvidersService.GetProvider(ukprn);
-            viewModel.CollectionAssignments = await _manageProvidersService.GetProviderAssignments(ukprn);
+            var provider = await _manageProvidersService.GetProviderAsync(ukprn, cancellationToken);
+            viewModel.CollectionAssignments = await _manageProvidersService.GetProviderAssignmentsAsync(ukprn, cancellationToken);
 
             viewModel.ProviderName = provider.Name;
             viewModel.Ukprn = provider.Ukprn;

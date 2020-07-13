@@ -16,7 +16,7 @@ using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {
-    public class ProviderBaseService : BaseHttpClientService
+    public abstract class ProviderBaseService : BaseHttpClientService
     {
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
@@ -33,7 +33,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<Models.Provider.Provider> GetProvider(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Models.Provider.Provider> GetProviderAsync(long ukprn, CancellationToken cancellationToken)
         {
             var data = _jsonSerializationService.Deserialize<ProviderDetail>(
                 await GetDataAsync($"{_baseUrl}/api/org/{ukprn}", cancellationToken));
@@ -41,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, data.IsMCA);
         }
 
-        public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignments(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken)
         {
             var response = await GetDataAsync(_baseUrl + $"/api/org/assignments/{ukprn}", cancellationToken);
 

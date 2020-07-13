@@ -123,7 +123,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
 
             if (_featureFlags.DuplicateFileCheckEnabled)
             {
-                if (await (await _storageService.GetAzureStorageReferenceService(_azureStorageConfig.ConnectionString, collection.StorageReference)).ContainsAsync($"{fileName}", cancellationToken))
+                if (await (await _storageService.GetAzureStorageReferenceService(_azureStorageConfig.ConnectionString, collection.StorageReference)).ContainsAsync($"{collectionName}/{fileName}", cancellationToken))
                 {
                     return new FileNameValidationResultModel()
                     {

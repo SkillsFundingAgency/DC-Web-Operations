@@ -40,7 +40,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<IEnumerable<CollectionAssignment>> GetAvailableCollections(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<CollectionAssignment>> GetAvailableCollectionsAsync(CancellationToken cancellationToken)
         {
             var collectionYears = new List<int>();
 
@@ -73,7 +73,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 .ToList();
         }
 
-        public async Task<bool> UpdateProviderAssignments(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> UpdateProviderAssignmentsAsync(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken)
         {
             _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Total number of updates:{assignments.Count}");
 
@@ -83,8 +83,8 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 .ForEach(a => organisationToUpdate.Add(new OrganisationCollection()
             {
                 CollectionId = a.CollectionId,
-                StartDate = _dateTimeProvider.ConvertUkToUtc(a.StartDate.GetValueOrDefault()),
-                EndDate = a.EndDate.HasValue ? _dateTimeProvider.ConvertUkToUtc(a.EndDate.Value) : Constants.MaxDateTime,
+                StartDate = a.StartDate.Value,
+                EndDate = a.EndDate ?? Constants.MaxDateTime,
             }));
 
             var organisationToDelete = new List<OrganisationCollection>();
