@@ -80,4 +80,4 @@
     }
 }
 
-export default conditionOfFundingRemovalHub;
+export default fundingClaimsProviderDataHub;

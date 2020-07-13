@@ -272,6 +272,11 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
 
+                routes.MapHub<FundingClaimsProviderDataHub>("/fundingClaimsProviderDataHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
                 routes.MapHub<ValidationErrorMessages2021Hub>("/validationMessages2021Hub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
@@ -338,6 +343,7 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ConditionOfFundingRemovalHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<FundingClaimsProviderDataHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
