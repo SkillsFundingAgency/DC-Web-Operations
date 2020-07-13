@@ -7,6 +7,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models.Summarisation;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -19,10 +20,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         private readonly string _baseUrl;
 
         public PeriodEndService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -145,15 +147,16 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<List<SummarisationCollectionReturnCode>> GetSummarisationCollectionCodesAsync(string collectionType, int year, int period, CancellationToken cancellationToken)
         {
-            var url = $"/api/summarisation/return-codes-for-period";
-            var parameters = new List<object>
+            var path = $"/api/summarisation/return-codes-for-period";
+            var segments = new List<string>
             {
+                path,
                 collectionType,
-                year,
-                period
+                year.ToString(),
+                period.ToString()
             };
 
-            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(_baseUrl, url, parameters);
+            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(_baseUrl, segments);
 
             return data;
         }

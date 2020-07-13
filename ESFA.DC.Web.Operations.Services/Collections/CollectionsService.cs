@@ -8,6 +8,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -23,12 +24,13 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         private readonly ILogger _logger;
 
         public CollectionsService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient,
             IDateTimeProvider dateTimeProvider,
             ILogger logger)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;

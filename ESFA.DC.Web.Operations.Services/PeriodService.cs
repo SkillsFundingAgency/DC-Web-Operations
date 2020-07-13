@@ -8,6 +8,7 @@ using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
@@ -21,11 +22,12 @@ namespace ESFA.DC.Web.Operations.Services
         private readonly string _baseUrl;
 
         public PeriodService(
+            IRouteFactory routeFactory,
             ApiSettings apiSettings,
             IJsonSerializationService jsonSerializationService,
             HttpClient httpClient,
             ILogger logger)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;

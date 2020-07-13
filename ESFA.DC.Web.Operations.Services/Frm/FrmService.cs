@@ -1,28 +1,25 @@
-﻿namespace ESFA.DC.Web.Operations.Services.Frm
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Autofac.Features.AttributeFilters;
-    using Autofac.Features.Indexed;
-    using ESFA.DC.FileService.Interface;
-    using ESFA.DC.Jobs.Model;
-    using ESFA.DC.Logging.Interfaces;
-    using ESFA.DC.PeriodEnd.Models.Dtos;
-    using ESFA.DC.Serialization.Interfaces;
-    using ESFA.DC.Web.Operations.Interfaces;
-    using ESFA.DC.Web.Operations.Interfaces.Frm;
-    using ESFA.DC.Web.Operations.Settings.Models;
-    using ESFA.DC.Web.Operations.Utils;
-    using MoreLinq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Autofac.Features.Indexed;
+using ESFA.DC.FileService.Interface;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.PeriodEnd.Models.Dtos;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Frm;
+using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
+using MoreLinq;
 
+namespace ESFA.DC.Web.Operations.Services.Frm
+{
     public class FrmService : BaseHttpClientService, IFrmService
     {
-        private readonly ILogger _logger;
         private readonly IFileService _fileService;
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
@@ -30,11 +27,12 @@
         private readonly string _baseJobApiUrl;
 
         public FrmService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             IIndex<PersistenceStorageKeys, IFileService> fileService,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";

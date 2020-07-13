@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -18,10 +19,11 @@ namespace ESFA.DC.Web.Operations.Services
         private readonly string _baseUrl;
 
         public EmailDistributionService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             HttpClient httpClient,
             ApiSettings apiSettings)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/email-distribution";
         }

@@ -41,6 +41,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         private readonly string _baseUrl;
 
         public ALLFPeriodEndService(
+            IRouteFactory routeFactory,
             IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IJsonSerializationService jsonSerializationService,
@@ -53,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             AzureStorageSection azureStorageConfig,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;

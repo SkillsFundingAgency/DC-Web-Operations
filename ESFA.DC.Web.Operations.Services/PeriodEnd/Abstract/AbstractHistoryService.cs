@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 {
@@ -14,11 +14,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         private readonly string _baseUrl;
 
         protected AbstractHistoryService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
-            ApiSettings apiSettings,
             HttpClient httpClient,
             string baseUrl)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = baseUrl; // $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history";
         }
