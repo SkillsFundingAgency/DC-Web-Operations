@@ -39,6 +39,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         private readonly string _baseUrl;
 
         public ReferenceDataService(
+            IRouteFactory routeFactory,
             ICollectionsService collectionsService,
             IJobService jobService,
             IStorageService storageService,
@@ -50,7 +51,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             HttpClient httpClient,
             AzureStorageSection azureStorageConfig,
             ILogger logger)
-        : base(jsonSerializationService, httpClient)
+        : base(routeFactory, jsonSerializationService, httpClient)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;

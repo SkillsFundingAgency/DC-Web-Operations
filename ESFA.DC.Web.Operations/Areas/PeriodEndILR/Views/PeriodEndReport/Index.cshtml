@@ -77,7 +77,7 @@
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                @if (Model != null && Model.SummarisationTotals.Any())
+                @if (Model?.SummarisationTotals != null && Model.SummarisationTotals.Any())
                 {
                     foreach (var collectionType in Model.SummarisationTotals.Select(x => x.CollectionType).Distinct())
                     {

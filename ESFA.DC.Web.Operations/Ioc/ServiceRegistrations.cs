@@ -45,7 +45,6 @@ using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.TagHelpers;
-using ESFA.DC.Web.Operations.Utils;
 using Microsoft.EntityFrameworkCore;
 using JobQueueDataContext = ESFA.DC.Web.Operations.Topics.Data.JobQueueDataContext;
 
@@ -63,7 +62,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().As<ISerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<SerialisationHelperService>().As<ISerialisationHelperService>().InstancePerLifetimeScope();
-
+            builder.RegisterType<RouteFactory>().As<IRouteFactory>().InstancePerLifetimeScope();
             builder.RegisterType<CloudStorageService>().As<ICloudStorageService>().SingleInstance();
 
             builder.RegisterType<HubEventBase>().As<Interfaces.IHubEventBase>().SingleInstance();
