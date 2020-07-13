@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -146,9 +145,15 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<List<SummarisationCollectionReturnCode>> GetSummarisationCollectionCodesAsync(string collectionType, int year, int period, CancellationToken cancellationToken)
         {
-            string url = $"{_baseUrl}/api/summarisation/return-codes-for-period/{collectionType}/{year}/{period}";
+            var url = $"/api/summarisation/return-codes-for-period";
+            var parameters = new List<object>
+            {
+                collectionType,
+                year,
+                period
+            };
 
-            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(url, cancellationToken);
+            var data = await GetAsync<List<SummarisationCollectionReturnCode>>(_baseUrl, url, parameters);
 
             return data;
         }

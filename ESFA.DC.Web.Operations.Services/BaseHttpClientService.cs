@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -6,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Models;
+using Flurl;
+using Flurl.Http;
 
 namespace ESFA.DC.Web.Operations.Services
 {
@@ -81,6 +84,29 @@ namespace ESFA.DC.Web.Operations.Services
 
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<TResult> PostAsync<TContent, TResult>(string baseUrl, string url, TContent content)
+        {
+            return await baseUrl
+                .AppendPathSegment(url)
+                .PostJsonAsync(content)
+                .ReceiveJson<TResult>();
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string baseUrl, string url, IEnumerable<object> parameters)
+        {
+            var clientUrl = baseUrl.AppendPathSegment(url);
+
+            if (parameters != null)
+            {
+                foreach (var parameter in parameters)
+                {
+                    clientUrl.AppendPathSegment(parameter.ToString());
+                }
+            }
+
+            return await clientUrl.GetJsonAsync<TResult>();
         }
     }
 }
