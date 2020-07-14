@@ -12,13 +12,13 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
     public class FundingClaimsProviderDataHub : BaseReferenceDataHub, IReferenceDataHub
     {
         private readonly ISerialisationHelperService _serialisationHelperService;
-        private readonly IHubContext<ConditionOfFundingRemovalHub> _hubContext;
+        private readonly IHubContext<FundingClaimsProviderDataHub> _hubContext;
         private readonly IReferenceDataService _referenceDataService;
 
         public FundingClaimsProviderDataHub(
             IHubEventBase eventBase,
             ISerialisationHelperService serialisationHelperService,
-            IHubContext<ConditionOfFundingRemovalHub> hubContext,
+            IHubContext<FundingClaimsProviderDataHub> hubContext,
             IReferenceDataService referenceDataService,
             ILogger logger)
         : base(eventBase, logger, ReferenceDataTypes.FundingClaimsProviderData)
