@@ -1,7 +1,8 @@
-function getHandleBarsTemplate(name, root) {
+export const getHandleBarsTemplate = function (name, root) {
     if (root === undefined) {
         root = '/assets/templates/';
     }
+
     if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
         var xmlhttp;
         if (window.XMLHttpRequest) {
@@ -24,9 +25,9 @@ function getHandleBarsTemplate(name, root) {
                 }
             }
         }
+
         xmlhttp.open("GET", root + name + '.html', true);
         xmlhttp.send();
-
     }
     return Handlebars.templates[name];
 };
