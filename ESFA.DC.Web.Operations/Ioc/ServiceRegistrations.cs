@@ -29,6 +29,7 @@ using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.FileValidation;
 using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
+using ESFA.DC.Web.Operations.Services.FileValidation.DevolvedPostcodes;
 using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
 using ESFA.DC.Web.Operations.Services.Frm;
@@ -83,6 +84,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -110,6 +112,10 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidationMessages2021FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<BulkProviderUploadFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesFullNameFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesLocalAuthorityFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesOnsOverrideFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesSofFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 

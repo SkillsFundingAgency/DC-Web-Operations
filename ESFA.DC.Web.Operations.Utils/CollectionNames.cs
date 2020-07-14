@@ -15,5 +15,13 @@
         public const string ReferenceDataValidationMessages2021 = "ILRValidationMessages2021";
 
         public const string ReferenceDataOps = "REF-OPS";
+
+        public const string DevolvedPostcodesFullName = "DevolvedPostcodes-FullName";
+
+        public const string DevolvedPostcodesLocalAuthority = "DevolvedPostcodes-LocalAuthority";
+
+        public const string DevolvedPostcodesSof = "DevolvedPostcodes-Sof";
+
+        public const string DevolvedPostcodesOnsOverride = "DevolvedPostcodes-OnsOverride";
     }
 }

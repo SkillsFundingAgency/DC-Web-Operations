@@ -12,5 +12,10 @@
         public const string ConditionOfFundingRemovalReportName = "CoFRemovalRD-ValidationReport";
         public const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
         public const string ValidationMessagesReportName = "ValidationMessagesRD-ValidationReport";
+
+        public const string DevolvedPostcodesFullNameReportName = "MCAGLA_FullName_RD-ValidationReport";
+        public const string DevolvedPostcodesLocalAuthorityReportName = "MCAGLA_LocalAuthority_RD-ValidationReport";
+        public const string DevolvedPostcodesSofReportName = "MCAGLA_SOF_RD-ValidationReport";
+        public const string DevolvedPostcodesOnsOverride = "MCAGLA_ONSOverride_RD-ValidationReport";
     }
 }

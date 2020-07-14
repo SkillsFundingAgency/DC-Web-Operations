@@ -4,6 +4,7 @@
     {
         ConditionOfFundingRemoval,
         CampusIdentifier,
-        ValidationMessages2021
+        ValidationMessages2021,
+        DevolvedPostcodes
     }
 }

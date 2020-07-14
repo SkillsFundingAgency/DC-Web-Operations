@@ -142,6 +142,13 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
             var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
             var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
+            var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
+                w => w.CollectionName == CollectionNames.DevolvedPostcodesFullName ||
+                     w.CollectionName == CollectionNames.DevolvedPostcodesLocalAuthority ||
+                     w.CollectionName == CollectionNames.DevolvedPostcodesOnsOverride ||
+                     w.CollectionName == CollectionNames.DevolvedPostcodesSof)
+                .OrderByDescending(o => o.DateTimeSubmittedUtc)
+                .FirstOrDefault();
 
             var model = new ReferenceDataIndexModel
             {
@@ -155,6 +162,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulCoFRJob?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                DevolvedPostcodes = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
                 ValidationMessages2021 = new ReferenceDataIndexBase
