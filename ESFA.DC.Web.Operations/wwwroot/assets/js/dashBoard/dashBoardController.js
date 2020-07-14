@@ -41,6 +41,10 @@ class DashBoardController {
         this._percentageTextRangeSubmissionsToday = [{ value: 75, label: 'Super excited!' }, { value: 50, label: 'Feeling happy' }, { value: 0, label: 'Looking Good' }];
     }
 
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+    }
+
     updatePage(data) {
         data = JSON.parse(data);
 

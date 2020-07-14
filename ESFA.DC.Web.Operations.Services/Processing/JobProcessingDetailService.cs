@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model.Processing.Detail;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ESFA.DC.Web.Operations.Services.Processing
 {
@@ -18,8 +16,12 @@ namespace ESFA.DC.Web.Operations.Services.Processing
     {
         private readonly string _baseUrl;
 
-        public JobProcessingDetailService(ApiSettings apiSettings, IJsonSerializationService jsonSerializationService, HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+        public JobProcessingDetailService(
+            IRouteFactory routeFactory,
+            ApiSettings apiSettings,
+            IJsonSerializationService jsonSerializationService,
+            HttpClient httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }

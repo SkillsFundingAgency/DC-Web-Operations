@@ -29,6 +29,7 @@ using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.FileValidation;
 using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
+using ESFA.DC.Web.Operations.Services.FileValidation.FundingClaimsProviderData;
 using ESFA.DC.Web.Operations.Services.FileValidation.DevolvedPostcodes;
 using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
@@ -46,7 +47,6 @@ using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.TagHelpers;
-using ESFA.DC.Web.Operations.Utils;
 using Microsoft.EntityFrameworkCore;
 using JobQueueDataContext = ESFA.DC.Web.Operations.Topics.Data.JobQueueDataContext;
 
@@ -64,7 +64,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().As<ISerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<SerialisationHelperService>().As<ISerialisationHelperService>().InstancePerLifetimeScope();
-
+            builder.RegisterType<RouteFactory>().As<IRouteFactory>().InstancePerLifetimeScope();
             builder.RegisterType<CloudStorageService>().As<ICloudStorageService>().SingleInstance();
 
             builder.RegisterType<HubEventBase>().As<Interfaces.IHubEventBase>().SingleInstance();
@@ -82,6 +82,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidityPeriodHubEventBase>().As<IValidityPeriodHubEventBase>().SingleInstance();
 
             builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
@@ -109,6 +110,7 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<CampusIdentifiersFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsProviderDataFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationMessages2021FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<BulkProviderUploadFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();

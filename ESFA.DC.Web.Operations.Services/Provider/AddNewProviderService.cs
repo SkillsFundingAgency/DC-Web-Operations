@@ -3,8 +3,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Settings.Models;
 using Organisation = ESFA.DC.CollectionsManagement.Models.Organisation;
@@ -13,17 +13,15 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 {
     public class AddNewProviderService : BaseHttpClientService, IAddNewProviderService
     {
-        private readonly ILogger _logger;
         private readonly string _baseUrl;
 
         public AddNewProviderService(
-                IJsonSerializationService jsonSerializationService,
-                ILogger logger,
-                ApiSettings apiSettings,
-                HttpClient httpClient)
-                : base(jsonSerializationService, httpClient)
+            IRouteFactory routeFactory,
+            IJsonSerializationService jsonSerializationService,
+            ApiSettings apiSettings,
+            HttpClient httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
-            _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -37,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         public async Task<bool> AddProvider(Models.Provider.Provider provider, CancellationToken cancellationToken = default)
         {
-            var organisationDto = new Organisation() { Name = provider.Name, Ukprn = provider.Ukprn, IsMca = provider.IsMca.GetValueOrDefault() };
+            var organisationDto = new Organisation { Name = provider.Name, Ukprn = provider.Ukprn, IsMca = provider.IsMca.GetValueOrDefault() };
             var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/org/add", organisationDto, cancellationToken);
 
             if (response.StatusCode == (int)HttpStatusCode.Conflict)

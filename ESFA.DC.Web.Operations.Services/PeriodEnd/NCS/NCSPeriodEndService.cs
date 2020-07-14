@@ -7,6 +7,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
@@ -18,10 +19,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.NCS
         private readonly string _baseUrl;
 
         public NCSPeriodEndService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }

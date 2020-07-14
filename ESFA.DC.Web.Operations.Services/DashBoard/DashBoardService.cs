@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Settings.Models;
 
@@ -11,8 +12,12 @@ namespace ESFA.DC.Web.Operations.Services.DashBoard
     {
         private readonly string _baseUrl;
 
-        public DashBoardService(ApiSettings apiSettings, IJsonSerializationService jsonSerializationService, HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+        public DashBoardService(
+            IRouteFactory routeFactory,
+            ApiSettings apiSettings,
+            IJsonSerializationService jsonSerializationService,
+            HttpClient httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }

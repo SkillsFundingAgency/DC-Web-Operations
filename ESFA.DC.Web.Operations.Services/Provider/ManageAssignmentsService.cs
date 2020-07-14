@@ -8,6 +8,7 @@ using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Enums;
@@ -26,12 +27,13 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public ManageAssignmentsService(
+            IRouteFactory routeFactory,
             ILogger logger,
             IDateTimeProvider dateTimeProvider,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, apiSettings, httpClient, dateTimeProvider)
+            : base(routeFactory, jsonSerializationService, apiSettings, httpClient, dateTimeProvider)
         {
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
@@ -57,11 +59,11 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                     break;
             }
 
-            var collections = new List<CollectionsManagement.Models.Collection>();
+            var collections = new List<Collection>();
 
             foreach (var collectionYear in collectionYears)
             {
-                collections.AddRange(_jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.Collection>>
+                collections.AddRange(_jsonSerializationService.Deserialize<IEnumerable<Collection>>
                     (await GetDataAsync(_baseUrl + $"/api/collections/for-year/{collectionYear}", cancellationToken)));
             }
 

@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
-using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -21,18 +16,16 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 {
     public class ReportsService : BaseHttpClientService, IReportsService
     {
-        private readonly ILogger _logger;
-        private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
 
         public ReportsService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
-            _httpClient = httpClient;
         }
 
         public async Task<long> RunReport(string reportType, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
@@ -41,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
             if (!string.IsNullOrEmpty(reportType))
             {
-                string collectionName = string.Empty;
+                string collectionName;
 
                 switch (reportType)
                 {
@@ -73,7 +66,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                         return -1;
                 }
 
-                FileUploadJob job = new FileUploadJob()
+                var job = new FileUploadJob
                 {
                     CollectionYear = collectionYear,
                     PeriodNumber = collectionPeriod,

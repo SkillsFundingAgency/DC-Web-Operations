@@ -8,6 +8,7 @@ using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Extensions;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -21,11 +22,12 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public ProviderBaseService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient,
             IDateTimeProvider dateTimeProvider)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;

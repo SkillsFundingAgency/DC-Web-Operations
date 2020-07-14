@@ -39,6 +39,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         private readonly string _baseUrl;
 
         public ReferenceDataService(
+            IRouteFactory routeFactory,
             ICollectionsService collectionsService,
             IJobService jobService,
             IStorageService storageService,
@@ -50,7 +51,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             HttpClient httpClient,
             AzureStorageSection azureStorageConfig,
             ILogger logger)
-        : base(jsonSerializationService, httpClient)
+        : base(routeFactory, jsonSerializationService, httpClient)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;
@@ -141,6 +142,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
             var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
             var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
+            var latestSuccessfulFcProviderDataJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataFundingClaimsProviderData);
             var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
             var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
                 w => w.CollectionName == CollectionNames.DevolvedPostcodesFullName ||
@@ -162,6 +164,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulCoFRJob?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                FundingClaimsProviderData = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulFcProviderDataJob?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulFcProviderDataJob?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
                 DevolvedPostcodes = new ReferenceDataIndexBase()

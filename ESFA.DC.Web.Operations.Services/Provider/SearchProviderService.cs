@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Provider;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -15,17 +13,15 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 {
     public class SearchProviderService : BaseHttpClientService, ISearchProviderService
     {
-        private readonly ILogger _logger;
         private readonly string _baseUrl;
 
         public SearchProviderService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
-            ILogger logger,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
-            _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 

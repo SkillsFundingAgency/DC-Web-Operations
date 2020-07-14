@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -13,7 +12,6 @@ using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
@@ -48,13 +46,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index(int? collectionYear, int? collectionPeriod, CancellationToken cancellationToken)
         {
-            const string IlrCollectionType = "ILR";
-
             ViewBag.Error = TempData["error"];
             ReportsViewModel reportsViewModel = new ReportsViewModel()
             {
-                ReportPeriods = await _periodService.GetAllPeriodsAsync(IlrCollectionType, cancellationToken),
-                CollectionYears = await _collectionsService.GetCollectionYearsByType(IlrCollectionType, cancellationToken)
+                ReportPeriods = await _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken),
+                CollectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken)
             };
 
             // get the current period
@@ -95,7 +91,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 }
 
                 year = currentYearPeriod.CollectionYear;
-                period = currentYearPeriod?.PeriodNumber;
+                period = currentYearPeriod.PeriodNumber;
             }
 
             // queue the report job
@@ -167,9 +163,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                         case JobStatusType.Completed:
                             // if job has completed, redirect to Index page to show all the reports
                             return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
-
-                        default:
-                            break;
                     }
 
                     break;
@@ -182,9 +175,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 case ReportActions.GetReportDetails:
                     // redirect to the index page to display all the reports
                     return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
-
-                default:
-                    break;
             }
 
             return View(model: reportViewModel);

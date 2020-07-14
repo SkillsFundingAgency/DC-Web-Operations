@@ -1,27 +1,24 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 {
     public class ValidityPeriodService : BaseHttpClientService, IValidityPeriodService
     {
-        private readonly ILogger _logger;
         private readonly string _baseUrl;
 
         public ValidityPeriodService(
+            IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
-            ILogger logger,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, httpClient)
         {
-            _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
