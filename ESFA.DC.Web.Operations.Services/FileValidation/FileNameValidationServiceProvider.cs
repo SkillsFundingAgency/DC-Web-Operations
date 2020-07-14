@@ -26,5 +26,16 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
 
             return service;
         }
+
+        public IEnumerable<IFileNameValidationService> GetFileNameValidationServices(string[] collectionNames)
+        {
+            var services = _fileNameValidationServices.Where(x => collectionNames.Contains(x.CollectionName)).ToArray();
+            if (!services.Any())
+            {
+                throw new ArgumentException("collectionNames invalid");
+            }
+
+            return services;
+        }
     }
 }

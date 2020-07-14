@@ -88,6 +88,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.WarningCount = result.WarningCount;
             file.RecordCount = result.RecordCount;
             file.ErrorCount = result.ErrorCount;
+            file.CollectionName = collectionName;
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
