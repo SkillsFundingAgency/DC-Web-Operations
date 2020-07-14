@@ -1,5 +1,5 @@
 ﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
-import { getHandleBarsTemplate } from '/assets/js/handlebars-helpers.js';
+import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 
 class referenceDataController {
 
@@ -33,7 +33,7 @@ class referenceDataController {
 
         this.sortByDate(stateModel);
 
-        var compiledTemplate = getHandleBarsTemplate('ReferenceDataFilesListTemplate');
+        var compiledTemplate = getHandleBarsTemplate(Templates.ReferenceDataFilesList);
         document.getElementById("filesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName });
     }
 }

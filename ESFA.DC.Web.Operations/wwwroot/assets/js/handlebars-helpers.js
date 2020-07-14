@@ -4,21 +4,15 @@ export const getHandleBarsTemplate = function (name, root) {
     }
 
     if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
-        var xmlhttp;
-        if (window.XMLHttpRequest) {
-            xmlhttp = new XMLHttpRequest();
-        }
-        else {
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState === XMLHttpRequest.DONE) {
-                if (xmlhttp.status === 200) {
+        var xhr = new XMLHttpRequest();
+        
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
                     if (Handlebars.templates === undefined) {
                         Handlebars.templates = {};
                     }
-                    Handlebars.templates[name] = Handlebars.compile(xmlhttp.responseText);
-                    return Handlebars.templates[name];
+                    Handlebars.templates[name] = Handlebars.compile(xhr.responseText);
                 }
                 else {
                     console.log('Error fetching the template.');
@@ -26,10 +20,14 @@ export const getHandleBarsTemplate = function (name, root) {
             }
         }
 
-        xmlhttp.open("GET", root + name + '.html', true);
-        xmlhttp.send();
+        xhr.open("GET", root + name, false);
+        xhr.send();
     }
     return Handlebars.templates[name];
+};
+
+export let Templates = {
+    ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html'
 };
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
