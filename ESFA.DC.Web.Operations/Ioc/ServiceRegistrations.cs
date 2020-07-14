@@ -29,6 +29,7 @@ using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.FileValidation;
 using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
+using ESFA.DC.Web.Operations.Services.FileValidation.FundingClaimsProviderData;
 using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
 using ESFA.DC.Web.Operations.Services.Frm;
@@ -80,6 +81,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ValidityPeriodHubEventBase>().As<IValidityPeriodHubEventBase>().SingleInstance();
 
             builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
 
@@ -106,6 +108,7 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<CampusIdentifiersFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsProviderDataFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationMessages2021FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<BulkProviderUploadFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();

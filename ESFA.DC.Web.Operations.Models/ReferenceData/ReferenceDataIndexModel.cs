@@ -6,6 +6,8 @@
 
         public ReferenceDataIndexBase ConditionOfFundingRemoval { get; set; }
 
+        public ReferenceDataIndexBase FundingClaimsProviderData { get; set; }
+
         public ReferenceDataIndexBase ValidationMessages2021 { get; set; }
     }
 }
