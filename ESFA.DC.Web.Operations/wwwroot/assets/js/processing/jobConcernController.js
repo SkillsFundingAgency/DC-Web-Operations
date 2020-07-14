@@ -12,6 +12,10 @@ class JobConcernController {
 
     }
 
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+    }
+
     updatePage(data) {
 
         if (typeof data === 'object') {
