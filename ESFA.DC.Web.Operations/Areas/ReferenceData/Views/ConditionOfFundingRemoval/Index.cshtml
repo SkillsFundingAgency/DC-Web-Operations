@@ -52,7 +52,7 @@
     </div>
 </div>
 
-<div class="govuk-grid-row">
+@*<div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <table class="govuk-table">
             <thead class="govuk-table__head">
@@ -68,7 +68,11 @@
             <tbody class="govuk-table__body" id="fileContainer"></tbody>
         </table>
     </div>
+</div>*@
+
+<div id="filesList">
 </div>
+
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -81,6 +85,9 @@
 @section PageScripts
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/handlebars.js"></script>
+    <script src="~/assets/js/handlebars-helpers.js"></script>
+    
 
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
