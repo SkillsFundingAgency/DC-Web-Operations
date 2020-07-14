@@ -79,7 +79,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.FundingClaimsProviderDa
             }
 
             return DateTime.ParseExact(
-                $"{Path.GetFileNameWithoutExtension(fileName).Split('-')[1]}",
+                Path.GetFileNameWithoutExtension(fileName).Split('-')[1],
                 "yyyyMMddHHmm",
                 CultureInfo.InvariantCulture);
         }
