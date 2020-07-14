@@ -217,17 +217,14 @@
 
     <script type="module">
         import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
-        import Hub from '/assets/js/hubs/dashBoardHub.js';
+        import Hub from '/assets/js/hubs/hub.js';
+        (function () {
+            const dashBoardController = new DashBoardController();
+            const hub = new Hub('dashBoardHub', dashBoardController.displayConnectionState);
 
-        const hub = new Hub();
-        hub.startHub();
-
-        const dashBoardController = new DashBoardController();
-
-        (function() {
-            const data = '@Html.Raw(Model.DashboardStats)';
-
-            dashBoardController.updatePage(data);
+            dashBoardController.registerHandlers(hub);
+            hub.startHub();
+            dashBoardController.updatePage('@Html.Raw(Model.DashboardStats)');
         })();
     </script>
 }
