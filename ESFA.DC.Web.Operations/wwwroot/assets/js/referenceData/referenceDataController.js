@@ -5,6 +5,17 @@ class referenceDataController {
     constructor() {
         this._slowTimer = null;
     }
+
+    registerHandlers(hub, type) {
+        hub.registerMessageHandler("ReceiveMessage", (state) => this.renderFiles(type, state)); hub.registerMessageHandler("UploadState", (enabled) => {
+            //TODO:  This method does not exit.
+            //this.setButtonState(enabled, "uploadFile");
+        }); hub.registerMessageHandler("TurnOffMessage", () => {
+            hub.unregisterMessageHandler("UploadState");
+            hub.unregisterMessageHandler("ReceiveMessage");
+            hub.clearInterval();
+        });
+    }
     
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");

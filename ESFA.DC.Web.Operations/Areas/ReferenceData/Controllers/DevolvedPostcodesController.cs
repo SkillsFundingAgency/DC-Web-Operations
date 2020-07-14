@@ -47,19 +47,19 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.DevolvedPostcodesSof,
                 ReportTypes.DevolvedPostcodesSofReportName,
-                cancellationToken: cancellationToken)).Files.ToList());
+                cancellationToken: cancellationToken)).Files);
 
             collection.AddRange((await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.DevolvedPostcodesLocalAuthority,
                 ReportTypes.DevolvedPostcodesLocalAuthorityReportName,
-                cancellationToken: cancellationToken)).Files.ToList());
+                cancellationToken: cancellationToken)).Files);
 
             collection.AddRange((await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.DevolvedPostcodesOnsOverride,
                 ReportTypes.DevolvedPostcodesOnsOverride,
-                cancellationToken: cancellationToken)).Files.ToList());
+                cancellationToken: cancellationToken)).Files);
 
             var model = new ReferenceDataViewModel()
             {

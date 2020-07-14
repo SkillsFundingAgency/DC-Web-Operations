@@ -82,15 +82,15 @@
 
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/devolvedPostcodesHub.js';
+        import Hub from '/assets/js/hubs/hub.js';
 
-        (function() {
+        (function () {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
+            const hub = new Hub('devolvedPostcodesHub', controller.displayConnectionState);
 
-            const hub = new Hub(controller);
+            controller.registerHandlers(hub, 'DevolvedPostcodes');
             hub.startHub(model);
-
             controller.renderFiles('DevolvedPostcodes', model);
         })();
     </script>
