@@ -32,35 +32,38 @@ class referenceDataController {
 
         this.sortByDate(stateModel);
 
-        const fileContainer = document.getElementById('fileContainer');
+        var compiledTemplate = getHandleBarsTemplate('RefDataListing');
+        document.getElementById("filesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName });
 
-        let updatedContent = '';
+        //const fileContainer = document.getElementById('fileContainer');
 
-        stateModel.files.forEach(function(file) {
-            const reportName = file.reportName ? file.reportName : '';
-            const statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
-                : file.displayStatus === 'Job Rejected' ? 'jobRejected'
-                : file.displayStatus === 'Job Failed' ? 'jobFailed'
-                : '';
+        //let updatedContent = '';
 
-            const content = 
-                `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-!-font-weight-bold" govuk-!-width-one-quarter>${file.displayDate}</td>
-                    <td class="govuk-table__cell">${file.submittedBy}</td>
-                    <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${file.fileName}</a></td>
-                    <td class="govuk-table__cell">${file.jobId}</td>
-                    <td class="govuk-table__cell">
-                        <span class="${statusClass}">${file.displayStatus}</span> <br />
-                        <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
-                        <span class="govuk-!-font-weight-bold">${file.warningCount} warnings</span> <br />
-                        <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
-                    </td>
-                    <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.reportName}/${file.jobId}">${reportName}</a></td>
-                </tr>`;
-            updatedContent += content;
-        });
+        //stateModel.files.forEach(function(file) {
+        //    const reportName = file.reportName ? file.reportName : '';
+        //    const statusClass = file.displayStatus === 'Job Completed' ? 'jobCompleted' 
+        //        : file.displayStatus === 'Job Rejected' ? 'jobRejected'
+        //        : file.displayStatus === 'Job Failed' ? 'jobFailed'
+        //        : '';
 
-        fileContainer.innerHTML = updatedContent;
+        //    const content = 
+        //        `<tr class="govuk-table__row">
+        //            <td class="govuk-table__cell govuk-!-font-weight-bold" govuk-!-width-one-quarter>${file.displayDate}</td>
+        //            <td class="govuk-table__cell">${file.submittedBy}</td>
+        //            <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.fileName}">${file.fileName}</a></td>
+        //            <td class="govuk-table__cell">${file.jobId}</td>
+        //            <td class="govuk-table__cell">
+        //                <span class="${statusClass}">${file.displayStatus}</span> <br />
+        //                <span class="govuk-!-font-weight-bold">${file.recordCount} records</span> <br />
+        //                <span class="govuk-!-font-weight-bold">${file.warningCount} warnings</span> <br />
+        //                <span class="govuk-!-font-weight-bold">${file.errorCount} errors</span> <br />
+        //            </td>
+        //            <td class="govuk-table__cell"><a href="/referenceData/${controllerName}/getReportFile/${file.reportName}/${file.jobId}">${reportName}</a></td>
+        //        </tr>`;
+        //    updatedContent += content;
+        //});
+
+        //fileContainer.innerHTML = updatedContent;
     }
 }
 
