@@ -62,7 +62,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             var validationResult = await ValidateFileName(
                 fileNameValidationService,
-                CollectionNames.ReferenceDataConditionsOfFundingRemoval,
                 file.FileName,
                 file.Length,
                 cancellationToken);
@@ -77,10 +76,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             return RedirectToAction("Index");
         }
 
-        [Route("getReportFile/{fileName}/{jobId?}")]
-        public async Task<FileResult> GetReportFileAsync(string fileName, long? jobId, CancellationToken cancellationToken)
+        [Route("getReportFile/{collectionName}/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetCollectionReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
         {
-            return await GetReportFileAsync(CollectionNames.ReferenceDataConditionsOfFundingRemoval, fileName, jobId, cancellationToken);
+            return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
         }
     }
 }

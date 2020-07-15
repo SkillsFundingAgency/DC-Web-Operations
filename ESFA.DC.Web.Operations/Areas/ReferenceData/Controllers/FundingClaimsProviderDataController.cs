@@ -62,7 +62,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             var validationResult = await ValidateFileName(
                 fileNameValidationService,
-                CollectionNames.ReferenceDataFundingClaimsProviderData,
                 file.FileName,
                 file.Length,
                 cancellationToken);
