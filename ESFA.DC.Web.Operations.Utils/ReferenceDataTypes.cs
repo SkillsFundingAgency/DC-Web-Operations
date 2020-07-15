@@ -6,6 +6,7 @@
         FundingClaimsProviderData,
         CampusIdentifier,
         ValidationMessages2021,
-        DevolvedPostcodes
+        DevolvedPostcodes,
+        OnsPostcodes
     }
 }

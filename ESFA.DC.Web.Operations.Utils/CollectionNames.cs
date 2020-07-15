@@ -25,5 +25,7 @@
         public const string DevolvedPostcodesSof = "DevolvedPostcodes-Sof";
 
         public const string DevolvedPostcodesOnsOverride = "DevolvedPostcodes-OnsOverride";
+
+        public const string OnsPostcodes = "OnsPostcodes";
     }
 }
