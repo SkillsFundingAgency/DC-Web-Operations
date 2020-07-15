@@ -35,6 +35,9 @@ class referenceDataController {
 
         var compiledTemplate = getHandleBarsTemplate(Templates.ReferenceDataFilesList);
         document.getElementById("filesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName });
+
+        // Can be written in a single line.
+        //document.getElementById("filesList").innerHTML = getHandleBarsTemplate(Templates.ReferenceDataFilesList)({ viewModel: stateModel,controllerName: controllerName });
     }
 }
 
