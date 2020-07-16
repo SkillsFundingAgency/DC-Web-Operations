@@ -33,9 +33,13 @@ class client {
     }
 
     resubmitJob(jobId) {
+        document.getElementById("retryJob_" + jobId).style.visibility = "hidden";
         this.connection
             .invoke("ReSubmitJob", jobId)
-            .catch(err => console.error(err.toString()));
+            .catch((err) => {
+                console.error(err.toString());
+                document.getElementById("retryJob_" + jobId).style.visibility = "visible";
+            });
         return false;
     }
 
