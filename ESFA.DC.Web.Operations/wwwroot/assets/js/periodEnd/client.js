@@ -38,7 +38,7 @@ class client {
             .invoke("ReSubmitJob", jobId)
             .catch((err) => {
                 console.error(err.toString());
-                document.getElementById("retryJob_" + jobId)[0].style.visibility = "visible";
+                document.getElementById("retryJob_" + jobId).style.visibility = "visible";
             });
         return false;
     }
