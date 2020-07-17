@@ -8,6 +8,8 @@
 
         public ReferenceDataIndexBase FundingClaimsProviderData { get; set; }
 
+        public ReferenceDataIndexBase ProviderPostcodeSpecialistResources { get; set; }
+
         public ReferenceDataIndexBase DevolvedPostcodes { get; set; }
 
         public ReferenceDataIndexBase ValidationMessages2021 { get; set; }

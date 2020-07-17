@@ -143,6 +143,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
             var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
             var latestSuccessfulFcProviderDataJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataFundingClaimsProviderData);
+            var latestSuccessfulPPSResourcesJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataProviderPostcodeSpecialistResources);
             var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
             var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
                 w => w.CollectionName == CollectionNames.DevolvedPostcodesFullName ||
@@ -170,6 +171,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulFcProviderDataJob?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulFcProviderDataJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                ProviderPostcodeSpecialistResources = new ReferenceDataIndexBase
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulPPSResourcesJob?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulPPSResourcesJob?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
                 DevolvedPostcodes = new ReferenceDataIndexBase()

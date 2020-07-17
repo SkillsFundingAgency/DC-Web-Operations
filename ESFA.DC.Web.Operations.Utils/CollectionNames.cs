@@ -14,6 +14,8 @@
 
         public const string ReferenceDataFundingClaimsProviderData = "FundingClaimsProviderData";
 
+        public const string ReferenceDataProviderPostcodeSpecialistResources = "ProviderPostcodeSpecialistResources";
+
         public const string ReferenceDataValidationMessages2021 = "ILRValidationMessages2021";
 
         public const string ReferenceDataOps = "REF-OPS";

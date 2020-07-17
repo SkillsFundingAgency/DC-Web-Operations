@@ -64,6 +64,17 @@
                     </li>
                 </ul>
             </div>
+            
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
+                        <h3 class="home-services__heading">@Html.ActionLink("Provider Postcode Specialist Resources", "Index", "ProviderPostcodeSpecialistResources", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ProviderPostcodeSpecialistResources.LastUpdatedDateTimeFormattedDisplay</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ProviderPostcodeSpecialistResources.LastUpdatedByWho</p>
+                    </li>
+                </ul>
+            </div>
 
             @if (Model.ValidationMessages2021.Valid)
             {
