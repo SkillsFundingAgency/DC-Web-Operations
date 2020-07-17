@@ -13,5 +13,7 @@
         public ReferenceDataIndexBase DevolvedPostcodes { get; set; }
 
         public ReferenceDataIndexBase ValidationMessages2021 { get; set; }
+
+        public ReferenceDataIndexBase OnsPostcodes { get; set; }
     }
 }

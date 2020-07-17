@@ -35,6 +35,7 @@ using ESFA.DC.Web.Operations.StartupConfiguration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -87,6 +88,13 @@ namespace ESFA.DC.Web.Operations
 
             var authSettings = _config.GetConfigSection<AuthenticationSettings>();
             var authoriseSettings = _config.GetConfigSection<AuthorizationSettings>();
+
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = 524_288_000;
+                x.MultipartBodyLengthLimit = 524_288_000;
+                x.MultipartBoundaryLengthLimit = 524_288_000;
+            });
 
             services.AddMvc(options =>
                             {
@@ -283,6 +291,11 @@ namespace ESFA.DC.Web.Operations
                 });
 
                 routes.MapHub<DevolvedPostcodesHub>("/devolvedPostcodesHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
+                routes.MapHub<OnsPostcodesHub>("/onsPostcodesHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });

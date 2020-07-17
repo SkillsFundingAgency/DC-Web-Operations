@@ -14,25 +14,25 @@
             <li class="govuk-breadcrumbs__list-item">
                 <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
             </li>
-            <li class="govuk-breadcrumbs__list-item" aria-current="page">Devolved postcodes</li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">Ons Postcodes</li>
         </ol>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Devolved postcodes</h1>
+        <h1 class="govuk-heading-xl heading-bottom-margin">Ons Postcodes</h1>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="DevolvedPostcodes" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
+        <form asp-controller="OnsPostcodes" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
 
             @Html.AntiForgeryToken()
 
             <h1 class="govuk-heading-m">
-                Choose Devolved Postcodes reference data file to upload
+                Choose Ons Postcodes reference data file to upload
             </h1>
 
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
@@ -40,7 +40,7 @@
                     Upload a file
                 </label>
                 <div error-field-name="@ErrorMessageKeys.Submission_FileFieldKey"></div>
-                <input class="govuk-file-upload" name="file" id="file" type="file" accept=".csv">
+                <input class="govuk-file-upload" name="file" id="file" type="file" accept=".zip">
             </div>
 
             <button class="govuk-button" id="uploadFile">
@@ -72,11 +72,11 @@
         (function () {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-            const hub = new Hub('devolvedPostcodesHub', controller.displayConnectionState);
+            const hub = new Hub('onsPostcodesHub', controller.displayConnectionState);
 
-            controller.registerHandlers(hub, 'DevolvedPostcodes');
+            controller.registerHandlers(hub, 'OnsPostcodes');
             hub.startHub(model);
-            controller.renderFiles('DevolvedPostcodes', model);
+            controller.renderFiles('OnsPostcodes', model);
         })();
     </script>
 }

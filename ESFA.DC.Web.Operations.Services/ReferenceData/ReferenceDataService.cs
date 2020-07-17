@@ -152,6 +152,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                      w.CollectionName == CollectionNames.DevolvedPostcodesSof)
                 .OrderByDescending(o => o.DateTimeSubmittedUtc)
                 .FirstOrDefault();
+            var latestSuccessfulOnsPostcodes = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.OnsPostcodes);
 
             var model = new ReferenceDataIndexModel
             {
@@ -183,6 +184,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                OnsPostcodes = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulOnsPostcodes?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulOnsPostcodes?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
                 ValidationMessages2021 = new ReferenceDataIndexBase
