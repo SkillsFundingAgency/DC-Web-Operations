@@ -118,3 +118,10 @@ export function replaceNullOrEmpty(stringValue, replaceValue) {
         return stringValue;
     }
 }
+
+export function sumArrayProperty(array, key) {
+    if (array) {
+        return array.reduce((a, b) => a + (b[key] || 0), 0);
+    }
+    return 0;
+}
