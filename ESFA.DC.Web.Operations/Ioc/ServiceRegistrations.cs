@@ -31,6 +31,7 @@ using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
 using ESFA.DC.Web.Operations.Services.FileValidation.DevolvedPostcodes;
 using ESFA.DC.Web.Operations.Services.FileValidation.FundingClaimsProviderData;
+using ESFA.DC.Web.Operations.Services.FileValidation.OnsPostcodes;
 using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
 using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
 using ESFA.DC.Web.Operations.Services.Frm;
@@ -86,6 +87,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<OnsPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -118,6 +120,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<DevolvedPostcodesLocalAuthorityFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<DevolvedPostcodesOnsOverrideFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<DevolvedPostcodesSofFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<OnsPostcodesFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 
