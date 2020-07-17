@@ -285,6 +285,11 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
 
+                routes.MapHub<ProviderPostcodeSpecialistResourcesHub>("/providerPostcodeSpecialistResourcesHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
                 routes.MapHub<DevolvedPostcodesHub>("/devolvedPostcodesHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
@@ -362,6 +367,7 @@ namespace ESFA.DC.Web.Operations
 
             containerBuilder.RegisterType<ConditionOfFundingRemovalHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<FundingClaimsProviderDataHub>().InstancePerLifetimeScope().ExternallyOwned();
+            containerBuilder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();

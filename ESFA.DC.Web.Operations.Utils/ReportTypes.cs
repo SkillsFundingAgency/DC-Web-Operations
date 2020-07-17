@@ -11,6 +11,7 @@
 
         public const string ConditionOfFundingRemovalReportName = "CoFRemovalRD-ValidationReport";
         public const string FundingClaimsProviderDataReportName = "FundingClaimsProviderDataRD-ValidationReport";
+        public const string ProviderPostcodeSpecialistResourcesReportName = "ProviderPostcodeSpecialistResourcesRD-ValidationReport";
         public const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
         public const string ValidationMessagesReportName = "ValidationMessagesRD-ValidationReport";
 

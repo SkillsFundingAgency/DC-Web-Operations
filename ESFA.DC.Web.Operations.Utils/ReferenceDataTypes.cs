@@ -4,6 +4,7 @@
     {
         ConditionOfFundingRemoval,
         FundingClaimsProviderData,
+        ProviderPostcodeSpecialistResourcesHub,
         CampusIdentifier,
         ValidationMessages2021,
         DevolvedPostcodes,
