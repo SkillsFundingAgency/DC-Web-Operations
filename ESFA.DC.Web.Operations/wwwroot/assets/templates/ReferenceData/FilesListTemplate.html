@@ -16,7 +16,7 @@
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold" govuk-!-width-one-quarter>{{displayDate}}</td>
                     <td class="govuk-table__cell">{{submittedBy}}</td>
-                    <td class="govuk-table__cell"><a href="/referenceData/{{@root.controllerName}}/getReportFile/{{fileName}}">{{fileName}}</a></td>
+                    <td class="govuk-table__cell"><a href="/referenceData/{{@root.controllerName}}/getReportFile/{{collectionName}}/{{fileName}}">{{fileName}}</a></td>
                     <td class="govuk-table__cell">{{jobId}}</td>
                     <td class="govuk-table__cell">
                         <span class="{{jobStatusClass displayStatus}}">{{displayStatus}}</span> <br />
@@ -24,7 +24,7 @@
                         <span class="govuk-!-font-weight-bold">{{warningCount}} warnings</span> <br />
                         <span class="govuk-!-font-weight-bold">{{errorCount}} errors</span> <br />
                     </td>
-                    <td class="govuk-table__cell"><a href="/referenceData/{{@root.controllerName}}/getReportFile/{{reportName}}/{{jobId}}">{{reportName}}</a></td>
+                    <td class="govuk-table__cell"><a href="/referenceData/{{@root.controllerName}}/getReportFile/{{collectionName}}/{{reportName}}/{{jobId}}">{{reportName}}</a></td>
                 </tr>
                 {{/each}}
             </tbody>
