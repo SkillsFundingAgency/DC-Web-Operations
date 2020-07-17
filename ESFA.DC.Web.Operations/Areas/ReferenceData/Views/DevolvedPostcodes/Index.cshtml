@@ -14,25 +14,25 @@
             <li class="govuk-breadcrumbs__list-item">
                 <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
             </li>
-            <li class="govuk-breadcrumbs__list-item" aria-current="page">Campus identifiers</li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">Devolved postcodes</li>
         </ol>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Campus identifiers</h1>
+        <h1 class="govuk-heading-xl heading-bottom-margin">Devolved postcodes</h1>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="CampusIdentifiers" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
+        <form asp-controller="DevolvedPostcodes" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
 
             @Html.AntiForgeryToken()
 
             <h1 class="govuk-heading-m">
-                Choose Campus Identifiers reference data file to upload
+                Choose Devolved Postcodes reference data file to upload
             </h1>
 
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
@@ -50,7 +50,22 @@
     </div>
 </div>
 
-<div id="filesList">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Date</th>
+                    <th scope="col" class="govuk-table__header table-width-min">Submitted by</th>
+                    <th scope="col" class="govuk-table__header">File</th>
+                    <th scope="col" class="govuk-table__header">Job Id</th>
+                    <th scope="col" class="govuk-table__header">Status</th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Reports</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="fileContainer"></tbody>
+        </table>
+    </div>
 </div>
 
 <div class="govuk-grid-row">
@@ -64,20 +79,19 @@
 @section PageScripts
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/assets/js/handlebars.js"></script>
 
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/campusIdentifiersHub.js';
+        import Hub from '/assets/js/hubs/hub.js';
 
-        (function() {
+        (function () {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
+            const hub = new Hub('devolvedPostcodesHub', controller.displayConnectionState);
 
-            const hub = new Hub(controller);
+            controller.registerHandlers(hub, 'DevolvedPostcodes');
             hub.startHub(model);
-
-            controller.renderFiles('CampusIdentifiers', model);
+            controller.renderFiles('DevolvedPostcodes', model);
         })();
     </script>
 }

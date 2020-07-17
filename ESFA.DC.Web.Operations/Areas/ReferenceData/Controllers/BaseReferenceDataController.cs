@@ -31,10 +31,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
         protected int Period => 0;
 
-        protected async Task<FileResult> GetReportFileAsync(string folderName, string fileName, long? jobId, CancellationToken cancellationToken)
+        protected async Task<FileResult> GetReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
         {
             var reportFile = jobId != null;
-            fileName = reportFile ? $@"{folderName}\{jobId}\{fileName}" : $@"{folderName}\{fileName}";
+            fileName = reportFile ? $@"{collectionName}\{jobId}\{fileName}" : $@"{collectionName}\{fileName}";
             try
             {
                 var blobStream = await _storageService.GetFile(Utils.Constants.ReferenceDataStorageContainerName, fileName, cancellationToken);
@@ -53,7 +53,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
         protected virtual async Task<FileNameValidationResultModel> ValidateFileName(
             IFileNameValidationService fileNameValidationService,
-            string collectionName,
             string rawFileName,
             long? fileLength,
             CancellationToken cancellationToken)

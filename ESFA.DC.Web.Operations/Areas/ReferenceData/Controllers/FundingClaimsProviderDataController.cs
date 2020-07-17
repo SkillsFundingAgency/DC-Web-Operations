@@ -1,7 +1,11 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Features.Indexed;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.Enums;
@@ -13,13 +17,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
     [Area(AreaNames.ReferenceData)]
-    [Route(AreaNames.ReferenceData + "/validationMessages2021")]
-    public class ValidationMessages2021Controller : BaseReferenceDataController
+    [Route(AreaNames.ReferenceData + "/fundingClaimsProviderData")]
+    public class FundingClaimsProviderDataController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
         private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
-        public ValidationMessages2021Controller(
+        public FundingClaimsProviderDataController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
@@ -37,10 +41,9 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
-                CollectionNames.ReferenceDataValidationMessages2021,
-                ReportTypes.ValidationMessagesReportName,
-                Utils.Constants.ValidationMessagesMaxFilesToDisplay,
-                cancellationToken);
+                CollectionNames.ReferenceDataFundingClaimsProviderData,
+                ReportTypes.FundingClaimsProviderDataReportName,
+                cancellationToken: cancellationToken);
 
             return View(model);
         }
@@ -55,7 +58,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
-            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataValidationMessages2021);
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataFundingClaimsProviderData);
 
             var validationResult = await ValidateFileName(
                 fileNameValidationService,
@@ -68,15 +71,15 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return View();
             }
 
-            await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataValidationMessages2021, User.Name(), User.Email(), file, cancellationToken);
+            await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataFundingClaimsProviderData, User.Name(), User.Email(), file, CancellationToken.None);
 
             return RedirectToAction("Index");
         }
 
-        [Route("getReportFile/{collectionName}/{fileName}/{jobId?}")]
-        public async Task<FileResult> GetCollectionReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
+        [Route("getReportFile/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetReportFileAsync(string fileName, long? jobId, CancellationToken cancellationToken)
         {
-            return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
+            return await GetReportFileAsync(CollectionNames.ReferenceDataFundingClaimsProviderData, fileName, jobId, cancellationToken);
         }
     }
 }

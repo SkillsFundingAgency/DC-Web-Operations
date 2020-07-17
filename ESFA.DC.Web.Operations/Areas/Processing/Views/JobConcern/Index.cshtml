@@ -48,26 +48,25 @@
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
 <script type="module">
-
     import JobConcernController from "/assets/js/processing/jobConcernController.js";
-    import Hub from '/assets/js/hubs/jobConcernHub.js';
-    
-    const jobConcernController = new JobConcernController();
-
-    const hub = new Hub('jobConcernHub', jobConcernController);
-    hub.startHub();
+    import Hub from '/assets/js/hubs/hub.js';
 
     (function () {
-            const data = @Json.Serialize(Model);
-            jobConcernController.updatePage(data);
+        const jobConcernController = new JobConcernController();
+        const hub = new Hub('jobConcernHub', jobConcernController);
+
+        jobConcernController.registerHandlers(hub);
+        hub.startHub();
+
+        const data = @Json.Serialize(Model);
+        jobConcernController.updatePage(data);
+
+        window.change = function () {
+            jobConcernController.updatePage(jobConcernController._data);
+        };
+
+        window.downloadCSV = function () {
+            jobConcernController.downloadCSV();
+        };
     })();
-
-    window.change = function () {
-        jobConcernController.updatePage(jobConcernController._data);
-    };
-
-    window.downloadCSV = function () {
-        jobConcernController.downloadCSV();
-    };
-
 </script>
