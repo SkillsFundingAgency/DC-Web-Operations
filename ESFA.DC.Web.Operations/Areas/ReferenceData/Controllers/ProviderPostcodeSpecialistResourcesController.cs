@@ -35,10 +35,8 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var cancellationToken = CancellationToken.None;
-
             var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
                 CollectionNames.ReferenceDataProviderPostcodeSpecialistResources,
@@ -55,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             if (file == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { cancellationToken = CancellationToken.None });
             }
 
             var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataProviderPostcodeSpecialistResources);
@@ -73,7 +71,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             await _referenceDataService.SubmitJob(Period, CollectionNames.ReferenceDataProviderPostcodeSpecialistResources, User.Name(), User.Email(), file, CancellationToken.None);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { cancellationToken = CancellationToken.None });
         }
 
         [Route("getReportFile/{fileName}/{jobId?}")]
