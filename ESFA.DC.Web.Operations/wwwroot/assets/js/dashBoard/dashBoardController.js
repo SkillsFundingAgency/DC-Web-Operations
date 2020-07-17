@@ -1,14 +1,15 @@
 ﻿import { getColorForPercentage, getMessageForPercentage, padLeft, sumArrayProperty } from '/assets/js/util.js';
 
 class DashBoardController {
-    constructor(year) {
+    constructor() {
         this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
-        this._year = year;
-
+       
         this._data = null;
         this._queuesSystem = null;
         this._queuesTopics = null;
         this._queuesIlr = null;
+        this._year = null;
+        this._yearsIntitialised = false;
 
         this._averageTimeToday = 0;
         this._averageTimeLastHour = 0;
@@ -31,8 +32,36 @@ class DashBoardController {
         data = JSON.parse(data);
         this._data = data;
         this.updateSync();
+        this.setYears(data.jobStats);
         this.updateServiceBusStats(data.serviceBusStats);
         this.updateJobStats(data.jobStats, this._year);
+    }
+
+    setYears(jobStats) {
+        if (!this._yearsIntitialised) {
+            this._yearsIntitialised = true;
+            this._year = jobStats.collectionYears[jobStats.collectionYears.length - 1];
+            const collectionYearContainer = document.getElementById("collectionYearContainer");
+            
+            jobStats.collectionYears.length < 2 ? collectionYearContainer.style.display = "none" : collectionYearContainer.style.display = "block";
+            this.addYearsToDropdown(jobStats.collectionYears);
+        }
+    }
+
+    addYearsToDropdown(years) {
+        const select = document.getElementById("collectionYears");
+        for (let index in years) {
+            select.options[select.options.length] = new Option(this.formatYearForDisplay(years[index]), years[index]);
+        }
+        select.selectedIndex = years.length - 1;
+    }
+
+    formatYearForDisplay(year) {
+        const yearAsString = year.toString();
+        if (yearAsString.length === 4) {
+            return yearAsString.substr(0, 2) + "/" + yearAsString.substr(2);
+        }
+        return yearAsString;
     }
 
     updateJobStats(jobStats, year) {

@@ -143,12 +143,12 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-l">Processing in detail</h2>
-        <h3>Year:</h3>
-        <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control govuk--padding-bottom-10 " asp-items="Model.Years">
-        </select>
+        <span id="collectionYearContainer" style="display:none" class="govuk-!-padding-bottom-6">
+            <select id="collectionYears" class="govuk-select govuk-input--width-10 form-control">
+            </select>
+        </span>
     </div>
 </div>
-
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
@@ -225,7 +225,7 @@
         import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
         import Hub from '/assets/js/hubs/hub.js';
         (function () {
-            const dashBoardController = new DashBoardController(@Model.CollectionYear);
+            const dashBoardController = new DashBoardController();
             const hub = new Hub('dashBoardHub', dashBoardController.displayConnectionState);
 
             dashBoardController.registerHandlers(hub);
