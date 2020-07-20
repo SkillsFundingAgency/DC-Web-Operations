@@ -108,17 +108,20 @@
     <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
     <script type="module">
         import Client from '/assets/js/reports/client.js';
-        import Hub from '/assets/js/hubs/reportsHub.js';
-        const hub = new Hub('reportsHub');
-        hub.startHub();
-        window.reportClient = new Client(hub.getConnection());
-        var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
-        var reportsUrl = '@Url.Action("Index", "Reports")';
-        var reportGenerationUrl = '@Url.Action("RunReport", "Reports")';
-        var reportsDownloadUrl = '@Url.Action("GetReportFile", "Reports")';
+        import Hub from '/assets/js/hubs/hub.js';
+        import ReportsController from '/assets/js/reports/reportsController.js';
 
-        (function() {
-            hub._controller.init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl, reportsDownloadUrl);
+        (function () {
+            const controller = new ReportsController();
+            const hub = new Hub('reportsHub', controller.displayConnectionState);
+            hub.startHub(() => controller.getReports());
+            window.reportClient = new Client(hub.getConnection());
+
+            var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
+            var reportsUrl = '@Url.Action("Index", "Reports")';
+            var reportGenerationUrl = '@Url.Action("RunReport", "Reports")';
+            var reportsDownloadUrl = '@Url.Action("GetReportFile", "Reports")';
+            controller.init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl, reportsDownloadUrl);
         })();
     </script>
 }
