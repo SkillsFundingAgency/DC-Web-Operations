@@ -11,6 +11,7 @@ using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
@@ -62,6 +63,16 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         public IActionResult Add(int collectionId, ManageAssignmentsViewModel model)
         {
             var record = model.InactiveCollectionAssignments.Single(s => s.CollectionId == collectionId);
+
+            if (!record.StartDate.HasValue || !record.EndDate.HasValue || record.StartDate.Value.Year < 2000)
+            {
+                ModelState.Clear();
+                record.StartDate = null;
+                record.EndDate = null;
+                ModelState.AddModelError($"Summary", $"Please supply a valid start and end date");
+                return View("Index", model);
+            }
+
             model.ActiveCollectionsAssignments.Add(record);
             model.InactiveCollectionAssignments.Remove(record);
             model.ActiveCollectionsAssignments = model.ActiveCollectionsAssignments.OrderByDescending(o => o.StartDate).ThenBy(t => t.DisplayOrder).ToList();
