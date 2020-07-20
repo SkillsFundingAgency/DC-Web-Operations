@@ -45,6 +45,10 @@ class JobSubmittedController {
 
     }
 
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+    }
+
     setDonut(filteredData) {
 
         this._firstDonut.setAttribute("data-count", filteredData.length);

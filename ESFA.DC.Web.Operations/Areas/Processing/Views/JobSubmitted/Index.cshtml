@@ -94,23 +94,26 @@
 <script type="module">
 
     import JobSubmittedController from "/assets/js/processing/jobSubmittedController.js";
-    import Hub from '/assets/js/hubs/jobSubmittedHub.js';
-
-    const jobSubmittedController = new JobSubmittedController();
-
-    const hub = new Hub('jobSubmittedHub', jobSubmittedController);
-    hub.startHub();
+    import Hub from '/assets/js/hubs/hub.js';
 
     (function () {
-            const data = @Json.Serialize(Model);
-            jobSubmittedController.updatePage(data);
+        const jobSubmittedController = new JobSubmittedController();
+        const hub = new Hub('jobSubmittedHub', jobSubmittedController.displayConnectionState);
+
+        jobSubmittedController.registerHandlers(hub);
+        hub.startHub();
+
+        const data = @Json.Serialize(Model);
+        jobSubmittedController.updatePage(data);
+
+        window.change = function () {
+            jobSubmittedController.updatePage(jobSubmittedController._data);
+        };
+
+        window.downloadCSV = function () {
+            jobSubmittedController.downloadCSV();
+        };
+
     })();
 
-    window.change = function () {
-        jobSubmittedController.updatePage(jobSubmittedController._data);
-    };
-
-    window.downloadCSV = function () {
-        jobSubmittedController.downloadCSV();
-    };
 </script>
