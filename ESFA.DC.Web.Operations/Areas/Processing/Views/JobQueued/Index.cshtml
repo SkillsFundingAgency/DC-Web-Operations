@@ -93,23 +93,26 @@
 
 <script type="module">    
     import JobQueuedController from "/assets/js/processing/jobQueuedController.js";
-    import Hub from '/assets/js/hubs/jobQueuedHub.js';
-
-    const jobQueuedController = new JobQueuedController();
-
-    const hub = new Hub('jobQueuedHub', jobQueuedController);
-    hub.startHub();
+    import Hub from '/assets/js/hubs/hub.js';
 
     (function () {
+        const jobQueuedController = new JobQueuedController();
+
+        const hub = new Hub('jobQueuedHub', jobQueuedController.displayConnectionState);
+        jobQueuedController.registerHandlers(hub);
+
+        hub.startHub();
+
         const data = '@Html.Raw(Model)';
         jobQueuedController.updatePage(data);
+
+        window.change = function () {
+            jobQueuedController.updatePage(jobQueuedController._data);
+        };
+
+        window.downloadCSV = function () {
+            jobQueuedController.downloadCSV();
+        };
     })();
 
-    window.change = function () {
-        jobQueuedController.updatePage(jobQueuedController._data);
-    };
-
-    window.downloadCSV = function () {
-        jobQueuedController.downloadCSV();
-    };
 </script>
