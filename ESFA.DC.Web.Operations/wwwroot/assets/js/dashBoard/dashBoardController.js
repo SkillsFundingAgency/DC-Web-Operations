@@ -1,37 +1,15 @@
-﻿import { getColorForPercentage } from '/assets/js/util.js';
-import { getMessageForPercentage } from '/assets/js/util.js';
+﻿import { getColorForPercentage, getMessageForPercentage, padLeft, sumArrayProperty } from '/assets/js/util.js';
 
 class DashBoardController {
     constructor() {
-        this._averageLabel = document.getElementById("average");
-        this._averageSymbolLabel = document.getElementById("averageSymbol");
-
-        this._averageLastHourLabel = document.getElementById("averageLastHour");
-        this._averageLastHourSymbolLabel = document.getElementById("averageLastHourSymbol");
-
-        this._firstDonut = document.getElementById("firstDonut");
-        this._firstCircle = document.getElementById("firstCircle");
-        this._firstLabel = document.getElementById("firstLabel");
-        this._secondDonut = document.getElementById("secondDonut");
-        this._secondCircle = document.getElementById("secondCircle");
-        this._secondLabel = document.getElementById("secondLabel");
-        this._thirdDonut = document.getElementById("thirdDonut");
-        this._thirdCircle = document.getElementById("thirdCircle");
-        this._thirdLabel = document.getElementById("thirdLabel");
-        this._failedToday = document.getElementById("failedToday");
-        this._slowFiles = document.getElementById("slowFiles");
-        this._concerns = document.getElementById("concerns");
-        this._lastPeriod = document.getElementById("lastPeriod");
-        this._lastHour = document.getElementById("lastHour");
-        this._last5Minutes = document.getElementById("last5Minutes");
-        this._ilrReturns = document.getElementById("ilrReturns");
-        this._failedFiles = document.getElementById("failedFiles");
-        this._sldDasMismatches = document.getElementById("sldDasMismatches");
         this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
-
+       
+        this._data = null;
         this._queuesSystem = null;
         this._queuesTopics = null;
         this._queuesIlr = null;
+        this._year = null;
+        this._yearsIntitialised = false;
 
         this._averageTimeToday = 0;
         this._averageTimeLastHour = 0;
@@ -39,6 +17,11 @@ class DashBoardController {
         this._percentageTextRangeJobProcessing = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
         this._percentageTextRangeJobQueued = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
         this._percentageTextRangeSubmissionsToday = [{ value: 75, label: 'Super excited!' }, { value: 50, label: 'Feeling happy' }, { value: 0, label: 'Looking Good' }];
+
+        document.getElementById('collectionYears').addEventListener('change', (event) => {
+            this._year = parseInt(event.target.value);
+            this.updateProcessingInDetails(this._data.jobStats, this._year);
+        });
     }
 
     registerHandlers(hub) {
@@ -47,167 +30,159 @@ class DashBoardController {
 
     updatePage(data) {
         data = JSON.parse(data);
-
+        this._data = data;
         this.updateSync();
+        this.setYears(data.jobStats);
         this.updateServiceBusStats(data.serviceBusStats);
-        this.updateJobStats(data.jobStats);
+        this.updateJobStats(data.jobStats, this._year);
     }
 
-    updateJobStats(jobStats) {
-        if (this._averageLabel.textContent !== jobStats.todayStatsModel.averageProcessingTime) {
-            this._averageLabel.textContent = `${jobStats.todayStatsModel.averageProcessingTime}`;
+    setYears(jobStats) {
+        if (!this._yearsIntitialised) {
+            this._yearsIntitialised = true;
+            this._year = jobStats.collectionYears[jobStats.collectionYears.length - 1];
+            const collectionYearContainer = document.getElementById("collectionYearContainer");
+            
+            jobStats.collectionYears.length < 2 ? collectionYearContainer.style.display = "none" : collectionYearContainer.style.display = "block";
+            this.addYearsToDropdown(jobStats.collectionYears);
         }
+    }
 
-        if (this._averageTimeToday < jobStats.todayStatsModel.averageTimeToday) {
-            this._averageSymbolLabel.textContent = '▲';
-            this._averageSymbolLabel.setAttribute("style", "color: red;font-size: 20px");
+    addYearsToDropdown(years) {
+        const select = document.getElementById("collectionYears");
+        for (let index in years) {
+            select.options[select.options.length] = new Option(this.formatYearForDisplay(years[index]), years[index]);
         }
-        else if (this._averageTimeToday > jobStats.todayStatsModel.averageTimeToday) {
-            this._averageSymbolLabel.textContent = '▼';
-            this._averageSymbolLabel.setAttribute("style", "color: green;font-size: 20px");
+        select.selectedIndex = years.length - 1;
+    }
+
+    formatYearForDisplay(year) {
+        const yearAsString = year.toString();
+        if (yearAsString.length === 4) {
+            return yearAsString.substr(0, 2) + "/" + yearAsString.substr(2);
+        }
+        return yearAsString;
+    }
+
+    updateJobStats(jobStats, year) {
+
+        const statsForAllYears = this.getStatsForAllYears(jobStats);
+
+        this.updateDisplay(document.getElementById("average"), statsForAllYears.averageProcessingTime);
+        this.updateTrendDisplay(document.getElementById("averageSymbol"), this._averageTimeToday, statsForAllYears.averageTimeToday);
+        this._averageTimeToday = statsForAllYears.averageTimeToday;
+
+        this.updateDisplay(document.getElementById("averageLastHour"), statsForAllYears.averageProcessingTimeLastHour);
+        this.updateTrendDisplay(document.getElementById("averageLastHourSymbol"), this._averageTimeLastHour, statsForAllYears.averageTimeLastHour);
+        this._averageTimeLastHour = statsForAllYears.averageTimeLastHour;
+
+        const processingPercentage = (statsForAllYears.jobsProcessing / 125) * 100;
+        this.updateDonut(document.getElementById("firstDonut"), document.getElementById("firstCircle"), document.getElementById("firstLabel"), statsForAllYears.jobsProcessing, processingPercentage, this._percentageTextRangeJobProcessing);
+
+        const jobsQueuedPercentage = (statsForAllYears.jobsQueued / 125) * 100;
+        this.updateDonut(document.getElementById("secondDonut"), document.getElementById("secondCircle"), document.getElementById("secondLabel"), statsForAllYears.jobsQueued, jobsQueuedPercentage, this._percentageTextRangeJobQueued);
+
+        let submissionsTodayPercentage = statsForAllYears.submissionsToday < 2500 ? (statsForAllYears.submissionsToday / 2500) * 100 : 100;
+        this.updateDonut(document.getElementById("thirdDonut"), document.getElementById("thirdCircle"), document.getElementById("thirdLabel"), statsForAllYears.submissionsToday, submissionsTodayPercentage, this._percentageTextRangeSubmissionsToday);
+
+        this.updateDisplay(document.getElementById("failedToday"), statsForAllYears.failedToday);
+        this.updateDisplay(document.getElementById("slowFiles"), jobStats.slowFilesComparedToThreePreviousModel.slowFilesComparedToThreePrevious);
+        this.updateDisplay(document.getElementById("concerns"), jobStats.concernsModel.concerns);
+
+        this.updateProcessingInDetails(jobStats, year);
+    }
+
+    getStatsForAllYears(jobStats) {
+        return {
+            submissionsToday: sumArrayProperty(jobStats.todayStatsForYearModel, 'submissionsToday'),
+            jobsQueued: sumArrayProperty(jobStats.todayStatsForYearModel, 'jobsQueued'),
+            jobsProcessing: sumArrayProperty(jobStats.todayStatsForYearModel, 'jobsProcessing'),
+            failedToday: sumArrayProperty(jobStats.todayStatsForYearModel, 'failedToday'),
+            averageTimeToday: jobStats.todayProcessingTimeModel.averageTimeToday,
+            averageProcessingTime: jobStats.todayProcessingTimeModel.averageProcessingTime,
+            averageProcessingTimeLastHour: jobStats.todayProcessingTimeModel.averageProcessingTimeLastHour,
+            averageTimeLastHour: jobStats.todayProcessingTimeModel.averageTimeLastHour
+        }
+    }
+
+    updateDisplay(element, text) {
+        if (element.textContent !== text.toString()) {
+            element.textContent = text;
+        }
+    }
+
+    getTodayStatsModelForYear(year, todayProcessingTimeModel) {
+        if (!todayProcessingTimeModel) {
+            return this.emptyStatsModel(year);
+        }
+        const todaysStats = todayProcessingTimeModel.find(s => s.collectionYear === year);
+        return todaysStats ? todaysStats : this.emptyStatsModel(year);
+    }
+
+    emptyStatsModel(year) {
+        return {
+            "averageTimeToday": 0,
+            "averageProcessingTime": "00m 00s",
+            "averageTimeLastHour": 0,
+            "averageProcessingTimeLastHour": "00m 00s",
+            "jobsProcessing": 0,
+            "jobsQueued": 0,
+            "failedToday": 0,
+            "submissionsToday": 0,
+            "submissionsLastHour": 0,
+            "submissionsLast5Minutes": 0,
+            "collectionYear": year
+        };
+    }
+
+    updateTrendDisplay(element, oldValue, newValue) {
+        if (oldValue < newValue) {
+            element.textContent = '▲';
+            element.setAttribute("style", "color: red;font-size: 20px");
+        }
+        else if (oldValue > newValue) {
+            element.textContent = '▼';
+            element.setAttribute("style", "color: green;font-size: 20px");
         }
         else {
-            this._averageSymbolLabel.textContent = '⟷';
-            this._averageSymbolLabel.setAttribute("style", "color: orange;font-size: 20px");
+            element.textContent = '⟷';
+            element.setAttribute("style", "color: orange;font-size: 20px");
         }
+    }
 
-        this._averageTimeToday = jobStats.todayStatsModel.averageTimeToday;
-
-
-        if (this._averageLastHourLabel.textContent !== jobStats.todayStatsModel.averageProcessingTimeLastHour) {
-            this._averageLastHourLabel.textContent = `${jobStats.todayStatsModel.averageProcessingTimeLastHour}`;
+    updateDonut(donut, circle, lable, value, percentage, percentageRange) {
+        if (donut.textContent !== value.toString()) {
+            donut.textContent = value;
+            circle.setAttribute("stroke-dasharray", `${percentage},100`);
+            circle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
+            lable.textContent = getMessageForPercentage(percentage, percentageRange);
         }
+    }
 
-        if (this._averageTimeLastHour < jobStats.todayStatsModel.averageTimeLastHour) {
-            this._averageLastHourSymbolLabel.textContent = '▲';
-            this._averageLastHourSymbolLabel.setAttribute("style", "color: red;font-size: 20px");
+
+    getYearSpecificValue(array, property, year) {
+        // Assumption: Only one period for a year can ever be open.
+        const item = array.find(f => f.collectionYear === year);
+        if (item) {
+            return item[property];
         }
-        else if (this._averageTimeLastHour > jobStats.todayStatsModel.averageTimeLastHour) {
-            this._averageLastHourSymbolLabel.textContent = '▼';
-            this._averageLastHourSymbolLabel.setAttribute("style", "color: green;font-size: 20px");
-        }
-        else {
-            this._averageLastHourSymbolLabel.textContent = '⟷';
-            this._averageLastHourSymbolLabel.setAttribute("style", "color: orange;font-size: 20px");
-        }
+        return 0;
+    }
 
-        this._averageTimeLastHour = jobStats.todayStatsModel.averageTimeLastHour;
+    updateProcessingInDetails(jobStats, year) {
+        const todaysStatsForYear = this.getTodayStatsModelForYear(year, jobStats.todayStatsForYearModel);
+        this.updateDisplay(document.getElementById("lastPeriod"), this.getYearSpecificValue(jobStats.jobsCurrentPeriodModels, 'jobsCurrentPeriod', year));
+        this.updateDisplay(document.getElementById("lastHour"), todaysStatsForYear.submissionsLastHour);
+        this.updateDisplay(document.getElementById("last5Minutes"), todaysStatsForYear.submissionsLast5Minutes);
+        this.updateDisplay(document.getElementById("ilrReturns"), this.getYearSpecificValue(jobStats.currentPeriodIlrModels, 'countOfSuccessfulIlrProvidersInPeriod', year));
+        this.updateDisplay(document.getElementById("failedFiles"), this.getYearSpecificValue(jobStats.jobsCurrentPeriodModels, 'jobsFailedInPeriod', year));
 
-        if (this._firstDonut.textContent !== jobStats.todayStatsModel.jobsProcessing.toString()) {
-            this._firstDonut.textContent = `${jobStats.todayStatsModel.jobsProcessing}`;
-            let percentage = (jobStats.todayStatsModel.jobsProcessing / 125) * 100;
-            this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
-            this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            this._firstLabel.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobProcessing);
-        }
-
-        if (this._secondDonut.textContent !== jobStats.todayStatsModel.jobsQueued.toString()) {
-            this._secondDonut.textContent = `${jobStats.todayStatsModel.jobsQueued}`;
-            this._secondCircle.setAttribute("stroke-dasharray", `${jobStats.todayStatsModel.jobsQueued},100`);
-            let percentage = (jobStats.todayStatsModel.jobsQueued / 125) * 100;
-            this._secondCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            this._secondLabel.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobQueued);
-        }
-
-        if (this._thirdDonut.textContent !== jobStats.todayStatsModel.submissionsToday.toString()) {
-            this._thirdDonut.textContent = `${jobStats.todayStatsModel.submissionsToday}`;
-            let percentage = 100;
-            if (jobStats.todayStatsModel.submissionsToday < 2500) {
-                percentage = (jobStats.todayStatsModel.submissionsToday / 2500) * 100;
-            }
-
-            this._thirdCircle.setAttribute("stroke-dasharray", `${percentage},100`);
-            this._thirdCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            this._thirdLabel.textContent = getMessageForPercentage(percentage, this._percentageTextRangeSubmissionsToday);
-        }
-
-        if (this._failedToday.textContent !== jobStats.todayStatsModel.failedToday.toString()) {
-            this._failedToday.textContent = `${jobStats.todayStatsModel.failedToday}`;
-        }
-
-        if (this._slowFiles.textContent !== jobStats.slowFilesComparedToThreePreviousModel.slowFilesComparedToThreePrevious.toString()) {
-            this._slowFiles.textContent = `${jobStats.slowFilesComparedToThreePreviousModel.slowFilesComparedToThreePrevious}`;
-        }
-
-        if (this._concerns.textContent !== jobStats.concernsModel.concerns.toString()) {
-            this._concerns.textContent = `${jobStats.concernsModel.concerns}`;
-        }
-
-        let today = "";
-        let len = jobStats.jobsCurrentPeriodModels.length;
-        for (var i = 0; i < len; i++) {
-            today += jobStats.jobsCurrentPeriodModels[i].jobsCurrentPeriod;
-
-            if (len > 1) {
-                today += "/" + jobStats.jobsCurrentPeriodModels[i].periodNumber.toString();
-
-                if (i < len - 1) {
-                    today += " - ";
-                }
-            }
-        }
-
-        if (today === "") {
-            today = "0";
-        }
-
-        if (this._lastPeriod.textContent !== today) {
-            this._lastPeriod.textContent = `${today}`;
-        }
-
-        if (this._lastHour.textContent !== jobStats.todayStatsModel.submissionsLastHour.toString()) {
-            this._lastHour.textContent = `${jobStats.todayStatsModel.submissionsLastHour}`;
-        }
-
-        if (this._last5Minutes.textContent !== jobStats.todayStatsModel.submissionsLast5Minutes.toString()) {
-            this._last5Minutes.textContent = `${jobStats.todayStatsModel.submissionsLast5Minutes}`;
-        }
-
-        let ilrsReturned = "";
-        len = jobStats.currentPeriodIlrModels.length;
-        for (var i = 0; i < len; i++) {
-            ilrsReturned += jobStats.currentPeriodIlrModels[i].countOfSuccessfulIlrProvidersInPeriod;
-
-            if (len > 1) {
-                ilrsReturned += "/" + jobStats.currentPeriodIlrModels[i].periodNumber.toString();
-
-                if (i < len - 1) {
-                    ilrsReturned += " - ";
-                }
-            }
-        }
-
-        if (this._ilrReturns.textContent !== ilrsReturned) {
-            this._ilrReturns.textContent = `${ilrsReturned}`;
-        }
-
-        let failedFiles = "";
-        len = jobStats.jobsCurrentPeriodModels.length;
-        for (var i = 0; i < len; i++) {
-            failedFiles += jobStats.jobsCurrentPeriodModels[i].jobsFailedInPeriod;
-
-            if (len > 1) {
-                failedFiles += "/" + jobStats.jobsCurrentPeriodModels[i].periodNumber.toString();
-
-                if (i < len - 1) {
-                    failedFiles += " - ";
-                }
-            }
-        }
-
-        if (this._failedFiles.textContent !== failedFiles) {
-            this._failedFiles.textContent = `${failedFiles}`;
-        }
-
-        let sldDasMismatches = jobStats.dasPaymentDifferencesModels.length;
-
-        if (this._sldDasMismatches.textContent !== sldDasMismatches) {
-            this._sldDasMismatches.textContent = `${sldDasMismatches}`;
-        }
+        const dasPaymentDifferencesModelForYear = jobStats.dasPaymentDifferencesModels.find(f => f.collectionYear === year);
+        this.updateDisplay(document.getElementById("sldDasMismatches"), dasPaymentDifferencesModelForYear ? dasPaymentDifferencesModelForYear.ukPrns.length : 0);
     }
 
     updateServiceBusStats(serviceBusStats) {
-        if (this._serviceBusStatistics == null) {
+        if (this._serviceBusStatistics === null) {
             return;
         }
 
@@ -235,7 +210,7 @@ class DashBoardController {
             dataIlrDeadLetter.push(serviceBusStats.ilr[i].deadLetterMessageCount);
         }
 
-        if (this._queuesSystem == null) {
+        if (this._queuesSystem === null) {
             ctx = document.getElementById('queueSystem').getContext('2d');
             this._queuesSystem = this.buildChart(ctx, labelQueue, dataQueue, dataQueueDeadLetter);
         }
@@ -243,7 +218,7 @@ class DashBoardController {
             this.updateChart(this._queuesSystem, labelQueue, dataQueue, dataQueueDeadLetter);
         }
 
-        if (this._queuesTopics == null) {
+        if (this._queuesTopics === null) {
             ctx = document.getElementById('queueTopics').getContext('2d');
             this._queuesTopics = this.buildChart(ctx, labelTopic, dataTopic, dataTopicDeadLetter);
         }
@@ -251,7 +226,7 @@ class DashBoardController {
             this.updateChart(this._queuesTopics, labelTopic, dataTopic, dataTopicDeadLetter);
         }
 
-        if (this._queuesIlr == null) {
+        if (this._queuesIlr === null) {
             ctx = document.getElementById('queueIlr').getContext('2d');
             this._queuesIlr = this.buildChart(ctx, labelIlr, dataIlr, dataIlrDeadLetter);
         } else {
@@ -312,12 +287,12 @@ class DashBoardController {
 
     updateSync() {
         let date = new Date();
-        let day = this.padLeft(date.getDate(), "0", 2);
-        let month = this.padLeft(date.getMonth() + 1, "0", 2);
+        let day = padLeft(date.getDate(), "0", 2);
+        let month = padLeft(date.getMonth() + 1, "0", 2);
 
-        let hours = this.padLeft(date.getHours(), "0", 2);
-        let minutes = this.padLeft(date.getMinutes(), "0", 2);
-        let seconds = this.padLeft(date.getSeconds(), "0", 2);
+        let hours = padLeft(date.getHours(), "0", 2);
+        let minutes = padLeft(date.getMinutes(), "0", 2);
+        let seconds = padLeft(date.getSeconds(), "0", 2);
 
         const dateLabel = document.getElementById("lastSync");
         dateLabel.textContent = `Last updated: ${day}/${month}/${date.getFullYear()} ${hours}:${minutes}:${seconds}`;
@@ -329,11 +304,6 @@ class DashBoardController {
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");
         stateLabel.textContent = `Status: ${state}`;
-    }
-
-    padLeft(str, padString, max) {
-        str = str.toString();
-        return str.length < max ? this.padLeft(padString + str, padString, max) : str;
     }
 }
 
