@@ -1,5 +1,4 @@
 ﻿import { convertToCsv } from '/assets/js/csv-operations.js';
-import { getFormattedDatetimeString } from '/assets/js/util.js';
 import { replaceNullOrEmpty } from '/assets/js/util.js';
 
 class JobSlowFileController {
@@ -27,6 +26,10 @@ class JobSlowFileController {
 
         this.drawGrid();
 
+    }
+
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
     }
 
     displayConnectionState(state) {

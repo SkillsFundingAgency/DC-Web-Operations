@@ -50,24 +50,27 @@
 <script type="module">
 
     import JobSlowFileController from "/assets/js/processing/jobSlowFileController.js";
-    import Hub from '/assets/js/hubs/jobSlowFileHub.js';
+    import Hub from '/assets/js/hubs/hub.js';
     
-    const jobSlowFileController = new JobSlowFileController();
-
-    const hub = new Hub('jobSlowFileHub', jobSlowFileController);
-    hub.startHub();
-
     (function () {
-            const data = @Json.Serialize(Model);
-            jobSlowFileController.updatePage(data);
+        const jobSlowFileController = new JobSlowFileController();
+        const hub = new Hub('jobSlowFileHub', jobSlowFileController.displayConnectionState);
+
+        jobSlowFileController.registerHandlers(hub);
+
+        hub.startHub();
+
+        const data = @Json.Serialize(Model);
+        jobSlowFileController.updatePage(data);
+
+        window.change = function () {
+            jobSlowFileController.updatePage(jobSlowFileController._data);
+        };
+
+        window.downloadCSV = function () {
+            jobSlowFileController.downloadCSV();
+        };
+
     })();
-
-    window.change = function () {
-        jobSlowFileController.updatePage(jobSlowFileController._data);
-    };
-
-    window.downloadCSV = function () {
-        jobSlowFileController.downloadCSV();
-    };
 
 </script>
