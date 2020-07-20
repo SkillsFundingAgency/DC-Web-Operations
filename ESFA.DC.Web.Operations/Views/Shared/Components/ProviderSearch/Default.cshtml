@@ -12,67 +12,70 @@
 <script src="~/assets/minified/aspnet-validation.min.js"></script>
 
 <script type="module">
-        import Client from '/assets/js/providerSearch/client.js';
-        import Hub from '/assets/js/hubs/providerSearchHub.js';
+    import Client from '/assets/js/providerSearch/client.js';
+    import Hub from '/assets/js/hubs/hub.js';
+    import ProviderSearchController from '/assets/js/providerSearch/providerSearchController.js';
 
-        const hub = new Hub();
-        hub.startHub();
+    const controller = new ProviderSearchController();
+    const hub = new Hub('providerSearchHub', controller.displayConnectionState);
 
-        window.searchClient = new Client(hub.getConnection());
+    hub.startHub();
 
-        var element = document.querySelector('#tt-overlay');
-        var id = 'autocomplete-overlay';
-        var searchSource = "";
+    window.searchClient = new Client(hub.getConnection());
 
-        @if (Model.Equals("existing", StringComparison.OrdinalIgnoreCase))
-        {
-            <text> searchSource = window.searchClient.providerSearchExisting.bind(window.searchClient)</text>
+    var element = document.querySelector('#tt-overlay');
+    var id = 'autocomplete-overlay';
+    var searchSource = "";
+
+    @if (Model.Equals("existing", StringComparison.OrdinalIgnoreCase))
+    {
+        <text> searchSource = window.searchClient.providerSearchExisting.bind(window.searchClient)</text>
+    }
+    else
+    {
+        <text> searchSource = window.searchClient.providerSearch.bind(window.searchClient)</text>
+    }
+
+    function searchProviderInputValueTemplate(result) {
+        return result && result.providerName;
+    }
+
+    function searchProviderSuggestionTemplate(result) {
+        if (result.tradingName.trim() === result.providerName.trim()) {
+            return result && result.ukprn + ', ' + result.upin + ', ' +
+                '<strong>' + result.providerName + '</strong>';
         }
-        else
-        {
-            <text> searchSource = window.searchClient.providerSearch.bind(window.searchClient)</text>
+        else {
+            return result && result.ukprn + ', ' + result.upin + ', ' +
+                '<strong>' + result.providerName + '</strong>' + '' + '<br/> <div class="govuk-!-font-size-14"> <i >' +
+                result.tradingName + '</i>';
         }
+    }
 
-        function searchProviderInputValueTemplate(result) {
-            return result && result.providerName;
-        }
+    function debounce(fn, delay) {
+        var timer = null;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                fn.apply(context, args);
+            }, delay);
+        };
+    }
 
-        function searchProviderSuggestionTemplate(result) {
-            if (result.tradingName.trim() === result.providerName.trim()) {
-                return result && result.ukprn + ', ' + result.upin + ', ' +
-                    '<strong>' + result.providerName + '</strong>';
-            }
-            else {
-                return result && result.ukprn + ', ' + result.upin + ', ' +
-                    '<strong>' + result.providerName + '</strong>' + '' + '<br/> <div class="govuk-!-font-size-14"> <i >' +
-                    result.tradingName + '</i>';
-            }
-        }
-
-        function debounce(fn, delay) {
-            var timer = null;
-                return function () {
-                    var context = this, args = arguments;
-                    clearTimeout(timer);
-                    timer = setTimeout(function () {
-                    fn.apply(context, args);
-                }, delay);
-            };
-        }
-
-        accessibleAutocomplete({
-            element: element,
-            id: id,
-            minLength: 3,
-            displayMenu: 'overlay',
-            confirmOnBlur: false,
-            showNoOptionsFound: false,
-            onConfirm: searchProviderOnConfirm,
-            source: debounce(searchSource, 400),
-            templates: {
-                inputValue: searchProviderInputValueTemplate,
-                suggestion: searchProviderSuggestionTemplate
-            },
-            placeholder: 'e.g Manchester, 12345678 or 098765'
-         });       
+    accessibleAutocomplete({
+        element: element,
+        id: id,
+        minLength: 3,
+        displayMenu: 'overlay',
+        confirmOnBlur: false,
+        showNoOptionsFound: false,
+        onConfirm: searchProviderOnConfirm,
+        source: debounce(searchSource, 400),
+        templates: {
+            inputValue: searchProviderInputValueTemplate,
+            suggestion: searchProviderSuggestionTemplate
+        },
+        placeholder: 'e.g Manchester, 12345678 or 098765'
+        });       
 </script>
