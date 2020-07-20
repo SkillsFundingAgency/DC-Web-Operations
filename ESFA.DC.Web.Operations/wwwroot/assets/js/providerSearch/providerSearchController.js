@@ -1,7 +1,9 @@
 ﻿class providerSearchController {
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
+        if (stateLabel) {
+            stateLabel.textContent = `Status: ${state}`;
+        }
     }
 }
 
