@@ -15,16 +15,16 @@
       <Value>0.0.0</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="DSCIUserPassword">
-      <Value>NotUseLocally##</Value>
+      <Value>NotUseLocally###</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="RELEASE_RELEASENAME">
       <Value>From Local Dev Machine</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="ROUserPassword">
-      <Value>NotUseLocally</Value>
+      <Value>NotUseLocally#</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="RWUserPassword">
-      <Value>NotUseLocally#</Value>
+      <Value>NotUseLocally##</Value>
     </SqlCmdVariable>
   </ItemGroup>
 </Project>
