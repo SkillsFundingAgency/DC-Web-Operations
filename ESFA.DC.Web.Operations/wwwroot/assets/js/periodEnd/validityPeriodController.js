@@ -1,27 +1,24 @@
 ﻿class ValidityPeriodController {
 
     constructor() {
-
         this._aBtnDownloadCSV = document.getElementById('aSaveList');
-
         this._data = {};
-
     }
 
     updatePage(data) {
-
         this._data = JSON.parse(data);
-
         this.drawGrid();
+    }
 
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+        hub.registerMessageHandler("GetValidityPeriodList", (data) => this.updatePage(data));
+        hub.registerMessageHandler("UpdateValidityPeriod", (data) => this.updatePage(data));
     }
 
     displayConnectionState(state) {
-
         const stateLabel = document.getElementById("state");
-
         stateLabel.textContent = `Status: ${state}`;
-
     }
 
     drawGrid() {
