@@ -48,26 +48,25 @@
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
 <script type="module">
-
     import JobProvidersReturnedCurrentPeriodController from "/assets/js/processing/jobProvidersReturnedCurrentPeriodController.js";
-    import Hub from '/assets/js/hubs/jobProvidersReturnedCurrentPeriodHub.js';
-    
-    const jobProvidersReturnedCurrentPeriodController = new JobProvidersReturnedCurrentPeriodController();
-
-    const hub = new Hub('jobProvidersReturnedCurrentPeriodHub', jobProvidersReturnedCurrentPeriodController);
-    hub.startHub();
+    import Hub from '/assets/js/hubs/hub.js';
 
     (function () {
-            const data = @Json.Serialize(Model);
-            jobProvidersReturnedCurrentPeriodController.updatePage(data);
+        const jobProvidersReturnedCurrentPeriodController = new JobProvidersReturnedCurrentPeriodController();
+        const hub = new Hub('jobProvidersReturnedCurrentPeriodHub', jobProvidersReturnedCurrentPeriodController.displayConnectionState);
+        const data = @Json.Serialize(Model);
+
+        jobProvidersReturnedCurrentPeriodController.registerHandlers(hub);
+        hub.startHub();
+
+        jobProvidersReturnedCurrentPeriodController.updatePage(data);
+
+        window.change = function () {
+            jobProvidersReturnedCurrentPeriodController.updatePage(jobProvidersReturnedCurrentPeriodController._data);
+        };
+
+        window.downloadCSV = function () {
+            jobProvidersReturnedCurrentPeriodController.downloadCSV();
+        };
     })();
-
-    window.change = function () {
-        jobProvidersReturnedCurrentPeriodController.updatePage(jobProvidersReturnedCurrentPeriodController._data);
-    };
-
-    window.downloadCSV = function () {
-        jobProvidersReturnedCurrentPeriodController.downloadCSV();
-    };
-
 </script>
