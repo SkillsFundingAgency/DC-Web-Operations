@@ -13,7 +13,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         private readonly IValidityPeriodService _validityPeriodService;
 
         public ValidityPeriodHub(
-            IHubEventBase eventBase,
+            IValidityPeriodHubEventBase eventBase,
             IHubContext<ValidityPeriodHub> hubContext,
             ILogger logger,
             IValidityPeriodService validityPeriodService)
