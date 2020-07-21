@@ -58,20 +58,23 @@
 <script type="module">
     import Client from '/assets/js/processing/jobProcessingDetail/client.js';
     import jobProcessingDetailController from "/assets/js/processing/jobProcessingDetail/jobProcessingDetailController.js";
-    import Hub from '/assets/js/hubs/jobProcessingDetailHub.js';
-
-    const jobProcessingDetailCtrl = new jobProcessingDetailController();
-    const hub = new Hub('jobProcessingDetailHub', jobProcessingDetailCtrl);
-    hub.startHub();
-    window.jobProcessingDetailClient = new Client(hub.getConnection());
+    import Hub from '/assets/js/hubs/hub.js';
 
     (function () {
+        const jobProcessingDetailCtrl = new jobProcessingDetailController();
+        const hub = new Hub('jobProcessingDetailHub', jobProcessingDetailCtrl.displayConnectionState);
         const data = @Json.Serialize(Model.Data);
+
+        hub.startHub();
+        window.jobProcessingDetailClient = new Client(hub.getConnection());
+
         jobProcessingDetailCtrl.updatePage(data);
         jobProcessingDetailCtrl.init('@Model.JobProcessingType');
+
+        window.downloadCSV = function () {
+            jobProcessingDetailCtrl.downloadCSV();
+        };
+
     })();
 
-    window.downloadCSV = function () {
-        jobProcessingDetailCtrl.downloadCSV();
-    };
 </script>
