@@ -48,25 +48,26 @@
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
 <script type="module">
-
     import JobFailedTodayController from "/assets/js/processing/jobFailedTodayController.js";
-    import Hub from '/assets/js/hubs/jobFailedTodayHub.js';
+    import Hub from '/assets/js/hubs/hub.js';
     
-    const jobFailedTodayController = new JobFailedTodayController();
-
-    const hub = new Hub('jobFailedTodayHub', jobFailedTodayController);
-    hub.startHub();
-
     (function () {
-            const data = @Json.Serialize(Model);
-            jobFailedTodayController.updatePage(data);
+        const jobFailedTodayController = new JobFailedTodayController();
+
+        const hub = new Hub('jobFailedTodayHub', jobFailedTodayController.displayConnectionState);
+        jobFailedTodayController.registerHandlers(hub);
+
+        hub.startHub();
+
+        const data = @Json.Serialize(Model);
+        jobFailedTodayController.updatePage(data);
+
+        window.change = function () {
+            jobFailedTodayController.updatePage(jobFailedTodayController._data);
+        };
+
+        window.downloadCSV = function () {
+            jobFailedTodayController.downloadCSV();
+        };
     })();
-
-    window.change = function () {
-        jobFailedTodayController.updatePage(jobFailedTodayController._data);
-    };
-
-    window.downloadCSV = function () {
-        jobFailedTodayController.downloadCSV();
-    };
 </script>
