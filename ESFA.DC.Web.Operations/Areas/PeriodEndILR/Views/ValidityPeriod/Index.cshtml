@@ -74,28 +74,30 @@
 <script type="module">
 
     import ValidityPeriodController from "/assets/js/periodEnd/validityPeriodController.js";
-    import Hub from '/assets/js/hubs/validityPeriodHub.js';
+    import Hub from '/assets/js/hubs/hub.js';
 
-    const validityPeriodController = new ValidityPeriodController();
+    (function () {
+        const validityPeriodController = new ValidityPeriodController();
+        const hub = new Hub('validityPeriodHub', validityPeriodController.displayConnectionState);
+        validityPeriodController.registerHandlers(hub);
 
-    const hub = new Hub('validityPeriodHub', validityPeriodController);
+        window.change = function () {
+            var connection = hub.getConnection();
+            var periodNumber = document.getElementById('periodNumber');
+            validityPeriodController.getData(connection, "GetValidityPeriodList", periodNumber.value);
+        };
 
-    window.change = function () {
-        var connection = hub.getConnection();
-        var periodNumber = document.getElementById('periodNumber');
-        validityPeriodController.getData(connection, "GetValidityPeriodList", periodNumber.value);
-    };
+        hub.startHub(window.change);
 
-    hub.startHub(window.change);
+        window.saveList = function () {
+            var connection = hub.getConnection();
+            var periodNumber = document.getElementById('periodNumber');
+            validityPeriodController.saveList(connection, "UpdateValidityPeriod", periodNumber.value);
+        };
 
-    window.saveList = function () {
-        var connection = hub.getConnection();
-        var periodNumber = document.getElementById('periodNumber');
-        validityPeriodController.saveList(connection, "UpdateValidityPeriod", periodNumber.value);
-    };
-
-    window.checkedChanged = function (idx, checkBox) {
-        validityPeriodController._data[idx].enabled = checkBox.checked;
-    };
+        window.checkedChanged = function (idx, checkBox) {
+            validityPeriodController._data[idx].enabled = checkBox.checked;
+        };
+    })();
 
 </script>
