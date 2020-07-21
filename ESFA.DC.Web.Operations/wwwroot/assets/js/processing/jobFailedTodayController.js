@@ -30,6 +30,10 @@ class JobFailedTodayController {
 
     }
 
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+    }
+
     displayConnectionState(state) {
 
         const stateLabel = document.getElementById("state");
