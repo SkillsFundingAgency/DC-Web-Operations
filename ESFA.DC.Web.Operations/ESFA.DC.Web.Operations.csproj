@@ -17,6 +17,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\assets\js\hubs\ncs\**" />
+    <Content Remove="wwwroot\assets\js\hubs\ncs\**" />
+    <EmbeddedResource Remove="wwwroot\assets\js\hubs\ncs\**" />
+    <None Remove="wwwroot\assets\js\hubs\ncs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="compilerconfig.json" />
     <Content Remove="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
@@ -304,12 +311,6 @@
     <Content Update="appsettings.salman.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\hubs\periodEndPrepHub.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\assets\js\hubs\periodEndHub.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Update="wwwroot\assets\js\signalr\dist\browser\signalr.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -321,7 +322,6 @@
     <Folder Include="Areas\DevOps\Models\" />
     <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
-    <Folder Include="wwwroot\assets\js\hubs\ncs\" />
     <Folder Include="wwwroot\assets\js\periodEnd\ncs\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>

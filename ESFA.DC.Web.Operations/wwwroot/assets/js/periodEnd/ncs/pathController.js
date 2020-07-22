@@ -11,6 +11,21 @@ class pathController {
         this.lastMessage = null;
     }
 
+    registerHandlers(hub, state) {
+        if (!state.isPreviousPeriod) {
+            hub.registerMessageHandler("ReceiveMessage", (state) => this.renderPaths(state));
+        }
+
+        hub.registerMessageHandler("StartPeriodEndState", (enabled) => setControlEnabledState(enabled, "startPeriodEnd"));
+        hub.registerMessageHandler("PeriodClosedState", (enabled) => setControlEnabledState(enabled, "closePeriodEnd"));
+        hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => setControlEnabledState("proceed_" + pathItemId));
+
+        hub.registerMessageHandler("TurnOffMessage", () => {
+            hub.unregisterMessageHandler("ReceiveMessage");
+            hub.clearInterval();
+        });
+    }
+
     pathItemCompare(a, b) {
         if (a.ordinal < b.ordinal) {
             return -1;
