@@ -17,6 +17,13 @@ class jobController {
         this.renderFailedJobs(stateModel.failedJobs);
     }
 
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (state) => this.renderJobs(state));
+        hub.registerMessageHandler("DisableJobReSubmit", (jobId) => this.disableJobReSubmit(jobId));
+        hub.registerMessageHandler("CollectionClosedEmailButtonState", (enabled) => this.setCollectionClosedEmailButtonState(enabled));
+        hub.registerMessageHandler("ContinueButtonState", (enabled) => this.setContinueButtonState(enabled));
+    }
+
     renderFailedJobs(jobs) {
         let container = document.getElementById("failedJobContainer");
         this.clearContainer(container);

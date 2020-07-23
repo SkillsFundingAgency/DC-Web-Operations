@@ -124,8 +124,10 @@
         import PathController from '/assets/js/periodEnd/allf/pathController.js';
 
         @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndFinished) {
-            @Html.Raw("import Client from '/assets/js/periodEnd/allf/client.js';");
-            @Html.Raw("import Hub from '/assets/js/hubs/allf/periodEndHub.js';");
+            <text>
+                import Client from '/assets/js/periodEnd/allf/client.js';
+                import Hub from '/assets/js/hubs/hub.js';
+            </text>
         }
 
         (function() {
@@ -135,17 +137,22 @@
             pathController.initialiseState(stateModel);
 
             @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndFinished) {
-                @Html.Raw("const hub = new Hub(pathController);");
-                @Html.Raw("hub.startHub(stateModel);");
-                @Html.Raw("window.periodEndClient = new Client(hub.getConnection());");
+                <text>
+                    const hub = new Hub('allfPeriodEndHub', pathController.displayConnectionState);
+                    pathController.registerHandlers(hub, stateModel);
+                    hub.startHub();
+                    window.periodEndClient = new Client(hub.getConnection());
+                </text>
             }
 
             pathController.renderFiles(stateModel);
             pathController.renderPaths(stateModel);
 
             @if (!Model?.IsCurrentPeriod ?? false) {
-                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
-                @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
+                <text>
+                    const dateLabel = document.getElementById(`lastSync`);
+                    dateLabel.textContent = `Updates disabled as historical period end`;
+                </text>
             }
         })();
     </script>
