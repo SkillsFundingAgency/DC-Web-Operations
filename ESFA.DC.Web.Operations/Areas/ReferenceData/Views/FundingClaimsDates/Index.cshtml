@@ -1,0 +1,57 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Funding Claims Dates</li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Funding Claims Dates</h1>
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/handlebars.js"></script>
+
+    <script type="module">
+        import Client from '/assets/js/referencedata/fundingclaimsdates/client.js';
+        import Hub from '/assets/js/hubs/hub.js';
+        import ReportsController from '/assets/js/referencedata/fundingclaimsdates/fundingclaimsdatesController.js';
+
+        (function () {
+            const controller = new ReportsController();
+            const hub = new Hub('fundingClaimsDatesHub', controller.displayConnectionState);
+            hub.startHub(() => controller.getFundingClaimsDates());
+            window.fundingClaimsDatesClient = new Client(hub.getConnection());
+            controller.init();
+        })();
+    </script>
+}
+

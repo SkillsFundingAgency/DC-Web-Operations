@@ -197,7 +197,13 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                     LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = !(await IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
-                }
+                },
+                FundingClaimsDates = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulOnsPostcodes?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulOnsPostcodes?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
             };
 
             return model;
