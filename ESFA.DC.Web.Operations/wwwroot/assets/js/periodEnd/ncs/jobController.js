@@ -1,4 +1,4 @@
-﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
+﻿import { updateSync } from '/assets/js/baseController.js';
 import { setControlEnabledState } from '/assets/js/util.js';
 class jobController {
 
@@ -15,6 +15,13 @@ class jobController {
 
         const stateModel = typeof state === 'object' ? state : JSON.parse(state);
         this.renderFailedJobs(stateModel.failedJobs);
+    }
+
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (state) => this.renderJobs(state));
+        hub.registerMessageHandler("DisableJobReSubmit", (jobId) => this.disableJobReSubmit(jobId));
+        hub.registerMessageHandler("CollectionClosedEmailButtonState", (enabled) => this.setCollectionClosedEmailButtonState(enabled));
+        hub.registerMessageHandler("ContinueButtonState", (enabled) => this.setContinueButtonState(enabled));
     }
 
     renderFailedJobs(jobs) {

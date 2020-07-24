@@ -80,21 +80,24 @@
     </div>
 </div>
 
-@section PageScripts
-    {
+@section PageScripts {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 
     <script type="module">
         import JobController from "/assets/js/periodEnd/ncs/jobController.js";
         import Confirm from '/assets/js/periodEnd/ncs/confirmationController.js';
+        const jobController = new JobController();
 
         @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndPrepModel.State.PeriodEndFinished)
         {
-            @Html.Raw("import Client from '/assets/js/periodEnd/ncs/client.js';");
-            @Html.Raw("import Hub from '/assets/js/hubs/ncs/periodEndPrepHub.js';");
-            @Html.Raw("const hub = new Hub('ncsPeriodEndPrepHub');");
-            @Html.Raw("hub.startHub();");
-            @Html.Raw("window.prepClient = new Client(hub.getConnection());");
+            <text>
+                import Client from '/assets/js/periodEnd/ncs/client.js';
+                import Hub from '/assets/js/hubs/hub.js';
+                const hub = new Hub('ncsPeriodEndPrepHub');
+                jobController.registerHandlers(hub);
+                hub.startHub();
+                window.prepClient = new Client(hub.getConnection());
+            </text>
         }
 
         (function() {
@@ -103,14 +106,15 @@
             const collectionClosedEmailSent = '@Html.Raw(Model?.PeriodEndPrepModel.State.CollectionClosedEmailSent)';
             const periodEndFinished = '@Html.Raw(Model?.PeriodEndPrepModel.State.PeriodEndFinished)';
             const confirm = new Confirm();
-            confirm.initialiseConfirmation(periodClosed, collectionClosedEmailSent, periodEndFinished);
 
-            const jobController = new JobController();
+            confirm.initialiseConfirmation(periodClosed, collectionClosedEmailSent, periodEndFinished);
             jobController.renderJobs(state);
 
             @if (!Model?.IsCurrentPeriod ?? false) {
-                @Html.Raw("const dateLabel = document.getElementById(`lastSync`);");
-                @Html.Raw("dateLabel.textContent = `Updates disabled as historical period end`;");
+                <text>
+                    const dateLabel = document.getElementById(`lastSync`);
+                    dateLabel.textContent = `Updates disabled as historical period end`;
+                </text>
             }
         })();
 

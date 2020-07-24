@@ -1,4 +1,4 @@
-﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
+﻿import { updateSync } from '/assets/js/baseController.js';
 import { setControlEnabledState } from '/assets/js/util.js';
 class jobController {
 
@@ -6,6 +6,14 @@ class jobController {
         this._slowTimer = null;
         this._mcaLabel = document.getElementById("mcaLabel");
         this._sldDasLabel = document.getElementById("sldDasMismatch");
+    }
+
+    registerHandlers(hub) {
+        hub.registerMessageHandler("ReceiveMessage", (state) => this.renderJobs(state));
+        hub.registerMessageHandler("DisableJobReSubmit", (jobId) => this.disableJobReSubmit(jobId));
+        hub.registerMessageHandler("ReferenceJobsButtonState", (enabled) => this.setPauseRefJobsButtonState(enabled));
+        hub.registerMessageHandler("CollectionClosedEmailButtonState", (enabled) => this.setCollectionClosedEmailButtonState(enabled));
+        hub.registerMessageHandler("ContinueButtonState", (enabled) => this.setContinueButtonState(enabled));
     }
 
     renderJobs(state) {

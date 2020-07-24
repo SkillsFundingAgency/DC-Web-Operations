@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[Audit]
+(	[ID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[User] NVARCHAR(200) NOT NULL,
+	[TimeStampUTC] DATETIME2 NOT NULL,
+	[OldValue] NVARCHAR(MAX),
+	[NewValue] NVARCHAR(MAX),
+	[Differentiator] INT NOT NULL
+)
+GO

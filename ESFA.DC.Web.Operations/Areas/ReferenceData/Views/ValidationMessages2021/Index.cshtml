@@ -70,14 +70,15 @@
 
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/validationMessages2021Hub.js';
+        import Hub from '/assets/js/hubs/hub.js';
 
         (function() {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-            const hub = new Hub(controller);
+            const hub = new Hub('validationMessages2021Hub', controller.displayConnectionState);
+
+            controller.registerHandlers(hub, 'ValidationMessages2021')
             hub.startHub();
-            
             controller.renderFiles('ValidationMessages2021', model);  
         })();
     </script>

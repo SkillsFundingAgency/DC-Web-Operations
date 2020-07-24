@@ -1,5 +1,5 @@
 ﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
-import { updateSync } from '/assets/js/periodEnd/baseController.js';
+import { updateSync } from '/assets/js/baseController.js';
 import { removeSpaces } from '/assets/js/util.js';
 
 class pathController {
@@ -9,6 +9,21 @@ class pathController {
         this._year = 0;
         this._period = 0;
         this.lastMessage = null;
+    }
+
+    registerHandlers(hub, state) {
+        if (!state.isPreviousPeriod) {
+            hub.registerMessageHandler("ReceiveMessage", (state) => this.renderPaths(state));
+        }
+
+        hub.registerMessageHandler("StartPeriodEndState", (enabled) => setControlEnabledState(enabled, "startPeriodEnd"));
+        hub.registerMessageHandler("PeriodClosedState", (enabled) => setControlEnabledState(enabled, "closePeriodEnd"));
+        hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => setControlEnabledState("proceed_" + pathItemId));
+
+        hub.registerMessageHandler("TurnOffMessage", () => {
+            hub.unregisterMessageHandler("ReceiveMessage");
+            hub.clearInterval();
+        });
     }
 
     pathItemCompare(a, b) {

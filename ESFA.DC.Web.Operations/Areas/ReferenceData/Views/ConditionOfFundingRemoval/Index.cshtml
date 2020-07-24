@@ -69,17 +69,17 @@
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/assets/js/handlebars.js"></script>
    
-
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
-        import Hub from '/assets/js/hubs/referenceData/conditionOfFundingRemovalHub.js';
+        import Hub from '/assets/js/hubs/hub.js';
 
         (function() {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-            const hub = new Hub(controller);
+            const hub = new Hub('conditionOfFundingRemovalHub', controller.displayConnectionState);
+
+            controller.registerHandlers(hub, 'ConditionOfFundingRemoval');
             hub.startHub();
-            
             controller.renderFiles('ConditionOfFundingRemoval', model);       
         })();
     </script>
