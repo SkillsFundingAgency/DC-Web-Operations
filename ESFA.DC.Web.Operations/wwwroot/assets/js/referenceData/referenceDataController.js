@@ -1,4 +1,4 @@
-﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
+﻿import { updateSync } from '/assets/js/baseController.js';
 import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 
 class referenceDataController {
@@ -8,10 +8,9 @@ class referenceDataController {
     }
 
     registerHandlers(hub, type) {
-        hub.registerMessageHandler("ReceiveMessage", (state) => this.renderFiles(type, state)); hub.registerMessageHandler("UploadState", (enabled) => {
-            //TODO:  This method does not exit.
-            //this.setButtonState(enabled, "uploadFile");
-        }); hub.registerMessageHandler("TurnOffMessage", () => {
+        hub.registerMessageHandler("ReceiveMessage", (state) => this.renderFiles(type, state));
+
+        hub.registerMessageHandler("TurnOffMessage", () => {
             hub.unregisterMessageHandler("UploadState");
             hub.unregisterMessageHandler("ReceiveMessage");
             hub.clearInterval();
