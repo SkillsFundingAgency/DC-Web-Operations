@@ -1,4 +1,4 @@
-﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
+﻿import { updateSync } from '/assets/js/baseController.js';
 import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 
 class referenceDataController {

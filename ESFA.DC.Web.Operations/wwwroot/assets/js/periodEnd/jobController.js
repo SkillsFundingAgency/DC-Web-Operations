@@ -1,4 +1,4 @@
-﻿import { updateSync } from '/assets/js/periodEnd/baseController.js';
+﻿import { updateSync } from '/assets/js/baseController.js';
 import { setControlEnabledState } from '/assets/js/util.js';
 class jobController {
 

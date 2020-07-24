@@ -1,5 +1,5 @@
 ﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
-import { updateSync } from '/assets/js/periodEnd/baseController.js';
+import { updateSync } from '/assets/js/baseController.js';
 import { removeSpaces } from '/assets/js/util.js';
 
 class pathController {
