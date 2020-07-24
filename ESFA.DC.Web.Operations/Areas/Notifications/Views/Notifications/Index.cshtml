@@ -1,0 +1,50 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Notifications.Models.NotificationsViewModel
+
+@{
+    ViewData["Title"] = "Manage notifications";
+    ViewData[ViewDataConstants.BackLink] = "/";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-x1">Manage notifications</h1>
+    </div>
+</div>
+
+<a href="notifications-summary" class="govuk-button">
+    Add a new message
+</a>
+
+<br>
+<div class="govuk-grid-column-two-thirds">
+    <table class="govuk-table">
+        <tbody class="govuk-table__body">
+            @foreach (var message in Model.ServiceMessages)
+            {
+                <tr class="govuk-table__row govuk-!-font-size-24">
+                    <td class="govuk-!-font-weight-bold" colspan="0">@message.Headline</td>
+                    @if (@message.IsActive)
+                    {
+                        <td class="govuk-tag govuk-!-font-weight-bold">Active</td>
+                    }
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-!-font-weight-bold">Start date</td>
+                    <td>@message.StartDateDisplayValue</td>
+                    <td class="govuk-!-font-weight-bold">Start time</td>
+                    <td>@message.StartTimeDisplayValue</td>
+                    <td><a class="govuk-link" asp-controller="Notifications" asp-action="Manage" asp-route-ukprn="@message.Id">Manage</a></td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">Finish date</td>
+                    <td class="govuk-table__cell">@message.EndDateDisplayValue</td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">Finish time</td>
+                    <td class="govuk-table__cell">@message.EndTimeDisplayValue</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+                <tr><td><br /></td></tr>
+            }
+        </tbody>
+    </table>
+</div>

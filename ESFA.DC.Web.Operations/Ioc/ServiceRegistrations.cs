@@ -16,6 +16,7 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
+using ESFA.DC.Web.Operations.Interfaces.Notifications;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
@@ -38,6 +39,7 @@ using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
 using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.ReferenceData;
+using ESFA.DC.Web.Operations.Services.Notifications;
 using ESFA.DC.Web.Operations.Services.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.PeriodEnd.ILR;
@@ -111,6 +113,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
+            builder.RegisterType<NotificationsService>().As<INotificationsService>().InstancePerLifetimeScope();
 
             builder.RegisterType<CampusIdentifiersFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
