@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ESFA.DC.Web.Operations.Models
+namespace ESFA.DC.Web.Operations.Models.FundingClaimsDates
 {
     public class FundingClaimsCollectionMetaData
     {

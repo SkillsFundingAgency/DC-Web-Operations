@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Models;
-using ESFA.DC.Web.Operations.Models.Reports;
+using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.ReferenceData
@@ -26,9 +23,21 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FundingClaimsCollectionMetaDataLastUpdate> GetLastUpdatedFundingClaimsCollectionMetaDataAsync(
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            var fundingClaimsCollectionMeta = _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData>>(await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata", cancellationToken));
+            var data = await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/lastupdate", cancellationToken);
+
+            return data == null ? null : _jsonSerializationService.Deserialize<FundingClaimsCollectionMetaDataLastUpdate>(data);
+        }
+
+        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(
+            int collectionYear,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var fundingClaimsCollectionMeta =
+                _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
+                    await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/{collectionYear}", cancellationToken));
 
             var results = new List<FundingClaimsCollectionMetaData>();
             foreach (var fccm in fundingClaimsCollectionMeta)
@@ -56,7 +65,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             FundingClaimsCollectionMetaData fundingClaimsCollectionMetaData,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var entity = new Jobs.Model.FundingClaimsCollectionMetaData()
+            var entity = new Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData()
             {
                 Id = fundingClaimsCollectionMetaData.Id,
                 CollectionId = fundingClaimsCollectionMetaData.CollectionId,
@@ -73,6 +82,34 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             long.TryParse(response, out var result);
 
             return true;
+        }
+
+        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var fundingClaimsCollectionMeta =
+                _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
+                    await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata", cancellationToken));
+
+            var results = new List<FundingClaimsCollectionMetaData>();
+            foreach (var fccm in fundingClaimsCollectionMeta)
+            {
+                results.Add(new FundingClaimsCollectionMetaData()
+                {
+                    Id = fccm.Id,
+                    CollectionName = fccm.CollectionName,
+                    CollectionId = fccm.CollectionId,
+                    CreatedBy = fccm.CreatedBy,
+                    CollectionYear = fccm.CollectionYear,
+                    DateTimeUpdatedUtc = fccm.DateTimeUpdatedUtc,
+                    HelpdeskOpenDateUtc = fccm.HelpdeskOpenDateUtc,
+                    RequiresSignature = fccm.RequiresSignature.GetValueOrDefault() ? 'Y' : 'N',
+                    SignatureCloseDateUtc = fccm.SignatureCloseDateUtc,
+                    SubmissionCloseDateUtc = fccm.SubmissionCloseDateUtc,
+                    SubmissionOpenDateUtc = fccm.SubmissionOpenDateUtc
+                });
+            }
+
+            return results;
         }
     }
 }

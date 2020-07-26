@@ -31,6 +31,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         private readonly IJobService _jobService;
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
+        private readonly IFundingClaimsDatesService _fundingClaimsDatesService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICloudStorageService _cloudStorageService;
         private readonly AzureStorageSection _azureStorageConfig;
@@ -44,6 +45,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             IJobService jobService,
             IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
+            IFundingClaimsDatesService fundingClaimsDatesService,
             IJsonSerializationService jsonSerializationService,
             IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
@@ -57,6 +59,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _jobService = jobService;
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
+            _fundingClaimsDatesService = fundingClaimsDatesService;
             _dateTimeProvider = dateTimeProvider;
             _cloudStorageService = cloudStorageService;
             _azureStorageConfig = azureStorageConfig;
@@ -140,6 +143,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken))?.ToList();
 
+            var fundingClaimsCollectionMetaDataLastUpdate = await _fundingClaimsDatesService.GetLastUpdatedFundingClaimsCollectionMetaDataAsync(cancellationToken);
+
             var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
             var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
             var latestSuccessfulFcProviderDataJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataFundingClaimsProviderData);
@@ -153,7 +158,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 .OrderByDescending(o => o.DateTimeSubmittedUtc)
                 .FirstOrDefault();
             var latestSuccessfulOnsPostcodes = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.OnsPostcodes);
-
             var model = new ReferenceDataIndexModel
             {
                 CampusIdentifiers = new ReferenceDataIndexBase
@@ -200,8 +204,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 },
                 FundingClaimsDates = new ReferenceDataIndexBase()
                 {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulOnsPostcodes?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulOnsPostcodes?.CreatedBy ?? CreatedByPlaceHolder,
+                    LastUpdatedDateTime = GetDate(fundingClaimsCollectionMetaDataLastUpdate?.DateTimeUpdatedUtc),
+                    LastUpdatedByWho = fundingClaimsCollectionMetaDataLastUpdate?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
             };
