@@ -50,7 +50,7 @@
             const hub = new Hub('fundingClaimsDatesHub', controller.displayConnectionState);
             hub.startHub(() => controller.getFundingClaimsDates());
             window.fundingClaimsDatesClient = new Client(hub.getConnection());
-            controller.init();
+            controller.init('@User.Name()');
         })();
     </script>
 }

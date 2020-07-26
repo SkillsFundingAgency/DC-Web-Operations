@@ -11,6 +11,6 @@ namespace ESFA.DC.Web.Operations.Interfaces
     {
         Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<FundingClaimsCollectionMetaData>> UpdateFundingClaimsCollectionMetaDataAsync(FundingClaimsCollectionMetaData fundingClaimsCollectionMeta, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> UpdateFundingClaimsCollectionMetaDataAsync(FundingClaimsCollectionMetaData fundingClaimsCollectionMeta, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

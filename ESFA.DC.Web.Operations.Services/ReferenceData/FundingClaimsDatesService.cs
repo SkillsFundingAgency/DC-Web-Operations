@@ -52,13 +52,27 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             return results;
         }
 
-        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> UpdateFundingClaimsCollectionMetaDataAsync(
-            FundingClaimsCollectionMetaData fundingClaimsCollectionMeta,
+        public async Task<bool> UpdateFundingClaimsCollectionMetaDataAsync(
+            FundingClaimsCollectionMetaData fundingClaimsCollectionMetaData,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = fundingClaimsCollectionMeta;
+            var entity = new Jobs.Model.FundingClaimsCollectionMetaData()
+            {
+                Id = fundingClaimsCollectionMetaData.Id,
+                CollectionId = fundingClaimsCollectionMetaData.CollectionId,
+                SubmissionOpenDateUtc = fundingClaimsCollectionMetaData.SubmissionOpenDateUtc,
+                SubmissionCloseDateUtc = fundingClaimsCollectionMetaData.SubmissionCloseDateUtc,
+                SignatureCloseDateUtc = fundingClaimsCollectionMetaData.SignatureCloseDateUtc,
+                RequiresSignature = fundingClaimsCollectionMetaData.RequiresSignature == 'Y',
+                HelpdeskOpenDateUtc = fundingClaimsCollectionMetaData.HelpdeskOpenDateUtc,
+                DateTimeUpdatedUtc = fundingClaimsCollectionMetaData.DateTimeUpdatedUtc,
+                CreatedBy = fundingClaimsCollectionMetaData.CreatedBy
+            };
 
-            return new List<FundingClaimsCollectionMetaData>();
+            var response = await SendDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/update", entity, cancellationToken);
+            long.TryParse(response, out var result);
+
+            return true;
         }
     }
 }

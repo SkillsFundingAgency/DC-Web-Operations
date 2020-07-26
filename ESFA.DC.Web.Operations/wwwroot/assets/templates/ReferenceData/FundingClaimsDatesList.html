@@ -16,12 +16,14 @@
                 <tbody class="govuk-table__body">
                     {{#each viewModel}}
                     {{#if inEditMode }}
-
+                <input type="hidden" name="id" value="{{id}}" />
                     <tr class="govuk-table__row row-hide" id="add-table-row">
                         <td scope="row" class="govuk-table__cell">
-                            <select class="govuk-select" id="sort" name="collectionPeriod">
-                                <option value="published" selected="">19/20-Final</option>
-                                <option value="published">19/20-YearEnd</option>
+                            <select class="govuk-select" id="sort" name="collectionId">
+                                {{#select collectionId}}
+                                <option value="6">19/20-Final</option>
+                                <option value="10">19/20-YearEnd</option>
+                                {{/select}}
                             </select>
                         </td>
                         <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionOpenDateUtc" name="submissionOpenDateUtc" value={{submissionOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
