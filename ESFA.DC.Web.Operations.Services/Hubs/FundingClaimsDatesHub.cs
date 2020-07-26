@@ -23,5 +23,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             return await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync();
         }
+
+        public async Task UpdateFundingClaimsCollectionMetaData(FundingClaimsCollectionMetaData fundingClaimsCollectionMeta)
+        {
+            //FundingClaimsCollectionMetaData funding = (FundingClaimsCollectionMetaData)fundingClaimsCollectionMeta;
+            //return await _fundingClaimsDatesService.UpdateFundingClaimsCollectionMetaDataAsync(new FundingClaimsCollectionMetaData());
+        }
     }
 }

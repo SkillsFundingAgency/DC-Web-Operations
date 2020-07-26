@@ -10,5 +10,7 @@ namespace ESFA.DC.Web.Operations.Interfaces
     public interface IFundingClaimsDatesService
     {
         Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IEnumerable<FundingClaimsCollectionMetaData>> UpdateFundingClaimsCollectionMetaDataAsync(FundingClaimsCollectionMetaData fundingClaimsCollectionMeta, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -27,7 +27,8 @@ export const getHandleBarsTemplate = function (name, root) {
 };
 
 export let Templates = {
-    ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html'
+    ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
+    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html'
 };
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
@@ -36,4 +37,24 @@ Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
                     : displayStatus === 'Job Failed' ? 'jobFailed'
                     : '';
     return statusClass;
+});
+
+//Handlebars.registerHelper('select', function (value, options) {
+//    var select = document.createElement('select');
+//    select.innerHTML = options.fn(this);
+//    select.value = value;
+//    if (select.children[select.selectedIndex])
+//        select.children[select.selectedIndex].setAttribute('selected', 'selected');
+
+//    return select.innerHTML;
+//});
+
+Handlebars.registerHelper('select', function (value, options) {
+    return options.fn()
+        .split('\n')
+        .map(function (v) {
+            var t = 'value="' + value + '"';
+            return RegExp(t).test(v) ? v.replace(t, t + ' selected="selected"') : v;
+        })
+        .join('\n');
 });

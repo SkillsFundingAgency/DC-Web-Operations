@@ -20,12 +20,14 @@ namespace ESFA.DC.Web.Operations.Models
 
         public DateTime? SignatureCloseDateUtc { get; set; }
 
-        public bool? RequiresSignature { get; set; }
+        public char RequiresSignature { get; set; }
 
         public DateTime? HelpdeskOpenDateUtc { get; set; }
 
         public DateTime? DateTimeUpdatedUtc { get; set; }
 
         public string CreatedBy { get; set; }
+
+        public bool InEditMode { get; set; }
     }
 }

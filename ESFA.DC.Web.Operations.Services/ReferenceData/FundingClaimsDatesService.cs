@@ -28,8 +28,37 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<FundingClaimsCollectionMetaData>>(await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata", cancellationToken));
-            return data;
+            var fundingClaimsCollectionMeta = _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData>>(await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata", cancellationToken));
+
+            var results = new List<FundingClaimsCollectionMetaData>();
+            foreach (var fccm in fundingClaimsCollectionMeta)
+            {
+                results.Add(new FundingClaimsCollectionMetaData()
+                {
+                    Id = fccm.Id,
+                    CollectionName = fccm.CollectionName,
+                    CollectionId = fccm.CollectionId,
+                    CreatedBy = fccm.CreatedBy,
+                    CollectionYear = fccm.CollectionYear,
+                    DateTimeUpdatedUtc = fccm.DateTimeUpdatedUtc,
+                    HelpdeskOpenDateUtc = fccm.HelpdeskOpenDateUtc,
+                    RequiresSignature = fccm.RequiresSignature.GetValueOrDefault() ? 'Y' : 'N',
+                    SignatureCloseDateUtc = fccm.SignatureCloseDateUtc,
+                    SubmissionCloseDateUtc = fccm.SubmissionCloseDateUtc,
+                    SubmissionOpenDateUtc = fccm.SubmissionOpenDateUtc
+                });
+            }
+
+            return results;
+        }
+
+        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> UpdateFundingClaimsCollectionMetaDataAsync(
+            FundingClaimsCollectionMetaData fundingClaimsCollectionMeta,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = fundingClaimsCollectionMeta;
+
+            return new List<FundingClaimsCollectionMetaData>();
         }
     }
 }
