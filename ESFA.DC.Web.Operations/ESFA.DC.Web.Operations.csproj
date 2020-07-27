@@ -320,6 +320,7 @@
   <ItemGroup>
     <Folder Include="Areas\DevOps\Data\" />
     <Folder Include="Areas\DevOps\Models\" />
+    <Folder Include="Areas\Notifications\Models\" />
     <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
     <Folder Include="wwwroot\assets\js\periodEnd\ncs\" />

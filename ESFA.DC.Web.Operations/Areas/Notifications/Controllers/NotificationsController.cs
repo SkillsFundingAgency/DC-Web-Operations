@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.Notifications.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Notifications;
+using ESFA.DC.Web.Operations.Models.Notifications;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
@@ -27,20 +27,26 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var model = new NotificationsViewModel()
-            {
-                ServiceMessages = (await _notificationsService
-                    .GetAllServiceMessagesAsync(cancellationToken))
-                    .OrderByDescending(o => o.IsActive)
-                    .ThenByDescending(t => t.StartDateTimeUtc)
-            };
+            var model = await _notificationsService.GetAllNotificationMessagesAsync(cancellationToken);
 
             return View("Index", model);
         }
 
         public IActionResult Manage()
         {
-            throw new System.NotImplementedException();
+            return View();
+        }
+
+        public async Task<IActionResult> Save(Notification model, CancellationToken cancellationToken)
+        {
+            var result = await _notificationsService.SaveNotificationAsync(cancellationToken, model);
+
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View("Manage", model);
         }
     }
 }

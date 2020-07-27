@@ -1,0 +1,78 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Models.Notifications.Notification
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData[ViewDataConstants.BackLink] = "/notifications";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-x1">Notification details</h1>
+    </div>
+</div>
+<br />
+<div class="govuk-grid-column-two-thirds">
+    <form asp-controller="Notifications" asp-action="Save" method="post">
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        Headline
+                        <span class="govuk-caption-m">optional</span>
+                    </td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        <input class="govuk-input" type="text" asp-for="Headline">
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        Message
+                    </td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        <textarea class="govuk-textarea" id="more-detail" rows="5" aria-describedby="more-detail-hint" asp-for="Message"></textarea>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        Start date
+                    </td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        <input class="govuk-input govuk-!-width-one-half" type="date" asp-for="StartDate">
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        Start time
+                    </td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        <input class="govuk-input govuk-!-width-one-half" type="time" asp-for="StartTime">
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        Finish date
+                    </td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        <input class="govuk-input govuk-!-width-one-half" type="date" asp-for="EndDate">
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        Finish time
+                    </td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        <input class="govuk-input govuk-!-width-one-half" type="time" asp-for="EndTime">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="submit" id="submitButton" class="govuk-button">Save</button>
+        &nbsp; &nbsp;
+        @Html.ActionLink("Cancel", "Index", "Notifications", null, new { @class = "govuk-button govuk-button--secondary" })
+        </form>
+
+</div>

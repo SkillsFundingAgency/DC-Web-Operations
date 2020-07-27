@@ -11,5 +11,10 @@ namespace ESFA.DC.Web.Operations.Extensions
         {
             return dateTime.ToString("dd-MM-yyyy");
         }
+
+        public static string ToTime(this DateTime dateTime)
+        {
+            return dateTime.ToString("HH:mm");
+        }
     }
 }

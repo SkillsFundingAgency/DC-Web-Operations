@@ -1,5 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.Notifications.Models.NotificationsViewModel
+@using ESFA.DC.Web.Operations.Extensions
+@model List<ESFA.DC.Web.Operations.Models.Notifications.Notification>
 
 @{
     ViewData["Title"] = "Manage notifications";
@@ -12,15 +13,13 @@
     </div>
 </div>
 
-<a href="notifications-summary" class="govuk-button">
-    Add a new message
-</a>
+@Html.ActionLink(" Add a new message","Manage","Notifications", null, new { @class= "govuk-button" })
 
 <br>
 <div class="govuk-grid-column-two-thirds">
     <table class="govuk-table">
         <tbody class="govuk-table__body">
-            @foreach (var message in Model.ServiceMessages)
+            @foreach (var message in Model)
             {
                 <tr class="govuk-table__row govuk-!-font-size-24">
                     <td class="govuk-!-font-weight-bold" colspan="0">@message.Headline</td>
@@ -31,16 +30,16 @@
                 </tr>
                 <tr class="govuk-table__row">
                     <td class="govuk-!-font-weight-bold">Start date</td>
-                    <td>@message.StartDateDisplayValue</td>
+                    <td>@message.StartDate.ToDateString()</td>
                     <td class="govuk-!-font-weight-bold">Start time</td>
-                    <td>@message.StartTimeDisplayValue</td>
+                    <td>@message.StartTime.ToTime()</td>
                     <td><a class="govuk-link" asp-controller="Notifications" asp-action="Manage" asp-route-ukprn="@message.Id">Manage</a></td>
                 </tr>
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold">Finish date</td>
-                    <td class="govuk-table__cell">@message.EndDateDisplayValue</td>
+                    <td class="govuk-table__cell">@message.EndDate.ToDateString()</td>
                     <td class="govuk-table__cell govuk-!-font-weight-bold">Finish time</td>
-                    <td class="govuk-table__cell">@message.EndTimeDisplayValue</td>
+                    <td class="govuk-table__cell">@message.EndTime.ToTime()</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
                 <tr><td><br /></td></tr>
