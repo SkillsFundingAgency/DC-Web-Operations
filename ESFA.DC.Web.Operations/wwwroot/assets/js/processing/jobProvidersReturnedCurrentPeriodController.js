@@ -57,7 +57,7 @@ class JobProvidersReturnedCurrentPeriodController {
             var item = this._data.jobs[i];
 
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell">${item.providerName}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.fileName}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.dateTimeSubmission}</td>`);
