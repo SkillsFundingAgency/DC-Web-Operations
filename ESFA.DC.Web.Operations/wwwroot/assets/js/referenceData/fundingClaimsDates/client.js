@@ -4,6 +4,15 @@
         this.connection = connection;
     }
 
+    getFundingClaimsCollectionMetaDataByYear(year, populateFundingClaimsDates) {
+        this.connection
+            .invoke("GetFundingClaimsCollectionMetaDataByYear", year)
+            .then(function (values) {
+                populateFundingClaimsDates(values);
+            })
+            .catch(err => console.error(err.toString()));
+    }
+
     getFundingClaimsCollectionMetaData(populateFundingClaimsDates) {
         this.connection
             .invoke("GetFundingClaimsCollectionMetaData")

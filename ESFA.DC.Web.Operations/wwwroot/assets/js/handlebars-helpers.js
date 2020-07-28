@@ -39,16 +39,6 @@ Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
     return statusClass;
 });
 
-//Handlebars.registerHelper('select', function (value, options) {
-//    var select = document.createElement('select');
-//    select.innerHTML = options.fn(this);
-//    select.value = value;
-//    if (select.children[select.selectedIndex])
-//        select.children[select.selectedIndex].setAttribute('selected', 'selected');
-
-//    return select.innerHTML;
-//});
-
 Handlebars.registerHelper('select', function (value, options) {
     return options.fn()
         .split('\n')

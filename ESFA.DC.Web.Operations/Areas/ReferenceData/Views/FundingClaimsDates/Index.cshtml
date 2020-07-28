@@ -1,6 +1,7 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
-@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
+@model ESFA.DC.Web.Operations.Areas.ReferenceData.Models.FundingClaimsDatesViewModel
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -18,12 +19,23 @@
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Funding Claims Dates</h1>
-        <br />
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-margin-top-6">
+            <h1 class="govuk-heading-xl">
+                Funding claim dates
+                <div class="govuk-form-group position-right">
+                    <label class="govuk-label" for="sort">
+                        Filter by year
+                    </label>
+                    <select id="collectionYears" asp-for="CollectionYearSelected" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Years">
+                    </select>
+                </div>
+            </h1>
+        </div>
     </div>
 </div>
 
+@*<span id="spinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>*@
 <div id="fundingClaimsDatesList">
 </div>
 
@@ -43,14 +55,16 @@
     <script type="module">
         import Client from '/assets/js/referencedata/fundingclaimsdates/client.js';
         import Hub from '/assets/js/hubs/hub.js';
-        import ReportsController from '/assets/js/referencedata/fundingclaimsdates/fundingclaimsdatesController.js';
+        import FundingClaimsDatesController from '/assets/js/referencedata/fundingclaimsdates/fundingclaimsdatesController.js';
 
         (function () {
-            const controller = new ReportsController();
+            const fundingClaimsDatesListModel = @Json.Serialize(Model.FundingClaimsDatesList);
+            const controller = new FundingClaimsDatesController();
             const hub = new Hub('fundingClaimsDatesHub', controller.displayConnectionState);
-            hub.startHub(() => controller.getFundingClaimsDates());
+            //hub.startHub(() => controller.getFundingClaimsDates());
+            hub.startHub();
             window.fundingClaimsDatesClient = new Client(hub.getConnection());
-            controller.init('@User.Name()');
+            controller.init('@User.Name()', fundingClaimsDatesListModel);
         })();
     </script>
 }

@@ -1,18 +1,16 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.Indexed;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants;
-using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
@@ -21,23 +19,31 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class FundingClaimsDatesController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
+        private readonly IFundingClaimsDatesService _fundingClaimsDatesService;
 
         public FundingClaimsDatesController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
+            IFundingClaimsDatesService fundingClaimsDatesService)
             : base(storageService, logger, telemetryClient)
         {
             _referenceDataService = referenceDataService;
-            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
+            _fundingClaimsDatesService = fundingClaimsDatesService;
         }
 
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index()
         {
-            return View();
+            FundingClaimsDatesViewModel viewModel = new FundingClaimsDatesViewModel();
+            var fundingClaimsCollectionMetaDatas = await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync();
+
+            var fundingClaimsDatesList = fundingClaimsCollectionMetaDatas.ToList();
+
+            viewModel.CollectionYears = fundingClaimsDatesList.Select(x => x.CollectionYear).Distinct().OrderByDescending(x => x).ToList();
+            viewModel.FundingClaimsDatesList = fundingClaimsDatesList.Where(x => x.CollectionYear == viewModel.CollectionYears.FirstOrDefault());
+
+            return View(viewModel);
         }
     }
 }

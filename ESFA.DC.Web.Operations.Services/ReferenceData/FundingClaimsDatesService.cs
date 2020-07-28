@@ -37,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var fundingClaimsCollectionMeta =
                 _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
-                    await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/{collectionYear}", cancellationToken));
+                    await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/collectionYear/{collectionYear}", cancellationToken));
 
             var results = new List<FundingClaimsCollectionMetaData>();
             foreach (var fccm in fundingClaimsCollectionMeta)

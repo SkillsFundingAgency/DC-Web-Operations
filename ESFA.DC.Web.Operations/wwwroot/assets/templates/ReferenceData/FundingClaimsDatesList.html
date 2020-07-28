@@ -1,17 +1,6 @@
 ﻿<div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="govuk-form-group position-right">
-            <label class="govuk-label" for="sort">
-                Filter by year
-            </label>
-            <select class="govuk-select" id="sort" name="sort">
-                <option value="published" selected="">2020 to 2021</option>
-                <option value="updated">2019 to 2020</option>
-                <option value="views">2018 to 2019</option>
-                <option value="comments">2017 to 2018</option>
-            </select>
-        </div>
-        <form id="fundingClaimsDatesForm">
+       <form id="fundingClaimsDatesForm">
             <table class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -27,43 +16,44 @@
                 <tbody class="govuk-table__body">
                     {{#each viewModel}}
                     {{#if inEditMode }}
-                    <input type="hidden" name="id" value="{{id}}" />
-                    <tr class="govuk-table__row row-hide" id="add-table-row">
-                        <td scope="row" class="govuk-table__cell">
-                            <select class="govuk-select" id="sort" name="collectionId">
-                                {{#select collectionId}}
-                                <option value="6">19/20-Final</option>
-                                <option value="10">19/20-YearEnd</option>
-                                {{/select}}
-                            </select>
-                        </td>
-                        <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionOpenDateUtc" name="submissionOpenDateUtc" value={{submissionOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                        <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionCloseDateUtc" name="submissionCloseDateUtc" value={{submissionCloseDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                        <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="helpdeskOpenDateUtc" name="helpdeskOpenDateUtc" value={{helpdeskOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                        <td class="govuk-table__cell">
-                            <select class="govuk-select" id="requiresSignature" name="requiresSignature">
-                                {{#select requiresSignature}}
-                                <option value="Y">Y</option>
-                                <option value="N">N</option>
-                                {{/select}}
-                            </select>
-                        </td>
-                        <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="signatureCloseDateUtc" name="signatureCloseDateUtc" value="{{signatureCloseDateUtc}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                        <td class="govuk-table__cell govuk-table__header--numeric"><button class="govuk-button" data-module="govuk-button" id="save">Save</button> <a data-id="{{id}}" href="#" id="cancel">Cancel</a> </td>
-                    </tr>
+                        <input type="hidden" name="id" value="{{id}}" />
+                        <tr class="govuk-table__row row-hide" id="add-table-row">
+                            <td scope="row" class="govuk-table__cell">
+                                <select class="govuk-select" id="sort" name="collectionId">
+                                    {{#select collectionId}}
+                                    {{#each @root.collectionPeriods}}
+                                    <option value="{{value}}">{{text}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </td>
+                            <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionOpenDateUtc" name="submissionOpenDateUtc" value={{submissionOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                            <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionCloseDateUtc" name="submissionCloseDateUtc" value={{submissionCloseDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                            <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="helpdeskOpenDateUtc" name="helpdeskOpenDateUtc" value={{helpdeskOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                            <td class="govuk-table__cell">
+                                <select class="govuk-select" id="requiresSignature" name="requiresSignature">
+                                    {{#select requiresSignature}}
+                                    <option value="Y">Y</option>
+                                    <option value="N">N</option>
+                                    {{/select}}
+                                </select>
+                            </td>
+                            <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="signatureCloseDateUtc" name="signatureCloseDateUtc" value="{{signatureCloseDateUtc}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                            <td class="govuk-table__cell govuk-table__header--numeric"><button class="govuk-button" data-module="govuk-button" id="save">Save</button> <a data-id="{{id}}" href="#" id="cancel">Cancel</a> </td>
+                        </tr>
 
                     {{else}}
-                    <tr class="govuk-table__row">
-                        <td scope="row" class="govuk-table__cell">{{collectionName}}</td>
-                        <td class="govuk-table__cell">{{submissionOpenDateUtc}}</td>
-                        <td class="govuk-table__cell">{{submissionCloseDateUtc}}</td>
-                        <td class="govuk-table__cell">{{helpdeskOpenDateUtc}}</td>
-                        <td class="govuk-table__cell">{{requiresSignature}}</td>
-                        <td class="govuk-table__cell">{{signatureCloseDateUtc}}</td>
-                        <td>
-                            <button class="govuk-button modify-table-row" data-module="govuk-button" data-collectionId="{{collectionId}}" data-id="{{id}}" id="modify">Modify</button>
-                        </td>
-                    </tr>
+                        <tr class="govuk-table__row">
+                            <td scope="row" class="govuk-table__cell">{{collectionName}}</td>
+                            <td class="govuk-table__cell">{{submissionOpenDateUtc}}</td>
+                            <td class="govuk-table__cell">{{submissionCloseDateUtc}}</td>
+                            <td class="govuk-table__cell">{{helpdeskOpenDateUtc}}</td>
+                            <td class="govuk-table__cell">{{requiresSignature}}</td>
+                            <td class="govuk-table__cell">{{signatureCloseDateUtc}}</td>
+                            <td>
+                                <button class="govuk-button modify-table-row" data-module="govuk-button" data-collectionId="{{collectionId}}" data-id="{{id}}" id="modify">Modify</button>
+                            </td>
+                        </tr>
                     {{/if}}
                     {{/each}}
                 </tbody>
