@@ -17,8 +17,8 @@ namespace ESFA.DC.Web.Operations.Models.Notifications
 
         public DateTime StartTime { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
     }
 }

@@ -55,14 +55,14 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
         public async Task<bool> SaveNotificationAsync(CancellationToken cancellationToken, Notification model)
         {
             var startDateTime = model.StartDate.Date.Add(model.StartTime.TimeOfDay);
-            var endDateTime = model.EndDate.Date.Add(model.EndTime.TimeOfDay);
+            var endDateTime = model.EndDate.GetValueOrDefault().Date.Add(model.EndTime.GetValueOrDefault().TimeOfDay);
 
             var data = new ServiceMessageDto
             {
                 Headline = model.Headline,
                 Message = model.Message,
                 StartDateTimeUtc = _dateTimeProvider.ConvertUkToUtc(startDateTime),
-                EndDateTimeUtc = _dateTimeProvider.ConvertUkToUtc(endDateTime),
+                EndDateTimeUtc = endDateTime == DateTime.MinValue ? (DateTime?)null : _dateTimeProvider.ConvertUkToUtc(endDateTime),
                 Id = model.Id
             };
 
@@ -76,20 +76,25 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
             return response.IsSuccess;
         }
 
-        private Notification ConvertToOperationsServiceMessageDto(Jobs.Model.ServiceMessageDto serviceMessageDto)
+        private Notification ConvertToOperationsServiceMessageDto(ServiceMessageDto serviceMessageDto)
         {
             var now = _dateTimeProvider.GetNowUtc();
+
+            var localStartDateTime = _dateTimeProvider.ConvertUtcToUk(serviceMessageDto.StartDateTimeUtc);
+            DateTime? localEnDateTime = serviceMessageDto.EndDateTimeUtc.HasValue ?
+                                  _dateTimeProvider.ConvertUtcToUk(serviceMessageDto.EndDateTimeUtc
+                                      .GetValueOrDefault()) : (DateTime?)null;
 
             return new Notification()
             {
                 Id = serviceMessageDto.Id,
                 Headline = serviceMessageDto.Headline,
                 Message = serviceMessageDto.Message,
-                StartDate = serviceMessageDto.StartDateTimeUtc,
-                EndDate = serviceMessageDto.EndDateTimeUtc.GetValueOrDefault(),
-                StartTime = serviceMessageDto.StartDateTimeUtc,
-                EndTime = serviceMessageDto.EndDateTimeUtc.GetValueOrDefault(),
-                IsActive = serviceMessageDto.StartDateTimeUtc <= now && serviceMessageDto.EndDateTimeUtc >= now
+                StartDate = localStartDateTime,
+                EndDate = localEnDateTime,
+                StartTime = localStartDateTime,
+                EndTime = localEnDateTime,
+                IsActive = serviceMessageDto.StartDateTimeUtc <= now && (!serviceMessageDto.EndDateTimeUtc.HasValue || serviceMessageDto.EndDateTimeUtc >= now)
             };
         }
     }

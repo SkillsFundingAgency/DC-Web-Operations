@@ -74,29 +74,45 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
                 return false;
             }
 
-            if (model.EndDate == DateTime.MinValue || model.EndTime == DateTime.MinValue)
+            //if (model.EndDate == DateTime.MinValue || model.EndTime == DateTime.MinValue)
+            //{
+            //    ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid end date and time");
+            //    ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid end date and time");
+
+            //    return false;
+            //}
+
+            //if (model.StartTime == DateTime.MinValue || model.EndTime == DateTime.MinValue)
+            //{
+            //    ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid end date and time");
+            //    ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid end date and time");
+
+            //    return false;
+            //}
+
+            if (model.EndDate == DateTime.MinValue && model.EndTime != DateTime.MinValue)
             {
-                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid end date and time");
-                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid end date and time");
+                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid finish date");
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid finish date");
 
                 return false;
             }
 
-            if (model.StartTime == DateTime.MinValue || model.EndTime == DateTime.MinValue)
+            if (model.EndDate != DateTime.MinValue && model.EndTime == DateTime.MinValue)
             {
-                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid end date and time");
-                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid end date and time");
+                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid finish time");
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid finish time");
 
                 return false;
             }
 
             var startDateTime = model.StartDate.Date.Add(model.StartTime.TimeOfDay);
-            var endDateTime = model.EndDate.Date.Add(model.EndTime.TimeOfDay);
+            var endDateTime = model.EndDate.GetValueOrDefault().Date.Add(model.EndTime.GetValueOrDefault().TimeOfDay);
 
-            if (startDateTime > endDateTime)
+            if (endDateTime != DateTime.MinValue && startDateTime > endDateTime)
             {
-                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Start date/time can not be after end date/time.");
-                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Start date/time can not be after end date/time.");
+                ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Start date/time can not be after finish date/time.");
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Start date/time can not be after finish date/time.");
 
                 return false;
             }
