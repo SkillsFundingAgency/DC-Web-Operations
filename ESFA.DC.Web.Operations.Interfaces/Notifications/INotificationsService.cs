@@ -10,5 +10,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Notifications
         Task<List<Notification>> GetAllNotificationMessagesAsync(CancellationToken cancellationToken);
 
         Task<bool> SaveNotificationAsync(CancellationToken cancellationToken, Notification model);
+
+        Task<Notification> GetNotificationByIdAsync(int id, CancellationToken cancellationToken);
     }
 }

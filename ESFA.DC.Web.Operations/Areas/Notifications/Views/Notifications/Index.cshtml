@@ -1,5 +1,6 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
+@using ESFA.DC.Web.Operations.Utils
 @model List<ESFA.DC.Web.Operations.Models.Notifications.Notification>
 
 @{
@@ -13,7 +14,7 @@
     </div>
 </div>
 
-@Html.ActionLink(" Add a new message","Manage","Notifications", null, new { @class= "govuk-button" })
+@Html.ActionLink("Add a new message","Manage","Notifications", null, new { @class= "govuk-button" })
 
 <br>
 <div class="govuk-grid-column-two-thirds">
@@ -33,7 +34,9 @@
                     <td>@message.StartDate.ToDateString()</td>
                     <td class="govuk-!-font-weight-bold">Start time</td>
                     <td>@message.StartTime.ToTime()</td>
-                    <td><a class="govuk-link" asp-controller="Notifications" asp-action="Manage" asp-route-ukprn="@message.Id">Manage</a></td>
+                    <td>
+                        @Html.ActionLink("Manage", "Manage", "Notifications", new { area= AreaNames.Notifications, notificationId = message.Id })
+                    </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold">Finish date</td>

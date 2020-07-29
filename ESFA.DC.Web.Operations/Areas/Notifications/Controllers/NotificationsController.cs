@@ -34,8 +34,15 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
             return View("Index", model);
         }
 
-        public IActionResult Manage()
+        [HttpGet("{notificationId?}")]
+        public async Task<IActionResult> Manage(CancellationToken cancellationToken, int? notificationId = null)
         {
+            if (notificationId.HasValue)
+            {
+                var model = await _notificationsService.GetNotificationByIdAsync(notificationId.Value, cancellationToken);
+                return View(model);
+            }
+
             return View();
         }
 
