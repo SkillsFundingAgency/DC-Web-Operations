@@ -74,22 +74,6 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
                 return false;
             }
 
-            //if (model.EndDate == DateTime.MinValue || model.EndTime == DateTime.MinValue)
-            //{
-            //    ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid end date and time");
-            //    ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid end date and time");
-
-            //    return false;
-            //}
-
-            //if (model.StartTime == DateTime.MinValue || model.EndTime == DateTime.MinValue)
-            //{
-            //    ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid end date and time");
-            //    ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, "Please enter valid end date and time");
-
-            //    return false;
-            //}
-
             if (model.EndDate == DateTime.MinValue && model.EndTime != DateTime.MinValue)
             {
                 ModelState.AddModelError(ErrorMessageKeys.Submission_FileFieldKey, "Please enter valid finish date");
