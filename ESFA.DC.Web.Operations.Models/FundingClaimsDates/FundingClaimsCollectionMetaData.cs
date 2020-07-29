@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using ESFA.DC.Web.Operations.Utils.Extensions;
 
 namespace ESFA.DC.Web.Operations.Models.FundingClaimsDates
 {
@@ -31,12 +32,24 @@ namespace ESFA.DC.Web.Operations.Models.FundingClaimsDates
 
         public bool InEditMode { get; set; }
 
-        //public string SubmissionOpenDateUtcFormattedString
-        //{
-        //    get
-        //    {
-        //        return string.Concat(SubmissionOpenDateUtc.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", SubmissionOpenDateUtc.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower());
-        //    }
-        //}
+        public string SubmissionOpenDateUtcFormattedString
+        {
+            get { return SubmissionOpenDateUtc.ToDateTimeString(); }
+        }
+
+        public string SubmissionCloseDateUtcFormattedString
+        {
+            get { return SubmissionCloseDateUtc.ToDateTimeString(); }
+        }
+
+        public string HelpdeskOpenDateUtcFormattedString
+        {
+            get { return HelpdeskOpenDateUtc?.ToDateTimeString(); }
+        }
+
+        public string SignatureCloseDateUtcFormattedString
+        {
+            get { return SignatureCloseDateUtc?.ToDateTimeString(); }
+        }
     }
 }

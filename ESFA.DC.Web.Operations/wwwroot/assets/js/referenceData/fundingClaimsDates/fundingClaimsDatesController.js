@@ -8,6 +8,9 @@ class FundingClaimsDatesController {
         this._yearSelection = document.getElementById('collectionYears');
         this._yearSelected = null;
         this._spinner = document.getElementById('spinner');
+        this._updateMessageSpan = document.getElementById('update-message');
+        this._errorSpan = null;
+
     }
 
     init(userName, fundingClaimsDatesListModel) {
@@ -21,7 +24,7 @@ class FundingClaimsDatesController {
         this._spinner.style.visibility = 'visible';
         this._yearSelected = this._yearSelection.value;
         window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
-        
+
     }
 
     populateFundingClaimsDates(fundingClaimsDatesList) {
@@ -51,7 +54,7 @@ class FundingClaimsDatesController {
         for (const other of others) {
             other.inEditMode = false;
         }
-        
+
         this.render(this._fundingClaimsDatesList);
     }
 
@@ -64,19 +67,35 @@ class FundingClaimsDatesController {
 
     save(event) {
         event.preventDefault();
-        this._spinner.style.visibility = 'visible';
         let form = event.target.closest('form');
-        //let checkValidity = form.checkValidity();
-        //form.reportValidity();
+        if (!this.IsFormValid()) {
+            this._errorSpan.style.display = "block";
+            return;
+        }
+        this._spinner.style.visibility = 'visible';
         var fundingClaimsCollectionMetadata = this.formToJson(form);
         fundingClaimsCollectionMetadata.createdBy = this._userName;
         window.fundingClaimsDatesClient.updateFundingClaimsCollectionMetadata(fundingClaimsCollectionMetadata, this.refreshFundingClaimsDates.bind(this));
     }
 
     refreshFundingClaimsDates() {
+        document.getElementById('update-message').style.display = "block";
+        setTimeout(function () {
+            document.getElementById('update-message').style.display = "none";
+        }, 3000);
         window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
     }
 
+    IsFormValid() {
+        const allinputs = document.querySelectorAll('input');
+        for (const input of allinputs) {
+            var isValidInput = input.checkValidity();
+            if (!isValidInput) {
+                return false;
+            }
+        }
+        return true;
+    }
     formToJson(formElement) {
         let json = {};
         Array.from(formElement.querySelectorAll('input, select, textarea'))
@@ -103,14 +122,27 @@ class FundingClaimsDatesController {
             saveBtn.addEventListener("click", this.save.bind(this));
         }
 
-        //const allinputs = document.querySelectorAll('input');
+        // validation 
+        const allinputs = document.querySelectorAll('input');
 
-        //allinputs.blur(function (event) {
-        //    event.target.checkValidity();
-        //}).bind('invalid', function (event) {
-        //    setTimeout(function () { $(event.target).focus(); }, 50);
-        //});
+        for (const input of allinputs) {
+            input.addEventListener("blur", this.validateInput.bind(this));
+        }
+
+        this._errorSpan = document.getElementById('fundingclaimsDates-error');
+        this._errorSpan.style.display = "none";
     }
+
+    validateInput(event) {
+        this._errorSpan.style.display = "none";
+        var isValid = event.target.checkValidity();
+        if (!isValid) {
+            event.target.classList.add("govuk-input--error");
+        } else {
+            event.target.classList.remove("govuk-input--error");
+        }
+    }
+
 
     displayConnectionState(state) {
         const stateLabel = document.getElementById("state");

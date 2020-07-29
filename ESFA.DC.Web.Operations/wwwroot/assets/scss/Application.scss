@@ -902,3 +902,28 @@ html {
 .jobFailed {
     color: govuk-colour("red");
 }
+
+.position-right {
+    float: right;
+}
+
+.banner-destructive-without-action, .banner-destructive-with-action, .banner-warning-with-action, .banner-warning-without-action, .banner-success-with-action, .banner-success-without-action, .banner-information-with-action, .banner-information-without-action, .banner-temporary-message-without-action {
+    font-family: "nta", Arial, sans-serif;
+    font-weight: 400;
+    text-transform: none;
+    font-size: 18px;
+    line-height: 1.2;
+    padding: 20px;
+    margin-top: 15px;
+    border-width: 5px;
+    border-style: solid;
+}
+
+.banner-success-with-action, .banner-success-with-action p, .banner-success-without-action, .banner-success-without-action p {
+    color: #00823b;
+}
+
+.govuk-input--width-7 {
+    max-width: 27ex;
+    font-size: 14px;
+}

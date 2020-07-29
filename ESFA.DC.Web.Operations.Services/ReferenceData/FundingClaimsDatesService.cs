@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 using ESFA.DC.Web.Operations.Settings.Models;
+using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Services.ReferenceData
 {
@@ -58,7 +60,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 });
             }
 
-            return results;
+            return results.OrderByDescending(x => x.CollectionId).ThenByDescending(x => x.SubmissionOpenDateUtc);
         }
 
         public async Task<bool> UpdateFundingClaimsCollectionMetaDataAsync(
