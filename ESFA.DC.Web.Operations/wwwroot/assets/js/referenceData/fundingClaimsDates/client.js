@@ -7,10 +7,13 @@
     getFundingClaimsCollectionMetaDataByYear(year, populateFundingClaimsDates) {
         this.connection
             .invoke("GetFundingClaimsCollectionMetaDataByYear", year)
-            .then(function (values) {
+            .then(function(values) {
                 populateFundingClaimsDates(values);
             })
-            .catch(err => console.error(err.toString()));
+            .catch(err => {
+                alert(err.toString());
+                console.error(err.toString());
+            });
     }
 
     getFundingClaimsCollectionMetaData(populateFundingClaimsDates) {
@@ -22,11 +25,11 @@
             .catch(err => console.error(err.toString()));
     }
 
-    updateFundingClaimsCollectionMetadata(data) {
+    updateFundingClaimsCollectionMetadata(data, populateFundingClaimsDates) {
         this.connection
-            .invoke("UpdateFundingClaimsCollectionMetaData", data)
-            .then(function () {
-                //populateFundingClaimsDates(values);
+            .invoke("UpdateFundingClaimsCollectionMetaDataWithYear", data)
+            .then(function (values) {
+                populateFundingClaimsDates(values);
             })
             .catch(err => {
                     alert(err.toString());

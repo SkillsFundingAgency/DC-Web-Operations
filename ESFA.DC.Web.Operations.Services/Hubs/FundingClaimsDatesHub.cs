@@ -38,6 +38,13 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             fundingClaimsCollectionMeta.DateTimeUpdatedUtc = _dateTimeProvider.GetNowUtc();
             return await _fundingClaimsDatesService.UpdateFundingClaimsCollectionMetaDataAsync(fundingClaimsCollectionMeta);
+        }
+
+        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> UpdateFundingClaimsCollectionMetaDataWithYear(FundingClaimsCollectionMetaData fundingClaimsCollectionMeta)
+        {
+            fundingClaimsCollectionMeta.DateTimeUpdatedUtc = _dateTimeProvider.GetNowUtc();
+            await _fundingClaimsDatesService.UpdateFundingClaimsCollectionMetaDataAsync(fundingClaimsCollectionMeta);
+            return await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync(fundingClaimsCollectionMeta.CollectionYear);
             //FundingClaimsCollectionMetaData funding = (FundingClaimsCollectionMetaData)fundingClaimsCollectionMeta;
             //return await _fundingClaimsDatesService.UpdateFundingClaimsCollectionMetaDataAsync(new FundingClaimsCollectionMetaData());
         }

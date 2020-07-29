@@ -7,23 +7,27 @@ class FundingClaimsDatesController {
         this._userName = null;
         this._yearSelection = document.getElementById('collectionYears');
         this._yearSelected = null;
+        this._spinner = document.getElementById('spinner');
     }
 
     init(userName, fundingClaimsDatesListModel) {
         console.log("init fundingClaimsDatesController");
         this._userName = userName;
+        this._yearSelected = this._yearSelection.value;
         this._yearSelection.addEventListener("change", this.yearsSelectionChange.bind(this));
         this.populateFundingClaimsDates(fundingClaimsDatesListModel);
     }
 
     yearsSelectionChange(e) {
+        this._spinner.style.visibility = 'visible';
         this._yearSelected = this._yearSelection.value;
         window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
+        
     }
-    getFundingClaimsDates() {
-        console.log("init getFundingClaimsDates");
-        window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaData(this.populateFundingClaimsDates.bind(this));
-    }
+    //getFundingClaimsDates() {
+    //    console.log("init getFundingClaimsDates");
+    //    window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaData(this.populateFundingClaimsDates.bind(this));
+    //}
 
     populateFundingClaimsDates(fundingClaimsDatesList) {
         this._fundingClaimsDatesList = fundingClaimsDatesList;
@@ -41,6 +45,7 @@ class FundingClaimsDatesController {
         });
         document.getElementById("fundingClaimsDatesList").innerHTML = compiledTemplate({ viewModel: fundingClaimsDatesList, collectionPeriods: collections });
         this.bindEvents();
+        this._spinner.style.visibility = 'hidden';
     }
 
     modify(event) {
@@ -64,12 +69,23 @@ class FundingClaimsDatesController {
     }
 
     save(event) {
+        event.preventDefault();
+        this._spinner.style.visibility = 'visible';
         let form = event.target.closest('form');
         var fundingClaimsCollectionMetadata = this.formToJson(form);
         fundingClaimsCollectionMetadata.createdBy = this._userName;
-        window.fundingClaimsDatesClient.updateFundingClaimsCollectionMetadata(fundingClaimsCollectionMetadata);
-        this.render(this._fundingClaimsDatesList);
+        fundingClaimsCollectionMetadata.collectionYear = this._yearSelected;
+        window.fundingClaimsDatesClient.updateFundingClaimsCollectionMetadata(fundingClaimsCollectionMetadata, this.populateFundingClaimsDates.bind(this));
 
+       // window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
+
+
+        //let id = event.target.dataset.id;
+        //let fundingClaimsDates = this._fundingClaimsDatesList.find(x => x.id == id);
+        //fundingClaimsDates.inEditMode = false;
+        //fundingClaimsDates.requiresSignature = fundingClaimsCollectionMetadata.requiresSignature;
+        //this.render(this._fundingClaimsDatesList);
+        //window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelection.value, this.populateFundingClaimsDates.bind(this));
     }
 
     formToJson(formElement) {
