@@ -25,19 +25,33 @@
             .catch(err => console.error(err.toString()));
     }
 
-    updateFundingClaimsCollectionMetadata(data, populateFundingClaimsDates) {
+    updateFundingClaimsCollectionMetadata(data, refreshFundingClaimsDates) {
         this.connection
-            .invoke("UpdateFundingClaimsCollectionMetaDataWithYear", data)
-            .then(function (values) {
-                populateFundingClaimsDates(values);
+            .invoke("UpdateFundingClaimsCollectionMetaData", data)
+            .then(function () {
+                refreshFundingClaimsDates();
             })
             .catch(err => {
                     alert(err.toString());
-                console.error(err.toString());
-                
-            }
+                    console.error(err.toString());
+
+                }
             );
     }
+
+    //updateFundingClaimsCollectionMetadata(data, populateFundingClaimsDates) {
+    //    this.connection
+    //        .invoke("UpdateFundingClaimsCollectionMetaDataWithYear", data)
+    //        .then(function (values) {
+    //            populateFundingClaimsDates(values);
+    //        })
+    //        .catch(err => {
+    //                alert(err.toString());
+    //            console.error(err.toString());
+                
+    //        }
+    //        );
+    //}
 }
 
 export default client;

@@ -11,7 +11,6 @@ class FundingClaimsDatesController {
     }
 
     init(userName, fundingClaimsDatesListModel) {
-        console.log("init fundingClaimsDatesController");
         this._userName = userName;
         this._yearSelected = this._yearSelection.value;
         this._yearSelection.addEventListener("change", this.yearsSelectionChange.bind(this));
@@ -24,15 +23,10 @@ class FundingClaimsDatesController {
         window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
         
     }
-    //getFundingClaimsDates() {
-    //    console.log("init getFundingClaimsDates");
-    //    window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaData(this.populateFundingClaimsDates.bind(this));
-    //}
 
     populateFundingClaimsDates(fundingClaimsDatesList) {
         this._fundingClaimsDatesList = fundingClaimsDatesList;
         this.render(fundingClaimsDatesList);
-        console.log("populateFundingClaimsDates getFundingClaimsDates");
     }
 
     render(fundingClaimsDatesList) {
@@ -72,32 +66,18 @@ class FundingClaimsDatesController {
         event.preventDefault();
         this._spinner.style.visibility = 'visible';
         let form = event.target.closest('form');
+        //let checkValidity = form.checkValidity();
+        //form.reportValidity();
         var fundingClaimsCollectionMetadata = this.formToJson(form);
         fundingClaimsCollectionMetadata.createdBy = this._userName;
-        fundingClaimsCollectionMetadata.collectionYear = this._yearSelected;
-        window.fundingClaimsDatesClient.updateFundingClaimsCollectionMetadata(fundingClaimsCollectionMetadata, this.populateFundingClaimsDates.bind(this));
+        window.fundingClaimsDatesClient.updateFundingClaimsCollectionMetadata(fundingClaimsCollectionMetadata, this.refreshFundingClaimsDates.bind(this));
+    }
 
-       // window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
-
-
-        //let id = event.target.dataset.id;
-        //let fundingClaimsDates = this._fundingClaimsDatesList.find(x => x.id == id);
-        //fundingClaimsDates.inEditMode = false;
-        //fundingClaimsDates.requiresSignature = fundingClaimsCollectionMetadata.requiresSignature;
-        //this.render(this._fundingClaimsDatesList);
-        //window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelection.value, this.populateFundingClaimsDates.bind(this));
+    refreshFundingClaimsDates() {
+        window.fundingClaimsDatesClient.getFundingClaimsCollectionMetaDataByYear(this._yearSelected, this.populateFundingClaimsDates.bind(this));
     }
 
     formToJson(formElement) {
-        //var inputElements = formElement.getElementsByTagName("input , select"),
-        //    jsonObject = {};
-        //for (var i = 0; i < inputElements.length; i++) {
-        //    var inputElement = inputElements[i];
-        //    jsonObject[inputElement.name] = inputElement.value;
-
-        //}
-        //return JSON.stringify(jsonObject);
-
         let json = {};
         Array.from(formElement.querySelectorAll('input, select, textarea'))
             .filter(element => element.name)
@@ -122,6 +102,14 @@ class FundingClaimsDatesController {
         for (const saveBtn of saveButtons) {
             saveBtn.addEventListener("click", this.save.bind(this));
         }
+
+        //const allinputs = document.querySelectorAll('input');
+
+        //allinputs.blur(function (event) {
+        //    event.target.checkValidity();
+        //}).bind('invalid', function (event) {
+        //    setTimeout(function () { $(event.target).focus(); }, 50);
+        //});
     }
 
     displayConnectionState(state) {
