@@ -10,10 +10,13 @@ using ESFA.DC.Web.Operations.Models.Notifications;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
 {
     [Area(AreaNames.Notifications)]
+    [Route(AreaNames.Notifications + "/")]
+
     public class NotificationsController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly INotificationsService _notificationsService;
@@ -27,6 +30,7 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
             _notificationsService = notificationsService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var model = await _notificationsService.GetAllNotificationMessagesAsync(cancellationToken);
@@ -34,19 +38,30 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
             return View("Index", model);
         }
 
-        public IActionResult Manage()
+        [HttpGet("manage/{notificationId}")]
+        public async Task<IActionResult> Manage(int notificationId, CancellationToken cancellationToken)
+        {
+            var model = await _notificationsService.GetNotificationByIdAsync(notificationId, cancellationToken);
+            return View(model);
+        }
+
+        [HttpGet("manage")]
+        public async Task<IActionResult> Manage(CancellationToken cancellationToken)
         {
             return View();
         }
 
-        public async Task<IActionResult> Save(Notification model, CancellationToken cancellationToken)
+        [HttpPost]
+        public async Task<IActionResult> Submit(Notification model, CancellationToken cancellationToken)
         {
+            var result = false;
+
             if (!Validate(model))
             {
                 return View("Manage", model);
             }
 
-            var result = await _notificationsService.SaveNotificationAsync(cancellationToken, model);
+            result = await _notificationsService.SaveNotificationAsync(cancellationToken, model);
 
             if (result)
             {
@@ -54,6 +69,13 @@ namespace ESFA.DC.Web.Operations.Areas.Notifications.Controllers
             }
 
             return View("Manage", model);
+        }
+
+        [HttpPost("{notificationId}")]
+        public async Task<IActionResult> Delete(int notificationId, CancellationToken cancellationToken)
+        {
+            await _notificationsService.DeleteNotificationAsync(notificationId, cancellationToken);
+            return RedirectToAction("Index");
         }
 
         private bool Validate(Notification model)
