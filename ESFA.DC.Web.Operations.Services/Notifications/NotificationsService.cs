@@ -63,6 +63,12 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
             return result;
         }
 
+        public async Task DeleteNotificationAsync(int id, CancellationToken cancellationToken)
+        {
+            var url = $"{_baseUrl}/api/service-message/{id}";
+            await DeleteAsync(url, cancellationToken);
+        }
+
         public async Task<bool> SaveNotificationAsync(CancellationToken cancellationToken, Notification model)
         {
             var startDateTime = model.StartDate.Date.Add(model.StartTime.TimeOfDay);

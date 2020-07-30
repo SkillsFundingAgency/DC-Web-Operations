@@ -35,7 +35,7 @@
                     <td class="govuk-!-font-weight-bold">Start time</td>
                     <td>@message.StartTime.ToTime()</td>
                     <td>
-                        @Html.ActionLink("Manage", "Manage", "Notifications", new { area= AreaNames.Notifications, notificationId = message.Id })
+                        @Html.ActionLink("Manage", "Manage", "Notifications", new { notificationId = message.Id })
                     </td>
                 </tr>
                 <tr class="govuk-table__row">

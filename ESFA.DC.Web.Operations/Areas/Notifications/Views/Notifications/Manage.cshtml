@@ -14,8 +14,9 @@
 </div>
 <br />
 <div class="govuk-grid-column-two-thirds">
-    <form asp-controller="Notifications" asp-action="Save" method="post">
+    <form asp-controller="Notifications" asp-action="Submit" method="post">
 
+        <input type="hidden" asp-for="Id" />
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
@@ -70,9 +71,39 @@
             </tbody>
         </table>
 
-        <button type="submit" id="submitButton" class="govuk-button">Save</button>
-        &nbsp; &nbsp;
-        @Html.ActionLink("Cancel", "Index", "Notifications", null, new { @class = "govuk-button govuk-button--secondary" })
-        </form>
+        <div id="buttons" style="display: block">
+            <button type="submit" id="submitButton" name="save" class="govuk-button" value="save">Save</button>
+            
+            @if (Model?.Id>0)
+            {
+                <a id="deleteLink" style="display: inline-block" class="govuk-button govuk-button--warning" onclick="toggleWarning();">Delete</a>
+            }
+            &nbsp;&nbsp;&nbsp;    
+            @Html.ActionLink("Cancel", "Index", "Notifications", null, new { @class = "govuk-button govuk-button--secondary" })
+        </div>
+    </form>
+
+    <form asp-controller="Notifications" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div id="areYouSureWrapper" style="display: none;">
+            <p>
+                Are you sure you want to delete this message?
+                <button type="submit" id="deleteButton" name="deleteButton" class="govuk-button" value="save">Yes</button>
+                &nbsp; &nbsp;
+                <a id="cancelDelete" class="govuk-button govuk-button--secondary" href="#" onclick="toggleWarning();">No</a>
+            </p>
+        </div>
+    </form>
+
+
+
 
 </div>
+
+<script language="javascript">
+    function toggleWarning(value) {
+        document.getElementById('areYouSureWrapper').style.display = document.getElementById('areYouSureWrapper').style.display == 'block' ? 'none' : 'block';
+        document.getElementById('buttons').style.display = document.getElementById('buttons').style.display == 'block' ? 'none' : 'block';
+    }
+</script>

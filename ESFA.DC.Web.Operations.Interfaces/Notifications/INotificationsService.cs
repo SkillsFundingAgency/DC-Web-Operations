@@ -12,5 +12,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Notifications
         Task<bool> SaveNotificationAsync(CancellationToken cancellationToken, Notification model);
 
         Task<Notification> GetNotificationByIdAsync(int id, CancellationToken cancellationToken);
+
+        Task DeleteNotificationAsync(int id, CancellationToken cancellationToken);
     }
 }
