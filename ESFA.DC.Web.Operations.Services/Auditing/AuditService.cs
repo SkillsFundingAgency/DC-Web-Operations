@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Auditing;
 using ESFA.DC.Web.Operations.Topics.Data.Auditing;
 using ESFA.DC.Web.Operations.Topics.Data.Auditing.Entities;
 
 namespace ESFA.DC.Web.Operations.Services.Auditing
 {
-    public class AuditService
+    public class AuditService : IAuditService
     {
         private readonly Func<IAuditDataContext> _context;
         private readonly IDateTimeProvider _dateTimeProvider;
