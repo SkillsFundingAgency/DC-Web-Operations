@@ -66,6 +66,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
             file.FileName = Path.GetFileName(file.FileName);
+            file.CollectionName = collectionName;
 
             file.FileName = file.FileName.Substring(file.FileName.IndexOf("/", StringComparison.InvariantCulture) + 1);
 
@@ -80,17 +81,13 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
             var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
-            if (result == null)
+
+            if (result != null)
             {
-                return file;
+                file.WarningCount = result.WarningCount;
+                file.RecordCount = result.RecordCount;
+                file.ErrorCount = result.ErrorCount;
             }
-
-            file.WarningCount = result.WarningCount;
-            file.RecordCount = result.RecordCount;
-            file.ErrorCount = result.ErrorCount;
-            file.CollectionName = collectionName;
-
-            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
         }
