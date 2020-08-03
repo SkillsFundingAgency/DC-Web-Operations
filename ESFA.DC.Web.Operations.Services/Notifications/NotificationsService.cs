@@ -80,7 +80,8 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
                 Message = model.Message,
                 StartDateTimeUtc = _dateTimeProvider.ConvertUkToUtc(startDateTime),
                 EndDateTimeUtc = endDateTime == DateTime.MinValue ? (DateTime?)null : _dateTimeProvider.ConvertUkToUtc(endDateTime),
-                Id = model.Id
+                Id = model.Id,
+                IsEnabled = true,
             };
 
             var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/service-message", data, cancellationToken);
