@@ -82,5 +82,28 @@ namespace ESFA.DC.Web.Operations.Services
 
             return Enumerable.Range(1, maxIlrPeriods).ToDictionary(x => $"R{x:00}");
         }
+
+        public async Task<List<int>> GetValidityYearsAsync(
+            int collectionYear,
+            string collectionType,
+            string collectionName,
+            CancellationToken cancellationToken)
+        {
+            var periods = _jsonSerializationService.Deserialize<List<ReturnPeriod>>(
+                await GetDataAsync($"{_baseUrl}/api/returns-calendar/all/{collectionName}/{collectionType}", cancellationToken));
+
+            if (periods == null)
+            {
+                _logger.LogError(NoPeriodError);
+                throw new Exception(NoPeriodError);
+            }
+
+            return periods
+                .Where(p => p.CollectionYear >= collectionYear)
+                .OrderBy(p => p.CollectionYear)
+                .Select(p => p.CollectionYear)
+                .Distinct()
+                .ToList();
+        }
     }
 }
