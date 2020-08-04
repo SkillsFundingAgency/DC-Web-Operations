@@ -5,22 +5,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.ReferenceData
 {
     public class FundingClaimsDatesService : BaseHttpClientService, IFundingClaimsDatesService
     {
+        private readonly ICollectionsService _collectionsService;
         private readonly string _baseUrl;
 
         public FundingClaimsDatesService(
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            ICollectionsService collectionsService)
             : base(routeFactory, jsonSerializationService, httpClient)
         {
+            _collectionsService = collectionsService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -32,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             return data == null ? null : _jsonSerializationService.Deserialize<FundingClaimsCollectionMetaDataLastUpdate>(data);
         }
 
-        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(
+        public async Task<FundingClaimsDatesModel> GetFundingClaimsCollectionMetaDataAsync(
             int collectionYear,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -40,10 +45,10 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
                     await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/collectionYear/{collectionYear}", cancellationToken));
 
-            var results = new List<FundingClaimsCollectionMetaData>();
+            var fundingClaimsCollectionMetaData = new List<FundingClaimsCollectionMetaData>();
             foreach (var fccm in fundingClaimsCollectionMeta)
             {
-                results.Add(new FundingClaimsCollectionMetaData()
+                fundingClaimsCollectionMetaData.Add(new FundingClaimsCollectionMetaData()
                 {
                     Id = fccm.Id,
                     CollectionName = fccm.CollectionName,
@@ -59,7 +64,15 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 });
             }
 
-            return results.OrderByDescending(x => x.CollectionId).ThenByDescending(x => x.SubmissionOpenDateUtc);
+            var collections = await _collectionsService.GetCollectionsByType(CollectionTypes.FundingClaim, cancellationToken);
+
+            FundingClaimsDatesModel model = new FundingClaimsDatesModel()
+            {
+                FundingClaimsDatesList = fundingClaimsCollectionMetaData.OrderByDescending(x => x.CollectionId).ThenByDescending(x => x.SubmissionOpenDateUtc).ToList(),
+                Collections = collections.Where(x => x.CollectionYear == collectionYear).ToList()
+            };
+
+            return model;
         }
 
         public async Task<bool> UpdateFundingClaimsCollectionMetaDataAsync(
@@ -83,16 +96,16 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             return true;
         }
 
-        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FundingClaimsDatesModel> GetFundingClaimsCollectionMetaDataAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var fundingClaimsCollectionMeta =
                 _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
                     await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata", cancellationToken));
 
-            var results = new List<FundingClaimsCollectionMetaData>();
+            var fundingClaimsCollectionMetaData = new List<FundingClaimsCollectionMetaData>();
             foreach (var fccm in fundingClaimsCollectionMeta)
             {
-                results.Add(new FundingClaimsCollectionMetaData()
+                fundingClaimsCollectionMetaData.Add(new FundingClaimsCollectionMetaData()
                 {
                     Id = fccm.Id,
                     CollectionName = fccm.CollectionName,
@@ -108,7 +121,15 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 });
             }
 
-            return results.OrderByDescending(x => x.CollectionId).ThenByDescending(x => x.SubmissionOpenDateUtc); ;
+            var collections = await _collectionsService.GetCollectionsByType(CollectionTypes.FundingClaim, cancellationToken);
+
+            FundingClaimsDatesModel model = new FundingClaimsDatesModel()
+            {
+                FundingClaimsDatesList = fundingClaimsCollectionMetaData.OrderByDescending(x => x.CollectionId).ThenByDescending(x => x.SubmissionOpenDateUtc).ToList(),
+                Collections = collections.ToList()
+            };
+
+            return model;
         }
     }
 }

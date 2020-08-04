@@ -8,5 +8,6 @@
         public const string ESF = "ESF";
         public const string APPS = "APPS";
         public const string ReferenceData = "REF";
+        public const string FundingClaim = "FC";
     }
 }

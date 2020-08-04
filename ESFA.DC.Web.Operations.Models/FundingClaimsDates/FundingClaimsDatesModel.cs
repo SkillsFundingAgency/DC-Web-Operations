@@ -7,11 +7,8 @@ namespace ESFA.DC.Web.Operations.Models.FundingClaimsDates
 {
     public class FundingClaimsDatesModel
     {
-        public List<FundingClaimsCollectionMetaData> FundingClaimsCollectionMetaDataList { get; set; }
+        public List<FundingClaimsCollectionMetaData> FundingClaimsDatesList { get; set; }
 
-        public List<int> CollectionYears
-        {
-            get { return FundingClaimsCollectionMetaDataList.Select(x => x.CollectionYear).Distinct().ToList(); }
-        }
+        public List<ESFA.DC.CollectionsManagement.Models.Collection> Collections { get; set; }
     }
 }

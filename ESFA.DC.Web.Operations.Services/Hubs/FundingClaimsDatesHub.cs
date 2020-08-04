@@ -24,12 +24,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaDataByYear(int year)
+        public async Task<FundingClaimsDatesModel> GetFundingClaimsCollectionMetaDataByYear(int year)
         {
             return await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync(year);
         }
 
-        public async Task<IEnumerable<FundingClaimsCollectionMetaData>> GetFundingClaimsCollectionMetaData()
+        public async Task<FundingClaimsDatesModel> GetFundingClaimsCollectionMetaData()
         {
             return await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync();
         }

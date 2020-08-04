@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -20,5 +21,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Models
             .Select(n => new SelectListItem { Text = n.ToString(CultureInfo.CurrentCulture), Value = n.ToString(CultureInfo.CurrentCulture) })
             .OrderByDescending(o => o.Value)
             .ToList();
+
+        public List<Collection> Collections { get; set; }
     }
 }

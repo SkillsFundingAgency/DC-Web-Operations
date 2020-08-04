@@ -29,12 +29,15 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         public async Task<IActionResult> Index()
         {
             FundingClaimsDatesViewModel viewModel = new FundingClaimsDatesViewModel();
-            var fundingClaimsCollectionMetaDatas = await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync();
+            var fundingClaimsDatesModel = await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync();
 
-            var fundingClaimsDatesList = fundingClaimsCollectionMetaDatas.ToList();
+            var fundingClaimsDatesList = fundingClaimsDatesModel.FundingClaimsDatesList;
 
-            viewModel.CollectionYears = fundingClaimsDatesList.Select(x => x.CollectionYear).Distinct().OrderByDescending(x => x).ToList();
-            viewModel.FundingClaimsDatesList = fundingClaimsDatesList.Where(x => x.CollectionYear == viewModel.CollectionYears.FirstOrDefault());
+            viewModel.CollectionYears = fundingClaimsDatesModel.Collections.Select(x => x.CollectionYear).Distinct().OrderByDescending(x => x).ToList();
+
+            var selectedCollectionYear = viewModel.CollectionYears.FirstOrDefault();
+            viewModel.Collections = fundingClaimsDatesModel.Collections.Where(x => x.CollectionYear == selectedCollectionYear).Distinct().OrderByDescending(x => x).ToList();
+            viewModel.FundingClaimsDatesList = fundingClaimsDatesList.Where(x => x.CollectionYear == selectedCollectionYear);
 
             return View(viewModel);
         }

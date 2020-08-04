@@ -10,14 +10,16 @@ class FundingClaimsDatesController {
         this._spinner = document.getElementById('spinner');
         this._updateMessageSpan = document.getElementById('update-message');
         this._errorSpan = null;
+        this._collections = {};
+        this._fundingClaimsDatesModel = {}
 
     }
 
-    init(userName, fundingClaimsDatesListModel) {
+    init(userName, fundingClaimsDatesModel) {
         this._userName = userName;
         this._yearSelected = this._yearSelection.value;
         this._yearSelection.addEventListener("change", this.yearsSelectionChange.bind(this));
-        this.populateFundingClaimsDates(fundingClaimsDatesListModel);
+        this.populateFundingClaimsDates(fundingClaimsDatesModel);
     }
 
     yearsSelectionChange(e) {
@@ -27,20 +29,21 @@ class FundingClaimsDatesController {
 
     }
 
-    populateFundingClaimsDates(fundingClaimsDatesList) {
-        this._fundingClaimsDatesList = fundingClaimsDatesList;
-        this.render(fundingClaimsDatesList);
+    populateFundingClaimsDates(fundingClaimsDatesModel) {
+        this._collections = fundingClaimsDatesModel.collections;
+        this._fundingClaimsDatesList = fundingClaimsDatesModel.fundingClaimsDatesList;
+        this.render(this._fundingClaimsDatesList);
     }
 
     render(fundingClaimsDatesList) {
         var compiledTemplate = getHandleBarsTemplate(Templates.FundingClaimsDatesList);
-        var collections = fundingClaimsDatesList.map(function (elem) {
+        var collectionPeriodsList = this._collections.map(function (elem) {
             return {
                 value: elem.collectionId,
-                text: elem.collectionName
+                text: elem.collectionTitle
             }
         });
-        document.getElementById("fundingClaimsDatesList").innerHTML = compiledTemplate({ viewModel: fundingClaimsDatesList, collectionPeriods: collections });
+        document.getElementById("fundingClaimsDatesList").innerHTML = compiledTemplate({ viewModel: fundingClaimsDatesList, collectionPeriods: collectionPeriodsList });
         this.bindEvents();
         this._spinner.style.visibility = 'hidden';
     }
