@@ -1,6 +1,6 @@
 ﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
 import { updateSync } from '/assets/js/baseController.js';
-import { removeSpaces } from '/assets/js/util.js';
+import { removeSpaces, setControlEnabledState } from '/assets/js/util.js';
 
 class pathController {
 
@@ -28,7 +28,12 @@ class pathController {
         });
 
         hub.registerMessageHandler("ReferenceJobsButtonState", () => setControlEnabledState(true, "resumeReferenceData"));
-        hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => setControlEnabledState(false, "proceed_" + pathItemId));
+        hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => {
+            console.log("DisablePathItemProceed");
+            setControlEnabledState(false, "proceed_" + pathItemId)
+
+        }
+        );
     }
 
     pathItemCompare(a, b) {
