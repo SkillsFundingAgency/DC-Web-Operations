@@ -28,12 +28,7 @@ class pathController {
         });
 
         hub.registerMessageHandler("ReferenceJobsButtonState", () => setControlEnabledState(true, "resumeReferenceData"));
-        hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => {
-            console.log("DisablePathItemProceed");
-            setControlEnabledState(false, "proceed_" + pathItemId)
-
-        }
-        );
+        hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => setControlEnabledState(false, "proceed_" + pathItemId));
     }
 
     pathItemCompare(a, b) {
