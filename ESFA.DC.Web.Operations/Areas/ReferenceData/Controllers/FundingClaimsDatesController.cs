@@ -1,16 +1,12 @@
-﻿using System.Globalization;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
@@ -18,18 +14,15 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     [Route(AreaNames.ReferenceData + "/FundingClaimsDates")]
     public class FundingClaimsDatesController : BaseReferenceDataController
     {
-        private readonly IReferenceDataService _referenceDataService;
         private readonly IFundingClaimsDatesService _fundingClaimsDatesService;
 
         public FundingClaimsDatesController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
-            IReferenceDataService referenceDataService,
             IFundingClaimsDatesService fundingClaimsDatesService)
             : base(storageService, logger, telemetryClient)
         {
-            _referenceDataService = referenceDataService;
             _fundingClaimsDatesService = fundingClaimsDatesService;
         }
 

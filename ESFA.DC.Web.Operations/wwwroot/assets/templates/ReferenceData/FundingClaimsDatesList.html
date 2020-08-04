@@ -21,8 +21,8 @@
                 {{#if inEditMode }}
                 <input type="hidden" name="id" value="{{id}}"/>
                 <tr class="govuk-table__row row-hide" id="add-table-row">
-                    <td scope="row" class="govuk-table__cell govuk-input--width-7" >
-                        <select class="govuk-select .govuk-input--width-7" id="sort" name="collectionId">
+                    <td scope="row" class="govuk-table__cell fundingclaimdates-edit-width" >
+                        <select class="govuk-select .fundingclaimdates-edit-width" id="sort" name="collectionId">
                             {{#select collectionId}}
                             {{#each @root.collectionPeriods}}
                             <option value="{{value}}">{{text}}</option>
@@ -30,18 +30,18 @@
                             {{/select}}
                         </select>
                     </td>
-                    <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionOpenDateUtc" name="submissionOpenDateUtc" required value={{submissionOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                    <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="submissionCloseDateUtc" name="submissionCloseDateUtc" required value={{submissionCloseDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                    <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="helpdeskOpenDateUtc" name="helpdeskOpenDateUtc" value={{helpdeskOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
-                    <td class="govuk-table__cell govuk-input--width-7">
-                        <select class="govuk-select .govuk-input--width-7" id="requiresSignature" name="requiresSignature">
+                    <td class="govuk-table__cell"><input class="govuk-input fundingclaimdates-edit-width" type="datetime-local" id="submissionOpenDateUtc" name="submissionOpenDateUtc" required value={{submissionOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                    <td class="govuk-table__cell"><input class="govuk-input fundingclaimdates-edit-width" type="datetime-local" id="submissionCloseDateUtc" name="submissionCloseDateUtc" required value={{submissionCloseDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                    <td class="govuk-table__cell"><input class="govuk-input fundingclaimdates-edit-width" type="datetime-local" id="helpdeskOpenDateUtc" name="helpdeskOpenDateUtc" value={{helpdeskOpenDateUtc}} data-id="{{id}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                    <td class="govuk-table__cell fundingclaimdates-edit-width">
+                        <select class="govuk-select .fundingclaimdates-edit-width" id="requiresSignature" name="requiresSignature">
                             {{#select requiresSignature}}
                             <option value="Y">Y</option>
                             <option value="N">N</option>
                             {{/select}}
                         </select>
                     </td>
-                    <td class="govuk-table__cell"><input class="govuk-input govuk-input--width-7" type="datetime-local" id="signatureCloseDateUtc" name="signatureCloseDateUtc" value="{{signatureCloseDateUtc}}" placeholder="DD/MM/YYYY HH:MM"></td>
+                    <td class="govuk-table__cell"><input class="govuk-input fundingclaimdates-edit-width" type="datetime-local" id="signatureCloseDateUtc" name="signatureCloseDateUtc" value="{{signatureCloseDateUtc}}" placeholder="DD/MM/YYYY HH:MM"></td>
                     <td class="govuk-table__cell govuk-table__header--numeric"><button class="govuk-button" data-module="govuk-button" data-id="{{id}}" id="save">Save</button> <a data-id="{{id}}" href="#" id="cancel">Cancel</a> </td>
                 </tr>
 

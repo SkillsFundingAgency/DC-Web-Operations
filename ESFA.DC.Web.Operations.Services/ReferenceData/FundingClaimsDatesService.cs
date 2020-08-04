@@ -7,7 +7,6 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 using ESFA.DC.Web.Operations.Settings.Models;
-using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Services.ReferenceData
 {
@@ -81,8 +80,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             };
 
             var response = await SendDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/update", entity, cancellationToken);
-            long.TryParse(response, out var result);
-
             return true;
         }
 
@@ -111,7 +108,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 });
             }
 
-            return results;
+            return results.OrderByDescending(x => x.CollectionId).ThenByDescending(x => x.SubmissionOpenDateUtc); ;
         }
     }
 }

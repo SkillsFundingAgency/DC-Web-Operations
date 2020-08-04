@@ -12,6 +12,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
 
         Task<IEnumerable<int>> GetCollectionYearsByType(string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<IEnumerable<CollectionsManagement.Models.Collection>> GetCollectionsByType(string collectionType, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<CollectionsManagement.Models.Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken));
