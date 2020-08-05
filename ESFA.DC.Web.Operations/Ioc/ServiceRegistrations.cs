@@ -13,6 +13,7 @@ using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Auditing;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
@@ -24,6 +25,7 @@ using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Auditing;
 using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
@@ -133,6 +135,8 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
 
+            builder.RegisterType<AuditService>().As<IAuditService>().InstancePerLifetimeScope();
+
             builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
 
             builder.RegisterType<JobProcessingService>().As<IJobProcessingService>().InstancePerLifetimeScope();
@@ -153,7 +157,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobQueueDataContext>().SingleInstance();
             builder.RegisterType<JobQueueManager.Data.JobQueueDataContext>().As<IJobQueueDataContext>().ExternallyOwned();
             builder.RegisterType<OrganisationsContext>().As<IOrganisationsContext>().ExternallyOwned();
-            builder.RegisterType<AuditDataContext>().ExternallyOwned();
+            builder.RegisterType<AuditDataContext>().As<IAuditDataContext>().ExternallyOwned();
 
             builder.Register(context =>
                 {
