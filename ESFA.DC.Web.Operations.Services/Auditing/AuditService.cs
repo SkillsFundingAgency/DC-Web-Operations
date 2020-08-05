@@ -12,24 +12,27 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
     {
         private readonly Func<IAuditDataContext> _context;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly IJsonSerializationService _jsonSerializationService;
 
-        public AuditService(IDateTimeProvider dateTimeProvider, IJsonSerializationService jsonSerializationService)
+        public AuditService(Func<IAuditDataContext> context, IDateTimeProvider dateTimeProvider)
         {
-            dateTimeProvider = _dateTimeProvider;
+            _context = context;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task CreateAudit(dynamic audit, string user, int differentiator)
         {
-            await SaveItem(user, audit, differentiator);
+            var auditstring = audit.ToString();
+            await SaveItem(auditstring, user, differentiator);
         }
 
         public async Task CreateAudit(dynamic auditNew, dynamic auditOld, string user, int differentiator)
         {
-            await SaveItem(user, auditNew, auditOld, differentiator);
+            var auditNewString = auditNew.ToString();
+            var auditOldString = auditOld.ToString();
+            await SaveItem(auditNewString, auditOldString, user, differentiator);
         }
 
-        private async Task SaveItem(string user, string newValue, string oldValue, int differentiator)
+        private async Task SaveItem(string newValue, string oldValue, string user, int differentiator)
         {
             var audit = new Audit
             {
@@ -41,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
             };
             using (var context = _context())
             {
-                var pathItem = context.Audit.AddAsync(audit);
+                var pathItem = context.Audit.Add(audit);
 
                 try
                 {
@@ -54,7 +57,7 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
             }
         }
 
-        private async Task SaveItem(string user, string newValue, int differentiator)
+        private async Task SaveItem(string newValue, string user, int differentiator)
         {
             var audit = new Audit
             {
@@ -65,7 +68,7 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
             };
             using (var context = _context())
             {
-                await context.Audit.AddAsync(audit);
+                context.Audit.Add(audit);
                 await context.SaveChangesAsync();
             }
         }
