@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
-using ESFA.DC.Web.Operations.Interfaces.Processing;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
@@ -23,13 +22,13 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _validityPeriodService = validityPeriodService;
         }
 
-        public async Task GetValidityPeriodList(int period)
+        public async Task GetValidityPeriodList(int collectionYear, int period)
         {
             try
             {
                 await ReceiveMessage();
 
-                var validityPeriodData = await _validityPeriodService.GetValidityPeriodList(period);
+                var validityPeriodData = await _validityPeriodService.GetValidityPeriodList(collectionYear, period);
 
                 await SendMessage(validityPeriodData);
             }
@@ -40,15 +39,15 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             }
         }
 
-        public async Task UpdateValidityPeriod(int period, object validityPeriods)
+        public async Task UpdateValidityPeriod(int collectionYear, int period, object validityPeriods)
         {
             try
             {
                 await ReceiveMessage();
 
-                var updatedDataCount = await _validityPeriodService.UpdateValidityPeriod(period, validityPeriods);
+                var updatedDataCount = await _validityPeriodService.UpdateValidityPeriod(collectionYear, period, validityPeriods);
 
-                var validityPeriodData = await _validityPeriodService.GetValidityPeriodList(period);
+                var validityPeriodData = await _validityPeriodService.GetValidityPeriodList(collectionYear, period);
 
                 await SendMessage(validityPeriodData);
             }

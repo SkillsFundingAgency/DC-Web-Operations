@@ -54,7 +54,7 @@ class JobFailedTodayController {
             var item = this._data.jobs[i];
 
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:250px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:250px">${item.providerName}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.failedAtDateStr}</td>`);

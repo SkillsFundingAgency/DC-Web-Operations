@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Utils;
@@ -14,13 +15,16 @@ namespace ESFA.DC.Web.Operations.Services.Builders
     {
         private readonly IJobStatusService _jobStatusService;
         private readonly ICloudStorageService _cloudStorageService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public FileUploadJobMetaDataModelBuilderService(
             IJobStatusService jobStatusService,
-            ICloudStorageService cloudStorageService)
+            ICloudStorageService cloudStorageService,
+            IDateTimeProvider dateTimeProvider)
         {
             _jobStatusService = jobStatusService;
             _cloudStorageService = cloudStorageService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModel(
@@ -62,10 +66,13 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             string collectionName,
             CancellationToken cancellationToken)
         {
-            file.DisplayDate = string.Concat(file.SubmissionDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", file.SubmissionDate.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower());
+            var clockDate = _dateTimeProvider.ConvertUtcToUk(file.SubmissionDate);
+
+            file.DisplayDate = string.Concat(clockDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", clockDate.ToString("h:mm tt", CultureInfo.InvariantCulture).ToLower(CultureInfo.CurrentUICulture));
 
             file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
             file.FileName = Path.GetFileName(file.FileName);
+            file.CollectionName = collectionName;
 
             file.FileName = file.FileName.Substring(file.FileName.IndexOf("/", StringComparison.InvariantCulture) + 1);
 
@@ -80,17 +87,13 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
             var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
-            if (result == null)
+
+            if (result != null)
             {
-                return file;
+                file.WarningCount = result.WarningCount;
+                file.RecordCount = result.RecordCount;
+                file.ErrorCount = result.ErrorCount;
             }
-
-            file.WarningCount = result.WarningCount;
-            file.RecordCount = result.RecordCount;
-            file.ErrorCount = result.ErrorCount;
-            file.CollectionName = collectionName;
-
-            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
         }

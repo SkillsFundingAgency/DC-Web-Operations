@@ -65,7 +65,7 @@ class JobProcessingController {
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:400px"><a href="#">${item.providerName}</a></td>`);
+            sb.push(`<td class="govuk-table__cell" style="width:400px">${item.providerName}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>`);
             sb.push(`<td class="govuk-table__cell">${item.averageProcessingTime}</td>`);

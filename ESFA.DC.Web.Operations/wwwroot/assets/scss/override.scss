@@ -813,6 +813,18 @@ progress::-moz-progress-bar { background: white; }
     width:200px;
 }
 
+.td--width-100-wrap {
+    max-width: 100px !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+}
+
+.td--width-150-wrap {
+    max-width: 150px !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+}
+
 .inline-display {
     display: inline !important;
     float: left;

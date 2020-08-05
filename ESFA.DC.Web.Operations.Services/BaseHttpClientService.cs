@@ -89,6 +89,13 @@ namespace ESFA.DC.Web.Operations.Services
             return await response.Content.ReadAsStringAsync();
         }
 
+        public async Task DeleteAsync(string url, CancellationToken cancellationToken)
+        {
+            var response = await _httpClient.DeleteAsync(url, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task<TResult> PostAsync<TContent, TResult>(
             string baseUrl,
             TContent content,

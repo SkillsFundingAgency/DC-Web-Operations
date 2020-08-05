@@ -56,18 +56,18 @@
         dataContent.innerHTML = result;
     }
 
-    getData(connection, action, period) {
+    getData(connection, action, collectionYear, period) {
         connection
-            .invoke(action, period)
+            .invoke(action, collectionYear, period)
             .catch(
                 err =>
                     console.error(err.toString())
             );
     }
 
-    saveList(connection, action, period) {
+    saveList(connection, action, collectionYear, period) {
         connection
-            .invoke(action, period, this._data)
+            .invoke(action, collectionYear, period, this._data)
             .catch(
                 err =>
                     console.error(err.toString())

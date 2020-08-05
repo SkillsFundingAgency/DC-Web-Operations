@@ -74,10 +74,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             return RedirectToAction("Index", new { cancellationToken = CancellationToken.None });
         }
 
-        [Route("getReportFile/{fileName}/{jobId?}")]
-        public async Task<FileResult> GetReportFileAsync(string fileName, long? jobId, CancellationToken cancellationToken)
+        [Route("getReportFile/{collectionName}/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetCollectionReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
         {
-            return await GetReportFileAsync(CollectionNames.ReferenceDataProviderPostcodeSpecialistResources, fileName, jobId, cancellationToken);
+            return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
         }
     }
 }

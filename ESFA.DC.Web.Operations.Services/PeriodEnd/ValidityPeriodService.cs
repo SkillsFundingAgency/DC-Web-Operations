@@ -22,14 +22,14 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<string> GetValidityPeriodList(int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetValidityPeriodList(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetDataAsync($"{_baseUrl}/api/validityperiod/validityperiodlist/{period}", cancellationToken);
+            return await GetDataAsync($"{_baseUrl}/api/validityperiod/validityperiodlist/{collectionYear}/{period}", cancellationToken);
         }
 
-        public async Task<string> UpdateValidityPeriod(int period, object validityPeriods, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> UpdateValidityPeriod(int collectionYear, int period, object validityPeriods, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await PutDataAsync($"{_baseUrl}/api/validityperiod/updatevalidityperiod/{period}", validityPeriods, cancellationToken);
+            return await PutDataAsync($"{_baseUrl}/api/validityperiod/updatevalidityperiod/{collectionYear}/{period}", validityPeriods, cancellationToken);
         }
     }
 }
