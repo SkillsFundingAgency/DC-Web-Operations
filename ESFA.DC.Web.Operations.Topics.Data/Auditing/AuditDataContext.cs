@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ESFA.DC.Web.Operations.Topics.Data.Auditing
 {
-   public class AuditDataContext: DbContext, IDisposable
+   public class AuditDataContext: DbContext, IDisposable, IAuditDataContext
     {
         public AuditDataContext(DbContextOptions<AuditDataContext> options)
            : base(options)
