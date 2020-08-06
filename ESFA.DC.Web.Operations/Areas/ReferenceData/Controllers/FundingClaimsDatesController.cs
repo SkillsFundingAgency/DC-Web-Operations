@@ -30,11 +30,9 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             FundingClaimsDatesViewModel viewModel = new FundingClaimsDatesViewModel();
             var fundingClaimsDatesModel = await _fundingClaimsDatesService.GetFundingClaimsCollectionMetaDataAsync();
-
             var fundingClaimsDatesList = fundingClaimsDatesModel.FundingClaimsDatesList;
 
             viewModel.CollectionYears = fundingClaimsDatesModel.Collections.Select(x => x.CollectionYear).Distinct().OrderByDescending(x => x).ToList();
-
             var selectedCollectionYear = viewModel.CollectionYears.FirstOrDefault();
             viewModel.Collections = fundingClaimsDatesModel.Collections.Where(x => x.CollectionYear == selectedCollectionYear).Distinct().OrderByDescending(x => x).ToList();
             viewModel.FundingClaimsDatesList = fundingClaimsDatesList.Where(x => x.CollectionYear == selectedCollectionYear);

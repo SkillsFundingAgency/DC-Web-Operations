@@ -38,20 +38,6 @@
                 }
             );
     }
-
-    //updateFundingClaimsCollectionMetadata(data, populateFundingClaimsDates) {
-    //    this.connection
-    //        .invoke("UpdateFundingClaimsCollectionMetaDataWithYear", data)
-    //        .then(function (values) {
-    //            populateFundingClaimsDates(values);
-    //        })
-    //        .catch(err => {
-    //                alert(err.toString());
-    //            console.error(err.toString());
-                
-    //        }
-    //        );
-    //}
 }
 
 export default client;
