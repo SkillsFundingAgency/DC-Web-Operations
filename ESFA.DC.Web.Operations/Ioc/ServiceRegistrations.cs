@@ -112,6 +112,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<CollectionsService>().As<ICollectionsService>().InstancePerLifetimeScope();
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsDatesService>().As<IFundingClaimsDatesService>().InstancePerLifetimeScope();
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
             builder.RegisterType<NotificationsService>().As<INotificationsService>().InstancePerLifetimeScope();
 

@@ -1,0 +1,82 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@model ESFA.DC.Web.Operations.Areas.ReferenceData.Models.FundingClaimsDatesViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/">Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Funding Claims Dates</li>
+    </ol>
+</div>
+<div class="banner-success-without-action status-hide" id="update-message" style="display: none;">
+    <p class="banner-message">
+        Claim dates updated successfully
+    </p>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-margin-top-6">
+            <h1 class="govuk-heading-xl">
+                Funding claim dates
+                <div class="govuk-form-group position-right">
+                    <label class="govuk-label" for="sort">
+                        Filter by year
+                    </label>
+                    <select id="collectionYears" asp-for="CollectionYearSelected" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Years">
+                    </select>
+                </div>
+            </h1>
+        </div>
+    </div>
+</div>
+
+<span id="spinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+<div id="fundingClaimsDatesList">
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+<style>
+    .fundingclaimdates-edit-width {
+        max-width: 27ex;
+        font-size: 14px;
+    }
+</style>
+
+@section PageScripts
+{
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/handlebars.js"></script>
+
+    <script type="module">
+        import Client from '/assets/js/referencedata/fundingclaimsdates/client.js';
+        import Hub from '/assets/js/hubs/hub.js';
+        import FundingClaimsDatesController from '/assets/js/referencedata/fundingclaimsdates/fundingclaimsdatesController.js';
+
+        (function () {
+            const fundingClaimsDatesModel = @Json.Serialize(Model)
+            const controller = new FundingClaimsDatesController();
+            const hub = new Hub('fundingClaimsDatesHub', controller.displayConnectionState);
+            hub.startHub();
+            window.fundingClaimsDatesClient = new Client(hub.getConnection());
+            controller.init('@User.Name()', fundingClaimsDatesModel);
+        })();
+    </script>
+}
+
