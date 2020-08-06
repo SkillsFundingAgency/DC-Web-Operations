@@ -7,6 +7,7 @@ using ESFA.DC.Web.Operations.Topics.Data.Auditing;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MoreLinq.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
@@ -40,16 +41,10 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
             };
 
-                    dynamic obj = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        obj[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(obj, "David", 1);
+                    await service.CreateAudit(keyValues, Environment.UserName ?? "username", 1);
                     var count = context.Audit.Count();
 
                     count.Should().Be(1);
@@ -77,16 +72,9 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
             };
 
-                    dynamic obj = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        obj[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
-
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(obj, obj, "David", 1);
+                    await service.CreateAudit(keyValues, keyValues, Environment.UserName ?? "username", 1);
                     var count = context.Audit.Count();
 
                     count.Should().Be(1);
@@ -117,16 +105,11 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
             };
 
-                    dynamic obj = new JObject();
 
-                    foreach (var keyValue in keyValues)
-                    {
-                        obj[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(obj, "David", 1);
+                    await service.CreateAudit(keyValues, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var user = audit.User;
                     user.Should().Be("David");
@@ -154,16 +137,11 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
             };
 
-                    dynamic obj = new JObject();
 
-                    foreach (var keyValue in keyValues)
-                    {
-                        obj[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(obj, obj, "David", 1);
+                    await service.CreateAudit(keyValues, keyValues, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var user = audit.User;
                     user.Should().Be("David");
@@ -194,20 +172,11 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
             };
 
-                    dynamic obj = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        obj[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
-
                     var service = scope.Resolve<IAuditService>();
-                    var obj2 = obj.ToString();
-                    await service.CreateAudit(obj, "David", 1);
+                    await service.CreateAudit(keyValues, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
-                    bool result = Equals(auditValue, obj.ToString());
-                    result.Should().Be(true);
+                    auditValue.Should().Be("{\r\n  \"CollectionName\": \"ILR1920\",\r\n  \"StartDateUTC\": \"9999-12-31T23:59:59.9999999\",\r\n  \"CollectionYear\": \"9999-12-31T23:59:59.9999999\"\r\n}");
                 }
             }
         }
@@ -232,12 +201,6 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
             };
 
-                    dynamic obj = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        obj[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     //create second object for comparing
                     var keyValues2 = new List<Tuple<string, object>>()
@@ -254,7 +217,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                         obj2[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
                     }
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(obj, "David", 1);
+                    await service.CreateAudit(keyValues, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
                     bool result = true;
@@ -284,13 +247,6 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
             };
 
-                    dynamic newValue = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        newValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
-
                     //create second object for oldValue and comparison
                     var keyValues2 = new List<Tuple<string, object>>()
             {
@@ -307,7 +263,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     }
 
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(newValue, oldValue, "David", 1);
+                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
                     bool result = true;
@@ -332,17 +288,11 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     //create object for newValue
                     var keyValues = new List<Tuple<string, object>>()
             {
-                new Tuple<string, object>("CollectionName", "ILR2020"),
+                new Tuple<string, object>("CollectionName", "ILR1920"),
                 new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
                 new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
             };
 
-                    dynamic newValue = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        newValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     //create second object for oldValue
                     var keyValues2 = new List<Tuple<string, object>>()
@@ -360,10 +310,10 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     }
 
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(newValue, oldValue, "David", 1);
+                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
-                    bool result = Equals(auditValue, newValue.ToString());
+                    bool result = Equals(auditValue, "{\r\n  \"CollectionName\": \"ILR1920\",\r\n  \"StartDateUTC\": \"9999-12-31T23:59:59.9999999\",\r\n  \"CollectionYears\": \"9999-12-31T23:59:59.9999999\"\r\n}");
                     result.Should().Be(true);
                 }
             }
@@ -389,12 +339,6 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
             };
 
-                    dynamic newValue = new JObject();
-
-                    foreach (var keyValue in keyValues)
-                    {
-                        newValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     //create second object for oldValue
                     var keyValues2 = new List<Tuple<string, object>>()
@@ -404,18 +348,13 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 new Tuple<string, object>("CollectionYears", DateTime.MinValue),
             };
 
-                    dynamic oldValue = new JObject();
 
-                    foreach (var keyValue in keyValues2)
-                    {
-                        oldValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(newValue, oldValue, "David", 1);
+                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.OldValue;
-                    bool result = Equals(auditValue, oldValue.ToString());
+                    bool result = Equals(auditValue, "{\r\n  \"CollectionName\": \"ILR2021\",\r\n  \"StartDateUTC\": \"0001-01-01T00:00:00\",\r\n  \"CollectionYears\": \"0001-01-01T00:00:00\"\r\n}");
                     result.Should().Be(true);
                 }
             }
@@ -436,17 +375,12 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     //create object for newValue and comparison
                     var keyValues = new List<Tuple<string, object>>()
             {
-                new Tuple<string, object>("CollectionName", "ILR2020"),
+                new Tuple<string, object>("CollectionName", "ILR1920"),
                 new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
                 new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
             };
 
-                    dynamic newValue = new JObject();
 
-                    foreach (var keyValue in keyValues)
-                    {
-                        newValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
 
                     //create second object for oldValue
                     var keyValues2 = new List<Tuple<string, object>>()
@@ -464,11 +398,11 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     }
 
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(newValue, oldValue, "David", 1);
+                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.OldValue;
                     bool result = true;
-                    result = Equals(auditValue, newValue.ToString());
+                    result = Equals(auditValue, "{\r\n  \"CollectionName\": \"ILR1920\",\r\n  \"StartDateUTC\": \"9999-12-31T23:59:59.9999999\",\r\n  \"CollectionYear\": \"9999-12-31T23:59:59.9999999\"\r\n}");
                     result.Should().Be(false);
                 }
             }
