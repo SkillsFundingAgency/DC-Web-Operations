@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 
 namespace ESFA.DC.Web.Operations.Interfaces

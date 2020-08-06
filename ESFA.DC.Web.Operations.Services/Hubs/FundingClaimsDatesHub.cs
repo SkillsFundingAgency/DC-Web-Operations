@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.FundingClaimsDates;
 using Microsoft.AspNetCore.SignalR;
 

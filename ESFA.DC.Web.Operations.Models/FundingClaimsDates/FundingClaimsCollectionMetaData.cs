@@ -24,11 +24,11 @@ namespace ESFA.DC.Web.Operations.Models.FundingClaimsDates
 
         public char RequiresSignature { get; set; }
 
-        public DateTime? HelpdeskOpenDateUtc { get; set; }
+        public DateTime HelpdeskOpenDateUtc { get; set; }
 
-        public DateTime? DateTimeUpdatedUtc { get; set; }
+        public DateTime DateTimeUpdatedUtc { get; set; }
 
-        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
 
         public bool InEditMode { get; set; }
 
@@ -44,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Models.FundingClaimsDates
 
         public string HelpdeskOpenDateUtcFormattedString
         {
-            get { return HelpdeskOpenDateUtc?.ToDateTimeString(); }
+            get { return HelpdeskOpenDateUtc.ToDateTimeString(); }
         }
 
         public string SignatureCloseDateUtcFormattedString

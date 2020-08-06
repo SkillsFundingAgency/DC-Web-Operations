@@ -3,6 +3,7 @@
 class FundingClaimsDatesController {
 
     constructor() {
+        this._fundingClaimsDatesListDiv = document.getElementById("fundingClaimsDatesList");
         this._fundingClaimsDatesList = {};
         this._userName = null;
         this._yearSelection = document.getElementById('collectionYears');
@@ -43,7 +44,7 @@ class FundingClaimsDatesController {
                 text: elem.collectionTitle
             }
         });
-        document.getElementById("fundingClaimsDatesList").innerHTML = compiledTemplate({ viewModel: fundingClaimsDatesList, collectionPeriods: collectionPeriodsList });
+        this._fundingClaimsDatesListDiv.innerHTML = compiledTemplate({ viewModel: fundingClaimsDatesList, collectionPeriods: collectionPeriodsList });
         this.bindEvents();
         this._spinner.style.visibility = 'hidden';
     }
@@ -77,7 +78,7 @@ class FundingClaimsDatesController {
         }
         this._spinner.style.visibility = 'visible';
         var fundingClaimsCollectionMetadata = this.formToJson(form);
-        fundingClaimsCollectionMetadata.createdBy = this._userName;
+        fundingClaimsCollectionMetadata.updatedBy = this._userName;
         window.fundingClaimsDatesClient.updateFundingClaimsCollectionMetadata(fundingClaimsCollectionMetadata, this.refreshFundingClaimsDates.bind(this));
     }
 
@@ -99,6 +100,7 @@ class FundingClaimsDatesController {
         }
         return true;
     }
+
     formToJson(formElement) {
         let json = {};
         Array.from(formElement.querySelectorAll('input, select, textarea'))

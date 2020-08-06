@@ -70,15 +70,11 @@
         import FundingClaimsDatesController from '/assets/js/referencedata/fundingclaimsdates/fundingclaimsdatesController.js';
 
         (function () {
-            @*const fundingClaimsDatesListModel = @Json.Serialize(Model.FundingClaimsDatesList);
-            const collections = @Json.Serialize(Model.Collections);*@
-
             const fundingClaimsDatesModel = @Json.Serialize(Model)
             const controller = new FundingClaimsDatesController();
             const hub = new Hub('fundingClaimsDatesHub', controller.displayConnectionState);
             hub.startHub();
             window.fundingClaimsDatesClient = new Client(hub.getConnection());
-            //controller.init('@User.Name()', fundingClaimsDatesListModel, collections);
             controller.init('@User.Name()', fundingClaimsDatesModel);
         })();
     </script>

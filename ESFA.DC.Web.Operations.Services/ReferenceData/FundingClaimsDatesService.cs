@@ -32,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         public async Task<FundingClaimsCollectionMetaDataLastUpdate> GetLastUpdatedFundingClaimsCollectionMetaDataAsync(
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/lastupdate", cancellationToken);
+            var data = await GetDataAsync($"{_baseUrl}/api/fundingclaims-collection-metadata/lastupdate", cancellationToken);
 
             return data == null ? null : _jsonSerializationService.Deserialize<FundingClaimsCollectionMetaDataLastUpdate>(data);
         }
@@ -43,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var fundingClaimsCollectionMeta =
                 _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
-                    await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/collectionYear/{collectionYear}", cancellationToken));
+                    await GetDataAsync($"{_baseUrl}/api/fundingclaims-collection-metadata/collectionYear/{collectionYear}", cancellationToken));
 
             var fundingClaimsCollectionMetaData = new List<FundingClaimsCollectionMetaData>();
             foreach (var fccm in fundingClaimsCollectionMeta)
@@ -53,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                     Id = fccm.Id,
                     CollectionName = fccm.CollectionName,
                     CollectionId = fccm.CollectionId,
-                    CreatedBy = fccm.CreatedBy,
+                    UpdatedBy = fccm.UpdatedBy,
                     CollectionYear = fccm.CollectionYear,
                     DateTimeUpdatedUtc = fccm.DateTimeUpdatedUtc,
                     HelpdeskOpenDateUtc = fccm.HelpdeskOpenDateUtc,
@@ -89,10 +89,10 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 RequiresSignature = fundingClaimsCollectionMetaData.RequiresSignature == 'Y',
                 HelpdeskOpenDateUtc = fundingClaimsCollectionMetaData.HelpdeskOpenDateUtc,
                 DateTimeUpdatedUtc = fundingClaimsCollectionMetaData.DateTimeUpdatedUtc,
-                CreatedBy = fundingClaimsCollectionMetaData.CreatedBy
+                UpdatedBy = fundingClaimsCollectionMetaData.UpdatedBy
             };
 
-            var response = await SendDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata/update", entity, cancellationToken);
+            var response = await SendDataAsync($"{_baseUrl}/api/fundingclaims-collection-metadata/update", entity, cancellationToken);
             return true;
         }
 
@@ -100,7 +100,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var fundingClaimsCollectionMeta =
                 _jsonSerializationService.Deserialize<IEnumerable<Jobs.Model.FundingClaimsCollectionMetaData.FundingClaimsCollectionMetaData>>(
-                    await GetDataAsync($"{_baseUrl}/api/fundingclaimscollectionmetadata", cancellationToken));
+                    await GetDataAsync($"{_baseUrl}/api/fundingclaims-collection-metadata", cancellationToken));
 
             var fundingClaimsCollectionMetaData = new List<FundingClaimsCollectionMetaData>();
             foreach (var fccm in fundingClaimsCollectionMeta)
@@ -110,7 +110,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                     Id = fccm.Id,
                     CollectionName = fccm.CollectionName,
                     CollectionId = fccm.CollectionId,
-                    CreatedBy = fccm.CreatedBy,
+                    UpdatedBy = fccm.UpdatedBy,
                     CollectionYear = fccm.CollectionYear,
                     DateTimeUpdatedUtc = fccm.DateTimeUpdatedUtc,
                     HelpdeskOpenDateUtc = fccm.HelpdeskOpenDateUtc,
