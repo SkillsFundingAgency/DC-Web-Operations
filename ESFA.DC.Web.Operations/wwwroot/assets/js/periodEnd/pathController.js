@@ -94,9 +94,8 @@ class pathController {
         return "";
     }
 
-    renderProceed(pathId, pathItemId, jobState, itemIsSubPath, nextItemIsSubPath) {
-        const proceedEnabled = (!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running);
-
+    renderProceed(pathId, pathItemId, jobState, itemIsSubPath, nextItemIsSubPath, isBusy) {
+        const proceedEnabled = ((!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running)) && !isBusy;
         let proceedLi = document.createElement("li");
         proceedLi.className = "app-task-list__item";
         proceedLi.id = `PL_${pathItemId}`;
@@ -282,13 +281,13 @@ class pathController {
             panel.id = removeSpaces(pathItem.name);
             panel.className += "app-task-list__item";
             panel.appendChild(item);
-
             panel.appendChild(this.renderProceed.call(classScope,
                 path.pathId,
                 pathItem.pathItemId,
                 jobStatus,
                 pathItem.subPaths !== null,
-                path.pathItems[pathItem.ordinal + 1].subPaths !== null));
+                path.pathItems[pathItem.ordinal + 1].subPaths !== null,
+                path.isBusy));
             subItemList.insertBefore(panel, subItemList.children[pathItem.ordinal]);
         } else {
             subItemList.insertBefore(item, subItemList.children[pathItem.ordinal]);
@@ -363,7 +362,8 @@ class pathController {
                 li.appendChild(itemLink);
 
                 let title = document.createElement("h3");
-                title.textContent = path.name;
+                title.id = `path_title_${path.pathId}`;
+                classScope.setPathTitle(path, title);
 
                 let pathFound = true;
                 if (path.pathId !== 0) {
@@ -416,9 +416,11 @@ class pathController {
         stateModel.paths.forEach(function(path) {
             const oldPath = classScope.getPath(classScope.lastMessage, path.pathId);
 
+            if (path.isBusy !== oldPath.isBusy) {
+                classScope.setPathTitle(path, document.getElementById(`path_title_${path.pathId}`));
+            }
+
             if (path.position !== oldPath.position) {
-                classScope.renderSummaryPath(path);
-                
                 let i = Math.max(oldPath.position - 1, 0), len = path.position, original = i, proceed = path.position - 1;
                 let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
                 for (; i < len; i++) {
@@ -429,7 +431,8 @@ class pathController {
                     }
                 }
             } else {
-                if (path.position > 0 && !classScope.pathItemsSame(path.pathItems[path.position - 1], oldPath.pathItems[oldPath.position - 1], false)) {
+                if (path.position > 0 && !classScope.pathItemsSame(path.pathItems[path.position - 1], oldPath.pathItems[oldPath.position - 1], false)
+                || path.isBusy !== oldPath.isBusy) {
                     console.log(`Rendering ${path.pathItems[path.position - 1].name} as item has changed`);
                     let pathList = document.getElementById(`PI-${removeSpaces(path.name)}`);
                     classScope.deleteItem(pathList, path.pathItems[path.position - 1].name);
@@ -439,6 +442,17 @@ class pathController {
         });
 
         this.lastMessage = stateModel;
+    }
+
+    setPathTitle(path, pathTitleElement) {
+        if (pathTitleElement) {
+            if (path.isBusy) {
+                pathTitleElement.innerHTML = `${path.name} &#x231b;`;
+            }
+            else {
+                pathTitleElement.innerHTML = `${path.name}`;
+            }
+        }
     }
 
     deleteItem(pathList, pathItemName) {
