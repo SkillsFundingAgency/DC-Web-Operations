@@ -31,7 +31,6 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
 
         public async Task CreateAudit<T>(T newDto, T oldDto, string user, int differentiator)
         {
-            var keyValues = new List<Tuple<string, object>>();
             var auditNewString = _jsonSerializationService.Serialize(newDto);
             var auditOldString = _jsonSerializationService.Serialize(oldDto);
             await SaveItem(auditNewString, auditOldString, user, differentiator);
