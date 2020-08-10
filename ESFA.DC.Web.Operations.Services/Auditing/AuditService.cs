@@ -14,35 +14,32 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
     {
         private readonly Func<IAuditDataContext> _context;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IJsonSerializationService _jsonSerializationService;
 
-        public AuditService(Func<IAuditDataContext> context, IDateTimeProvider dateTimeProvider)
+        public AuditService(Func<IAuditDataContext> context, IDateTimeProvider dateTimeProvider, IJsonSerializationService jsonSerializationService)
         {
             _context = context;
             _dateTimeProvider = dateTimeProvider;
+            _jsonSerializationService = jsonSerializationService;
         }
 
-        public async Task CreateAudit(List<Tuple<string, object>> keyValues, string user, int differentiator)
+        public async Task CreateAudit<T>(T dto, string user, int differentiator)
         {
-            var auditstring = BuildJobject(keyValues);
+            var auditstring = BuildJobject<T>(dto);
             await SaveItem(auditstring, user, differentiator);
         }
 
-        public async Task CreateAudit(List<Tuple<string, object>> keyValuesNew, List<Tuple<string, object>> keyValuesOld, string user, int differentiator)
+        public async Task CreateAudit<T>(T newDto, T oldDto, string user, int differentiator)
         {
-            var auditNewString = BuildJobject(keyValuesNew);
-            var auditOldString = BuildJobject(keyValuesOld);
+            var keyValues = new List<Tuple<string, object>>();
+            var auditNewString = BuildJobject<T>(newDto);
+            var auditOldString = BuildJobject<T>(oldDto);
             await SaveItem(auditNewString, auditOldString, user, differentiator);
         }
 
-        private string BuildJobject(List<Tuple<string, object>> keyValues)
+        private string BuildJobject<T>(T dto)
         {
-            var dto = new JObject();
-            foreach (var keyValue in keyValues)
-            {
-                dto[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-            }
-
-            return dto.ToString();
+            return _jsonSerializationService.Serialize(dto);
         }
 
         private async Task SaveItem(string newValue, string oldValue, string user, int differentiator)

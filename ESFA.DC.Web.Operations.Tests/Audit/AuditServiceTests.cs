@@ -1,7 +1,11 @@
 ﻿using Autofac;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.JobQueueManager;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces.Auditing;
+using ESFA.DC.Web.Operations.Models.Auditing.DTOs.FRM;
+using ESFA.DC.Web.Operations.Models.Auditing.DTOs.Provider;
 using ESFA.DC.Web.Operations.Services.Auditing;
 using ESFA.DC.Web.Operations.Topics.Data.Auditing;
 using FluentAssertions;
@@ -33,18 +37,10 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
-            };
-
-
+                    var testDTO = new FrmPublishDTO { JobID = 3 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(keyValues, Environment.UserName ?? "username", 1);
+                    await service.CreateAudit<FrmPublishDTO>(testDTO, Environment.UserName ?? "username", 1);
                     var count = context.Audit.Count();
 
                     count.Should().Be(1);
@@ -64,17 +60,11 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
-            };
-
+                    var newTestDTO = new FrmPublishDTO { JobID = 3 };
+                    var oldTestDTO = new FrmPublishDTO { JobID = 4 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(keyValues, keyValues, Environment.UserName ?? "username", 1);
+                    await service.CreateAudit<FrmPublishDTO>(newTestDTO, oldTestDTO, Environment.UserName ?? "username", 1);
                     var count = context.Audit.Count();
 
                     count.Should().Be(1);
@@ -97,21 +87,13 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
-            };
-
-
-
+                    var testDTO = new FrmPublishDTO { JobID = 3 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(keyValues, "David", 1);
+                    await service.CreateAudit<FrmPublishDTO>(testDTO, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var user = audit.User;
+
                     user.Should().Be("David");
                 }
             }
@@ -129,21 +111,14 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
-            };
-
-
-
+                    var newTestDTO = new FrmPublishDTO { JobID = 3 };
+                    var oldTestDTO = new FrmPublishDTO { JobID = 4 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAudit(keyValues, keyValues, "David", 1);
+                    await service.CreateAudit<FrmPublishDTO>(newTestDTO, oldTestDTO, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var user = audit.User;
+
                     user.Should().Be("David");
                 }
             }
@@ -164,23 +139,17 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYear", DateTime.MaxValue),
-            };
-
+                    var dto = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(keyValues, "David", 1);
+
+                    await service.CreateAudit<AmendCollectionDTO>(dto, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
-                    auditValue.Should().Be("{\r\n  \"CollectionName\": \"ILR1920\",\r\n  \"StartDateUTC\": \"9999-12-31T23:59:59.9999999\",\r\n  \"CollectionYear\": \"9999-12-31T23:59:59.9999999\"\r\n}");
+
+                    auditValue.Should().Be("{\"CollectionType\":\"ILR1920\",\"StartDateUTC\":\"9999-12-31T23:59:59.9999999\",\"EndDateUTC\":\"9999-12-31T23:59:59.9999999\"}");
                 }
             }
         }
-
         [Fact]
         public async void testSaveAuditValueFalse()
         {
@@ -193,82 +162,14 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2020"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
-            };
-
-
-                    //create second object for comparing
-                    var keyValues2 = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2021"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MinValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MinValue),
-            };
-
-                    dynamic obj2 = new JObject();
-
-                    foreach (var keyValue in keyValues2)
-                    {
-                        obj2[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
+                    var dto = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(keyValues, "David", 1);
+
+                    await service.CreateAudit<AmendCollectionDTO>(dto, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
-                    bool result = true;
-                    result = Equals(auditValue, obj2.ToString());
-                    result.Should().Be(false);
-                }
-            }
-        }
 
-        [Fact]
-        public async void testSaveAuditNewValueFalse()
-        {
-            //testing auditValue with newValue overload
-            var container = getRegistrations();
-            using (var scope = container.BeginLifetimeScope())
-            {
-                // Create the schema in the database
-                var options = scope.Resolve<DbContextOptions<AuditDataContext>>();
-                using (var context = new AuditDataContext(options))
-                {
-                    setUpInMemoryDB(context);
-                    //create object for newValue
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2020"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
-            };
-
-                    //create second object for oldValue and comparison
-                    var keyValues2 = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2021"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MinValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MinValue),
-            };
-
-                    dynamic oldValue = new JObject();
-
-                    foreach (var keyValue in keyValues2)
-                    {
-                        oldValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
-
-                    var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
-                    var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
-                    var auditValue = audit.NewValue;
-                    bool result = true;
-                    result = Equals(auditValue, oldValue.ToString());
-                    result.Should().Be(false);
+                    auditValue.Should().NotBe("{\"CollectionType\":\"ESF\",\"StartDateUTC\":\"9999-12-31T23:59:59.9999999\",\"EndDateUTC\":\"9999-12-31T23:59:59.9999999\"}");
                 }
             }
         }
@@ -286,35 +187,40 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 {
                     setUpInMemoryDB(context);
                     //create object for newValue
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
-            };
-
-
-                    //create second object for oldValue
-                    var keyValues2 = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2021"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MinValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MinValue),
-            };
-
-                    dynamic oldValue = new JObject();
-
-                    foreach (var keyValue in keyValues2)
-                    {
-                        oldValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
-
+                    var newDTO = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
+                    var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
+
+                    await service.CreateAudit<AmendCollectionDTO>(newDTO, oldDTO, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
-                    bool result = Equals(auditValue, "{\r\n  \"CollectionName\": \"ILR1920\",\r\n  \"StartDateUTC\": \"9999-12-31T23:59:59.9999999\",\r\n  \"CollectionYears\": \"9999-12-31T23:59:59.9999999\"\r\n}");
-                    result.Should().Be(true);
+
+                    auditValue.Should().Be("{\"CollectionType\":\"ILR1920\",\"StartDateUTC\":\"9999-12-31T23:59:59.9999999\",\"EndDateUTC\":\"9999-12-31T23:59:59.9999999\"}");
+                }
+            }
+        }
+        [Fact]
+        public async void testSaveAuditNewValueFalse()
+        {
+            //testing auditValue with newValue overload
+            var container = getRegistrations();
+            using (var scope = container.BeginLifetimeScope())
+            {
+                // Create the schema in the database
+                var options = scope.Resolve<DbContextOptions<AuditDataContext>>();
+                using (var context = new AuditDataContext(options))
+                {
+                    setUpInMemoryDB(context);
+                    //create object for newValue
+                    var newDTO = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
+                    var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
+                    var service = scope.Resolve<IAuditService>();
+
+                    await service.CreateAudit<AmendCollectionDTO>(newDTO, oldDTO, "David", 1);
+                    var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
+                    var auditValue = audit.NewValue;
+
+                    auditValue.Should().NotBe("{\"CollectionType\":\"ESF\",\"StartDateUTC\":\"9999-12-31T23:59:59.9999999\",\"EndDateUTC\":\"9999-12-31T23:59:59.9999999\"}");
                 }
             }
         }
@@ -332,34 +238,18 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 {
                     setUpInMemoryDB(context);
                     //create object for newValue
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2020"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
-            };
-
-
-                    //create second object for oldValue
-                    var keyValues2 = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2021"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MinValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MinValue),
-            };
-
-
-
+                    var newDTO = new AmendCollectionDTO {CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
+                    var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
+
+                    await service.CreateAudit<AmendCollectionDTO>(newDTO, oldDTO, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.OldValue;
-                    bool result = Equals(auditValue, "{\r\n  \"CollectionName\": \"ILR2021\",\r\n  \"StartDateUTC\": \"0001-01-01T00:00:00\",\r\n  \"CollectionYears\": \"0001-01-01T00:00:00\"\r\n}");
-                    result.Should().Be(true);
+
+                    auditValue.Should().Be("{\"CollectionType\":\"ILR2021\",\"StartDateUTC\":\"0001-01-01T00:00:00\",\"EndDateUTC\":\"0001-01-01T00:00:00\"}");
                 }
             }
         }
-
         [Fact]
         public async void testSaveAuditOldValueFalse()
         {
@@ -372,41 +262,21 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                 using (var context = new AuditDataContext(options))
                 {
                     setUpInMemoryDB(context);
-                    //create object for newValue and comparison
-                    var keyValues = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR1920"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MaxValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MaxValue),
-            };
-
-
-
-                    //create second object for oldValue
-                    var keyValues2 = new List<Tuple<string, object>>()
-            {
-                new Tuple<string, object>("CollectionName", "ILR2021"),
-                new Tuple<string, object>("StartDateUTC", DateTime.MinValue),
-                new Tuple<string, object>("CollectionYears", DateTime.MinValue),
-            };
-
-                    dynamic oldValue = new JObject();
-
-                    foreach (var keyValue in keyValues2)
-                    {
-                        oldValue[keyValue.Item1] = JToken.FromObject(keyValue.Item2);
-                    }
-
+                    //create object for newValue
+                    var newDTO = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
+                    var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
-                    await service.CreateAudit(keyValues, keyValues2, "David", 1);
+
+                    await service.CreateAudit<AmendCollectionDTO>(newDTO, oldDTO, "David", 1);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.OldValue;
-                    bool result = true;
-                    result = Equals(auditValue, "{\r\n  \"CollectionName\": \"ILR1920\",\r\n  \"StartDateUTC\": \"9999-12-31T23:59:59.9999999\",\r\n  \"CollectionYear\": \"9999-12-31T23:59:59.9999999\"\r\n}");
-                    result.Should().Be(false);
+
+                    auditValue.Should().NotBe("{\"CollectionType\":\"ESF\",\"StartDateUTC\":\"0001-01-01T00:00:00\",\"EndDateUTC\":\"0001-01-01T00:00:00\"}");
                 }
             }
         }
+
+
         #endregion
 
         #region privateFunctions
@@ -422,6 +292,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
             builder.RegisterType<AuditService>().As<IAuditService>();
             builder.RegisterType<AuditDataContext>().As<IAuditDataContext>();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>();
+            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.Register(context =>
             {
                 SqliteConnection connection = new SqliteConnection("DataSource=:memory:");
