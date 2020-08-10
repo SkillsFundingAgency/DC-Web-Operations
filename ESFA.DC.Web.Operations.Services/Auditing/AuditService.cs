@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Auditing;
+using ESFA.DC.Web.Operations.Models.Auditing;
 using ESFA.DC.Web.Operations.Topics.Data.Auditing;
 using ESFA.DC.Web.Operations.Topics.Data.Auditing.Entities;
 using Newtonsoft.Json.Linq;
@@ -23,20 +25,22 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
             _jsonSerializationService = jsonSerializationService;
         }
 
-        public async Task CreateAudit<T>(T dto, string user, int differentiator)
+        public async Task CreateAuditAsync<T>(string user, T dto, CancellationToken cancellationToken = default(CancellationToken))
         {
             var auditstring = _jsonSerializationService.Serialize(dto);
-            await SaveItem(auditstring, user, differentiator);
+            var differentiator = (int)DifferentiatorPath.Parse(typeof(DifferentiatorPath), typeof(T).Name);
+            await SaveItem(differentiator, user, auditstring, null);
         }
 
-        public async Task CreateAudit<T>(T newDto, T oldDto, string user, int differentiator)
+        public async Task CreateAuditAsync<T>(string user, T newDto, T oldDto, CancellationToken cancellationToken = default(CancellationToken))
         {
             var auditNewString = _jsonSerializationService.Serialize(newDto);
             var auditOldString = _jsonSerializationService.Serialize(oldDto);
-            await SaveItem(auditNewString, auditOldString, user, differentiator);
+            var differentiator = (int)DifferentiatorPath.Parse(typeof(DifferentiatorPath), typeof(T).Name);
+            await SaveItem(differentiator, user, auditNewString, auditOldString);
         }
 
-        private async Task SaveItem(string newValue, string oldValue, string user, int differentiator)
+        private async Task SaveItem(int differentiator, string user, string newValue, string oldValue)
         {
             var audit = new Audit
             {
@@ -58,22 +62,6 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
                 {
                     throw;
                 }
-            }
-        }
-
-        private async Task SaveItem(string newValue, string user, int differentiator)
-        {
-            var audit = new Audit
-            {
-                User = user,
-                TimeStampUTC = _dateTimeProvider.GetNowUtc(),
-                NewValue = newValue,
-                Differentiator = differentiator,
-            };
-            using (var context = _context())
-            {
-                context.Audit.Add(audit);
-                await context.SaveChangesAsync();
             }
         }
     }
