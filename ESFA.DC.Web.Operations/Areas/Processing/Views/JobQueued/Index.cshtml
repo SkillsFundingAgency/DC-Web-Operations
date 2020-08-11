@@ -91,7 +91,7 @@
 <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
-<script type="module">    
+<script type="module">
     import JobQueuedController from "/assets/js/processing/jobQueuedController.js";
     import Hub from '/assets/js/hubs/hub.js';
 
@@ -103,7 +103,7 @@
 
         hub.startHub();
 
-        const data = '@Html.Raw(Model)';
+        const data =  @Json.Serialize(Model);
         jobQueuedController.updatePage(data);
 
         window.change = function () {

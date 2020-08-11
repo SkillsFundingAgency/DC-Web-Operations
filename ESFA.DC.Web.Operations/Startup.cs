@@ -216,6 +216,11 @@ namespace ESFA.DC.Web.Operations
                     options.Transports = HttpTransportType.WebSockets;
                 });
 
+                routes.MapHub<FundingClaimsDatesHub>("/fundingclaimsdateshub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
                 routes.MapHub<JobSubmittedHub>("/jobSubmittedHub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
