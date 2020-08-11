@@ -198,21 +198,28 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return (await _authorizationService.AuthorizeAsync(User, report.Policy)).Succeeded;
         }
 
-        private async Task<ReportsViewModel> GenerateReportsViewModel(ReportsViewModel model, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken)
+        private async Task<ReportsViewModel> GenerateReportsViewModel(ReportsViewModel reportsViewModel, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken)
         {
-            return new ReportsViewModel()
+            var model = new ReportsViewModel()
             {
-                ReportPeriods = await _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken),
-                CollectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken),
-                Reports = (await _reportsService
-                    .GetAvailableReportsAsync(model.CurrentCollectionYear, authorisedReports, cancellationToken))
-                    .Select(x => new SelectListItem(x.DisplayName, x.ReportName)),
-                CurrentCollectionPeriod = model.CurrentCollectionPeriod,
-                CurrentCollectionYear = model.CurrentCollectionYear,
-                CollectionYear = model.CollectionYear,
-                CollectionPeriod = model.CollectionPeriod,
+                CurrentCollectionPeriod = reportsViewModel.CurrentCollectionPeriod,
+                CurrentCollectionYear = reportsViewModel.CurrentCollectionYear,
+                CollectionYear = reportsViewModel.CollectionYear,
+                CollectionPeriod = reportsViewModel.CollectionPeriod,
                 ReportAction = ReportActions.GetReportDetails
             };
+
+            var getAllPeriodsTask = _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken);
+            var collectionYearsTask = _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken);
+            var reportsTask = _reportsService.GetAvailableReportsAsync(model.CurrentCollectionYear, authorisedReports, cancellationToken);
+
+            await Task.WhenAll(getAllPeriodsTask, collectionYearsTask, reportsTask);
+
+            model.ReportPeriods = await getAllPeriodsTask;
+            model.CollectionYears = await collectionYearsTask;
+            model.Reports = (await reportsTask).Select(x => new SelectListItem(x.DisplayName, x.ReportName));
+
+            return model;
         }
     }
 }
