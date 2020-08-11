@@ -215,9 +215,9 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 
             await Task.WhenAll(getAllPeriodsTask, collectionYearsTask, reportsTask);
 
-            model.ReportPeriods = await getAllPeriodsTask;
-            model.CollectionYears = await collectionYearsTask;
-            model.Reports = (await reportsTask).Select(x => new SelectListItem(x.DisplayName, x.ReportName));
+            model.ReportPeriods = getAllPeriodsTask.Result;
+            model.CollectionYears = collectionYearsTask.Result;
+            model.Reports = reportsTask.Result.Select(x => new SelectListItem(x.DisplayName, x.ReportName));
 
             return model;
         }
