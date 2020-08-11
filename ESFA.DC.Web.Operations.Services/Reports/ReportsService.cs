@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -8,7 +10,9 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
+using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 
@@ -17,14 +21,18 @@ namespace ESFA.DC.Web.Operations.Services.Reports
     public class ReportsService : BaseHttpClientService, IReportsService
     {
         private readonly string _baseUrl;
+        private IDictionary<int, IEnumerable<string>> _collectionsByYear = new Dictionary<int, IEnumerable<string>>();
+        private readonly ICollectionsService _collectionsService;
 
         public ReportsService(
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            ICollectionsService collectionsService)
             : base(routeFactory, jsonSerializationService, httpClient)
         {
+            _collectionsService = collectionsService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -121,6 +129,19 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             int.TryParse(response, out var result);
 
             return result;
+        }
+
+        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken)
+        {
+            IEnumerable<string> collectionsForYear = new List<string>();
+
+            if (!_collectionsByYear.TryGetValue(collectionYear, out collectionsForYear))
+            {
+                _collectionsByYear.Add(collectionYear, (await _collectionsService.GetAllCollectionsForYear(collectionYear, cancellationToken)).Select(s => s.CollectionName));
+            }
+
+            return authorisedReports
+                .Where(w => _collectionsByYear[collectionYear].Contains(string.Format(CultureInfo.CurrentCulture, w.CollectionName, collectionYear)));
         }
 
         private void StripLeaingReturnPeriodFromReportUrl(IEnumerable<ReportDetails> reportDetailsList)

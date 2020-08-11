@@ -1,4 +1,4 @@
-﻿using ESFA.DC.Web.Operations.Constants.Authorization;
+﻿using ESFA.DC.Web.Operations.Security.Policies;
 using ESFA.DC.Web.Operations.Settings.Models;
 using Microsoft.Extensions.DependencyInjection;
 

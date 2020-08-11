@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -10,9 +12,12 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
@@ -25,6 +30,8 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         private readonly IPeriodService _periodService;
         private readonly ICollectionsService _collectionsService;
         private readonly IReportsService _reportsService;
+        private readonly IEnumerable<IReport> _reports;
+        private readonly IAuthorizationService _authorizationService;
 
         public ReportsController(
             ILogger logger,
@@ -32,7 +39,9 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             IPeriodService periodService,
             IReportsService reportsService,
             ICollectionsService collectionsService,
-            TelemetryClient telemetryClient)
+            TelemetryClient telemetryClient,
+            IEnumerable<IReport> reports,
+            IAuthorizationService authorizationService)
             : base(logger, telemetryClient)
         {
             _logger = logger;
@@ -40,40 +49,44 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             _periodService = periodService;
             _reportsService = reportsService;
             _collectionsService = collectionsService;
+            _reports = reports;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet("")]
         [HttpGet("Index")]
-        public async Task<IActionResult> Index(int? collectionYear, int? collectionPeriod, CancellationToken cancellationToken)
+        [HttpPost("Index")]
+        public async Task<IActionResult> Index(ReportsViewModel viewModel, CancellationToken cancellationToken)
         {
+            var model = new ReportsViewModel();
+
             ViewBag.Error = TempData["error"];
-            ReportsViewModel reportsViewModel = new ReportsViewModel()
+
+            var authorisedReports = new List<IReport>();
+
+            foreach (var report in _reports)
             {
-                ReportPeriods = await _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken),
-                CollectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken)
-            };
+                if (await IsAuthorised(report))
+                {
+                    authorisedReports.Add(report);
+                }
+            }
 
-            // get the current period
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
-
-            reportsViewModel.CurrentCollectionYear = currentYearPeriod.Year ?? 0;
-            reportsViewModel.CurrentCollectionPeriod = currentYearPeriod.Period;
-
-            // validate parameters
-            if (collectionYear.HasValue && collectionPeriod.HasValue && collectionPeriod.Value >= 1 && collectionPeriod.Value <= 14)
+            if (viewModel != null && viewModel.CollectionYear != 0)
             {
-                reportsViewModel.CollectionYear = collectionYear.Value;
-                reportsViewModel.CollectionPeriod = collectionPeriod.Value;
+                model = await GenerateReportsViewModel(viewModel, authorisedReports, cancellationToken);
             }
             else
             {
-                reportsViewModel.CollectionYear = currentYearPeriod.Year ?? 0;
-                reportsViewModel.CollectionPeriod = currentYearPeriod.Period;
+                var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+                model.CurrentCollectionYear = currentYearPeriod.Year.GetValueOrDefault();
+                model.CurrentCollectionPeriod = currentYearPeriod.Period;
+                model.CollectionYear = currentYearPeriod.Year.GetValueOrDefault();
+                model.CollectionPeriod = currentYearPeriod.Period;
+                model = await GenerateReportsViewModel(model, authorisedReports, cancellationToken);
             }
 
-            reportsViewModel.ReportAction = ReportActions.GetReportDetails;
-
-            return View(reportsViewModel);
+            return View(model);
         }
 
         [HttpGet("RunReport")]
@@ -178,6 +191,28 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
 
             return View(model: reportViewModel);
+        }
+
+        private async Task<bool> IsAuthorised(IReport report)
+        {
+            return (await _authorizationService.AuthorizeAsync(User, report.Policy)).Succeeded;
+        }
+
+        private async Task<ReportsViewModel> GenerateReportsViewModel(ReportsViewModel model, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken)
+        {
+            return new ReportsViewModel()
+            {
+                ReportPeriods = await _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken),
+                CollectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken),
+                Reports = (await _reportsService
+                    .GetAvailableReportsAsync(model.CurrentCollectionYear, authorisedReports, cancellationToken))
+                    .Select(x => new SelectListItem(x.DisplayName, x.ReportName)),
+                CurrentCollectionPeriod = model.CurrentCollectionPeriod,
+                CurrentCollectionYear = model.CurrentCollectionYear,
+                CollectionYear = model.CollectionYear,
+                CollectionPeriod = model.CollectionPeriod,
+                ReportAction = ReportActions.GetReportDetails
+            };
         }
     }
 }
