@@ -1,12 +1,13 @@
 ﻿using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Controllers;
+using ESFA.DC.Web.Operations.Security.Policies;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ESFA.DC.Web.Operations.Areas.EmailDistribution.Controllers
 {
-    [Authorize(Policy = Constants.Authorization.AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy)]
+    [Authorize(Policy = AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy)]
     public abstract class BaseDistributionController : BaseControllerWithAdvancedSupportPolicy
     {
         private readonly ILogger _logger;

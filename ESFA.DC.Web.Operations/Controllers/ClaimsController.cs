@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants.Authorization;
+﻿using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Web.Operations.Security.Policies;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

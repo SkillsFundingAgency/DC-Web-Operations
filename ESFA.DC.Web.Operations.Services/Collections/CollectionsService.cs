@@ -59,6 +59,21 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 .ToList();
         }
 
+        public async Task<IEnumerable<CollectionSummary>> GetAllCollectionsForYear(int year, CancellationToken cancellationToken)
+        {
+            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.Collection>>(
+                await GetDataAsync($"{_baseUrl}/api/collections/all-for-year/{year}", cancellationToken));
+
+            return data.Where(c => !_collectionsTypesToExclude.Contains(c.CollectionType))
+                .Select(collection => new CollectionSummary
+                {
+                    CollectionId = collection.CollectionId,
+                    CollectionYear = year,
+                    CollectionName = collection.CollectionTitle
+                })
+                .ToList();
+        }
+
         public async Task<IEnumerable<int>> GetAvailableCollectionYears(CancellationToken cancellationToken = default(CancellationToken))
         {
             return _jsonSerializationService.Deserialize<IEnumerable<int>>(

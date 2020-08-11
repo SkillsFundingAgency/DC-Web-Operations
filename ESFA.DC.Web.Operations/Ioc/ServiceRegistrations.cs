@@ -23,6 +23,7 @@ using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
+using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
@@ -47,6 +48,7 @@ using ESFA.DC.Web.Operations.Services.PeriodEnd.NCS;
 using ESFA.DC.Web.Operations.Services.Processing;
 using ESFA.DC.Web.Operations.Services.Provider;
 using ESFA.DC.Web.Operations.Services.ReferenceData;
+using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
@@ -148,6 +150,13 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobFailedCurrentPeriodService>().As<IJobFailedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ProvidersReturnedCurrentPeriodService>().As<IJobProvidersReturnedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidityPeriodService>().As<IValidityPeriodService>().InstancePerLifetimeScope();
+
+            // Reports
+            builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<InternalDataMatchReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<PeriodEndDataExtractReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ProviderSubmissionsReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();

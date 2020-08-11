@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@using ESFA.DC.Web.Operations.Constants.Authorization
+@using ESFA.DC.Web.Operations.Security.Policies
 @model ESFA.DC.Web.Operations.Areas.Reports.Models.ReportsViewModel
 
 @{
@@ -7,46 +7,39 @@
     ViewData[ViewDataConstants.BackLink] = "/Home";
 }
 
+
+
 <br />
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
-        <input type="hidden" name="year" id="year" value=@Model.CollectionYear />
-        <input type="hidden" name="period" id="period" value=@Model.CollectionPeriod />
-        <input type="hidden" name="currentyear" id="currentyear" value=@Model.CurrentCollectionYear />
-        <input type="hidden" name="currentperiod" id="currentperiod" value=@Model.CurrentCollectionPeriod />
+<form method="post">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
+            <input type="hidden" name="currentyear" id="currentyear" value=@Model.CurrentCollectionYear />
+            <input type="hidden" name="currentperiod" id="currentperiod" value=@Model.CurrentCollectionPeriod />
+        </div>
     </div>
-</div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h3>Period:</h3>
-        <select id="collectionYears" asp-for="CurrentCollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years">
-        </select>
-
-        <select id="collectionPeriod" asp-for="CurrentCollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
-        </select>
-
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h3>Period:</h3>
+            <input asp-for="CollectionYear" id="year" type="hidden" />
+            <input asp-for="CollectionPeriod" id="period" type="hidden" />
+            <select id="collectionYears" asp-for="CurrentCollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years" autopostback="true">
+            </select>
+            <select id="collectionPeriod" asp-for="CurrentCollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
+            </select>
+        </div>
     </div>
-</div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h3>Create new report for:</h3>
-        <select id="reportSelection" asp-for="ReportType" class="govuk-select govuk-input--width-20 form-control">
-            <div policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy">
-                <option value="PeriodEndDataQualityReport">Period End Data Quality Report</option>
-                <option value="ProviderSubmissionsReport">Provider Submissions Report</option>
-                <option value="PeriodEndDataExtractReport">Period End Data Extract Report</option>
-                <option value="InternalDataMatchReport">Internal Data Match Report</option>
-                <option value="ACTCountReport">ACT Count Report</option>
-            </div>
-            <option policy="@AuthorisationPolicy.ReportsPolicy" value="RuleValidationDetailReport">Rule Validation Detail Report</option>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h3>Create new report for:</h3>
+            <select id="reportSelection" asp-for="ReportType" asp-items="@Model.Reports" class="govuk-select govuk-input--width-20 form-control"></select>
 
-        </select>
-        <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
+            <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
+        </div>
     </div>
-</div>
+</form>
 
 <div id="ruleValidationDetailReportSection">
     <div class="govuk-grid-row">
