@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
@@ -27,20 +29,23 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 
         public async Task<IActionResult> Index(int? collectionYear, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
-            if (currentYearPeriod.Year == null)
+            var collectionYears = await _ilrHistoryService.GetCollectionYears(cancellationToken);
+
+            if (collectionYears == null
+                || !collectionYears.Any())
             {
-                throw new Exception($"Return period {currentYearPeriod.Period} has no year.");
+                throw new Exception($"No historic period ends present");
             }
+
+            collectionYears = collectionYears.OrderBy(s => s);
 
             var model = new HistoryViewModel
             {
-                Year = collectionYear ?? currentYearPeriod.Year.Value
+                Year = collectionYear ?? collectionYears.Last(),
+                CollectionYears = collectionYears
             };
 
             model.PeriodHistories = await _ilrHistoryService.GetHistoryDetails(model.Year);
-            model.CollectionYears = await _ilrHistoryService.GetCollectionYears();
-
             return View(model);
         }
     }
