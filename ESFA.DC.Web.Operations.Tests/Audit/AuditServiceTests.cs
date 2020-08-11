@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Xunit;
 
 namespace ESFA.DC.Web.Operations.Tests.Audit
@@ -40,7 +41,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var testDTO = new FrmPublishDTO { JobID = 3 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<FrmPublishDTO>(Environment.UserName ?? "username", testDTO);
+                    await service.CreateAuditAsync<FrmPublishDTO>(Environment.UserName ?? "username", testDTO, CancellationToken.None);
                     var count = context.Audit.Count();
 
                     count.Should().Be(1);
@@ -64,7 +65,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var oldTestDTO = new FrmPublishDTO { JobID = 4 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<FrmPublishDTO>(Environment.UserName ?? "username", newTestDTO, oldTestDTO);
+                    await service.CreateAuditAsync<FrmPublishDTO>(Environment.UserName ?? "username", newTestDTO, oldTestDTO, CancellationToken.None);
                     var count = context.Audit.Count();
 
                     count.Should().Be(1);
@@ -90,7 +91,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var testDTO = new FrmPublishDTO { JobID = 3 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<FrmPublishDTO>("David", testDTO);
+                    await service.CreateAuditAsync<FrmPublishDTO>("David", testDTO, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var user = audit.User;
 
@@ -115,7 +116,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var oldTestDTO = new FrmPublishDTO { JobID = 4 };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<FrmPublishDTO>("David", newTestDTO, oldTestDTO);
+                    await service.CreateAuditAsync<FrmPublishDTO>("David", newTestDTO, oldTestDTO, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var user = audit.User;
 
@@ -142,7 +143,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var dto = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<AmendCollectionDTO>("David", dto);
+                    await service.CreateAuditAsync<AmendCollectionDTO>("David", dto, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
 
@@ -165,7 +166,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var dto = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<AmendCollectionDTO>("David", dto);
+                    await service.CreateAuditAsync<AmendCollectionDTO>("David", dto, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
 
@@ -191,7 +192,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO);
+                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
 
@@ -216,7 +217,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO);
+                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.NewValue;
 
@@ -242,7 +243,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO);
+                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.OldValue;
 
@@ -267,7 +268,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
                     var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
                     var service = scope.Resolve<IAuditService>();
 
-                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO);
+                    await service.CreateAuditAsync<AmendCollectionDTO>("David", newDTO, oldDTO, CancellationToken.None);
                     var audit = context.Audit.SingleOrDefault(i => i.Id == 1);
                     var auditValue = audit.OldValue;
 

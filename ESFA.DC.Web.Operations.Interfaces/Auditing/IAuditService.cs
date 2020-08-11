@@ -8,8 +8,10 @@ namespace ESFA.DC.Web.Operations.Interfaces.Auditing
 {
     public interface IAuditService
     {
-        Task CreateAuditAsync<T>(string user, T newDto, T oldDto, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreateAuditAsync<T>(string user, T newDto, CancellationToken cancellationToken)
+            where T : class;
 
-        Task CreateAuditAsync<T>(string user, T newDto, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreateAuditAsync<T>(string user, T newDto, T oldDto, CancellationToken cancellationToken)
+            where T : class;
     }
 }

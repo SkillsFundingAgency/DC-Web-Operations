@@ -25,43 +25,47 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
             _jsonSerializationService = jsonSerializationService;
         }
 
-        public async Task CreateAuditAsync<T>(string user, T dto, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task CreateAuditAsync<T>(string user, T dto, CancellationToken cancellationToken)
+            where T : class
         {
-            var auditstring = _jsonSerializationService.Serialize(dto);
-            var differentiator = (int)DifferentiatorPath.Parse(typeof(DifferentiatorPath), typeof(T).Name);
-            await SaveItem(differentiator, user, auditstring, null);
+            await SaveItem(user, dto, cancellationToken: cancellationToken);
         }
 
-        public async Task CreateAuditAsync<T>(string user, T newDto, T oldDto, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task CreateAuditAsync<T>(string user, T newDto, T oldDto, CancellationToken cancellationToken)
+            where T : class
         {
-            var auditNewString = _jsonSerializationService.Serialize(newDto);
-            var auditOldString = _jsonSerializationService.Serialize(oldDto);
-            var differentiator = (int)DifferentiatorPath.Parse(typeof(DifferentiatorPath), typeof(T).Name);
-            await SaveItem(differentiator, user, auditNewString, auditOldString);
+            await SaveItem(user, newDto, oldDto, cancellationToken);
         }
 
-        private async Task SaveItem(int differentiator, string user, string newValue, string oldValue)
+        private string SerializeDto<T>(T dto)
+        {
+            if (dto != null)
+            {
+                return _jsonSerializationService.Serialize(dto);
+            }
+
+            return null;
+        }
+
+        private int DifferentiatorLookup<T>() => (int)Enum.Parse(typeof(DifferentiatorPath), typeof(T).Name);
+
+        private async Task SaveItem<T>(string user, T newValue, T oldValue = null, CancellationToken cancellationToken = default)
+            where T : class
         {
             var audit = new Audit
             {
                 User = user,
                 TimeStampUTC = _dateTimeProvider.GetNowUtc(),
-                NewValue = newValue,
-                OldValue = oldValue,
-                Differentiator = differentiator,
+                NewValue = SerializeDto(newValue),
+                OldValue = SerializeDto(oldValue),
+                Differentiator = DifferentiatorLookup<T>(),
             };
+
             using (var context = _context())
             {
                 var pathItem = context.Audit.Add(audit);
 
-                try
-                {
-                    await context.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
+                await context.SaveChangesAsync(cancellationToken);
             }
         }
     }
