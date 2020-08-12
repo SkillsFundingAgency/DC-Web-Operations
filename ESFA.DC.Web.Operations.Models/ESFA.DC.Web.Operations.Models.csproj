@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.2.76-beta0001" />
-    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.90-beta0001" />
     <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.90-beta0001" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
       <PrivateAssets>all</PrivateAssets>
