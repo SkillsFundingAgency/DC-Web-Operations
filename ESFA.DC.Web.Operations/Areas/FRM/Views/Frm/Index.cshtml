@@ -1,7 +1,10 @@
-﻿@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
 @{
     ViewData["Title"] = "FRM Choice";
+    ViewData[ViewDataConstants.BackLink] = "/";
 }
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-x1">
