@@ -1,5 +1,4 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@using ESFA.DC.Web.Operations.Security.Policies
 @model ESFA.DC.Web.Operations.Areas.Reports.Models.ReportsViewModel
 
 @{
@@ -7,23 +6,13 @@
     ViewData[ViewDataConstants.BackLink] = "/Home";
 }
 
-
-
 <br />
 <form method="post">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Reports</h1>
-            <input type="hidden" name="currentyear" id="currentyear" value=@Model.CurrentCollectionYear />
-            <input type="hidden" name="currentperiod" id="currentperiod" value=@Model.CurrentCollectionPeriod />
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
             <h3>Period:</h3>
-            <input asp-for="CollectionYear" id="year" type="hidden" />
-            <input asp-for="CollectionPeriod" id="period" type="hidden" />
+            <input asp-for="CollectionYear" id="currentyear" type="hidden" />
+            <input asp-for="CollectionPeriod" id="currentperiod" type="hidden" />
             <select id="collectionYears" asp-for="CurrentCollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years" autopostback="true">
             </select>
             <select id="collectionPeriod" asp-for="CurrentCollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
