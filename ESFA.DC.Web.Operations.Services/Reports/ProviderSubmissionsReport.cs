@@ -9,7 +9,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "Provider Submissions Report";
 
-        public string CollectionName => "PE-ProviderSubmission-Report{0}";
+        public string CollectionName => "PE-ProviderSubmissions-Report{0}";
 
         public string Policy => AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy;
     }

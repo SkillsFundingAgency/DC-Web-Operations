@@ -9,7 +9,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "ACT Count Report";
 
-        public string CollectionName => "PE-ACT-Count-Report1920";
+        public string CollectionName => "PE-ACT-Count-Report{0}";
 
         public string Policy => AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy;
     }
