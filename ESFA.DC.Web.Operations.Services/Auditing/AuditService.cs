@@ -14,15 +14,15 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
 {
     public class AuditService : IAuditService
     {
-        private readonly Func<IAuditDataContext> _context;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IAuditRepository _auditRepository;
 
-        public AuditService(Func<IAuditDataContext> context, IDateTimeProvider dateTimeProvider, IJsonSerializationService jsonSerializationService)
+        public AuditService(IDateTimeProvider dateTimeProvider, IJsonSerializationService jsonSerializationService, IAuditRepository auditRepository)
         {
-            _context = context;
             _dateTimeProvider = dateTimeProvider;
             _jsonSerializationService = jsonSerializationService;
+            _auditRepository = auditRepository;
         }
 
         public async Task CreateAuditAsync<T>(string user, T dto, CancellationToken cancellationToken)
@@ -52,21 +52,11 @@ namespace ESFA.DC.Web.Operations.Services.Auditing
         private async Task SaveItem<T>(string user, T newValue, T oldValue = null, CancellationToken cancellationToken = default)
             where T : class
         {
-            var audit = new Audit
-            {
-                User = user,
-                TimeStampUTC = _dateTimeProvider.GetNowUtc(),
-                NewValue = SerializeDto(newValue),
-                OldValue = SerializeDto(oldValue),
-                Differentiator = DifferentiatorLookup<T>(),
-            };
-
-            using (var context = _context())
-            {
-                var pathItem = context.Audit.Add(audit);
-
-                await context.SaveChangesAsync(cancellationToken);
-            }
+            var timeStampUTC = _dateTimeProvider.GetNowUtc();
+            var newStringValue = SerializeDto(newValue);
+            var oldStringValue = SerializeDto(oldValue);
+            var differentiator = DifferentiatorLookup<T>();
+            await _auditRepository.SaveAuditAsync(user, timeStampUTC, differentiator, newStringValue, oldStringValue,  cancellationToken);
         }
     }
 }
