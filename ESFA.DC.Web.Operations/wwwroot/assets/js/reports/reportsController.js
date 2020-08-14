@@ -50,17 +50,17 @@
 
         this._currentYear = document.getElementById('currentyear').value;;
         this._currentPeriod = document.getElementById('currentperiod').value;;
-        if (this._currentYear == this._yearSelected && this._currentPeriod == this._periodSelected) {
-            this._generateValidationReportButton.disabled = false;
-            this._createReportButton.disabled = false;
-        } else {
-            this._generateValidationReportButton.disabled = true;
-            this._createReportButton.disabled = true;
-        }
+        //if (this._currentYear == this._yearSelected && this._currentPeriod == this._periodSelected) {
+        //    this._generateValidationReportButton.disabled = false;
+        //    this._createReportButton.disabled = false;
+        //} else {
+        //    this._generateValidationReportButton.disabled = true;
+        //    this._createReportButton.disabled = true;
+        //}
 
         window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
 
-        if (this._reportSelection.length === 1 && this._reportSelection.value === this.ValidationDetailReport) {
+        if (this._reportSelection.value === this.ValidationDetailReport) {
             this._reportSelection.dispatchEvent(new Event('change'));
         }
     }
@@ -220,7 +220,8 @@
         }
     }
 
-    createReport() {
+    createReport(event) {
+        event.preventDefault();
         var reportValue = this._reportSelection.value;
         var yearValue = this._yearSelection.value;
         var periodValue = this._periodSelection.value;

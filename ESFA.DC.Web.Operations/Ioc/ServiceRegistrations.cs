@@ -158,6 +158,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ProviderSubmissionsReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();
