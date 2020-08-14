@@ -1,5 +1,5 @@
 ﻿class ReportsController {
-    
+
     constructor() {
         this._reportSelection = document.getElementById('reportSelection');
         this._yearSelection = document.getElementById('collectionYears');
@@ -7,7 +7,6 @@
         this._ruleValidationDetailReportSection = document.getElementById('ruleValidationDetailReportSection');
         this._createReportBtn = document.getElementById('createReport');
         this._generateValidationReportButton = document.getElementById("generateValidationReport");
-        this._createReportButton = document.getElementById("createReport");
         this._element = document.querySelector('#tt-overlay');
         this._id = 'autocomplete-overlay';
         this._spinner = document.getElementById('spinner');
@@ -16,8 +15,8 @@
         this._rulesByYear = {};
         this._yearSelected = null;
         this._periodSelected = null;
-        this._currentYear= null;
-        this._currentPeriod= null;
+        this._currentYear = null;
+        this._currentPeriod = null;
         this._validationReportGenerationUrl = null;
         this._reportGenerationUrl = null;
         this._reportsUrl = null;
@@ -48,19 +47,9 @@
         this._yearSelected = document.getElementById('collectionYears').value;
         this._periodSelected = document.getElementById('collectionPeriod').value;
 
-        this._currentYear = document.getElementById('currentyear').value;;
-        this._currentPeriod = document.getElementById('currentperiod').value;;
-        if (this._currentYear == this._yearSelected && this._currentPeriod == this._periodSelected) {
-            this._generateValidationReportButton.disabled = false;
-            this._createReportButton.disabled = false;
-        } else {
-            this._generateValidationReportButton.disabled = true;
-            this._createReportButton.disabled = true;
-        }
-
         window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
 
-        if (this._reportSelection.length === 1 && this._reportSelection.value === this.ValidationDetailReport) {
+        if (this._reportSelection.value === this.ValidationDetailReport) {
             this._reportSelection.dispatchEvent(new Event('change'));
         }
     }
@@ -128,7 +117,7 @@
 
     populateReports(reportDetails) {
         var tableRef = document.getElementById('internalReportsTable').getElementsByTagName('tbody')[0];
-        
+
         // remove the existing rows
         var elmtTable = document.getElementById('internalReportsTableBody');
         var tableRows = elmtTable.getElementsByTagName('tr');
@@ -173,29 +162,29 @@
         this._spinner.style.visibility = 'hidden';
     }
 
-     customRulesSuggest(query, syncResults) {
-         var results = this._rulesByYear[this._yearSelected];
-         syncResults(query
-             ? results.filter(function(result) {
-                 var resultContains = result.ruleName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-                 return resultContains;
-             })
-             : []
-         );
-     }
+    customRulesSuggest(query, syncResults) {
+        var results = this._rulesByYear[this._yearSelected];
+        syncResults(query
+            ? results.filter(function (result) {
+                var resultContains = result.ruleName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+                return resultContains;
+            })
+            : []
+        );
+    }
 
-     searchRuleInputValueTemplate(result) {
-         return result && result.ruleName;
-     }
+    searchRuleInputValueTemplate(result) {
+        return result && result.ruleName;
+    }
 
-     searchRuleSuggestionTemplate(result) {
-         if (result.isTriggered === true) {
-             return result.ruleName + '<strong> - [Triggered]</strong>';
-         }
-         else {
-             return result.ruleName;
-         }
-     }
+    searchRuleSuggestionTemplate(result) {
+        if (result.isTriggered === true) {
+            return result.ruleName + '<strong> - [Triggered]</strong>';
+        }
+        else {
+            return result.ruleName;
+        }
+    }
 
     onautocompleteblur() {
         if (this._id) {
@@ -220,7 +209,8 @@
         }
     }
 
-    createReport() {
+    createReport(event) {
+        event.preventDefault();
         var reportValue = this._reportSelection.value;
         var yearValue = this._yearSelection.value;
         var periodValue = this._periodSelection.value;
