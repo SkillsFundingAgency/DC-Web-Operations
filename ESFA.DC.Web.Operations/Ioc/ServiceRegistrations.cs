@@ -137,6 +137,7 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<AuditService>().As<IAuditService>().InstancePerLifetimeScope();
             builder.RegisterType<AuditRepository>().As<IAuditRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<DifferentiatorLookupService>().As<IDifferentiatorLookupService>().InstancePerLifetimeScope();
 
             builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
 
