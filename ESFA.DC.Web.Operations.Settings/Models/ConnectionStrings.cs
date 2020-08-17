@@ -16,5 +16,8 @@ namespace ESFA.DC.Web.Operations.Settings.Models
 
         [JsonRequired]
         public string Org { get; set; }
+
+        [JsonRequired]
+        public string Audit { get; set; }
     }
 }

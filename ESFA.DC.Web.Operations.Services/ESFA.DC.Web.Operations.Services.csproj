@@ -46,6 +46,7 @@
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Interfaces\ESFA.DC.Web.Operations.Interfaces.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Models\ESFA.DC.Web.Operations.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Settings\ESFA.DC.Web.Operations.Settings.csproj" />
+    <ProjectReference Include="..\ESFA.DC.Web.Operations.Topics.Data\ESFA.DC.Web.Operations.Topics.Data.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.Utils\ESFA.DC.Web.Operations.Utils.csproj" />
     <ProjectReference Include="..\ESFA.DC.Web.Operations.ViewModels\ESFA.DC.Web.Operations.ViewModels.csproj" />
   </ItemGroup>

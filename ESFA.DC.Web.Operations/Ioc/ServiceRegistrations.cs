@@ -13,6 +13,7 @@ using ESFA.DC.ReferenceData.Organisations.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Auditing;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
@@ -25,6 +26,7 @@ using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Services;
+using ESFA.DC.Web.Operations.Services.Auditing;
 using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
@@ -53,6 +55,7 @@ using ESFA.DC.Web.Operations.Services.Storage;
 using ESFA.DC.Web.Operations.Services.ValidationRules;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.TagHelpers;
+using ESFA.DC.Web.Operations.Topics.Data.Auditing;
 using Microsoft.EntityFrameworkCore;
 using JobQueueDataContext = ESFA.DC.Web.Operations.Topics.Data.JobQueueDataContext;
 
@@ -135,6 +138,10 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
 
+            builder.RegisterType<AuditService>().As<IAuditService>().InstancePerLifetimeScope();
+            builder.RegisterType<AuditRepository>().As<IAuditRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<DifferentiatorLookupService>().As<IDifferentiatorLookupService>().InstancePerLifetimeScope();
+
             builder.RegisterType<SeasonIconTagHelper>().As<SeasonIconTagHelper>().InstancePerLifetimeScope();
 
             builder.RegisterType<JobProcessingService>().As<IJobProcessingService>().InstancePerLifetimeScope();
@@ -163,6 +170,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobQueueDataContext>().SingleInstance();
             builder.RegisterType<JobQueueManager.Data.JobQueueDataContext>().As<IJobQueueDataContext>().ExternallyOwned();
             builder.RegisterType<OrganisationsContext>().As<IOrganisationsContext>().ExternallyOwned();
+            builder.RegisterType<AuditDataContext>().As<IAuditDataContext>().ExternallyOwned();
 
             builder.Register(context =>
                 {
@@ -202,6 +210,19 @@ namespace ESFA.DC.Web.Operations.Ioc
                 })
                 .As<DbContextOptions<OrganisationsContext>>()
                 .SingleInstance();
+
+            builder.Register(context =>
+            {
+                var config = context.Resolve<ConnectionStrings>();
+                var optionsBuilder = new DbContextOptionsBuilder<AuditDataContext>();
+                optionsBuilder.UseSqlServer(
+                    config.Audit,
+                    options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                return optionsBuilder.Options;
+            })
+             .As<DbContextOptions<AuditDataContext>>()
+             .SingleInstance();
 
             RegisterAzureStorage(builder);
         }
