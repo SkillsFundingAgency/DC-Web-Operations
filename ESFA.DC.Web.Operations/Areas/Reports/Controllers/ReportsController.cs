@@ -79,8 +79,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             else
             {
                 var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
-                model.CurrentCollectionYear = currentYearPeriod.Year.GetValueOrDefault();
-                model.CurrentCollectionPeriod = currentYearPeriod.Period;
                 model.CollectionYear = currentYearPeriod.Year.GetValueOrDefault();
                 model.CollectionPeriod = currentYearPeriod.Period;
                 model = await GenerateReportsViewModel(model, authorisedReports, cancellationToken);
@@ -171,11 +169,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                             TempData["Error"] = errorMessage;
 
                             // if job has failed or failed retry display the error on the index page
-                            return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
+                            return RedirectToAction("Index", "Reports", reportViewModel);
 
                         case JobStatusType.Completed:
                             // if job has completed, redirect to Index page to show all the reports
-                            return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
+                            return RedirectToAction("Index", "Reports", reportViewModel);
                     }
 
                     break;
@@ -202,8 +200,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         {
             var model = new ReportsViewModel()
             {
-                CurrentCollectionPeriod = reportsViewModel.CurrentCollectionPeriod,
-                CurrentCollectionYear = reportsViewModel.CurrentCollectionYear,
                 CollectionYear = reportsViewModel.CollectionYear,
                 CollectionPeriod = reportsViewModel.CollectionPeriod,
                 ReportAction = ReportActions.GetReportDetails
@@ -211,7 +207,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 
             var getAllPeriodsTask = _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken);
             var collectionYearsTask = _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken);
-            var reportsTask = _reportsService.GetAvailableReportsAsync(model.CurrentCollectionYear, authorisedReports, cancellationToken);
+            var reportsTask = _reportsService.GetAvailableReportsAsync(model.CollectionYear, authorisedReports, cancellationToken);
 
             await Task.WhenAll(getAllPeriodsTask, collectionYearsTask, reportsTask);
 
