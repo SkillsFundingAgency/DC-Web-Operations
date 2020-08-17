@@ -39,18 +39,19 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
             var differentiatorLookupServiceMock = new Mock<IDifferentiatorLookupService>();
             var dateTime = new DateTime(2019, 1, 2);
             var user = "user";
+            var differentiator = 20;
             var cancellationToken = CancellationToken.None;          
             var newDTO = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
             dateTimeProviderMock.Setup(p => p.GetNowUtc()).Returns(dateTime);
             serializationServiceMock.Setup(p => p.Serialize(newDTO)).Returns("{\"CollectionType\":\"ILR1920\",\"StartDateUTC\":\"9999-12-31T23:59:59.9999999\",\"EndDateUTC\":\"9999-12-31T23:59:59.9999999\"}");
-            differentiatorLookupServiceMock.Setup(p => p.DifferentiatorLookup<AmendCollectionDTO>()).Returns(20);
+            differentiatorLookupServiceMock.Setup(p => p.DifferentiatorLookup<AmendCollectionDTO>()).Returns(differentiator);
             var service = new AuditService(dateTimeProviderMock.Object, serializationServiceMock.Object, auditRepositoryMock.Object, differentiatorLookupServiceMock.Object);
 
 
             await service.CreateAuditAsync<AmendCollectionDTO>(user, newDTO, cancellationToken);
 
 
-            auditRepositoryMock.Verify(r => r.SaveAuditAsync(user, dateTime, differentiatorLookupServiceMock.Object.DifferentiatorLookup<AmendCollectionDTO>(), serializationServiceMock.Object.Serialize(newDTO), null, cancellationToken));
+            auditRepositoryMock.Verify(r => r.SaveAuditAsync(user, dateTime, differentiator, serializationServiceMock.Object.Serialize(newDTO), null, cancellationToken));
 
         }
         [Fact]
@@ -62,6 +63,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
             var differentiatorLookupServiceMock = new Mock<IDifferentiatorLookupService>();
             var dateTime = new DateTime(2019, 1, 2);
             var user = "User";
+            var differentiator = 20;
             var cancellationToken = CancellationToken.None;           
             var newDTO = new AmendCollectionDTO { CollectionType = "ILR1920", StartDateUTC = DateTime.MaxValue, EndDateUTC = DateTime.MaxValue };
             var oldDTO = new AmendCollectionDTO { CollectionType = "ILR2021", StartDateUTC = DateTime.MinValue, EndDateUTC = DateTime.MinValue };
@@ -75,7 +77,7 @@ namespace ESFA.DC.Web.Operations.Tests.Audit
             await service.CreateAuditAsync<AmendCollectionDTO>(user, newDTO, oldDTO, cancellationToken);
 
 
-            auditRepositoryMock.Verify(r => r.SaveAuditAsync(user, dateTime, differentiatorLookupServiceMock.Object.DifferentiatorLookup<AmendCollectionDTO>(), serializationServiceMock.Object.Serialize(newDTO), serializationServiceMock.Object.Serialize(oldDTO), cancellationToken));
+            auditRepositoryMock.Verify(r => r.SaveAuditAsync(user, dateTime, differentiator, serializationServiceMock.Object.Serialize(newDTO), serializationServiceMock.Object.Serialize(oldDTO), cancellationToken));
 
         }
     }
