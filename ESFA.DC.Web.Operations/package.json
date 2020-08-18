@@ -4,5 +4,20 @@
     "govuk-frontend": "1.2.0",
     "@hmcts/frontend": "0.0.41-alpha",
     "handlebars": "4.7.6"
+  },
+  "devDependencies": {
+    "jest": "26.4.0",
+    "babel-jest": "26.3.0",
+    "@babel/core": "7.11.1",
+    "@babel/preset-env": "7.11.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/wwwroot/assets/images",
+      "<rootDir>/wwwroot/lib"
+    ]
   }
 }
