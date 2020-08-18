@@ -1,11 +1,11 @@
-﻿namespace ESFA.DC.Web.Operations.Areas.Frm.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using ESFA.DC.PeriodEnd.Models.Dtos;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using ESFA.DC.PeriodEnd.Models.Dtos;
 
-    public class FrmReportModel
+namespace ESFA.DC.Web.Operations.Areas.Publication.Models
+{
+    public class PublicationReportModel
     {
         public bool IsFrmReportChoice { get; set; }
 

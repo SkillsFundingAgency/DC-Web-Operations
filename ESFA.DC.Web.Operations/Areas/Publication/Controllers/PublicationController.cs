@@ -6,7 +6,7 @@ using Autofac.Features.Indexed;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.Frm.Models;
+using ESFA.DC.Web.Operations.Areas.Publication.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -16,17 +16,17 @@ using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
+namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
 {
-    [Area(AreaNames.Frm)]
-    public class FrmController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
+    [Area(AreaNames.Publication)]
+    public class PublicationController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IFrmService _frmService;
         private readonly ILogger _logger;
         private readonly IStorageService _storageService;
         private readonly IFileService _fileService;
 
-        public FrmController(
+        public PublicationController(
             ILogger logger,
             IFrmService frmService,
             IStorageService storageService,
@@ -42,7 +42,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
 
         public IActionResult Index()
         {
-            var model = new FrmReportModel()
+            var model = new PublicationReportModel()
             {
                 IsFrmReportChoice = false
             };
@@ -54,7 +54,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model)
+        public async Task<IActionResult> HoldingPageAsync(PublicationReportModel model)
         {
             var frmStatus = (JobStatusType)await _frmService.GetFrmStatusAsync(model.FrmJobId);
             string errorMessage;
@@ -95,7 +95,7 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidateFrmAsync(FrmReportModel model)
+        public async Task<IActionResult> ValidateFrmAsync(PublicationReportModel model)
         {
             model.FrmJobType = Utils.Constants.FrmValidationKey;
             var frmContainerName = $"frm{model.FrmYearPeriod}";
@@ -109,14 +109,14 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PublishFrmAsync(FrmReportModel model)
+        public async Task<IActionResult> PublishFrmAsync(PublicationReportModel model)
         {
             model.FrmJobType = Utils.Constants.FrmPublishKey;
             model.FrmJobId = await _frmService.RunPublishAsync(model.FrmJobId);
             return RedirectToAction("HoldingPageAsync", model);
         }
 
-        public async Task<IActionResult> ReportChoiceSelectionAsync(FrmReportModel model)
+        public async Task<IActionResult> ReportChoiceSelectionAsync(PublicationReportModel model)
         {
             if (model.IsFrmReportChoice)
             {

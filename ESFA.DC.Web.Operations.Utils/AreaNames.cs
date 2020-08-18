@@ -8,7 +8,7 @@
         public const string Provider = "provider";
         public const string Collections = "collections";
         public const string Reports = "reports";
-        public const string Frm = "frm";
+        public const string Publication = "publication";
         public const string Processing = "processing";
         public const string PeriodEndILR = "periodendilr";
         public const string PeriodEndNCS = "periodendncs";

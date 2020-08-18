@@ -1,4 +1,4 @@
-﻿@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+﻿@model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
 @using ESFA.DC.Web.Operations.Constants
 
 @{
@@ -6,30 +6,30 @@
 }
 <h1 class="govuk-heading-x1">Enter FRM Details</h1>
 
-@using (Html.BeginForm("ValidateFrmAsync","Frm"))
+@using (Html.BeginForm("ValidateFrmAsync","Publication"))
 {
-    <label class="govuk-label" for="FrmYearPeriod">
+    <label class="govuk-label" for="PublicationYearPeriod">
         Year code of Reports
     </label>
     @Html.TextBoxFor(model => model.FrmYearPeriod, new { @class = "govuk-input govuk-input--width-4", id = "frm", @type = "text" })
     <span class="govuk-error-message">
-        <span asp-validation-for="FrmYearPeriod"></span>
+        <span asp-validation-for="PublicationYearPeriod"></span>
     </span>
     <label class="govuk-label">
         Start date
     </label>
     @Html.TextBoxFor(model => model.FrmDate, "{0:yyyy-MM-dd}", new { @class = "govuk-input govuk-!-width-one-third", id = "FrmDate", @type = "date", placeholder = "DD/MM/YYYY" })
     <span class="govuk-error-message">
-        <span asp-validation-for="FrmDate"></span>
+        <span asp-validation-for="PublicationDate"></span>
     </span>
-    <label class="govuk-label" for="FrmPublishPeriod">
+    <label class="govuk-label" for="PublicationPublishPeriod">
         Enter the Period you wish to publish
     </label>
     @Html.TextBoxFor(model => model.FrmPeriodNumber, new { @class = "govuk-input govuk-input--width-2", id = "frmPeriodNumber", @type = "text" })
     <span class="govuk-error-message">
-        <span asp-validation-for="FrmPeriodNumber"></span>
+        <span asp-validation-for="PublicationPeriodNumber"></span>
     </span>
-    <input id="FrmJobType" name="FrmJobType" type="hidden" value="Validation" />
+    <input id="FrmJobType" name="PublicationJobType" type="hidden" value="Validation" />
     <br />
     <button type="submit" class="govuk-button">Continue</button>
 }

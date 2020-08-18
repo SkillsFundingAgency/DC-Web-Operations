@@ -1,4 +1,4 @@
-﻿@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+﻿@model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
 @using ESFA.DC.Web.Operations.Constants
 
 @{
@@ -32,12 +32,12 @@
     </tbody>
 </table>
 <table>
-    @using (Html.BeginForm("PublishFrmAsync", "Frm", Model))
+    @using (Html.BeginForm("PublishFrmAsync", "Publication", Model))
     {
         <br />
         <br />
         <br />
-        <input id="FrmJobId" name="FrmJobId" type="hidden" value="@Model.FrmJobId" />
+        <input id="FrmJobId" name="PublicationJobId" type="hidden" value="@Model.FrmJobId" />
         <button type="submit" class="govuk-button">Publish</button>
     }
     <nbsp>  </nbsp>
