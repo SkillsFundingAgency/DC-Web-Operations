@@ -44,14 +44,14 @@
     </div>
 </div>
 
-<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
 <script type="module">
 
     import JobDasMismatchController from "/assets/js/processing/jobDasMismatchController.js";
     import Hub from '/assets/js/hubs/hub.js';
-    
+
     (function () {
         const jobDasMismatchController = new JobDasMismatchController();
         const hub = new Hub('jobDasMismatchHub', jobDasMismatchController.displayConnectionState);

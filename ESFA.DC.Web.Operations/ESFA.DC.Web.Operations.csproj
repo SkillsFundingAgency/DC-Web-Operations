@@ -72,6 +72,7 @@
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Client.Http" Version="2.0.0-preview13" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.76" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -95,9 +96,6 @@
     <Content Update="appsettings.salman.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\signalr\dist\browser\signalr.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 
@@ -114,5 +112,8 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties package_1json__JsonSchema="https://json.schemastore.org/package.manifest" /></VisualStudio></ProjectExtensions>
 
 </Project>

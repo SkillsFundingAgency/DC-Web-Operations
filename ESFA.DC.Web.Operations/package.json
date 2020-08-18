@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@aspnet/signalr": "3.0.0-preview6.19307.2",
+    "govuk-frontend": "1.2.0",
+    "@hmcts/frontend": "0.0.41-alpha",
+    "handlebars": "4.7.6"
+  }
+}
