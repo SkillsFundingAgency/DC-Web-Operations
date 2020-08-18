@@ -11,7 +11,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h3>Period:</h3>
-            <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years" autopostback="true">
+            <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years">
             </select>
             <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
             </select>
@@ -21,8 +21,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h3>Create new report for:</h3>
-            <select id="reportSelection" asp-for="ReportType" asp-items="@Model.Reports" class="govuk-select govuk-input--width-20 form-control"></select>
-
+            <select id="reportSelection" class="govuk-select govuk-input--width-20 form-control"></select>
             <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
         </div>
     </div>
@@ -47,13 +46,16 @@
     </div>
 </div>
 
+<span id="reportsLoadingSpinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
 <div id="internalReportsDownloadList">
 </div>
 
-<div class="govuk-grid-row">
+
+
+@*<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m">Internal Reports</h2>
-        <span id="reportsLoadingSpinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+        
         <table class="govuk-table" id="internalReportsTable">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -65,7 +67,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div>*@
 
 @if (!string.IsNullOrEmpty(@ViewBag.Error))
 {
@@ -88,6 +90,7 @@
 @section PageScripts
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/handlebars.js"></script>
     <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
     <script type="module">
         import Client from '/assets/js/reports/client.js';
