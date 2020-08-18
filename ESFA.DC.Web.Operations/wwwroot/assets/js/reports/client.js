@@ -23,15 +23,6 @@
     }
 
 
-    getReports(collectionYear, collectionPeriod, populateReports) {
-        this.connection
-            .invoke("GetReports", collectionYear, collectionPeriod)
-            .then(function (values) {
-                populateReports(values);
-            })
-            .catch(err => console.error(err.toString()));
-    }
-
     getReportDetails(collectionYear, collectionPeriod, populateReports) {
         this.connection
             .invoke("GetReportDetails", collectionYear, collectionPeriod)

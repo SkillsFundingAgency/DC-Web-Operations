@@ -13,7 +13,6 @@ class ReportsController {
         this._id = 'autocomplete-overlay';
         this._spinner = document.getElementById('spinner');
         this._reportsLoadingSpinner = document.getElementById('reportsLoadingSpinner');
-        this._collectionYears = {};
         this._rulesByYear = {};
         this._yearSelected = null;
         this._periodSelected = null;
@@ -66,19 +65,11 @@ class ReportsController {
     }
 
     showValidationRuleDetailReportSection() {
-        if (Object.keys(this._collectionYears).length === 0) {
-            this._yearSelected = this._yearSelection.value;
-            this._spinner.style.visibility = 'visible';
-            this._createReportBtn.style.visibility = 'hidden';
-            this.removeElementsByClass('autocomplete__wrapper');
-            window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
-
-            //if (this._rulesByYear[this._yearSelected] === undefined) {
-            //    window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
-            //} else {
-            //    this.populateRules(this._rulesByYear[this._yearSelected]);
-            //}
-        }
+        this._yearSelected = this._yearSelection.value;
+        this._spinner.style.visibility = 'visible';
+        this._createReportBtn.style.visibility = 'hidden';
+        this.removeElementsByClass('autocomplete__wrapper');
+        window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
         this._ruleValidationDetailReportSection.style.visibility = 'visible';
         this._ruleValidationDetailReportSection.style.display = 'block';
     }
@@ -93,21 +84,10 @@ class ReportsController {
     }
 
     yearsSelectionChange(e) {
-        var reportSelected = this._reportSelection.value;
         this._yearSelected = this._yearSelection.value;
         this._periodSelected = this._periodSelection.value;
         this.getReports();
         this.hideValidationRuleDetailReportSection();
-        //if (reportSelected === this.ValidationDetailReport) {
-        //    this.removeElementsByClass('autocomplete__wrapper');
-        //    this._spinner.style.visibility = 'visible';
-        //    this._generateValidationReportButton.disabled = true;
-        //    if (this._rulesByYear[this._yearSelected] === undefined) {
-        //        window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
-        //    } else {
-        //        this.populateRules(this._rulesByYear[this._yearSelected]);
-        //    }
-        //}
     }
 
     periodSelectionChange(e) {
@@ -122,12 +102,11 @@ class ReportsController {
     }
 
     populateReports(reportDetails) {
-
-        var compiledReportDownloadListTemplate = getHandleBarsTemplate(Templates.InternalReportsDownloadList);
-        this._internalReportsDownloadListDiv.innerHTML = compiledReportDownloadListTemplate({ viewModel: reportDetails, yearSelected: this._yearSelected, periodSelected: this._periodSelected, downloadUrl : this._reportsDownloadUrl  });
-
         var compileReportOptionsTemplate = getHandleBarsTemplate(Templates.ReportListOptions);
         this._reportSelection.innerHTML = compileReportOptionsTemplate({ viewModel: reportDetails });
+
+        var compiledReportDownloadListTemplate = getHandleBarsTemplate(Templates.InternalReportsDownloadList);
+        this._internalReportsDownloadListDiv.innerHTML = compiledReportDownloadListTemplate({ viewModel: reportDetails, yearSelected: this._yearSelected, periodSelected: this._periodSelected, downloadUrl: this._reportsDownloadUrl });
 
         if (this._reportSelection.value === this.ValidationDetailReport) {
             this._reportSelection.dispatchEvent(new Event('change'));
@@ -216,7 +195,6 @@ class ReportsController {
     changePeriod() {
         var yearValue = this._yearSelection.value;
         var periodValue = this._periodSelection.value;
-        var reportValue = this._reportSelection.value;
         window.location.href = this._reportsUrl + '?collectionYear=' + yearValue + '&collectionPeriod=' + periodValue;
     }
 }

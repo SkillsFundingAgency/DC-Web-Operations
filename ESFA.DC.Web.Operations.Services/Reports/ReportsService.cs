@@ -15,6 +15,8 @@ using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.Reports
 {
@@ -23,16 +25,25 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private readonly string _baseUrl;
         private IDictionary<int, IEnumerable<string>> _collectionsByYear = new Dictionary<int, IEnumerable<string>>();
         private readonly ICollectionsService _collectionsService;
+        private readonly IEnumerable<IReport> _reports;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ReportsService(
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient,
-            ICollectionsService collectionsService)
+            ICollectionsService collectionsService,
+            IEnumerable<IReport> reports,
+            IAuthorizationService authorizationService,
+            IHttpContextAccessor httpContextAccessor)
             : base(routeFactory, jsonSerializationService, httpClient)
         {
             _collectionsService = collectionsService;
+            _reports = reports;
+            _authorizationService = authorizationService;
+            _httpContextAccessor = httpContextAccessor;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -131,8 +142,18 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             return result;
         }
 
-        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var authorisedReports = new List<IReport>();
+
+            foreach (var report in _reports)
+            {
+                if (await IsAuthorised(report))
+                {
+                    authorisedReports.Add(report);
+                }
+            }
+
             IEnumerable<string> collectionsForYear = new List<string>();
 
             if (!_collectionsByYear.TryGetValue(collectionYear, out collectionsForYear))
@@ -158,6 +179,11 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                     }
                 }
             }
+        }
+
+        private async Task<bool> IsAuthorised(IReport report)
+        {
+            return (await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, report.Policy)).Succeeded;
         }
     }
 }
