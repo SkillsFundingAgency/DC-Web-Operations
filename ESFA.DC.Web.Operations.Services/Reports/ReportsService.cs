@@ -78,7 +78,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                 {
                     CollectionYear = collectionYear,
                     PeriodNumber = collectionPeriod,
-                    CollectionName = collectionName,
+                    CollectionName = collectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                     StorageReference = Constants.ReportsBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                     Status = Jobs.Model.Enums.JobStatusType.Ready,
                     JobId = 0
