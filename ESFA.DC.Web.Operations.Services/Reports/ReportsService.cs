@@ -131,7 +131,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             return result;
         }
 
-        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken = default(CancellationToken))
         {
             IEnumerable<string> collectionsForYear = new List<string>();
 

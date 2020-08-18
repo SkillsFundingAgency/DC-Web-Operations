@@ -28,7 +28,8 @@ export const getHandleBarsTemplate = function (name, root) {
 
 export let Templates = {
     ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
-    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html'
+    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
+    InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html'
 };
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
