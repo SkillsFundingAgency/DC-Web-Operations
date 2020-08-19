@@ -80,7 +80,9 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                     case ReportTypes.ActCountReport:
                         collectionName = Constants.ActCountReportCollectionName;
                         break;
-
+                    case ReportTypes.ILRProvidersReturningFirstTimePerDayReport:
+                        collectionName = Constants.ILRProvidersReturningFirstTimePerDayReport;
+                        break;
                     default:
                         return -1;
                 }
