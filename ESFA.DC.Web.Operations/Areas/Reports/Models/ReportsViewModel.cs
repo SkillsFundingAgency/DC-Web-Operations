@@ -12,10 +12,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Models
     {
         public string Collection { get; set; }
 
-        public int CurrentCollectionYear { get; set; }
-
-        public int CurrentCollectionPeriod { get; set; }
-
         public int CollectionYear { get; set; }
 
         public int CollectionPeriod { get; set; }

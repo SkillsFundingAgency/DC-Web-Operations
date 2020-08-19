@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -12,12 +10,9 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 {
@@ -30,8 +25,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         private readonly IPeriodService _periodService;
         private readonly ICollectionsService _collectionsService;
         private readonly IReportsService _reportsService;
-        private readonly IEnumerable<IReport> _reports;
-        private readonly IAuthorizationService _authorizationService;
 
         public ReportsController(
             ILogger logger,
@@ -39,9 +32,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             IPeriodService periodService,
             IReportsService reportsService,
             ICollectionsService collectionsService,
-            TelemetryClient telemetryClient,
-            IEnumerable<IReport> reports,
-            IAuthorizationService authorizationService)
+            TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _logger = logger;
@@ -49,41 +40,26 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             _periodService = periodService;
             _reportsService = reportsService;
             _collectionsService = collectionsService;
-            _reports = reports;
-            _authorizationService = authorizationService;
         }
 
         [HttpGet("")]
         [HttpGet("Index")]
-        [HttpPost("Index")]
         public async Task<IActionResult> Index(ReportsViewModel viewModel, CancellationToken cancellationToken)
         {
             var model = new ReportsViewModel();
 
             ViewBag.Error = TempData["error"];
 
-            var authorisedReports = new List<IReport>();
-
-            foreach (var report in _reports)
-            {
-                if (await IsAuthorised(report))
-                {
-                    authorisedReports.Add(report);
-                }
-            }
-
             if (viewModel != null && viewModel.CollectionYear != 0)
             {
-                model = await GenerateReportsViewModel(viewModel, authorisedReports, cancellationToken);
+                model = await GenerateReportsViewModel(viewModel, cancellationToken);
             }
             else
             {
                 var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
-                model.CurrentCollectionYear = currentYearPeriod.Year.GetValueOrDefault();
-                model.CurrentCollectionPeriod = currentYearPeriod.Period;
                 model.CollectionYear = currentYearPeriod.Year.GetValueOrDefault();
                 model.CollectionPeriod = currentYearPeriod.Period;
-                model = await GenerateReportsViewModel(model, authorisedReports, cancellationToken);
+                model = await GenerateReportsViewModel(model, cancellationToken);
             }
 
             return View(model);
@@ -171,11 +147,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                             TempData["Error"] = errorMessage;
 
                             // if job has failed or failed retry display the error on the index page
-                            return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
+                            return RedirectToAction("Index", "Reports", reportViewModel);
 
                         case JobStatusType.Completed:
                             // if job has completed, redirect to Index page to show all the reports
-                            return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
+                            return RedirectToAction("Index", "Reports", reportViewModel);
                     }
 
                     break;
@@ -193,17 +169,10 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             return View(model: reportViewModel);
         }
 
-        private async Task<bool> IsAuthorised(IReport report)
-        {
-            return (await _authorizationService.AuthorizeAsync(User, report.Policy)).Succeeded;
-        }
-
-        private async Task<ReportsViewModel> GenerateReportsViewModel(ReportsViewModel reportsViewModel, IEnumerable<IReport> authorisedReports, CancellationToken cancellationToken)
+        private async Task<ReportsViewModel> GenerateReportsViewModel(ReportsViewModel reportsViewModel, CancellationToken cancellationToken)
         {
             var model = new ReportsViewModel()
             {
-                CurrentCollectionPeriod = reportsViewModel.CurrentCollectionPeriod,
-                CurrentCollectionYear = reportsViewModel.CurrentCollectionYear,
                 CollectionYear = reportsViewModel.CollectionYear,
                 CollectionPeriod = reportsViewModel.CollectionPeriod,
                 ReportAction = ReportActions.GetReportDetails
@@ -211,13 +180,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 
             var getAllPeriodsTask = _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken);
             var collectionYearsTask = _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken);
-            var reportsTask = _reportsService.GetAvailableReportsAsync(model.CurrentCollectionYear, authorisedReports, cancellationToken);
 
-            await Task.WhenAll(getAllPeriodsTask, collectionYearsTask, reportsTask);
+            await Task.WhenAll(getAllPeriodsTask, collectionYearsTask);
 
             model.ReportPeriods = getAllPeriodsTask.Result;
             model.CollectionYears = collectionYearsTask.Result;
-            model.Reports = reportsTask.Result.Select(x => new SelectListItem(x.DisplayName, x.ReportName));
 
             return model;
         }
