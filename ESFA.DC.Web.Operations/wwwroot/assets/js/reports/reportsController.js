@@ -1,4 +1,6 @@
-﻿class ReportsController {
+﻿import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
+
+class ReportsController {
 
     constructor() {
         this._reportSelection = document.getElementById('reportSelection');
@@ -11,7 +13,6 @@
         this._id = 'autocomplete-overlay';
         this._spinner = document.getElementById('spinner');
         this._reportsLoadingSpinner = document.getElementById('reportsLoadingSpinner');
-        this._collectionYears = {};
         this._rulesByYear = {};
         this._yearSelected = null;
         this._periodSelected = null;
@@ -22,6 +23,7 @@
         this._reportsUrl = null;
         this._reportsDownloadUrl = null;
         this.ValidationDetailReport = "RuleValidationDetailReport";
+        this._internalReportsDownloadListDiv = document.getElementById("internalReportsDownloadList");
     }
 
     displayConnectionState(state) {
@@ -47,7 +49,7 @@
         this._yearSelected = document.getElementById('collectionYears').value;
         this._periodSelected = document.getElementById('collectionPeriod').value;
 
-        window.reportClient.getReports(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
+        window.reportClient.getReportDetails(this._yearSelected, this._periodSelected, this.populateReports.bind(this));
 
         if (this._reportSelection.value === this.ValidationDetailReport) {
             this._reportSelection.dispatchEvent(new Event('change'));
@@ -59,20 +61,15 @@
         this._ruleValidationDetailReportSection.style.visibility = 'hidden';
         this._createReportBtn.style.visibility = 'visible';
         this._generateValidationReportButton.disabled = true;
+        this.removeElementsByClass('autocomplete__wrapper');
     }
 
     showValidationRuleDetailReportSection() {
-        if (Object.keys(this._collectionYears).length === 0) {
-            this._yearSelected = this._yearSelection.value;
-            this._spinner.style.visibility = 'visible';
-            this._createReportBtn.style.visibility = 'hidden';
-            this.removeElementsByClass('autocomplete__wrapper');
-            if (this._rulesByYear[this._yearSelected] === undefined) {
-                window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
-            } else {
-                this.populateRules(this._rulesByYear[this._yearSelected]);
-            }
-        }
+        this._yearSelected = this._yearSelection.value;
+        this._spinner.style.visibility = 'visible';
+        this._createReportBtn.style.visibility = 'hidden';
+        this.removeElementsByClass('autocomplete__wrapper');
+        window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
         this._ruleValidationDetailReportSection.style.visibility = 'visible';
         this._ruleValidationDetailReportSection.style.display = 'block';
     }
@@ -87,21 +84,10 @@
     }
 
     yearsSelectionChange(e) {
-        var reportSelected = this._reportSelection.value;
         this._yearSelected = this._yearSelection.value;
         this._periodSelected = this._periodSelection.value;
-        if (reportSelected === this.ValidationDetailReport) {
-            this.removeElementsByClass('autocomplete__wrapper');
-            this._spinner.style.visibility = 'visible';
-            this._generateValidationReportButton.disabled = true;
-            if (this._rulesByYear[this._yearSelected] === undefined) {
-                window.reportClient.getValidationRules(this._yearSelected, this.populateRules.bind(this));
-            } else {
-                this.populateRules(this._rulesByYear[this._yearSelected]);
-            }
-        } else {
-            this.getReports();
-        }
+        this.getReports();
+        this.hideValidationRuleDetailReportSection();
     }
 
     periodSelectionChange(e) {
@@ -116,31 +102,20 @@
     }
 
     populateReports(reportDetails) {
-        var tableRef = document.getElementById('internalReportsTable').getElementsByTagName('tbody')[0];
+        var compileReportOptionsTemplate = getHandleBarsTemplate(Templates.ReportListOptions);
+        this._reportSelection.innerHTML = compileReportOptionsTemplate({ viewModel: reportDetails });
 
-        // remove the existing rows
-        var elmtTable = document.getElementById('internalReportsTableBody');
-        var tableRows = elmtTable.getElementsByTagName('tr');
-        var rowCount = tableRows.length;
-        for (var x = rowCount - 1; x >= 0; x--) {
-            elmtTable.removeChild(tableRows[x]);
-        }
+        var compiledReportDownloadListTemplate = getHandleBarsTemplate(Templates.InternalReportsDownloadList);
+        this._internalReportsDownloadListDiv.innerHTML = compiledReportDownloadListTemplate({ viewModel: reportDetails, yearSelected: this._yearSelected, periodSelected: this._periodSelected, downloadUrl: this._reportsDownloadUrl });
 
-        // display the rows
-        for (var i = 0; i < reportDetails.length; i++) {
-            var url = this._reportsDownloadUrl + '?collectionYear=' + this._yearSelected + '&collectionPeriod=' + this._periodSelected + '&fileName=' + reportDetails[i].url;
-            var encodedUrl = encodeURI(url);
-            var reportUrl = '<a href=' + encodedUrl + '> ' + reportDetails[i].url + '</a>';
-
-            var htmlContent =
-                '<tr class="govuk-table__row internalreports"><td class="govuk-table__cell" >' + reportDetails[i].displayName + '</td ><td class="govuk-table__cell">' + reportUrl + '</td></tr >';
-            var newRow = tableRef.insertRow(tableRef.rows.length);
-            newRow.innerHTML = htmlContent;
+        if (this._reportSelection.value === this.ValidationDetailReport) {
+            this._reportSelection.dispatchEvent(new Event('change'));
         }
         this._reportsLoadingSpinner.style.visibility = 'hidden';
     }
 
     populateRules(rules) {
+        this.removeElementsByClass('autocomplete__wrapper');
         this._rulesByYear[this._yearSelected] = rules;
         accessibleAutocomplete({
             element: this._element,
@@ -220,10 +195,8 @@
     changePeriod() {
         var yearValue = this._yearSelection.value;
         var periodValue = this._periodSelection.value;
-        var reportValue = this._reportSelection.value;
         window.location.href = this._reportsUrl + '?collectionYear=' + yearValue + '&collectionPeriod=' + periodValue;
     }
-
 }
 
 export default ReportsController
