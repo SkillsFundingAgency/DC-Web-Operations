@@ -150,13 +150,13 @@ class DashBoardController {
         }
     }
 
-    updateDonut(donut, circle, lable, value, percentage, percentageRange) {
+    updateDonut(donut, circle, label, value, percentage, percentageRange) {
         if (donut.textContent !== value.toString()) {
             donut.textContent = value;
             circle.setAttribute("stroke-dasharray", `${percentage},100`);
             circle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
-            lable.textContent = getMessageForPercentage(percentage, percentageRange);
         }
+        label.textContent = getMessageForPercentage(percentage, percentageRange);
     }
 
 
