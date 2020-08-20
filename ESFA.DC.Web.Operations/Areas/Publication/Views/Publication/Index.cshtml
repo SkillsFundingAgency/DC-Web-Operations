@@ -1,14 +1,14 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
 @{
-    ViewData["Title"] = "FRM Choice";
+    ViewData["Title"] = "Publication Choice";
     ViewData[ViewDataConstants.BackLink] = "/";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-x1">
-            Would you like to publish or unpublish FRM reports?
+            Would you like to publish or unpublish reports?
         </h1>
         <div class="govuk-form-group">
             <label class="govuk-label" for="name"></label>
@@ -16,11 +16,11 @@
             {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">
-                        <input asp-for="IsPublicationReportChoice" value="false" class="govuk-radios__input" type="radio" />
+                        <input asp-for="IsFrmReportChoice" value="false" class="govuk-radios__input" type="radio" />
                         <label class="govuk-label govuk-radios__label">Unpublish</label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input asp-for="IsPublicationReportChoice" value="true" class="govuk-radios__input" type="radio" />
+                        <input asp-for="IsFrmReportChoice" value="true" class="govuk-radios__input" type="radio" />
                         <label class="govuk-label govuk-radios__label">Publish</label>
                     </div>
                 </div>

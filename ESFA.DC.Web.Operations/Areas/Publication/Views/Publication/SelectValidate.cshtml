@@ -1,33 +1,37 @@
 ﻿@model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
+@using ESFA.DC.CollectionsManagement.Models
 @using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Models.Collection
 
 @{
-    ViewData["Title"] = "FRM Validation";
+    ViewData["Title"] = "Publication Validation";
+    var collections = (IEnumerable<string>)ViewData[ViewDataConstants.Collections];
 }
-<h1 class="govuk-heading-x1">Enter FRM Details</h1>
+<h1 class="govuk-heading-x1">Enter Publication Details</h1>
 
 @using (Html.BeginForm("ValidateFrmAsync","Publication"))
 {
     <label class="govuk-label" for="PublicationYearPeriod">
-        Year code of Reports
+        Select Publication type
     </label>
-    @Html.TextBoxFor(model => model.FrmYearPeriod, new { @class = "govuk-input govuk-input--width-4", id = "frm", @type = "text" })
+    @Html.DropDownListFor(model => model.CollectionName,new SelectList(collections), new { @class = "govuk-select govuk-input--width-10 form-control", id = "collectionName"})
     <span class="govuk-error-message">
-        <span asp-validation-for="PublicationYearPeriod"></span>
+        <span asp-validation-for="CollectionName"></span>
     </span>
+ 
     <label class="govuk-label">
         Start date
     </label>
-    @Html.TextBoxFor(model => model.FrmDate, "{0:yyyy-MM-dd}", new { @class = "govuk-input govuk-!-width-one-third", id = "FrmDate", @type = "date", placeholder = "DD/MM/YYYY" })
+    @Html.TextBoxFor(model => model.PublicationDate, "{0:yyyy-MM-dd}", new { @class = "govuk-input govuk-!-width-one-third", id = "PublicationDate", @type = "date", placeholder = "DD/MM/YYYY" })
     <span class="govuk-error-message">
         <span asp-validation-for="PublicationDate"></span>
     </span>
     <label class="govuk-label" for="PublicationPublishPeriod">
         Enter the Period you wish to publish
     </label>
-    @Html.TextBoxFor(model => model.FrmPeriodNumber, new { @class = "govuk-input govuk-input--width-2", id = "frmPeriodNumber", @type = "text" })
+    @Html.TextBoxFor(model => model.PeriodNumber, new { @class = "govuk-input govuk-input--width-2", id = "frmPeriodNumber", @type = "text" })
     <span class="govuk-error-message">
-        <span asp-validation-for="PublicationPeriodNumber"></span>
+        <span asp-validation-for="PeriodNumber"></span>
     </span>
     <input id="FrmJobType" name="PublicationJobType" type="hidden" value="Validation" />
     <br />

@@ -9,11 +9,11 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Models
     {
         public bool IsFrmReportChoice { get; set; }
 
-        [RegularExpression("[0-9]{4}", ErrorMessage = "The year code must be 4 numeric digits")]
-        [Required(ErrorMessage = "A year code is required")]
-        public int FrmYearPeriod { get; set; }
+        //[RegularExpression("[0-9]{4}", ErrorMessage = "The year code must be 4 numeric digits")]
+        //[Required(ErrorMessage = "A year code is required")]
+        public int PublicationYearPeriod { get; set; }
 
-        public DateTime FrmDate { get; set; }
+        public DateTime PublicationDate { get; set; }
 
         public string FrmPeriod { get; set; }
 
@@ -25,7 +25,10 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Models
 
         [Range(1, 14, ErrorMessage = "The period must be 2 numeric digits and be equal to a valid period")]
         [Required(ErrorMessage = "A period number is required")]
-        public int FrmPeriodNumber { get; set; }
+        public int PeriodNumber { get; set; }
+
+        [Required(ErrorMessage = "Collection name is required")]
+        public string CollectionName { get; set; }
 
         public IEnumerable<PeriodEndCalendarYearAndPeriodModel> PublishedFrm { get; set; }
     }

@@ -136,7 +136,7 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
+            builder.RegisterType<ReportsPublicationService>().As<IReportsPublicationService>().WithAttributeFiltering().InstancePerLifetimeScope();
 
             builder.RegisterType<AuditService>().As<IAuditService>().InstancePerLifetimeScope();
             builder.RegisterType<AuditRepository>().As<IAuditRepository>().InstancePerLifetimeScope();

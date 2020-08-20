@@ -6,15 +6,15 @@
     using System.Threading.Tasks;
     using ESFA.DC.PeriodEnd.Models.Dtos;
 
-    public interface IFrmService
+    public interface IReportsPublicationService
     {
-        Task<long> RunValidationAsync(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> RunValidationAsync(string collectionName, string folderKey, int periodNumber, string userName, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<long> RunPublishAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<int> GetFrmStatusAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<DateTime?> GetFileSubmittedDateAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Models.Publication.JobDetails> GetFileSubmittedDetailsAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
 

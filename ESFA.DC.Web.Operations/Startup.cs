@@ -137,7 +137,7 @@ namespace ESFA.DC.Web.Operations
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 
-            services.AddHttpClient<IFrmService, FrmService>()
+            services.AddHttpClient<IReportsPublicationService, ReportsPublicationService>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
                 .AddPolicyHandler(GetRetryPolicy());
 

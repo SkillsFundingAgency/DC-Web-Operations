@@ -271,7 +271,7 @@
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.39-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.39-beta0001" />
     <PackageReference Include="ESFA.DC.JobQueueManager" Version="0.1.73-beta0001" />
-    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.90-beta0001" />
+    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.108" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Operations.Reports.Model" Version="0.0.22" />
