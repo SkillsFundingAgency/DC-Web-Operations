@@ -3,11 +3,20 @@
   "defaultProvider": "unpkg",
   "libraries": [
     {
-      "library": "@aspnet/signalr@1.0.3",
+      "provider": "filesystem",
+      "library": "node_modules/@aspnet/signalr",
       "destination": "wwwroot/lib/signalr/",
       "files": [
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
+      ]
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/handlebars/",
+      "destination": "wwwroot/lib/handlebars/",
+      "files": [
+        "dist/handlebars.js"
       ]
     }
   ]
