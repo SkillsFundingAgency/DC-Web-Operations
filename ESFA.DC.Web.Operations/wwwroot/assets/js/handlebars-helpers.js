@@ -45,12 +45,12 @@ Handlebars.registerHelper('encodedReportUrl', function (context, options) {
     var collectionYear = options.hash.yearSelected,
         collectionPeriod = options.hash.periodSelected,
         reportsDownloadUrl = options.hash.downloadUrl,
+        reportDisplayName = options.hash.reportDisplayName,
         filename = options.hash.url;
 
-    var url = reportsDownloadUrl + '?collectionYear=' + collectionYear + '&collectionPeriod=' + collectionPeriod + '&fileName=' + filename;
+    var url = reportsDownloadUrl + '?collectionYear=' + collectionYear + '&collectionPeriod=' + collectionPeriod + '&fileName=' + filename + '&reportDisplayName=' + reportDisplayName;
     var encodedUrl = encodeURI(url);
 
-    var reportUrl = '<a href=' + encodedUrl + '> ' + filename + '</a>';
     return encodedUrl;
 });
 

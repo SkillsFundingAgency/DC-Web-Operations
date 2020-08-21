@@ -1,5 +1,7 @@
-﻿using ESFA.DC.Web.Operations.Models.Reports;
+﻿using ESFA.DC.Web.Operations.Models.Enums;
+using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Security.Policies;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Reports
 {
@@ -9,8 +11,12 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "ACT Count Report";
 
-        public string CollectionName => "PE-ACT-Count-Report{0}";
+        public string CollectionName => Constants.ActCountReportCollectionName;
+
+        public string ContainerName => Constants.ReportsBlobContainerName;
 
         public string Policy => AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy;
+
+        public ReportType ReportType => ReportType.PeriodEnd;
     }
 }

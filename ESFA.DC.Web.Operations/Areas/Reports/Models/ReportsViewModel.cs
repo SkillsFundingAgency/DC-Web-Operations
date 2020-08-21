@@ -18,7 +18,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Models
 
         public long? JobId { get; set; }
 
-        public string ReportType { get; set; }
+        public string ReportName { get; set; }
 
         public string ReportAction { get; set; }
 

@@ -189,7 +189,7 @@ class ReportsController {
         var reportValue = this._reportSelection.value;
         var yearValue = this._yearSelection.value;
         var periodValue = this._periodSelection.value;
-        window.location.href = this._reportGenerationUrl + '?reportType=' + reportValue + '&Year=' + yearValue + '&Period=' + periodValue;
+        window.location.href = this._reportGenerationUrl + '?reportName=' + reportValue + '&Year=' + yearValue + '&Period=' + periodValue;
     }
 
     changePeriod() {

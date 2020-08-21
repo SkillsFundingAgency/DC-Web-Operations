@@ -36,7 +36,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         public async Task<ReportsModel> GetReportDetails(int collectionYear, int collectionPeriod)
         {
             var reportDetails = await _reportsService.GetAllReportDetails(collectionYear, collectionPeriod);
-            var reportUrlDetails = reportDetails.Where(x => !string.IsNullOrEmpty(x.Url));
+            var operationsReportsDetails = await _reportsService.GetOperationsReportsDetails(collectionYear, collectionPeriod);
+
+            var reportDetailsList = reportDetails.ToList();
+            reportDetailsList.AddRange(operationsReportsDetails);
+            var reportUrlDetails = reportDetailsList.Where(x => !string.IsNullOrEmpty(x.Url));
 
             var availableReports = await _reportsService.GetAvailableReportsAsync(collectionYear);
             var model = new ReportsModel
