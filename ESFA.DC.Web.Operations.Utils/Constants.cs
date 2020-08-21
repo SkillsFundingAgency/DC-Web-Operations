@@ -22,12 +22,12 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string Action_PeriodClosedButton = "PeriodClosedState";
         public const string Action_UploadFileButton = "UploaddState";
 
-        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report1920";
-        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report1920";
-        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report1920";
-        public const string PeriodEndDataExtractReportCollectionName = @"PE-DataExtract-Report1920";
-        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport1920";
-        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report1920";
+        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report" + CollectionYearToken;
+        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report" + CollectionYearToken;
+        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report" + CollectionYearToken;
+        public const string PeriodEndDataExtractReportCollectionName = @"PE-DataExtract-Report" + CollectionYearToken;
+        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport" + CollectionYearToken;
+        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + CollectionYearToken;
 
         public const string FrmReportCollectionName = @"FRM-Reports1920";
 
