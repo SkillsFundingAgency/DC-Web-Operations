@@ -1,28 +1,26 @@
-﻿using Autofac.Features.Indexed;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using Autofac.Features.Indexed;
+using Castle.Components.DictionaryAdapter;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.JobQueueManager.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models.Dtos;
+using ESFA.DC.Web.Operations.Areas.Publication.Controllers;
+using ESFA.DC.Web.Operations.Areas.Publication.Models;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Publication;
 using FluentAssertions;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.Web.Operations.Areas.Publication.Controllers;
-using ESFA.DC.Web.Operations.Areas.Publication.Models;
-using ESFA.DC.Web.Operations.Models.Publication;
 using Xunit;
 
-namespace ESFA.DC.Web.Operations.Tests.Frm
+namespace ESFA.DC.Web.Operations.Tests.Publication
 {
     public class PublicationControllerTests
     {
@@ -53,15 +51,14 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         public async void TestValidateAsync()
         {
 
-            var model = SetupModel(1920, 1);
+            var model = SetupValidationModel(1920, 1);
             var controller = SetupController();
 
             var result = await controller.ValidateFrmAsync(model);
             var redirectResult = result as RedirectToActionResult;
 
             redirectResult.ActionName.Should().Be("HoldingPageAsync");
-            redirectResult.RouteValues["FrmJobType"].Should().Be(Utils.Constants.PublicationValidationJobKey);
-            redirectResult.RouteValues["FrmJobId"].Should().Be(100);
+            redirectResult.RouteValues["JobId"].Should().Be(100);
         }
 
         [Fact]
@@ -90,13 +87,13 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         public async void TestHoldingPageAsyncWaiting()
         {
             var model = SetupModel(1920, 1, 2);
-            var controller = SetupControllerWithLogger();
+            var controller = SetupControllerWithLogger(10,1920);
 
             var result = await controller.HoldingPageAsync(model);
             var viewResult = result as ViewResult;
-            var frmModel = viewResult.Model as PublicationReportModel;
-            frmModel.FrmCSVValidDate.Should().Be(new DateTime(2000, 2, 3));
-            frmModel.FrmPeriod.Should().Be("R01");
+            var frmModel = viewResult.Model as JobDetails;
+            frmModel.CollectionYear.Should().Be(1920);
+            frmModel.PeriodNumber.Should().Be(10);
             viewResult.ViewName.Should().Be("ValidateSuccess");
         }
 
@@ -140,18 +137,18 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             var model = SetupModel(1920, 1);
             var controller = SetupController();
 
-            var result = await controller.PublishFrmAsync(model);
+            var result = await controller.PublishAsync(model);
             var redirectResult = result as RedirectToActionResult;
 
             redirectResult.ActionName.Should().Be("HoldingPageAsync");
-            redirectResult.RouteValues["FrmJobType"].Should().Be(Utils.Constants.FrmPublishKey);
-            redirectResult.RouteValues["FrmJobId"].Should().Be(100);
+            redirectResult.RouteValues["CollectionYear"].Should().Be(1920);
+            redirectResult.RouteValues["CollectionName"].Should().Be("frm1920");
         }
 
         [Fact]
         public async void TestReportChoiceSelectionAsyncFrmReportChoiceTrue()
         {
-            var model = SetupModel(1920, 1);
+            var model = SetupValidationModel(1920, 1);
             model.IsFrmReportChoice = true;
             var controller = SetupController();
 
@@ -165,7 +162,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         [Fact]
         public async void TestReportChoiceSelectionAsyncNoData()
         {
-            var model = SetupModel(1920, 1);
+            var model = SetupValidationModel(1920, 1);
             model.IsFrmReportChoice = false;
             var controller = SetupControllerNoDataChoiceSelection();
 
@@ -179,7 +176,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         [Fact]
         public async void TestReportChoiceSelectionAsyncOneYear()
         {
-            var model = SetupModel(1920, 1);
+            var model = SetupValidationModel(1920, 1);
             model.IsFrmReportChoice = false;
             var controller = SetupControllerOneYearChoiceSelection();
 
@@ -193,7 +190,7 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
         [Fact]
         public async void TestReportChoiceSelectionAsyncTwoYears()
         {
-            var model = SetupModel(1920, 1);
+            var model = SetupValidationModel(1920, 1);
             model.IsFrmReportChoice = false;
             var controller = SetupControllerMultipleYearsChoiceSelection();
 
@@ -237,7 +234,20 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             viewResult.ViewName.Should().Be("ErrorView");
         }
 
-        private PublicationReportModel SetupModel(int yearPeriod, int periodNumber, int frmJobId = 0)
+        private JobDetails SetupModel(int yearPeriod, int periodNumber, int frmJobId = 0)
+        {
+            return new JobDetails
+            {
+                PeriodNumber = periodNumber,
+                CollectionName = "frm1920",
+                StorageReference = "frm1920-files",
+                DateTimeSubmitted = new DateTime(2020, 10, 10),
+                CollectionYear = yearPeriod,
+                JobId = frmJobId,
+            };
+        }
+
+        private PublicationReportModel SetupValidationModel(int yearPeriod, int periodNumber, int frmJobId = 0)
         {
             return new PublicationReportModel
             {
@@ -250,15 +260,16 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
 
         private PublicationController SetupController()
         {
+            var collectionServiceMock = new Mock<ICollectionsService>();
             var frmServiceMock = new Mock<IReportsPublicationService>();
             frmServiceMock.Setup(x => x.RunValidationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(100);
             frmServiceMock.Setup(x => x.RunPublishAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(100);
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
-            var controller = new PublicationController(null, frmServiceMock.Object, null, null, null);
+            var controller = new PublicationController(null, frmServiceMock.Object, null, collectionServiceMock.Object, null);
             return controller;
         }
 
-        private PublicationController SetupControllerWithLogger()
+        private PublicationController SetupControllerWithLogger(int periodNumber = 0, int collectionYear = 0 )
         {
             var frmServiceMock = new Mock<IReportsPublicationService>();
             frmServiceMock.Setup(x => x.RunValidationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(100);
@@ -267,7 +278,13 @@ namespace ESFA.DC.Web.Operations.Tests.Frm
             frmServiceMock.Setup(x => x.GetFrmStatusAsync(2, It.IsAny<CancellationToken>())).ReturnsAsync(8);
             frmServiceMock.Setup(x => x.GetFrmStatusAsync(3, It.IsAny<CancellationToken>())).ReturnsAsync(4);
             frmServiceMock.Setup(x => x.GetFrmStatusAsync(4, It.IsAny<CancellationToken>())).ReturnsAsync(3);
-            frmServiceMock.Setup(x => x.GetFileSubmittedDetailsAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync( new JobDetails() {DateTimeSubmitted = new DateTime(2000, 2, 3)});
+            frmServiceMock.Setup(x => x.GetFileSubmittedDetailsAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync( 
+                new JobDetails()
+                {
+                    DateTimeSubmitted = new DateTime(2000, 2, 3),
+                    CollectionYear = collectionYear,
+                    PeriodNumber = periodNumber,
+                });
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var logger = new Mock<ILogger>();
             var controller = new PublicationController(logger.Object, frmServiceMock.Object, null, null, null);

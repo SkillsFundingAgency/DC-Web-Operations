@@ -37,9 +37,6 @@ namespace ESFA.DC.Web.Operations.Utils
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
 
-        public static readonly string PublicationValidationJobKey = "Validation";
-        public static readonly string FrmPublishKey = "Publish";
-
         public static readonly string DASSubmission = @"PE-DAS-Submission";
 
         public static readonly string IlrPeriodPrefix = "R";
