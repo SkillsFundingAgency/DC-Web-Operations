@@ -109,8 +109,6 @@ namespace ESFA.DC.Web.Operations.Services.Frm
 
         public async Task<long> RunPublishAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string collectionName = Constants.FrmReportCollectionName;
-
             JobStatusDto statusDto = new JobStatusDto()
             {
                 JobId = jobId,

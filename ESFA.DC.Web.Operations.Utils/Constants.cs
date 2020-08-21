@@ -29,8 +29,6 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport1920";
         public const string ActCountReportCollectionName = @"PE-ACT-Count-Report1920";
 
-        public const string FrmReportCollectionName = @"FRM-Reports1920";
-
         public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
 
         public const string ALLFStorageContainerName = "allf-files";

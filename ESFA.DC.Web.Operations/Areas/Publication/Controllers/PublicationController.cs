@@ -15,6 +15,7 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Publication;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
@@ -59,30 +60,32 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> HoldingPageAsync(PublicationReportModel model)
+        public async Task<IActionResult> HoldingPageAsync(JobDetails model)
         {
-            var frmStatus = (JobStatusType)await _reportsPublicationService.GetFrmStatusAsync(model.FrmJobId);
+            var frmStatus = (JobStatusType)await _reportsPublicationService.GetFrmStatusAsync(model.JobId);
             string errorMessage;
             switch (frmStatus)
             {
                 case JobStatusType.Failed:
                 case JobStatusType.FailedRetry:
-                    errorMessage = $"The job status was '{frmStatus}' for FRM job with ID: '{model.FrmJobId}'";
+                    errorMessage = $"The job status was '{frmStatus}' for publication job with ID: '{model.JobId}'";
                     _logger.LogError(errorMessage);
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
+
                 case JobStatusType.Waiting:
-                    var details = await _reportsPublicationService.GetFileSubmittedDetailsAsync(model.FrmJobId);
+                    var details = await _reportsPublicationService.GetFileSubmittedDetailsAsync(model.JobId);
                     return View("ValidateSuccess", details);
+
                 case JobStatusType.Completed:
 
                     try
                     {
-                        await _reportsPublicationService.PublishSldAsync(model.PublicationYearPeriod, model.PeriodNumber);
+                        await _reportsPublicationService.PublishSldAsync(model.CollectionYear, model.PeriodNumber);
                     }
                     catch (Exception ex)
                     {
-                        errorMessage = $"The FRM Reports were not able to be published to SLD";
+                        errorMessage = $"The publication Reports were not able to be published to SLD";
                         _logger.LogError(errorMessage, ex);
                         TempData["Error"] = errorMessage;
                         return View("ErrorView");
@@ -99,19 +102,23 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateFrmAsync(PublicationReportModel model)
         {
-            model.FrmJobType = Utils.Constants.PublicationValidationJobKey;
             var folderKey = model.PublicationDate.ToString("yyyy-MM-dd");
             var userName = User.Name();
-            model.FrmJobId = await _reportsPublicationService.RunValidationAsync(model.CollectionName, folderKey, model.PeriodNumber, userName);
+            var jobId = await _reportsPublicationService.RunValidationAsync(model.CollectionName, folderKey, model.PeriodNumber, userName);
 
-            return RedirectToAction("HoldingPageAsync", model);
+            var jobDetails = new JobDetails()
+            {
+                JobId = jobId,
+                PeriodNumber = model.PeriodNumber,
+            };
+
+            return RedirectToAction("HoldingPageAsync", jobDetails);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PublishFrmAsync(PublicationReportModel model)
+        public async Task<IActionResult> PublishAsync(JobDetails model)
         {
-            model.FrmJobType = Utils.Constants.FrmPublishKey;
-            model.FrmJobId = await _reportsPublicationService.RunPublishAsync(model.FrmJobId);
+            await _reportsPublicationService.RunPublishAsync(model.JobId);
             return RedirectToAction("HoldingPageAsync", model);
         }
 
