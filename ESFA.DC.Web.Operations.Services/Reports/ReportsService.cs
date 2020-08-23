@@ -69,11 +69,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                         collectionName = Constants.PeriodEndMetricsReportCollectionName;
                         break;
 
-                    case ReportTypes.PeriodEndDataExtractReport:
-                        collectionName = Constants.PeriodEndDataExtractReportCollectionName;
-                        break;
-
-                    case ReportTypes.InternalDataMatchReport:
+                   case ReportTypes.InternalDataMatchReport:
                         collectionName = Constants.InternalDataMatchReportCollectionName;
                         break;
 
