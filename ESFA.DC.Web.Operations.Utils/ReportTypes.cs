@@ -12,6 +12,7 @@
         public const string FundingClaimsProviderDataReportName = "FundingClaimsProviderDataRD-ValidationReport";
         public const string ProviderPostcodeSpecialistResourcesReportName = "ProviderPostcodeSpecialistResourcesRD-ValidationReport";
         public const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
+        public const string DevolvedContractsReportName = "DevolvedContractsRD-ValidationReport";
         public const string ValidationMessagesReportName = "ValidationMessagesRD-ValidationReport";
 
         public const string DevolvedPostcodesFullNameReportName = "MCAGLA_FullName_RD-ValidationReport";

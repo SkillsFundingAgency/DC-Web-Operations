@@ -1,40 +1,44 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
 @model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
+
+
 @{
     ViewData["Title"] = "Index";
 }
 
-<div class="govuk-breadcrumbs">
-    <ol class="govuk-breadcrumbs__list">
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="/">Home</a>
-        </li>
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
-        </li>
-        <li class="govuk-breadcrumbs__list-item" aria-current="page">Condition of funding removal</li>
-    </ol>
-</div>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Condition of funding removal</h1>
-        <br />
+<div class="govuk-width-container">
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="/">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">@Model.ReferenceDataCollectionName</li>
+        </ol>
     </div>
 </div>
 
-<br />
-<br />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="ConditionOfFundingRemoval" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
+        <h1 class="govuk-heading-xl heading-bottom-margin">@Model.CollectionDisplayName</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form asp-controller="ReferenceData" asp-action="Post" method="post" enctype="multipart/form-data">
+            <input asp-for="ReferenceDataCollectionName" type="hidden" />
+            <input asp-for="HubName" type="hidden" />
+            <input asp-for="CollectionDisplayName" type="hidden" />
 
             @Html.AntiForgeryToken()
 
             <h1 class="govuk-heading-m">
-                Choose condition of funding removal reference data file to upload
+                Choose @Model.CollectionDisplayName reference data file to upload
             </h1>
 
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
@@ -42,7 +46,7 @@
                     Upload a file
                 </label>
                 <div error-field-name="@ErrorMessageKeys.Submission_FileFieldKey"></div>
-                <input class="govuk-file-upload" name="file" id="file" type="file" accept=".csv">
+                <input class="govuk-file-upload" name="file" id="file" type="file" accept="@Model.FileExtension">
             </div>
 
             <button class="govuk-button" id="uploadFile">
@@ -54,7 +58,6 @@
 
 <div id="filesList">
 </div>
-
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -76,11 +79,11 @@
         (function() {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-            const hub = new Hub('conditionOfFundingRemovalHub', controller.displayConnectionState);
+            const hub = new Hub('@Model.HubName', controller.displayConnectionState);
 
-            controller.registerHandlers(hub, 'ConditionOfFundingRemoval');
+            controller.registerHandlers(hub, '@Model.ReferenceDataCollectionName');
             hub.startHub();
-            controller.renderFiles('ConditionOfFundingRemoval', model);
+            controller.renderFiles('@Model.ReferenceDataCollectionName', model);
         })();
     </script>
 }
