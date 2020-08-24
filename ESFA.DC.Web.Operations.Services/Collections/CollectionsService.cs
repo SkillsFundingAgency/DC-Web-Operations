@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -22,6 +23,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM", "OP" };
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
+        private IEnumerable<ICollection> _referenceDataCollections;
 
         public CollectionsService(
             IRouteFactory routeFactory,
@@ -29,12 +31,14 @@ namespace ESFA.DC.Web.Operations.Services.Collections
             ApiSettings apiSettings,
             HttpClient httpClient,
             IDateTimeProvider dateTimeProvider,
-            ILogger logger)
+            ILogger logger,
+            IEnumerable<ICollection> referenceDataCollections)
             : base(routeFactory, jsonSerializationService, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
             _logger = logger;
+            _referenceDataCollections = referenceDataCollections;
         }
 
         public async Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken = default(CancellationToken))
@@ -187,6 +191,23 @@ namespace ESFA.DC.Web.Operations.Services.Collections
             };
 
             return (await SendDataAsyncRawResponse($"{_baseUrl}/api/returnperiod/update", returnPeriodDto, cancellationToken)).IsSuccess;
+        }
+
+        public ICollection GetReferenceDataCollection(string collectionName)
+        {
+            if (string.IsNullOrEmpty(collectionName))
+            {
+                throw new ArgumentNullException(nameof(collectionName));
+            }
+
+            var collection = _referenceDataCollections.SingleOrDefault(s => s.CollectionName == collectionName);
+
+            if (collection == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(collectionName));
+            }
+
+            return collection;
         }
     }
 }

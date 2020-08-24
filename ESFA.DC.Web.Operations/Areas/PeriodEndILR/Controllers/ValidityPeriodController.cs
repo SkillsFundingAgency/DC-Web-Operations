@@ -35,15 +35,14 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         {
             var period = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
 
-            var currentYear = period.Year ?? 0;
-            var years = await _periodService.GetValidityYearsAsync(currentYear, CollectionTypes.ILR, null, cancellationToken);
+            var years = await _periodService.GetValidityYearsAsync(CollectionTypes.ILR, null, cancellationToken);
 
             var stateString = await _periodEndService.GetPrepStateAsync(period.Year, period.Period, CollectionTypes.ILR, cancellationToken);
             var state = _stateService.GetPrepState(stateString);
 
             var model = new ValidityPeriodViewModel
             {
-                Year = currentYear,
+                Year = period.Year ?? 0,
                 Period = period.Period,
                 PeriodEndInProgress = state.State.PeriodEndStarted && !state.State.PeriodEndFinished,
                 AllYears = years

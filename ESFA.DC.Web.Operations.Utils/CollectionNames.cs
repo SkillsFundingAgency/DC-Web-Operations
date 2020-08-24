@@ -29,5 +29,7 @@
         public const string DevolvedPostcodesOnsOverride = "DevolvedPostcodes-OnsOverride";
 
         public const string OnsPostcodes = "OnsPostcodes";
+
+        public const string DevolvedContracts = "DevolvedContracts";
     }
 }
