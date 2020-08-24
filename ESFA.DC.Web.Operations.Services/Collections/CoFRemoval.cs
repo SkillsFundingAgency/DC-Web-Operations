@@ -1,4 +1,5 @@
 ﻿using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
 {
@@ -12,6 +13,6 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public string HubName => "conditionOfFundingRemovalHub";
 
-        public string FileFormat => ".csv";
+        public string FileFormat => FileNameExtensionConsts.CSV;
     }
 }

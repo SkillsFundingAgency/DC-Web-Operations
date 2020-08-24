@@ -13,6 +13,6 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public string HubName => "devolvedContractsHub";
 
-        public string FileFormat => ".csv";
+        public string FileFormat => FileNameExtensionConsts.CSV;
     }
 }
