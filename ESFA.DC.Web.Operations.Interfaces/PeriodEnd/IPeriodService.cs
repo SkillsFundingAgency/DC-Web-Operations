@@ -17,7 +17,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken);
 
         Task<List<int>> GetValidityYearsAsync(
-            int collectionYear,
             string collectionType,
             string collectionName,
             CancellationToken cancellationToken);
