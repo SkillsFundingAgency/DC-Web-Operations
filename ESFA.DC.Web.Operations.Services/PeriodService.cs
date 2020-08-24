@@ -84,7 +84,6 @@ namespace ESFA.DC.Web.Operations.Services
         }
 
         public async Task<List<int>> GetValidityYearsAsync(
-            int collectionYear,
             string collectionType,
             string collectionName,
             CancellationToken cancellationToken)
@@ -99,7 +98,7 @@ namespace ESFA.DC.Web.Operations.Services
             }
 
             return periods
-                .Where(p => p.CollectionYear >= collectionYear)
+                .Where(p => p.EndDateTimeUtc >= DateTime.UtcNow)
                 .OrderBy(p => p.CollectionYear)
                 .Select(p => p.CollectionYear)
                 .Distinct()
