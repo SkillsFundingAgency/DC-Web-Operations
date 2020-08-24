@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Serialization.Interfaces;
@@ -19,6 +20,8 @@ namespace ESFA.DC.Web.Operations.Services
         private const string NoPeriodError = "No return period found in PeriodService.";
 
         private readonly ILogger _logger;
+        private readonly IDateTimeProvider _dateTimeProvider;
+
         private readonly string _baseUrl;
 
         public PeriodService(
@@ -26,10 +29,12 @@ namespace ESFA.DC.Web.Operations.Services
             ApiSettings apiSettings,
             IJsonSerializationService jsonSerializationService,
             HttpClient httpClient,
-            ILogger logger)
+            ILogger logger,
+            IDateTimeProvider dateTimeProvider)
             : base(routeFactory, jsonSerializationService, httpClient)
         {
             _logger = logger;
+            _dateTimeProvider = dateTimeProvider;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -98,7 +103,7 @@ namespace ESFA.DC.Web.Operations.Services
             }
 
             return periods
-                .Where(p => p.EndDateTimeUtc >= DateTime.UtcNow)
+                .Where(p => p.EndDateTimeUtc >= _dateTimeProvider.GetNowUtc())
                 .OrderBy(p => p.CollectionYear)
                 .Select(p => p.CollectionYear)
                 .Distinct()
