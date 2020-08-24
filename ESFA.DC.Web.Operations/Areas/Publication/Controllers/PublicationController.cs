@@ -81,7 +81,7 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
 
                     try
                     {
-                        await _reportsPublicationService.PublishSldAsync(model.CollectionYear, model.PeriodNumber);
+                        await _reportsPublicationService.PublishSldAsync(model.JobId);
                     }
                     catch (Exception ex)
                     {

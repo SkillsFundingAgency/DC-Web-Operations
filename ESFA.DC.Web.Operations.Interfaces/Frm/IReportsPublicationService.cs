@@ -16,7 +16,7 @@
 
         Task<Models.Publication.JobDetails> GetFileSubmittedDetailsAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken));
+        Task PublishSldAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync();
 

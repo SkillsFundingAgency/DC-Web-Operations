@@ -26,7 +26,6 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly HttpClient _httpClient;
         private readonly string _jobApiUrl;
-        private readonly string _periodEndJobApiUrl;
         private readonly string _baseJobApiUrl;
 
         public ReportsPublicationService(
@@ -41,7 +40,6 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
-            _periodEndJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end/frm-reports";
             _dateTimeProvider = dateTimeProvider;
             _httpClient = httpClient;
         }
@@ -125,9 +123,9 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             return jobId;
         }
 
-        public async Task PublishSldAsync(int collectionYear, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishSldAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string url = $"{_periodEndJobApiUrl}/{collectionYear}/{periodNumber}/publish";
+            string url = $"{_jobApiUrl}/publication/mark-as-published/{jobId}";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
@@ -135,7 +133,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         public async Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             string path = $"{yearPeriod}/{periodNumber}";
-            string url = $"{_periodEndJobApiUrl}/{path}/unpublish";
+            string url = $"{_jobApiUrl}/publication/mark-as-unpublished/{path}";
             HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
@@ -148,7 +146,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
 
         public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
         {
-            string url = $"{_periodEndJobApiUrl}/publication-reports";
+            string url = $"{_jobApiUrl}/publication/published-periods";
             var response = await _httpClient.GetStringAsync(url);
             var unsortedJson = _jsonSerializationService.Deserialize<List<PeriodEndCalendarYearAndPeriodModel>>(response);
             return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);

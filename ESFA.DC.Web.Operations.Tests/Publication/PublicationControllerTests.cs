@@ -359,7 +359,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
         private PublicationController SetupControllerError()
         {
             var frmServiceMock = new Mock<IReportsPublicationService>();
-            frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             frmServiceMock.Setup(x => x.UnpublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var logger = new Mock<ILogger>();
@@ -380,7 +380,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
             frmServiceMock.Setup(x => x.GetFrmStatusAsync(3, It.IsAny<CancellationToken>())).ReturnsAsync(4);
             frmServiceMock.Setup(x => x.GetFrmStatusAsync(4, It.IsAny<CancellationToken>())).ReturnsAsync(3);
             frmServiceMock.Setup(x => x.GetFileSubmittedDetailsAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync( new JobDetails { DateTimeSubmitted = new DateTime(2000, 2, 3)});
-            frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var logger = new Mock<ILogger>();
             var controller = new PublicationController(logger.Object, frmServiceMock.Object, null, null, null);
