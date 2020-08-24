@@ -1,5 +1,7 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
 @using ESFA.DC.Web.Operations.Extensions
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
+
 
 @{
     ViewData["Title"] = "Index";
@@ -14,25 +16,29 @@
             <li class="govuk-breadcrumbs__list-item">
                 <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
             </li>
-            <li class="govuk-breadcrumbs__list-item" aria-current="page">Ons Postcodes</li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">@Model.ReferenceDataCollectionName</li>
         </ol>
     </div>
 </div>
 
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl heading-bottom-margin">Ons Postcodes</h1>
+        <h1 class="govuk-heading-xl heading-bottom-margin">@Model.CollectionDisplayName</h1>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="OnsPostcodes" asp-action="Index" method="post" enctype="multipart/form-data" id="ilrform">
+        <form asp-controller="ReferenceData" asp-action="Post" method="post" enctype="multipart/form-data">
+            <input asp-for="ReferenceDataCollectionName" type="hidden" />
+            <input asp-for="HubName" type="hidden" />
+            <input asp-for="CollectionDisplayName" type="hidden" />
 
             @Html.AntiForgeryToken()
 
             <h1 class="govuk-heading-m">
-                Choose Ons Postcodes reference data file to upload
+                Choose @Model.CollectionDisplayName reference data file to upload
             </h1>
 
             <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
@@ -40,7 +46,7 @@
                     Upload a file
                 </label>
                 <div error-field-name="@ErrorMessageKeys.Submission_FileFieldKey"></div>
-                <input class="govuk-file-upload" name="file" id="file" type="file" accept=".zip">
+                <input class="govuk-file-upload" name="file" id="file" type="file" accept="@Model.FileExtension">
             </div>
 
             <button class="govuk-button" id="uploadFile">
@@ -65,18 +71,19 @@
 {
     <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/assets/js/handlebars.js"></script>
+
     <script type="module">
         import Controller from '/assets/js/referenceData/referenceDataController.js';
         import Hub from '/assets/js/hubs/hub.js';
 
-        (function () {
+        (function() {
             const model = @Json.Serialize(Model);
             const controller = new Controller();
-            const hub = new Hub('onsPostcodesHub', controller.displayConnectionState);
+            const hub = new Hub('@Model.HubName', controller.displayConnectionState);
 
-            controller.registerHandlers(hub, 'OnsPostcodes');
-            hub.startHub(model);
-            controller.renderFiles('OnsPostcodes', model);
+            controller.registerHandlers(hub, '@Model.ReferenceDataCollectionName');
+            hub.startHub();
+            controller.renderFiles('@Model.ReferenceDataCollectionName', model);
         })();
     </script>
 }

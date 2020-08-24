@@ -17,5 +17,7 @@
         public ReferenceDataIndexBase OnsPostcodes { get; set; }
 
         public ReferenceDataIndexBase FundingClaimsDates { get; set; }
+
+        public ReferenceDataIndexBase DevolvedContracts { get; set; }
     }
 }

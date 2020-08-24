@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
-    public class BaseReferenceDataController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
+    public abstract class BaseReferenceDataController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IStorageService _storageService;
         private readonly ILogger _logger;
