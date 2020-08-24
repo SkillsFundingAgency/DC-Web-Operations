@@ -1,15 +1,21 @@
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+#Prerequisites
+
+## ESFA.DC.Web.Operations ##
+1. Install Latest LTS Version of nodejs from https://nodejs.org/en/download/ 
+2. Install NPM Task Runner extension into Visual Studio 2019 https://github.com/madskristensen/NpmTaskRunner 
+3. Install clientside dependancies.  Please run *npm install* from command prompt in web project folder (src/ESFA.DC.Web.Operations), this folder should contain a package.json file detailing what to install.  You may need to run the command prompt as admin and upon completion you should see the node_modules folder on disk.  Please note this is excluded from the project and should not be committed.
+4. Build the project.  This will copy the relevant files from the node_modules folder into the following folder: \ESFA.DC.Web.Operations\wwwroot\lib.  Again files here should not be committed to source control.
+
+The currently installed version of all node packages can be found in src/ESFA.DC.Web.Operations/package.json
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## ESFA.DC.Web.Operations ##
+Javascript unit tests are provided by Jest (https://jestjs.io/docs/en/getting-started) and are run by running *npm test* via a command prompt in the web project folder (src/ESFA.DC.Web.Operations).  If the NpmTaskRunner runner has been installed then tests can also be run via its GUI in Visual studio.
+
+Some examples of javascript unit tests can be found here: Web.Operations\wwwroot\assets\js\util.test.js
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 

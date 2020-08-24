@@ -25,7 +25,6 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report" + CollectionYearToken;
         public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report" + CollectionYearToken;
         public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report" + CollectionYearToken;
-        public const string PeriodEndDataExtractReportCollectionName = @"PE-DataExtract-Report" + CollectionYearToken;
         public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport" + CollectionYearToken;
         public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + CollectionYearToken;
         public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report";

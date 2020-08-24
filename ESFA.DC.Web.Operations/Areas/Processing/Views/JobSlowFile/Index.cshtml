@@ -44,14 +44,14 @@
     </div>
 </div>
 
-<script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
 <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
 <script type="module">
 
     import JobSlowFileController from "/assets/js/processing/jobSlowFileController.js";
     import Hub from '/assets/js/hubs/hub.js';
-    
+
     (function () {
         const jobSlowFileController = new JobSlowFileController();
         const hub = new Hub('jobSlowFileHub', jobSlowFileController.displayConnectionState);

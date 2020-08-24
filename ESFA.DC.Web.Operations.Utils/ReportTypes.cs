@@ -5,7 +5,6 @@
         public const string PeriodEndDataQualityReport = "PeriodEndDataQualityReport";
         public const string ProviderSubmissionsReport = "ProviderSubmissionsReport";
         public const string PeriodEndMetricsReport = "PeriodEndMetricsReport";
-        public const string PeriodEndDataExtractReport = "PeriodEndDataExtractReport";
         public const string InternalDataMatchReport = "InternalDataMatchReport";
         public const string ActCountReport = "ACTCountReport";
         public const string ILRProvidersReturningFirstTimePerDayReport = "ILRProvidersReturningFirstTimePerDayReport";
