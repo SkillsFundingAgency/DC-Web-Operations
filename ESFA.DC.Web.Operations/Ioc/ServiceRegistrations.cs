@@ -162,7 +162,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<InternalDataMatchReport>().As<IReport>().InstancePerLifetimeScope();
-            builder.RegisterType<PeriodEndDataExtractReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ProviderSubmissionsReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();

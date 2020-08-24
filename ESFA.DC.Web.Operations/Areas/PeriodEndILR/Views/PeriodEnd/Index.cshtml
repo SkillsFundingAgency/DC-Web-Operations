@@ -77,20 +77,20 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-            <label id="slowConnection" alt="Connection is slow at the moment"></label>
-            <label id="lastSync"></label>
-            <label id="state"></label>
-        </div>
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
     </div>
+</div>
 
 @section PageScripts
 {
     @if (Model != null && (Model.IsPreviousPeriod || Model.CollectionClosed))
     {
-        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+        <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     }
 
-<script type="module">
+    <script type="module">
     import PathController from '/assets/js/periodEnd/pathController.js';
 
     @if (Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)))
@@ -128,5 +128,5 @@
         }
     })();
 
-</script>
+    </script>
 }

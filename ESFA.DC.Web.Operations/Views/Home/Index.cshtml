@@ -45,7 +45,7 @@
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="firstCircle" class="circle-chart__circle" stroke-width="3" stroke-dasharray="40,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
-                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">40</text>
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="firstDonut" data-count="">0</text>
                     <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2" id="firstLabel">Waiting...</text>
                 </g>
             </svg>
@@ -60,7 +60,7 @@
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="secondCircle" class="circle-chart__circle warning" stroke-width="3" stroke-dasharray="50,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
-                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">50</text>
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="secondDonut" data-count="">0</text>
                     <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2" id="secondLabel">Waiting...</text>
                 </g>
             </svg>
@@ -75,7 +75,7 @@
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <circle id="thirdCircle" class="circle-chart__circle warning danger" stroke-width="3" stroke-dasharray="35,100" stroke-linecap="" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
                 <g class="circle-chart__info">
-                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">35</text>
+                    <text x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle" font-size="8" id="thirdDonut" data-count="">0</text>
                     <text x="16.91549431" y="20.5" alignment-baseline="central" text-anchor="middle" font-size="2" id="thirdLabel">Waiting...</text>
                 </g>
             </svg>
@@ -115,7 +115,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Failed today", "Index", "JobFailedToday", new { area = AreaNames.Processing })
             </h2>
-            <span id="failedToday" class="govuk-heading-l no-margin-bottom">4</span>
+            <span id="failedToday" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
 
@@ -124,7 +124,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Slow files", "Index", "JobSlowFile", new { area = AreaNames.Processing })
             </h2>
-            <span id="slowFiles" class="govuk-heading-l no-margin-bottom">16</span>
+            <span id="slowFiles" class="govuk-heading-l no-margin-bottom">0</span>
             <span class="govuk-body-s">Taking 20% longer than usual</span>
         </div>
     </div>
@@ -134,7 +134,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Concerns", "Index", "JobConcern", new { area = AreaNames.Processing })
             </h2>
-            <span id="concerns" class="govuk-heading-l no-margin-bottom">3</span>
+            <span id="concerns" class="govuk-heading-l no-margin-bottom">0</span>
             <span class="govuk-body-s">Providers where their last submitted file was unsuccessful</span>
         </div>
     </div>
@@ -156,7 +156,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Current Period", "CurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
             </h2>
-            <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">40</span>
+            <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
 
@@ -165,7 +165,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Last Hour", "LastHour", "JobProcessingDetail", new { area = AreaNames.Processing })
             </h2>
-            <span id="lastHour" class="govuk-heading-l no-margin-bottom">7</span>
+            <span id="lastHour" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
 
@@ -174,7 +174,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Last 5 Minutes", "LastFiveMins", "JobProcessingDetail", new { area = AreaNames.Processing })
             </h2>
-            <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">18</span>
+            <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
     <div class="govuk-grid-column-one-third">
@@ -182,7 +182,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("ILR returners in current period", "Index", "JobProvidersReturnedCurrentPeriod", new { area = AreaNames.Processing })
             </h2>
-            <span id="ilrReturns" class="govuk-heading-l no-margin-bottom">40</span>
+            <span id="ilrReturns" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
 
@@ -191,7 +191,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("Failed files in current period", "Index", "JobFailedCurrentPeriod", new { area = AreaNames.Processing })
             </h2>
-            <span id="failedFiles" class="govuk-heading-l no-margin-bottom">7</span>
+            <span id="failedFiles" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
 
@@ -200,7 +200,7 @@
             <h2 class="govuk-heading-m">
                 @Html.ActionLink("SLD/DAS mismatches", "Index", "JobDasMismatch", new { area = AreaNames.Processing })
             </h2>
-            <span id="sldDasMismatches" class="govuk-heading-l no-margin-bottom">18</span>
+            <span id="sldDasMismatches" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
     </div>
 </div>
@@ -218,13 +218,13 @@
 
 @section PageScripts
 {
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/assets/js/chartJs/Chart.bundle.min.js"></script>
 
     <script type="module">
         import DashBoardController from "/assets/js/dashBoard/dashBoardController.js";
         import Hub from '/assets/js/hubs/hub.js';
-        
+
         window.addEventListener('pageshow', function () {
             const dashBoardController = new DashBoardController();
             const hub = new Hub('dashBoardHub', dashBoardController.displayConnectionState);
