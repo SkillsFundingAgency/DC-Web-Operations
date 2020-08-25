@@ -27,6 +27,7 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report" + CollectionYearToken;
         public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport" + CollectionYearToken;
         public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + CollectionYearToken;
+        public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report";
 
         public const string FrmReportCollectionName = @"FRM-Reports1920";
 
@@ -37,6 +38,8 @@ namespace ESFA.DC.Web.Operations.Utils
 
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
+
+        public static readonly string OpsReportsBlobContainerName = "opsreferencedata";
 
         public static readonly string FrmContainerName = "frm{0}-files";
         public static readonly string FrmValidationKey = "Validation";

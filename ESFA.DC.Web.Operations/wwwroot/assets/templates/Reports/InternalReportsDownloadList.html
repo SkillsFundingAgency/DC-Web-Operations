@@ -12,7 +12,7 @@
                 {{#each viewModel.reportUrlDetails}}
                 <tr class="govuk-table__row internalreports">
                     <td class="govuk-table__cell">{{displayName}}</td>
-                    <td class="govuk-table__cell"><a href= {{encodedReportUrl this yearSelected = @root.yearSelected periodSelected = @root.periodSelected downloadUrl = @root.downloadUrl url = url}}> {{url}}</a></td>
+                    <td class="govuk-table__cell"><a href= {{encodedReportUrl this yearSelected = @root.yearSelected periodSelected = @root.periodSelected downloadUrl = @root.downloadUrl url = url reportDisplayName = displayName}}> {{url}}</a></td>
                 </tr>
                 {{/each}}
             </tbody>

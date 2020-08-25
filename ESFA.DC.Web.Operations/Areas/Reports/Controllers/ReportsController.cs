@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -10,7 +12,10 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Enums;
+using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Utils;
+using ESFA.DC.Web.Operations.Utils.Extensions;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +29,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         private readonly IStorageService _storageService;
         private readonly IPeriodService _periodService;
         private readonly ICollectionsService _collectionsService;
+        private readonly IEnumerable<IReport> _reports;
         private readonly IReportsService _reportsService;
 
         public ReportsController(
@@ -32,6 +38,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             IPeriodService periodService,
             IReportsService reportsService,
             ICollectionsService collectionsService,
+            IEnumerable<IReport> Reports,
             TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
@@ -40,6 +47,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             _periodService = periodService;
             _reportsService = reportsService;
             _collectionsService = collectionsService;
+            _reports = Reports;
         }
 
         [HttpGet("")]
@@ -66,7 +74,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         }
 
         [HttpGet("RunReport")]
-        public async Task<IActionResult> RunReport(string reportType, int? year, int? period)
+        public async Task<IActionResult> RunReport(string reportName, int? year, int? period)
         {
             // if collection period params not specified default to current period
             if (year == null || period == null)
@@ -74,7 +82,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 var currentYearPeriod = await _periodService.GetRecentlyClosedPeriodAsync();
                 if (currentYearPeriod?.CollectionYear == null)
                 {
-                    string errorMessage = $"Call to get current return period failed in request {reportType} collectionYear: {year} collectionPeriod: {period}";
+                    string errorMessage = $"Call to get current return period failed in request {reportName} collectionYear: {year} collectionPeriod: {period}";
                     _logger.LogError(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
@@ -84,20 +92,22 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
 
             // queue the report job
-            var jobId = await _reportsService.RunReport(reportType, year.Value, period.Value);
+            var jobId = await _reportsService.RunReport(reportName, year.Value, period.Value);
 
             // display the processing report spinner page while the report is running
-            return RedirectToAction("ProcessingReport", "Reports", new { ReportType = reportType, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = year, CollectionPeriod = period, JobId = jobId });
+            return RedirectToAction("ProcessingReport", "Reports", new { ReportName = reportName, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = year, CollectionPeriod = period, JobId = jobId });
         }
 
         [HttpGet("GetReportFile")]
-        public async Task<FileResult> GetReportFile(int collectionYear, int collectionPeriod, string fileName, string downloadName = "")
+        public async Task<FileResult> GetReportFile(int collectionYear, int collectionPeriod, string fileName, string reportDisplayName,  string downloadName = "")
         {
             try
             {
-                var containerName = Utils.Constants.ReportsBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
-
-                fileName = $"R{collectionPeriod.ToString("D2")}/{HttpUtility.HtmlDecode(fileName)}";
+                var periodString = $"R{collectionPeriod:D2}";
+                var decodedFileName = HttpUtility.HtmlDecode(fileName);
+                var report = _reports.Single(x => x.DisplayName.CaseInsensitiveEquals(reportDisplayName));
+                var containerName = report.ContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString()); ;
+                fileName = report.ReportType == ReportType.Operations ? $"Reports/{collectionYear}/{periodString}/{decodedFileName}" : $"{periodString}/{decodedFileName}";
 
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
@@ -113,19 +123,19 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
         }
 
-        [HttpGet("ProcessingReport/{reportType}/{reportAction}/{collectionYear}/{collectionPeriod}/{jobId?}/{jobStatusType?}")]
-        public async Task<IActionResult> ProcessingReport(string reportType, string reportAction, int collectionYear, int collectionPeriod, long? jobId, JobStatusType? jobStatusType)
+        [HttpGet("ProcessingReport/{reportName}/{reportAction}/{collectionYear}/{collectionPeriod}/{jobId?}/{jobStatusType?}")]
+        public async Task<IActionResult> ProcessingReport(string reportName, string reportAction, int collectionYear, int collectionPeriod, long? jobId, JobStatusType? jobStatusType)
         {
             if (string.IsNullOrEmpty(reportAction))
             {
-                string errorMessage = $"Missing 'reportAction' parameter for 'reportAction' in request {reportType} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
+                string errorMessage = $"Missing 'reportAction' parameter for 'reportAction' in request {reportName} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
                 _logger.LogError(errorMessage);
                 throw new Exception(errorMessage);
             }
 
             ReportsViewModel reportViewModel = new ReportsViewModel()
             {
-                ReportType = reportType,
+                ReportName = reportName,
                 ReportAction = reportAction,
                 CollectionYear = collectionYear,
                 CollectionPeriod = collectionPeriod,
@@ -158,7 +168,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
 
                 case ReportActions.RunReport:
                     // Create a report job
-                    reportViewModel.JobId = await _reportsService.RunReport(reportType, collectionYear, collectionPeriod);
+                    reportViewModel.JobId = await _reportsService.RunReport(reportName, collectionYear, collectionPeriod);
                     break;
 
                 case ReportActions.GetReportDetails:

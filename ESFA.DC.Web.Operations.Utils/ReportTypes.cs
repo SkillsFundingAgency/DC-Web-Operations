@@ -7,6 +7,7 @@
         public const string PeriodEndMetricsReport = "PeriodEndMetricsReport";
         public const string InternalDataMatchReport = "InternalDataMatchReport";
         public const string ActCountReport = "ACTCountReport";
+        public const string ILRProvidersReturningFirstTimePerDayReport = "ILRProvidersReturningFirstTimePerDayReport";
 
         public const string ConditionOfFundingRemovalReportName = "CoFRemovalRD-ValidationReport";
         public const string FundingClaimsProviderDataReportName = "FundingClaimsProviderDataRD-ValidationReport";
