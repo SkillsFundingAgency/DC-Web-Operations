@@ -1,11 +1,10 @@
-﻿namespace ESFA.DC.Web.Operations.Interfaces.Frm
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using ESFA.DC.PeriodEnd.Models.Dtos;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using ESFA.DC.PeriodEnd.Models.Dtos;
 
+namespace ESFA.DC.Web.Operations.Interfaces.Publication
+{
     public interface IReportsPublicationService
     {
         Task<long> RunValidationAsync(string collectionName, string folderKey, int periodNumber, string userName, CancellationToken cancellationToken = default(CancellationToken));
