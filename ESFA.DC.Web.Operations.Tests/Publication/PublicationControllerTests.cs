@@ -11,7 +11,7 @@ using ESFA.DC.Web.Operations.Areas.Publication.Controllers;
 using ESFA.DC.Web.Operations.Areas.Publication.Models;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
+using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Models.Publication;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;

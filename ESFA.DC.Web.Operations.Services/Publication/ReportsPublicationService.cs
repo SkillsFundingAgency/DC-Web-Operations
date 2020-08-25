@@ -13,7 +13,7 @@ using ESFA.DC.Jobs.Model.Processing.Detail;
 using ESFA.DC.PeriodEnd.Models.Dtos;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
+using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using MoreLinq;
