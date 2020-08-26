@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
-using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
@@ -34,10 +33,22 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             _reportsService = reportsService;
         }
 
-        public async Task<IEnumerable<ReportDetails>> GetReports(int collectionYear, int collectionPeriod)
+        public async Task<ReportsModel> GetReportDetails(int collectionYear, int collectionPeriod)
         {
             var reportDetails = await _reportsService.GetAllReportDetails(collectionYear, collectionPeriod);
-            return reportDetails.Where(x => !string.IsNullOrEmpty(x.Url));
+            var operationsReportsDetails = await _reportsService.GetOperationsReportsDetails(collectionYear, collectionPeriod);
+
+            var reportDetailsList = reportDetails.ToList();
+            reportDetailsList.AddRange(operationsReportsDetails);
+            var reportUrlDetails = reportDetailsList.Where(x => !string.IsNullOrEmpty(x.Url));
+
+            var availableReports = await _reportsService.GetAvailableReportsAsync(collectionYear);
+            var model = new ReportsModel
+            {
+                AvailableReportsList = availableReports,
+                ReportUrlDetails = reportUrlDetails
+            };
+            return model;
         }
 
         public async Task<IEnumerable<int>> GetCollectionYears()

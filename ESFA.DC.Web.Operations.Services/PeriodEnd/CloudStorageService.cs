@@ -66,14 +66,25 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 
         public async Task<SubmissionSummary> GetSubmissionSummary(CloudBlobContainer container, string fileName, CancellationToken cancellationToken)
         {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
             try
             {
-                using (var stream = await container
-                    .GetBlockBlobReference(fileName)
-                    .OpenReadAsync(null, _requestOptions, null, cancellationToken))
+                var blobReference = container.GetBlockBlobReference(fileName);
+
+                if (await blobReference.ExistsAsync(cancellationToken))
                 {
-                    return _serializationService.Deserialize<SubmissionSummary>(stream);
+                    using (var stream = await blobReference
+                        .OpenReadAsync(null, _requestOptions, null, cancellationToken))
+                    {
+                        return _serializationService.Deserialize<SubmissionSummary>(stream);
+                    }
                 }
+
+                return null;
             }
             catch (Exception e)
             {

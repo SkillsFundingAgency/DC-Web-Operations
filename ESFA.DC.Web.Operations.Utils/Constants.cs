@@ -22,12 +22,12 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string Action_PeriodClosedButton = "PeriodClosedState";
         public const string Action_UploadFileButton = "UploaddState";
 
-        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report1920";
-        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report1920";
-        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report1920";
-        public const string PeriodEndDataExtractReportCollectionName = @"PE-DataExtract-Report1920";
-        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport1920";
-        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report1920";
+        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report" + CollectionYearToken;
+        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report" + CollectionYearToken;
+        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report" + CollectionYearToken;
+        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport" + CollectionYearToken;
+        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + CollectionYearToken;
+        public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report";
 
         public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
 
@@ -36,6 +36,8 @@ namespace ESFA.DC.Web.Operations.Utils
 
         public static readonly string PeriodEndBlobContainerName = "periodend" + CollectionYearToken + "-files";
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
+
+        public static readonly string OpsReportsBlobContainerName = "opsreferencedata";
 
         public static readonly string DASSubmission = @"PE-DAS-Submission";
 

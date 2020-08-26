@@ -23,7 +23,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
         <ul class="govuk-list">
-            
         </ul>
         <div id="summaryContainer"></div>
     </div>
@@ -51,14 +50,14 @@
 
         <br />
         <br />
-        
+
         <div class="app-task-list__section">
             <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.NCS');return false;" value="Close Period End">
         </div>
 
         <br />
         <br />
-       
+
     </div>
 </div>
 
@@ -67,20 +66,20 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-            <label id="slowConnection" alt="Connection is slow at the moment"></label>
-            <label id="lastSync"></label>
-            <label id="state"></label>
-        </div>
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
     </div>
+</div>
 
 @section PageScripts
 {
     @if (Model != null && Model.CollectionClosed)
     {
-        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+        <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     }
 
-<script type="module">
+    <script type="module">
     import PathController from '/assets/js/periodEnd/ncs/pathController.js';
 
     @if (Model != null && Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)
@@ -117,5 +116,5 @@
         }
     })();
 
-</script>
+    </script>
 }

@@ -1,0 +1,21 @@
+﻿<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Internal Reports</h2>
+        <table class="govuk-table" id="internalReports">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Report name</th>
+                    <th class="govuk-table__header" scope="col">Download</th>
+                </tr>
+            </thead>
+            <tbody id="internalReportsBody" class="govuk-table__body">
+                {{#each viewModel.reportUrlDetails}}
+                <tr class="govuk-table__row internalreports">
+                    <td class="govuk-table__cell">{{displayName}}</td>
+                    <td class="govuk-table__cell"><a href= {{encodedReportUrl this yearSelected = @root.yearSelected periodSelected = @root.periodSelected downloadUrl = @root.downloadUrl url = url reportDisplayName = displayName}}> {{url}}</a></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

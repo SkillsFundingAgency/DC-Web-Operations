@@ -30,12 +30,12 @@
                 <div id="minusMargin" class="govuk-form-group margin-right">
                     <label class="govuk-label">Collection year</label>
                     <select class="govuk-select" id="collectionYear" name="collectionYear" onchange="window.change();">
-                        @foreach(var year in Model.AllYears)
+                        @foreach (var year in Model.AllYears)
                         {
-                            <option value="@year" @if (Model.Year == year)
-                                                 {
-                                                     @: selected
-                                                 }> @year</option>
+                            <option value="@year" @if (Model.Year == year) { @: selected
+                                    }>
+                                @year
+                            </option>
                         }
                     </select>
                 </div>
@@ -46,10 +46,10 @@
                         @for (var i = 1; i <= 14; i++)
                         {
                             <option value="@i"
-                                    @if (Model.Period == i)
-                                    {
-                                        @: selected
-                                    }> @i</option>
+                                    @if (Model.Period == i) { @: selected
+                                    }>
+                                @i
+                            </option>
                         }
                     </select>
                 </div>
@@ -98,7 +98,8 @@ else
 
 @if (!Model.PeriodEndInProgress)
 {
-    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+
     <script type="module">
         import ValidityPeriodController from "/assets/js/periodEnd/validityPeriodController.js";
         import Hub from '/assets/js/hubs/hub.js';

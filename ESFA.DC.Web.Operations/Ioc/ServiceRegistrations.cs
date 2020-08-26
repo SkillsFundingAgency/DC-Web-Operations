@@ -133,6 +133,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<DevolvedPostcodesOnsOverrideFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<DevolvedPostcodesSofFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<OnsPostcodesFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedContractsFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 
@@ -161,10 +162,19 @@ namespace ESFA.DC.Web.Operations.Ioc
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<InternalDataMatchReport>().As<IReport>().InstancePerLifetimeScope();
-            builder.RegisterType<PeriodEndDataExtractReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ProviderSubmissionsReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
+
+            // Collections
+            builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<CoFRemoval>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsProviderData>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<OnsPostcodes>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<ProviderPostcodeSpecialistResources>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationMessages2021>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedContracts>().As<ICollection>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();

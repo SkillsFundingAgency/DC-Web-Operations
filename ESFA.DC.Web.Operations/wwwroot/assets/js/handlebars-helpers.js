@@ -28,7 +28,9 @@ export const getHandleBarsTemplate = function (name, root) {
 
 export let Templates = {
     ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
-    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html'
+    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
+    InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
+    ReportListOptions: 'Reports/ReportListOptions.html'
 };
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
@@ -37,6 +39,19 @@ Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
                     : displayStatus === 'Job Failed' ? 'jobFailed'
                     : '';
     return statusClass;
+});
+
+Handlebars.registerHelper('encodedReportUrl', function (context, options) {
+    var collectionYear = options.hash.yearSelected,
+        collectionPeriod = options.hash.periodSelected,
+        reportsDownloadUrl = options.hash.downloadUrl,
+        reportDisplayName = options.hash.reportDisplayName,
+        filename = options.hash.url;
+
+    var url = reportsDownloadUrl + '?collectionYear=' + collectionYear + '&collectionPeriod=' + collectionPeriod + '&fileName=' + filename + '&reportDisplayName=' + reportDisplayName;
+    var encodedUrl = encodeURI(url);
+
+    return encodedUrl;
 });
 
 Handlebars.registerHelper('select', function (value, options) {

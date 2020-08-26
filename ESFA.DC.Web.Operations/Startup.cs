@@ -309,6 +309,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<DevolvedContractsHub>("/devolvedContractsHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
