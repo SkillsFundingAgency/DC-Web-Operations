@@ -9,8 +9,7 @@ namespace ESFA.DC.Web.Operations.Models.ReferenceData
 
         public string LastUpdatedByWho { get; set; }
 
-        public string LastUpdatedDateTimeFormattedDisplay =>
-            $"{LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {LastUpdatedDateTime.ToString("h:mm tt", CultureInfo.InvariantCulture).ToLower(CultureInfo.CurrentCulture)}";
+        public string LastUpdatedDateTimeFormattedDisplay => LastUpdatedDateTime.Year != 1 ? $"{LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)} at {LastUpdatedDateTime.ToString("h:mm tt", CultureInfo.InvariantCulture).ToLower(CultureInfo.CurrentCulture)}" : "Data unavailable";
 
         public bool Valid { get; set; }
     }

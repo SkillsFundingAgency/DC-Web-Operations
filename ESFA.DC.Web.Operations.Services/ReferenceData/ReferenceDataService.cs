@@ -136,6 +136,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                             cancellationToken)));
 
             model.Files = files;
+            model.ReferenceDataCollectionName = collectionName;
             return model;
         }
 
@@ -158,6 +159,9 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 .OrderByDescending(o => o.DateTimeSubmittedUtc)
                 .FirstOrDefault();
             var latestSuccessfulOnsPostcodes = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.OnsPostcodes);
+            var latestSuccessfulDevolvedContracts = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.DevolvedContracts);
+            var latestSuccessfulShortTermFundingInitiatives = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ShortTermFundingInitiatives);
+
             var model = new ReferenceDataIndexModel
             {
                 CampusIdentifiers = new ReferenceDataIndexBase
@@ -208,6 +212,18 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                     LastUpdatedByWho = fundingClaimsCollectionMetaDataLastUpdate?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
+                DevolvedContracts = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedContracts?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulDevolvedContracts?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                ShortTermFundingInitiatives = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulShortTermFundingInitiatives?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulShortTermFundingInitiatives?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                }
             };
 
             return model;

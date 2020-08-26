@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Controllers;
-using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Enums;
@@ -14,19 +15,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
-    public class BaseReferenceDataController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
+    public abstract class BaseReferenceDataController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
         private readonly IStorageService _storageService;
         private readonly ILogger _logger;
+        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public BaseReferenceDataController(
             IStorageService storageService,
             ILogger logger,
-            TelemetryClient telemetryClient)
+            TelemetryClient telemetryClient,
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(logger, telemetryClient)
         {
             _storageService = storageService;
             _logger = logger;
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         protected int Period => 0;
@@ -52,18 +56,19 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         }
 
         protected virtual async Task<FileNameValidationResultModel> ValidateFileName(
-            IFileNameValidationService fileNameValidationService,
+            ICollection collection,
             string rawFileName,
             long? fileLength,
             CancellationToken cancellationToken)
         {
-            if (fileNameValidationService == null)
+            if (collection == null)
             {
-                throw new ArgumentNullException(nameof(fileNameValidationService));
+                throw new ArgumentNullException(nameof(collection));
             }
 
             var fileName = Path.GetFileName(rawFileName);
-            var validationResult = await fileNameValidationService.ValidateFileNameAsync(fileName, fileLength, cancellationToken);
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(collection.CollectionName);
+            var validationResult = await fileNameValidationService.ValidateFileNameAsync(collection.CollectionName, fileName, collection.FileNameFormat, fileLength, cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {

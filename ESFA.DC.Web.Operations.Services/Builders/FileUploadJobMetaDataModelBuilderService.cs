@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models;
+using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.Azure.Storage.Blob;
 
@@ -86,13 +87,13 @@ namespace ESFA.DC.Web.Operations.Services.Builders
             file.ReportName = $"{resultsReportName}{dateSection}.csv";
             var resultFileName = $"{collectionName}/{file.JobId}/{summaryFileName} {Path.GetFileNameWithoutExtension(file.FileName)}.json";
 
-            var result = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
+            var submissionSummary = await _cloudStorageService.GetSubmissionSummary(container, resultFileName, cancellationToken);
 
-            if (result != null)
+            if (submissionSummary != null)
             {
-                file.WarningCount = result.WarningCount;
-                file.RecordCount = result.RecordCount;
-                file.ErrorCount = result.ErrorCount;
+                file.WarningCount = submissionSummary.WarningCount;
+                file.RecordCount = submissionSummary.RecordCount;
+                file.ErrorCount = submissionSummary.ErrorCount;
             }
 
             return file;

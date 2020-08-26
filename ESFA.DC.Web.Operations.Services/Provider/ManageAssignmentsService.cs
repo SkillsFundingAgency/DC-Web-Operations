@@ -63,13 +63,18 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             foreach (var collectionYear in collectionYears)
             {
-                collections.AddRange(_jsonSerializationService.Deserialize<IEnumerable<Collection>>
-                    (await GetDataAsync(_baseUrl + $"/api/collections/for-year/{collectionYear}", cancellationToken)));
+                collections.AddRange(_jsonSerializationService.Deserialize<IEnumerable<Collection>>(
+                        await GetDataAsync(_baseUrl + $"/api/collections/for-year/{collectionYear}", cancellationToken)));
             }
 
             return collections
                 .Where(w => !Array.Exists(_collectionsTypesToExclude, search => search.Contains(w.CollectionType.ToString())))
-                .Select(s => new CollectionAssignment() { CollectionId = s.CollectionId, Name = s.CollectionTitle, DisplayOrder = SetDisplayOrder((CollectionType)Enum.Parse(typeof(CollectionType), s.CollectionType), s.CollectionTitle) })
+                .Select(s => new CollectionAssignment
+                {
+                    CollectionId = s.CollectionId,
+                    Name = s.CollectionTitle,
+                    DisplayOrder = SetDisplayOrder((CollectionType)Enum.Parse(typeof(CollectionType), s.CollectionType), s.CollectionTitle)
+                })
                 .ToList();
         }
 
@@ -80,17 +85,17 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var organisationToUpdate = new List<OrganisationCollection>();
             assignments
                 .Where(w => !w.ToBeDeleted)
-                .ForEach(a => organisationToUpdate.Add(new OrganisationCollection()
-            {
-                CollectionId = a.CollectionId,
-                StartDate = a.StartDate.Value,
-                EndDate = a.EndDate ?? Constants.MaxDateTime,
-            }));
+                .ForEach(a => organisationToUpdate.Add(new OrganisationCollection
+                {
+                    CollectionId = a.CollectionId,
+                    StartDate = a.StartDate ?? DateTime.MinValue,
+                    EndDate = a.EndDate ?? Constants.MaxDateTime
+                }));
 
             var organisationToDelete = new List<OrganisationCollection>();
             assignments
                 .Where(w => w.ToBeDeleted)
-                .ForEach(a => organisationToDelete.Add(new OrganisationCollection()
+                .ForEach(a => organisationToDelete.Add(new OrganisationCollection
                 {
                     CollectionId = a.CollectionId
                 }));

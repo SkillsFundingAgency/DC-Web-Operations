@@ -23,9 +23,9 @@
     }
 
 
-    getReports(collectionYear, collectionPeriod, populateReports) {
+    getReportDetails(collectionYear, collectionPeriod, populateReports) {
         this.connection
-            .invoke("GetReports", collectionYear, collectionPeriod)
+            .invoke("GetReportDetails", collectionYear, collectionPeriod)
             .then(function (values) {
                 populateReports(values);
             })

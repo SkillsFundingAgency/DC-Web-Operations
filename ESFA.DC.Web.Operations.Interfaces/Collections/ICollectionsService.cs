@@ -35,5 +35,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
         Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> FailJob(int jobId, CancellationToken cancellationToken = default(CancellationToken));
+
+        ICollection GetReferenceDataCollection(string collectionName);
     }
 }

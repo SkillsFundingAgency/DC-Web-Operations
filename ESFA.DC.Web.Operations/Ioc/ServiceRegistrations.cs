@@ -16,11 +16,11 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Auditing;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.Notifications;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
@@ -31,14 +31,8 @@ using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
 using ESFA.DC.Web.Operations.Services.FileValidation;
-using ESFA.DC.Web.Operations.Services.FileValidation.CampusIdentifiers;
-using ESFA.DC.Web.Operations.Services.FileValidation.ConditionOfFundingRemoval;
-using ESFA.DC.Web.Operations.Services.FileValidation.DevolvedPostcodes;
-using ESFA.DC.Web.Operations.Services.FileValidation.FundingClaimsProviderData;
-using ESFA.DC.Web.Operations.Services.FileValidation.OnsPostcodes;
-using ESFA.DC.Web.Operations.Services.FileValidation.ProviderPostcodeSpecialistResources;
 using ESFA.DC.Web.Operations.Services.FileValidation.Providers;
-using ESFA.DC.Web.Operations.Services.FileValidation.ValidationMessages2021;
+using ESFA.DC.Web.Operations.Services.FileValidation.StandardValidator;
 using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.ReferenceData;
@@ -121,22 +115,13 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
             builder.RegisterType<NotificationsService>().As<INotificationsService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<CampusIdentifiersFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<ConditionOfFundingRemovalFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<FundingClaimsProviderDataFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<ProviderPostcodeSpecialistResourceFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationMessages2021FileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
+            builder.RegisterType<StandardFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<BulkProviderUploadFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<FileNameValidationServiceProvider>().As<IFileNameValidationServiceProvider>().InstancePerLifetimeScope();
-            builder.RegisterType<DevolvedPostcodesFullNameFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<DevolvedPostcodesLocalAuthorityFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<DevolvedPostcodesOnsOverrideFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<DevolvedPostcodesSofFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
-            builder.RegisterType<OnsPostcodesFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
+            builder.RegisterType<ReportsPublicationService>().As<IReportsPublicationService>().WithAttributeFiltering().InstancePerLifetimeScope();
 
             builder.RegisterType<AuditService>().As<IAuditService>().InstancePerLifetimeScope();
             builder.RegisterType<AuditRepository>().As<IAuditRepository>().InstancePerLifetimeScope();
@@ -161,10 +146,25 @@ namespace ESFA.DC.Web.Operations.Ioc
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<InternalDataMatchReport>().As<IReport>().InstancePerLifetimeScope();
-            builder.RegisterType<PeriodEndDataExtractReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ProviderSubmissionsReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
+
+            // Collections
+            builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<CoFRemoval>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsProviderData>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<OnsPostcodes>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<ProviderPostcodeSpecialistResources>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationMessages2021>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedContracts>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesFullName>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesLocalAuthority>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesOnsOverride>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<DevolvedPostcodesSof>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<RefOps>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<ShortTermFundingInitiatives>().As<ICollection>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();
