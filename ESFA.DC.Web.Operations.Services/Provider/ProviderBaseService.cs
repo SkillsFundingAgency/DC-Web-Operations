@@ -48,9 +48,11 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var providerAssignments = _jsonSerializationService.Deserialize<IEnumerable<OrganisationCollection>>(response);
 
             var date = _dateTimeProvider.GetNowUtc();
+            var earliestStartDate = date.AddMonths(2);
+            var expiredEndDate = date.AddMonths(-2);
 
             return providerAssignments
-                .Where(pa => pa.StartDate <= date.AddMonths(2) && pa.EndDate >= date.AddMonths(-2))
+                .Where(pa => pa.StartDate <= earliestStartDate && pa.EndDate >= expiredEndDate)
                 .Select(p => new CollectionAssignment
                 {
                     CollectionId = p.CollectionId,
