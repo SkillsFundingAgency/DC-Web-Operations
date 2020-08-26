@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
-using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -12,7 +11,6 @@ using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
@@ -21,24 +19,19 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class ReferenceDataController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IJobService _jobService;
         private readonly ICollectionsService _collectionsService;
-        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public ReferenceDataController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            IJobService jobService,
             ICollectionsService collectionsService,
             IFileNameValidationServiceProvider fileNameValidationServiceProvider)
-            : base(storageService, logger, telemetryClient)
+            : base(storageService, logger, telemetryClient, fileNameValidationServiceProvider)
         {
             _referenceDataService = referenceDataService;
-            _jobService = jobService;
             _collectionsService = collectionsService;
-            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -76,10 +69,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index", "ReferenceData", new { collectionName = model.ReferenceDataCollectionName });
             }
 
-            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(model.ReferenceDataCollectionName);
+            var collection = _collectionsService.GetReferenceDataCollection(model.ReferenceDataCollectionName);
 
             var validationResult = await ValidateFileName(
-                fileNameValidationService,
+                collection,
                 file.FileName,
                 file.Length,
                 cancellationToken);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,6 +13,7 @@ using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.FileValidation
 {
@@ -21,30 +24,74 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
         private readonly IJobService _jobService;
         private readonly ICollectionsService _collectionService;
         private readonly AzureStorageSection _azureStorageConfig;
+        private readonly IEnumerable<ICollection> _collections;
 
-        private Dictionary<string, Collection> _collections = new Dictionary<string, Collection>();
+        private Dictionary<string, Collection> _collectionsDb = new Dictionary<string, Collection>();
 
         protected AbstractFileNameValidationService(
             IStorageService storageService,
             FeatureFlags featureFlags,
             IJobService jobService,
             ICollectionsService collectionService,
-            AzureStorageSection azureStorageConfig)
+            AzureStorageSection azureStorageConfig,
+            IEnumerable<ICollection> collections)
         {
             _storageService = storageService;
             _featureFlags = featureFlags;
             _jobService = jobService;
             _collectionService = collectionService;
             _azureStorageConfig = azureStorageConfig;
+            _collections = collections;
         }
 
-        public abstract string CollectionName { get; }
+        public abstract string[] CollectionNames { get; }
 
-        protected virtual IEnumerable<string> FileNameExtensions => new List<string>() { ".CSV" };
+        public virtual async Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, string fileNameFormat, long? fileSize, CancellationToken cancellationToken)
+        {
+            var collection = _collections.SingleOrDefault(s => s.CollectionName == collectionName);
+            if (collection == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(collectionName));
+            }
 
-        protected abstract string FileNameFormat { get; }
+            var result = ValidateEmptyFile(fileName, fileSize);
+            if (result != null)
+            {
+                return result;
+            }
 
-        public abstract Task<FileNameValidationResultModel> ValidateFileNameAsync(string fileName, long? fileSize, CancellationToken cancellationToken);
+            var ext = Path.GetExtension(fileName);
+            result = ValidateExtension(collection.FileFormat, ext, string.Format(CultureInfo.CurrentCulture, FileNameValidationConsts.FileMustBeInFormat, string.Join(",", collection.FileFormat)));
+            if (result != null)
+            {
+                return result;
+            }
+
+            var fileNameRegex = await GetFileNameRegexAsync(collectionName, cancellationToken);
+
+            result = ValidateRegex(fileNameRegex, fileName, string.Format(CultureInfo.CurrentCulture, FileNameValidationConsts.FileNameMustBeInFormat, fileNameFormat));
+            if (result != null)
+            {
+                return result;
+            }
+
+            result = await ValidateUniqueFileAsync(collectionName, fileName, cancellationToken);
+            if (result != null)
+            {
+                return result;
+            }
+
+            result = await LaterFileExistsAsync(collectionName, fileNameRegex, fileName, cancellationToken);
+            if (result != null)
+            {
+                return result;
+            }
+
+            return new FileNameValidationResultModel()
+            {
+                ValidationResult = FileNameValidationResult.Valid
+            };
+        }
 
         public abstract DateTime GetFileDateTime(Regex fileNameRegex, string fileName);
 
@@ -66,10 +113,10 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
         public async Task<Regex> GetFileNameRegexAsync(string collectionName, CancellationToken cancellationToken)
         {
             Collection collection;
-            if (!_collections.TryGetValue(collectionName, out collection))
+            if (!_collectionsDb.TryGetValue(collectionName, out collection))
             {
-                _collections.Add(collectionName, await _collectionService.GetCollectionAsync(collectionName, cancellationToken));
-                collection = _collections[collectionName];
+                _collectionsDb.Add(collectionName, await _collectionService.GetCollectionAsync(collectionName, cancellationToken));
+                collection = _collectionsDb[collectionName];
             }
 
             var fileNameRegex = collection.FileNameRegex;
@@ -77,9 +124,9 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
             return !string.IsNullOrEmpty(fileNameRegex) ? new Regex(fileNameRegex, RegexOptions.Compiled) : null;
         }
 
-        public FileNameValidationResultModel ValidateExtension(string extension, string errorMessage)
+        public FileNameValidationResultModel ValidateExtension(string fileNameExtension, string extension, string errorMessage)
         {
-            if (!FileNameExtensions.Contains(extension.ToUpperInvariant()))
+            if (!string.Equals(fileNameExtension, extension, StringComparison.InvariantCultureIgnoreCase))
             {
                 return new FileNameValidationResultModel()
                 {
@@ -115,10 +162,10 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
         public async Task<FileNameValidationResultModel> ValidateUniqueFileAsync(string collectionName, string fileName, CancellationToken cancellationToken)
         {
             Collection collection;
-            if (!_collections.TryGetValue(collectionName, out collection))
+            if (!_collectionsDb.TryGetValue(collectionName, out collection))
             {
-                _collections.Add(collectionName, await _collectionService.GetCollectionAsync(collectionName, cancellationToken));
-                collection = _collections[collectionName];
+                _collectionsDb.Add(collectionName, await _collectionService.GetCollectionAsync(collectionName, cancellationToken));
+                collection = _collectionsDb[collectionName];
             }
 
             if (_featureFlags.DuplicateFileCheckEnabled)

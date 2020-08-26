@@ -160,6 +160,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 .FirstOrDefault();
             var latestSuccessfulOnsPostcodes = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.OnsPostcodes);
             var latestSuccessfulDevolvedContracts = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.DevolvedContracts);
+            var latestSuccessfulShortTermFundingInitiatives = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ShortTermFundingInitiatives);
 
             var model = new ReferenceDataIndexModel
             {
@@ -217,6 +218,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                     LastUpdatedByWho = latestSuccessfulDevolvedContracts?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
+                ShortTermFundingInitiatives = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulShortTermFundingInitiatives?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulShortTermFundingInitiatives?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                }
             };
 
             return model;

@@ -9,19 +9,19 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
 {
-    public class DevolvedContractsHub : BaseReferenceDataHub, IReferenceDataHub
+    public class ShortTermFundingInitiativesHub : BaseReferenceDataHub, IReferenceDataHub
     {
         private readonly ISerialisationHelperService _serialisationHelperService;
-        private readonly IHubContext<DevolvedContractsHub> _hubContext;
+        private readonly IHubContext<ShortTermFundingInitiativesHub> _hubContext;
         private readonly IReferenceDataService _referenceDataService;
 
-        public DevolvedContractsHub(
+        public ShortTermFundingInitiativesHub(
             IHubEventBase eventBase,
             ISerialisationHelperService serialisationHelperService,
-            IHubContext<DevolvedContractsHub> hubContext,
+            IHubContext<ShortTermFundingInitiativesHub> hubContext,
             IReferenceDataService referenceDataService,
             ILogger logger)
-            : base(eventBase, logger, ReferenceDataTypes.DevolvedContracts)
+            : base(eventBase, logger, ReferenceDataTypes.ShortTermFundingInitiatives)
         {
             _serialisationHelperService = serialisationHelperService;
             _hubContext = hubContext;
@@ -30,15 +30,15 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
 
         public async Task SendMessage(CancellationToken cancellationToken)
         {
-            if (!ReferenceDataHubUserHandler.AnyConnectionIds(ReferenceDataTypes.DevolvedContracts))
+            if (!ReferenceDataHubUserHandler.AnyConnectionIds(ReferenceDataTypes.ShortTermFundingInitiatives))
             {
                 return;
             }
 
             var stateModel = await _referenceDataService.GetSubmissionsPerCollectionAsync(
                 Constants.ReferenceDataStorageContainerName,
-                CollectionNames.DevolvedContracts,
-                ReportTypes.DevolvedContractsReportName,
+                CollectionNames.ShortTermFundingInitiatives,
+                ReportTypes.ShortTermFundingInitiativesReportName,
                 cancellationToken: cancellationToken);
 
             var state = _serialisationHelperService.SerialiseToCamelCase(stateModel);
