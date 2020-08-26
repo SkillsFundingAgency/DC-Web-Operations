@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.ReferenceData.Models;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
@@ -20,8 +21,9 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
-            IFundingClaimsDatesService fundingClaimsDatesService)
-            : base(storageService, logger, telemetryClient)
+            IFundingClaimsDatesService fundingClaimsDatesService,
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
+            : base(storageService, logger, telemetryClient, fileNameValidationServiceProvider)
         {
             _fundingClaimsDatesService = fundingClaimsDatesService;
         }

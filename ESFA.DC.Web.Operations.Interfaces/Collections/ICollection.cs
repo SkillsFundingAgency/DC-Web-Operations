@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.Web.Operations.Interfaces.Collections
+﻿namespace ESFA.DC.Web.Operations.Interfaces.Collections
 {
     public interface ICollection
     {
@@ -15,5 +11,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
         string HubName { get; }
 
         string FileFormat { get; }
+
+        string FileNameFormat { get; }
     }
 }

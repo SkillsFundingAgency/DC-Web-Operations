@@ -1,10 +1,11 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.Indexed;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
@@ -31,9 +32,9 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
     [Area(AreaNames.Provider)]
     public class AddNewController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
-        private const string TemplatesPath = @"\\templates";
         private const string BulkUploadFileName = @"MultipleProvidersTemplate.csv";
-        private const string ProvidersUploadCollectionName = @"REF-OPS";
+        private const string ProvidersUploadCollectionName = CollectionNames.ReferenceDataOps;
+
         private readonly string SummaryFileName = "{0}/Summary.json";
         private readonly string ErrorsFileName = "{0}/Errors.csv";
         private readonly ILogger _logger;
@@ -43,6 +44,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         private readonly IJobService _jobService;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IAddNewProviderService _addNewProviderService;
+        private readonly IEnumerable<ICollection> _collections;
         private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
 
         public AddNewController(
@@ -52,9 +54,10 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             IStorageService storageService,
             OpsDataLoadServiceConfigSettings opsDataLoadServiceConfigSettings,
             IJobService jobService,
-            IFileNameValidationServiceProvider fileNameValidationServicesProvider,
             IJsonSerializationService jsonSerializationService,
-            TelemetryClient telemetryClient)
+            TelemetryClient telemetryClient,
+            IEnumerable<ICollection> collections,
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(logger, telemetryClient)
         {
             _logger = logger;
@@ -63,8 +66,9 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             _opsDataLoadServiceConfigSettings = opsDataLoadServiceConfigSettings;
             _jobService = jobService;
             _jsonSerializationService = jsonSerializationService;
+            _collections = collections;
+            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
             _addNewProviderService = addNewProviderService;
-            _fileNameValidationServiceProvider = fileNameValidationServicesProvider;
         }
 
         [HttpGet]
@@ -115,18 +119,19 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 return View("BulkUpload");
             }
 
+            var collection = _collections.SingleOrDefault(s => string.Equals(ProvidersUploadCollectionName, s.CollectionName, StringComparison.CurrentCultureIgnoreCase));
+
             var fileName = Path.GetFileName(file.FileName);
-            var collection = await _collectionService.GetCollectionAsync(ProvidersUploadCollectionName);
-            if (collection == null || !collection.IsOpen)
+            var collectionDb = await _collectionService.GetCollectionAsync(ProvidersUploadCollectionName);
+            if (collectionDb == null || !collectionDb.IsOpen)
             {
                 _logger.LogWarning($"collection {ProvidersUploadCollectionName} is not open/available, but file is being uploaded");
                 ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, $"collection {ProvidersUploadCollectionName} is not open/available.");
                 return View();
             }
 
-            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(CollectionNames.ReferenceDataOps);
-
-            var validationResult = await fileNameValidationService.ValidateFileNameAsync(fileName.ToUpper(CultureInfo.CurrentUICulture), file.Length, cancellationToken);
+            var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(collection.CollectionName);
+            var validationResult = await fileNameValidationService.ValidateFileNameAsync(collection.CollectionName, fileName.ToUpper(CultureInfo.CurrentUICulture), collection.FileNameFormat, file.Length,  cancellationToken);
 
             if (validationResult.ValidationResult != FileNameValidationResult.Valid)
             {
@@ -137,7 +142,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 return View();
             }
 
-            await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collection.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
+            await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collectionDb.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
 
             var jobId = await _jobService.SubmitJob(
                 new JobSubmission
@@ -147,7 +152,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 FileSizeBytes = file.Length,
                 SubmittedBy = User.Name(),
                 NotifyEmail = User.Email(),
-                StorageReference = collection.StorageReference
+                StorageReference = collectionDb.StorageReference
             }, cancellationToken);
 
             return RedirectToAction("InProgress", new { jobId });

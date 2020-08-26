@@ -8,6 +8,8 @@
         CampusIdentifier,
         ValidationMessages2021,
         DevolvedPostcodes,
-        OnsPostcodes
+        OnsPostcodes,
+        ShortTermFundingInitiatives,
+        DevolvedContracts
     }
 }
