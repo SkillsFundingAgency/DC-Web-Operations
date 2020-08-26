@@ -1,7 +1,7 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+@model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
 @{
-    ViewData["Title"] = "FRM Unpublish";
+    ViewData["Title"] = "Publication Unpublish";
 }
 <label class="govuk-label" for="name"></label>
 
@@ -9,7 +9,7 @@
 {
     <div class="govuk-form-group">
         <h1 class="govuk-heading-x1">Choose a Period to Unpublish</h1>
-        @using (Html.BeginForm("UnpublishFrmAsync", "Frm"))
+        @using (Html.BeginForm("UnpublishFrmAsync", "Publication"))
         {
             <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablecontinue()">
                 <option value="selectone" selected>Select One</option>

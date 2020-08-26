@@ -1,18 +1,18 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.Frm.Models.FrmReportModel
+@model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
 @{
-    ViewData["Title"] = "FRM Choice";
+    ViewData["Title"] = "Publication Choice";
     ViewData[ViewDataConstants.BackLink] = "/";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-x1">
-            Would you like to publish or unpublish FRM reports?
+            Would you like to publish or unpublish reports?
         </h1>
         <div class="govuk-form-group">
             <label class="govuk-label" for="name"></label>
-            @using (Html.BeginForm("ReportChoiceSelectionAsync","Frm"))
+            @using (Html.BeginForm("ReportChoiceSelectionAsync","Publication"))
             {
                 <div class="govuk-radios govuk-radios--inline">
                     <div class="govuk-radios__item">

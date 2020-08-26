@@ -29,8 +29,6 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + CollectionYearToken;
         public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report";
 
-        public const string FrmReportCollectionName = @"FRM-Reports1920";
-
         public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
 
         public const string ALLFStorageContainerName = "allf-files";
@@ -40,10 +38,6 @@ namespace ESFA.DC.Web.Operations.Utils
         public static readonly string ReportsBlobContainerName = "reports" + CollectionYearToken + "-files";
 
         public static readonly string OpsReportsBlobContainerName = "opsreferencedata";
-
-        public static readonly string FrmContainerName = "frm{0}-files";
-        public static readonly string FrmValidationKey = "Validation";
-        public static readonly string FrmPublishKey = "Publish";
 
         public static readonly string DASSubmission = @"PE-DAS-Submission";
 

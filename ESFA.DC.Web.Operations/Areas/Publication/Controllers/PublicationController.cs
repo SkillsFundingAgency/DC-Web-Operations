@@ -4,83 +4,88 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Areas.Frm.Models;
+using ESFA.DC.Web.Operations.Areas.Publication.Models;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
+using ESFA.DC.Web.Operations.Models.Publication;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
+namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
 {
-    [Area(AreaNames.Frm)]
-    public class FrmController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
+    [Area(AreaNames.Publication)]
+    public class PublicationController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
-        private readonly IFrmService _frmService;
+        private readonly IReportsPublicationService _reportsPublicationService;
         private readonly ILogger _logger;
         private readonly IStorageService _storageService;
-        private readonly IFileService _fileService;
+        private readonly ICollectionsService _collectionsService;
 
-        public FrmController(
+        public PublicationController(
             ILogger logger,
-            IFrmService frmService,
+            IReportsPublicationService reportsPublicationService,
             IStorageService storageService,
-            IIndex<PersistenceStorageKeys, IFileService> fileService,
+            ICollectionsService collectionsService,
             TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _logger = logger;
-            _frmService = frmService;
+            _reportsPublicationService = reportsPublicationService;
             _storageService = storageService;
-            _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
+            _collectionsService = collectionsService;
         }
 
         public IActionResult Index()
         {
-            var model = new FrmReportModel()
+            var model = new PublicationReportModel()
             {
                 IsFrmReportChoice = false
             };
             return View("Index", model);
         }
 
-        public IActionResult SelectValidate()
+        public async Task<IActionResult> SelectValidate()
         {
+            var collections = await _collectionsService.GetCollectionsByType(CollectionTypeConstants.Publication);
+            ViewData[ViewDataConstants.Collections] = collections.Select(x => x.CollectionTitle);
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> HoldingPageAsync(FrmReportModel model)
+        public async Task<IActionResult> HoldingPageAsync(JobDetails model)
         {
-            var frmStatus = (JobStatusType)await _frmService.GetFrmStatusAsync(model.FrmJobId);
+            var frmStatus = (JobStatusType)await _reportsPublicationService.GetFrmStatusAsync(model.JobId);
             string errorMessage;
             switch (frmStatus)
             {
                 case JobStatusType.Failed:
                 case JobStatusType.FailedRetry:
-                    errorMessage = $"The job status was '{frmStatus}' for FRM job with ID: '{model.FrmJobId}'";
+                    errorMessage = $"The job status was '{frmStatus}' for publication job with ID: '{model.JobId}'";
                     _logger.LogError(errorMessage);
                     TempData["Error"] = errorMessage;
                     return View("ErrorView");
+
                 case JobStatusType.Waiting:
-                    var publishPeriod = model.FrmPeriodNumber;
-                    model.FrmPeriod = $"R{publishPeriod.ToString("D2")}";
-                    var currentContainerName = string.Format(Utils.Constants.FrmContainerName, model.FrmYearPeriod);
-                    model.FrmCSVValidDate = await _frmService.GetFileSubmittedDateAsync(model.FrmJobId);
-                    return View("ValidateSuccess", model);
+                    var details = await _reportsPublicationService.GetFileSubmittedDetailsAsync(model.JobId);
+                    return View("ValidateSuccess", details);
+
                 case JobStatusType.Completed:
 
                     try
                     {
-                        await _frmService.PublishSldAsync(model.FrmYearPeriod, model.FrmPeriodNumber);
+                        await _reportsPublicationService.PublishSldAsync(model.JobId);
                     }
                     catch (Exception ex)
                     {
-                        errorMessage = $"The FRM Reports were not able to be published to SLD";
+                        errorMessage = $"The publication Reports were not able to be published to SLD";
                         _logger.LogError(errorMessage, ex);
                         TempData["Error"] = errorMessage;
                         return View("ErrorView");
@@ -95,28 +100,29 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidateFrmAsync(FrmReportModel model)
+        public async Task<IActionResult> ValidateFrmAsync(PublicationReportModel model)
         {
-            model.FrmJobType = Utils.Constants.FrmValidationKey;
-            var frmContainerName = $"frm{model.FrmYearPeriod}";
-            var frmFolderKey = model.FrmDate.ToString("yyyy-MM-dd");
-            var collectionYear = model.FrmYearPeriod;
+            var folderKey = model.PublicationDate.ToString("yyyy-MM-dd");
             var userName = User.Name();
-            var currentContainerName = string.Format(Utils.Constants.FrmContainerName, collectionYear);
-            model.FrmJobId = await _frmService.RunValidationAsync(frmContainerName, frmFolderKey, model.FrmPeriodNumber, currentContainerName, userName);
+            var jobId = await _reportsPublicationService.RunValidationAsync(model.CollectionName, folderKey, model.PeriodNumber, userName);
 
-            return RedirectToAction("HoldingPageAsync", model);
+            var jobDetails = new JobDetails()
+            {
+                JobId = jobId,
+                PeriodNumber = model.PeriodNumber,
+            };
+
+            return RedirectToAction("HoldingPageAsync", jobDetails);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PublishFrmAsync(FrmReportModel model)
+        public async Task<IActionResult> PublishAsync(JobDetails model)
         {
-            model.FrmJobType = Utils.Constants.FrmPublishKey;
-            model.FrmJobId = await _frmService.RunPublishAsync(model.FrmJobId);
+            await _reportsPublicationService.RunPublishAsync(model.JobId);
             return RedirectToAction("HoldingPageAsync", model);
         }
 
-        public async Task<IActionResult> ReportChoiceSelectionAsync(FrmReportModel model)
+        public async Task<IActionResult> ReportChoiceSelectionAsync(PublicationReportModel model)
         {
             if (model.IsFrmReportChoice)
             {
@@ -124,8 +130,8 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
 
             var collectionType = "frm";
-            var reportsData = await _frmService.GetFrmReportsDataAsync();
-            var lastTwoYears = await _frmService.GetLastTwoCollectionYearsAsync(collectionType);
+            var reportsData = await _reportsPublicationService.GetFrmReportsDataAsync();
+            var lastTwoYears = await _reportsPublicationService.GetLastTwoCollectionYearsAsync(collectionType);
             var lastYearValue = lastTwoYears.LastOrDefault();
             model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
 
@@ -151,9 +157,9 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
                 var pathArray = path.Split("/");
                 int yearPeriod = int.Parse(pathArray[0]);
                 int periodNumber = int.Parse(pathArray[1]);
-                await _frmService.UnpublishSldAsync(periodNumber, yearPeriod);
+                await _reportsPublicationService.UnpublishSldAsync(periodNumber, yearPeriod);
                 string containerName = $"frm{yearPeriod}-files";
-                await _frmService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);
+                await _reportsPublicationService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);
                 return View("UnpublishSuccess");
             }
             catch (Exception ex)
@@ -165,17 +171,15 @@ namespace ESFA.DC.Web.Operations.Areas.Frm.Controllers
             }
         }
 
-        public async Task<FileResult> GetReportFileAsync(string fileName, int yearPeriod)
+        public async Task<FileResult> GetReportFileAsync(string fileName, string collectionName, string storageReference)
         {
             try
             {
-                var containerName = string.Format(Utils.Constants.FrmContainerName, yearPeriod);
-
-                var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
+                var blobStream = await _storageService.GetFile(storageReference, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
                 {
-                    FileDownloadName = fileName
+                    FileDownloadName = $"{collectionName}_{fileName}"
                 };
             }
             catch (Exception e)

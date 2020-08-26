@@ -8,5 +8,6 @@
         public const string GoToStart = "GoToStart";
         public const string EmailNavigation = "EmailNavigation";
         public const string EmailDistributionHome = "EmailDistributionHome";
+        public const string Collections = "Collections";
     }
 }

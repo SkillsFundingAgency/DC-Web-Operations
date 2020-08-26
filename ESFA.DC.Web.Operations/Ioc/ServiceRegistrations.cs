@@ -16,11 +16,11 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Auditing;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
-using ESFA.DC.Web.Operations.Interfaces.Frm;
 using ESFA.DC.Web.Operations.Interfaces.Notifications;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
+using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
@@ -137,7 +137,7 @@ namespace ESFA.DC.Web.Operations.Ioc
 
             builder.RegisterType<FileUploadJobMetaDataModelBuilderService>().As<IFileUploadJobMetaDataModelBuilderService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<FrmService>().As<IFrmService>().WithAttributeFiltering().InstancePerLifetimeScope();
+            builder.RegisterType<ReportsPublicationService>().As<IReportsPublicationService>().WithAttributeFiltering().InstancePerLifetimeScope();
 
             builder.RegisterType<AuditService>().As<IAuditService>().InstancePerLifetimeScope();
             builder.RegisterType<AuditRepository>().As<IAuditRepository>().InstancePerLifetimeScope();
