@@ -1,0 +1,131 @@
+﻿@using ESFA.DC.Web.Operations.Utils
+@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.PeriodEndViewModel
+@{
+    ViewData["Title"] = "Index";
+    var isOpen = Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished));
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third sticky scrolling-summary" style="height: 100%">
+        <ul class="govuk-list">
+            <li>
+                @Html.ActionLink("Reports", "Index", "PeriodEndReport", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("History", "Index", "History", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
+            </li>
+            <li>
+                @Html.ActionLink("Validity Periods", "Index", "ValidityPeriod", new { area = AreaNames.PeriodEndILR }, new { @class = "govuk-link" })
+            </li>
+        </ul>
+        <div id="summaryContainer"></div>
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl heading-bottom-margin">Period end</h1>
+        <br />
+        <h2 class="govuk-heading-l">Period R@(Model.Period.ToString().PadLeft(2, '0')) of Year @Model.Year</h2>
+
+
+        <br />
+        <br />
+
+        <button type="submit" class="govuk-button customised" id="startPeriodEnd"
+                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ILR');return false;">
+            Start Period End
+        </button>
+
+        <br />
+        <br />
+
+        <div id="pathContainer">
+
+        </div>
+
+        <br />
+        <br />
+
+        <div class="app-task-list__section">
+            <input id="publishMcaReports" type="submit" class="govuk-button customised" onclick="window.periodEndClient.publishMcaReports(@Model.Year, @Model.Period);return false;" value="Publish MCA Reports">
+        </div>
+
+        <br />
+        <br />
+
+        <div class="app-task-list__section">
+            <input id="publishProviderReports" type="submit" class="govuk-button customised" onclick="window.periodEndClient.publishProviderReports(@Model.Year, @Model.Period);return false;" value="Publish Provider Reports">
+        </div>
+
+        <br />
+        <br />
+
+        <div class="app-task-list__section">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ILR');return false;" value="Close Period End">
+        </div>
+
+        <br />
+        <br />
+
+        <div class="app-task-list__section">
+            <input id="resumeReferenceData" type="submit" class="govuk-button customised" onclick="window.periodEndClient.unPauseReferenceJobs(@Model.Year, @Model.Period);return false;" value="Resume Reference Data Jobs">
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">&nbsp;</div>
+    <div class="govuk-grid-column-two-thirds">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    @if (Model != null && (Model.IsPreviousPeriod || Model.CollectionClosed))
+    {
+        <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    }
+    <script src="~/assets/js/handlebars.js"></script>
+
+    <script type="module">
+        import PathController from '/assets/js/periodEnd/betaPathController.js';
+
+        @if (Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)))
+        {
+            <text>
+                import Client from '/assets/js/periodEnd/client.js';
+                import Hub from '/assets/js/hubs/hub.js';
+            </text>
+        }
+
+        (function() {
+            const stateModel = @Json.Serialize(Model);
+            const pathController = new PathController();
+
+            pathController.initialiseState(stateModel);
+
+            @if (Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)))
+            {
+                <text>
+                    const hub = new Hub('periodEndHub', pathController.displayConnectionState);
+                    pathController.registerHandlers(hub, stateModel);
+                    hub.startHub(stateModel);
+                    window.periodEndClient = new Client(hub.getConnection());
+                </text>
+            }
+
+            pathController.renderPaths(stateModel);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                <text>
+                    const dateLabel = document.getElementById(`lastSync`);
+                    dateLabel.textContent = `Updates disabled as historical period end`;
+                </text>
+            }
+        })();
+    </script>
+}

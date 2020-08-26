@@ -1,0 +1,53 @@
+﻿<ol class="app-task-list">
+    {{#each viewModel.paths}}
+    <li>
+        <a id="Path{{this.pathId}}"></a>
+        <h3>
+            {{#if this.pathId}}
+            <a href="#{{removeSpaces (get_path_name_by_sub_path_id ../viewModel this.pathId)}}">❮ </a>
+            {{/if}}
+            {{this.name}}
+        </h3>
+        <ul class="app-task-list__items" id="PI-{{removeSpaces this.name}}">
+            {{#each this.pathItems}}
+            {{setVar "isCurrent" (is_current this.ordinal ../position)}}
+            {{#if @root.isCurrent}}
+            <div class="app-task-list__item">
+                {{/if}}
+                <li id="{{removeSpaces this.name}}" class="app-task-list__item">
+                    {{#if @root.isCurrent}}
+                    <b>{{this.name}}</b>
+                    {{else}}
+                    {{this.name}} {{#unless this.pathItemJobs}} {{#if (is_past this.ordinal ../position) }}- Status : Completed{{/if}}{{/unless}}
+                    {{/if}}
+
+                    {{#if (is_subPath this)}}
+                    <a href="#Path{{this.subPaths.[0]}}">❯</a>
+                    {{/if}}
+
+                    <a id="{{this.name}}"></a>
+                    {{#if this.pathItemJobs}}
+                    <ul id="JL-{{removeSpaces this.name}}">
+                        {{#each this.pathItemJobs}}
+                        <li>
+                            Job Id : {{this.jobId}}, {{getProviderName this.providerName}}Status : {{getStatus this.status}}
+                            {{#if (can_retry this.status)}}
+                                <a href="#/" class="govuk-link govuk-!-margin-left-3" id="retryJob_{{this.jobId}}" onclick="window.periodEndClient.resubmitJob({{this.jobId}})">Retry</a>
+                            {{/if}}
+                        </li>
+                        {{#if @last}}
+                        {{> pathItemJobSummary summary=../pathItemJobSummary}}
+                        {{/if}}
+                        {{/each}}
+                    </ul>
+                    {{/if}}
+                </li>
+                {{#if @root.isCurrent}}
+                {{> proceedButton pathItem=this year=../../year period=../../period}}
+            </div>
+            {{/if}}
+            {{/each}}
+        </ul>
+    </li>
+    {{/each}}
+</ol>

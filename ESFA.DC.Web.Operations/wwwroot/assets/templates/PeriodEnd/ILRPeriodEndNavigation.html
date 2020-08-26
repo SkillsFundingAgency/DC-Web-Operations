@@ -1,0 +1,14 @@
+﻿<div id="summaryContainer">
+    {{#each viewModel.paths}}
+        <a class="govuk-heading-s" href="#Path{{this.pathId}}">{{this.name}}</a>
+
+        <span class="nav">
+            <ul id="ST-{{removeSpaces this.name}}" class="govuk-list">
+                <!-- TODO -->
+                <!--<li class="compact-list-item">
+                    <a class="govuk-link small-link" href="#Start Internal Reports SubPath">Start Internal Reports SubPath</a>
+                </li>-->
+            </ul>
+        </span>
+    {{/each}}
+</div>

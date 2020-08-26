@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models;
@@ -31,8 +32,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             _stateService = stateService;
         }
 
-        [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
+        [HttpGet("{collectionYear?}/{period?}/{betaView?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period, string betaView, CancellationToken cancellationToken)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
@@ -56,6 +57,11 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 
             model.IsPreviousPeriod = isPreviousPeriod;
             model.IsCurrentPeriod = isCurrentPeriodSelected;
+
+            if (betaView?.ToLower(CultureInfo.CurrentUICulture) == "beta")
+            {
+                return View("IndexBeta", model);
+            }
 
             return View(model);
         }
