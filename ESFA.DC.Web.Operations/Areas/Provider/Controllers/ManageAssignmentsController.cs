@@ -46,20 +46,6 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         }
 
         [HttpPost]
-        public IActionResult Remove(int collectionId, ManageAssignmentsViewModel model)
-        {
-            var record = model.ActiveCollectionsAssignments.Single(s => s.CollectionId == collectionId);
-            record.StartDate = null;
-            record.EndDate = null;
-            model.ActiveCollectionsAssignments.Remove(record);
-            model.InactiveCollectionAssignments.Add(record);
-            model.InactiveCollectionAssignments = model.InactiveCollectionAssignments.OrderBy(o => o.DisplayOrder).ToList();
-            ModelState.Clear();
-
-            return View("Index", model);
-        }
-
-        [HttpPost]
         public IActionResult Add(int collectionId, ManageAssignmentsViewModel model)
         {
             var record = model.InactiveCollectionAssignments.Single(s => s.CollectionId == collectionId);

@@ -47,15 +47,19 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             var providerAssignments = _jsonSerializationService.Deserialize<IEnumerable<OrganisationCollection>>(response);
 
-            return providerAssignments.Select(p => new CollectionAssignment()
-            {
-                CollectionId = p.CollectionId,
-                Name = p.CollectionName,
-                StartDate = _dateTimeProvider.ConvertUtcToUk(p.StartDate),
-                EndDate = _dateTimeProvider.ConvertUtcToUk(p.EndDate.GetValueOrDefault()),
-                DisplayOrder = SetDisplayOrder(p.CollectionType, p.CollectionName),
-                ToBeDeleted = false
-            });
+            var date = _dateTimeProvider.GetNowUtc();
+
+            return providerAssignments
+                .Where(pa => pa.StartDate <= date.AddMonths(2) && pa.EndDate >= date.AddMonths(-2))
+                .Select(p => new CollectionAssignment
+                {
+                    CollectionId = p.CollectionId,
+                    Name = p.CollectionName,
+                    StartDate = _dateTimeProvider.ConvertUtcToUk(p.StartDate),
+                    EndDate = _dateTimeProvider.ConvertUtcToUk(p.EndDate.GetValueOrDefault()),
+                    DisplayOrder = SetDisplayOrder(p.CollectionType, p.CollectionName),
+                    ToBeDeleted = false
+                });
         }
 
         public int SetDisplayOrder(CollectionType collectionType, string collectionName)
