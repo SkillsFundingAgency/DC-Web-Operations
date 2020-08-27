@@ -15,6 +15,6 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public string FileFormat => FileNameExtensionConsts.CSV;
 
-        public string FileNameFormat => "MCAGLA_ONSOverride_RD-YYYYMMDDHHMM.csv";
+        public string FileNameFormat => "MCAGLA-ONSOverride-RD-YYYYMMDDHHMM.csv";
     }
 }
