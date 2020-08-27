@@ -22,17 +22,6 @@ namespace ESFA.DC.Web.Operations.Utils
         public const string Action_PeriodClosedButton = "PeriodClosedState";
         public const string Action_UploadFileButton = "UploaddState";
 
-        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report" + CollectionYearToken;
-        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report" + CollectionYearToken;
-        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report" + CollectionYearToken;
-        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport" + CollectionYearToken;
-        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + CollectionYearToken;
-        public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report";
-
-        public const string FrmReportCollectionName = @"FRM-Reports1920";
-
-        public const string ValidationRuleDetailsReportCollectionName = @"OP-VALIDATION-REPORT";
-
         public const string ALLFStorageContainerName = "allf-files";
         public const string ReferenceDataStorageContainerName = "reference-data";
 

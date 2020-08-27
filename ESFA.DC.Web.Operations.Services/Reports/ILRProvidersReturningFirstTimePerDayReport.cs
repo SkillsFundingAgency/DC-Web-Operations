@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "Providers Returning First Time Per Day Report";
 
-        public string CollectionName => Constants.ILRProvidersReturningFirstTimePerDayReport;
+        public string CollectionName => CollectionNames.ILRProvidersReturningFirstTimePerDayReport;
 
         public string ContainerName => Constants.OpsReportsBlobContainerName;
 

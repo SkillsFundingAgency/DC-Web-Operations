@@ -69,7 +69,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
 
         public async Task<long> RunValidationAsync(string containerName, string folderKey, int periodNumber, string storageReference, string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string collectionName = Constants.FrmReportCollectionName;
+            string collectionName = CollectionNames.FrmReportCollectionName;
             FrmReportsJob job = new FrmReportsJob()
             {
                 CollectionName = collectionName,
@@ -97,7 +97,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
 
         public async Task<long> RunPublishAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string collectionName = Constants.FrmReportCollectionName;
+            string collectionName = CollectionNames.FrmReportCollectionName;
 
             JobStatusDto statusDto = new JobStatusDto()
             {

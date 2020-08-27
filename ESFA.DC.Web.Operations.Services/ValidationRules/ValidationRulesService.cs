@@ -35,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Services.ValidationRules
 
         public async Task<long> GenerateReport(string rule, int year, string createdBy, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string collectionName = Constants.ValidationRuleDetailsReportCollectionName;
+            string collectionName = CollectionNames.ValidationRuleDetailsReportCollectionName;
             ValidationRuleDetailsReportJob job = new ValidationRuleDetailsReportJob()
             {
                 CollectionName = collectionName,

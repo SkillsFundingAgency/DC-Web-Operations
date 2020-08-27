@@ -5,18 +5,18 @@ using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Reports
 {
-    public class RuleValidationDetailReport : IReport
+    public class ILRSubmissionsPerDayReport : IReport
     {
-        public string ReportName => "RuleValidationDetailReport";
+        public string ReportName => "ILRSubmissionsPerDayReport";
 
-        public string DisplayName => "Rule Validation Detail Report";
+        public string DisplayName => "ILR File Submissions Per Day Report";
 
-        public string CollectionName => CollectionNames.ValidationRuleDetailsReportCollectionName;
+        public string CollectionName => CollectionNames.ILRSubmissionsPerDayReport;
 
         public string ContainerName => Constants.OpsReportsBlobContainerName;
 
         public string Policy => AuthorisationPolicy.ReportsPolicy;
 
-        public ReportType ReportType => ReportType.Validation;
+        public ReportType ReportType => ReportType.Operations;
     }
 }

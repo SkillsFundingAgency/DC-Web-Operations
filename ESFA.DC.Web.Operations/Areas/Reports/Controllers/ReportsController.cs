@@ -7,6 +7,7 @@ using System.Web;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -123,60 +124,32 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
         }
 
-        [HttpGet("ProcessingReport/{reportName}/{reportAction}/{collectionYear}/{collectionPeriod}/{jobId?}/{jobStatusType?}")]
-        public async Task<IActionResult> ProcessingReport(string reportName, string reportAction, int collectionYear, int collectionPeriod, long? jobId, JobStatusType? jobStatusType)
+        [HttpGet("ProcessingReport/{reportName}/{collectionYear}/{collectionPeriod}/{jobId?}/{jobStatusType?}")]
+        public async Task<IActionResult> ProcessingReport(string reportName, int collectionYear, int collectionPeriod, long? jobId, JobStatusType? jobStatusType)
         {
-            if (string.IsNullOrEmpty(reportAction))
-            {
-                string errorMessage = $"Missing 'reportAction' parameter for 'reportAction' in request {reportName} collectionYear: {collectionYear} collectionPeriod: {collectionPeriod}";
-                _logger.LogError(errorMessage);
-                throw new Exception(errorMessage);
-            }
-
+            ViewBag.AutoRefresh = true;
             ReportsViewModel reportViewModel = new ReportsViewModel()
             {
                 ReportName = reportName,
-                ReportAction = reportAction,
                 CollectionYear = collectionYear,
                 CollectionPeriod = collectionPeriod,
                 JobId = jobId
             };
 
-            switch (reportAction)
+            var jobStatus = (JobStatusType)await _reportsService.GetReportStatus(jobId);
+            if (jobStatus == JobStatusType.Failed || jobStatus == JobStatusType.FailedRetry)
             {
-                case ReportActions.ProcessingRunReport:
-                    // get the job status
-                    reportViewModel.ReportStatus = (JobStatusType)await _reportsService.GetReportStatus(jobId);
-
-                    switch (reportViewModel.ReportStatus)
-                    {
-                        case JobStatusType.Failed:
-                        case JobStatusType.FailedRetry:
-                            string errorMessage = $"The report status was '{reportViewModel.ReportStatus}' for job '{jobId}'";
-                            _logger.LogError(errorMessage);
-                            TempData["Error"] = errorMessage;
-
-                            // if job has failed or failed retry display the error on the index page
-                            return RedirectToAction("Index", "Reports", reportViewModel);
-
-                        case JobStatusType.Completed:
-                            // if job has completed, redirect to Index page to show all the reports
-                            return RedirectToAction("Index", "Reports", reportViewModel);
-                    }
-
-                    break;
-
-                case ReportActions.RunReport:
-                    // Create a report job
-                    reportViewModel.JobId = await _reportsService.RunReport(reportName, collectionYear, collectionPeriod);
-                    break;
-
-                case ReportActions.GetReportDetails:
-                    // redirect to the index page to display all the reports
-                    return RedirectToAction("Index", "Reports", new { area = AreaNames.Reports, CollectionYear = collectionYear, CollectionPeriod = collectionPeriod });
+                _logger.LogError($"Loading in progress page for job id : {jobId}, job is in status ; {jobStatus} - user will be sent to service error page");
+                ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, $"Report generation for - {reportName}, with JobId: {jobId} has failed");
+                return View(model: reportViewModel);
             }
 
-            return View(model: reportViewModel);
+            if (jobStatus != JobStatusType.Completed)
+            {
+                return View(model: reportViewModel);
+            }
+
+            return RedirectToAction("Index", "Reports", reportViewModel);
         }
 
         private async Task<ReportsViewModel> GenerateReportsViewModel(ReportsViewModel reportsViewModel, CancellationToken cancellationToken)
@@ -185,7 +158,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             {
                 CollectionYear = reportsViewModel.CollectionYear,
                 CollectionPeriod = reportsViewModel.CollectionPeriod,
-                ReportAction = ReportActions.GetReportDetails
             };
 
             var getAllPeriodsTask = _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken);
