@@ -15,9 +15,13 @@
     "test": "jest"
   },
   "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/wwwroot/assets/images",
-      "<rootDir>/wwwroot/lib"
-    ]
+    "moduleDirectories": [ "node_modules", "wwwRoot" ],
+    "moduleNameMapper": {
+      "/assets/(.*)": "<rootDir>/wwwroot/assets/$1"
+    },
+      "testPathIgnorePatterns": [
+        "<rootDir>/wwwroot/assets/images",
+        "<rootDir>/wwwroot/lib"
+      ]
+    }
   }
-}
