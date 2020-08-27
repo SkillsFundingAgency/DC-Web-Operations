@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Collections.Models;
 using ESFA.DC.Web.Operations.Controllers;
+using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
@@ -109,9 +111,11 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FailJob(int jobId, string collectionName)
+        public async Task<IActionResult> FailJob(int jobId, string collectionName, CancellationToken cancellationToken)
         {
-            var result = await _collectionsService.FailJob(jobId);
+            var username = User.Name();
+            var differentiator = DifferentiatorPath.FailJobDTO;
+            var result = await _collectionsService.FailJob(jobId, cancellationToken, username, differentiator);
 
             var model = await PopulateCollectionOverrideViewModel(collectionName);
 

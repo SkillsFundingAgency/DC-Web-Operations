@@ -5,33 +5,39 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models;
+using ESFA.DC.Web.Operations.Models.Auditing;
 using Flurl.Http;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public abstract class BaseHttpClientService
+    public class BaseHttpClientService : IBaseHttpClientService
     {
         protected readonly IJsonSerializationService _jsonSerializationService;
         protected readonly HttpClient _httpClient;
         private readonly IRouteFactory _routeFactory;
+        //private readonly IDateTimeProvider _dateTimeProvider;
 
         public BaseHttpClientService(
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
+            //IDateTimeProvider dateTimeProvider,
             HttpClient httpClient)
         {
             _routeFactory = routeFactory;
             _jsonSerializationService = jsonSerializationService;
+            //_dateTimeProvider = dateTimeProvider;
             _httpClient = httpClient;
         }
 
-        public async Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken)
+         public async Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
         {
             var json = _jsonSerializationService.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var content = BuildContent(json, username, differentiator);
 
             var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
@@ -39,10 +45,10 @@ namespace ESFA.DC.Web.Operations.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<HttpRawResponse> SendDataAsyncRawResponse(string url, object data, CancellationToken cancellationToken)
+        public async Task<HttpRawResponse> SendDataAsyncRawResponse(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
         {
             var json = _jsonSerializationService.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var content = BuildContent(json, username, differentiator);
 
             var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
@@ -61,6 +67,20 @@ namespace ESFA.DC.Web.Operations.Services
             var response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<HttpRawResponse> SendAsyncRawResponse(string url, CancellationToken cancellationToken)
+        {
+            var response = await _httpClient.PostAsync(url, null, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var rawResponse = new HttpRawResponse
+            {
+                StatusCode = (int)response.StatusCode,
+                IsSuccess = response.IsSuccessStatusCode,
+                Content = await response.Content.ReadAsStringAsync()
+            };
+
+            return rawResponse;
         }
 
         public async Task<string> GetDataAsync(string url, CancellationToken cancellationToken)
@@ -117,6 +137,23 @@ namespace ESFA.DC.Web.Operations.Services
             var clientUrl = _routeFactory.BuildRoute(baseUrl, segments);
 
             return await clientUrl.GetJsonAsync<TResult>(cancellationToken);
+        }
+
+        private HttpContent BuildContent(string content, string userName, DifferentiatorPath? differentiator)
+        {
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            var differentiatorInt = (int)differentiator;
+
+            if (!string.IsNullOrWhiteSpace(userName) && differentiator != null)
+            {
+                httpContent.Headers.Add("AuditUsername", userName);
+                httpContent.Headers.Add("AuditDifferentiator", differentiatorInt.ToString());
+                //httpContent.Headers.Add("AuditDateTime", _dateTimeProvider.GetNowUtc().ToString());
+                httpContent.Headers.Add("AuditDateTime", DateTime.UtcNow.ToString());
+            }
+
+            return httpContent;
         }
     }
 }
