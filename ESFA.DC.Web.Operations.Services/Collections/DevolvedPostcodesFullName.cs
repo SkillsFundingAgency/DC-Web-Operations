@@ -15,6 +15,6 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public string FileFormat => FileNameExtensionConsts.CSV;
 
-        public string FileNameFormat => "MCAGLA_FullName_RD-YYYYMMDDHHMM.csv";
+        public string FileNameFormat => "MCAGLA-FullName-RD-YYYYMMDDHHMM.csv";
     }
 }
