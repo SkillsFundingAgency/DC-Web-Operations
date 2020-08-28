@@ -25,7 +25,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
         private IEnumerable<ICollection> _referenceDataCollections;
-        private IBaseHttpClientService _baseHttpClientService;
+        private IHttpClientService _baseHttpClientService;
         private IJsonSerializationService _jsonSerializationService;
 
         public CollectionsService(
@@ -33,7 +33,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
             IDateTimeProvider dateTimeProvider,
             ILogger logger,
             IEnumerable<ICollection> referenceDataCollections,
-            IBaseHttpClientService baseHttpClientService,
+            IHttpClientService baseHttpClientService,
             IJsonSerializationService jsonSerializationService)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
