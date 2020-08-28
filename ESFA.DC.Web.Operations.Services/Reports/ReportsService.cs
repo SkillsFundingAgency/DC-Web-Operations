@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
@@ -42,8 +43,9 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             IEnumerable<IReport> reports,
             IAuthorizationService authorizationService,
             IHttpContextAccessor httpContextAccessor,
+            IDateTimeProvider dateTimeProvider,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _collectionsService = collectionsService;
             _reports = reports;

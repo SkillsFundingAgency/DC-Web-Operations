@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
@@ -51,10 +52,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             ICloudStorageService cloudStorageService,
             IJobService jobService,
             ILogger logger,
+            IDateTimeProvider dateTimeProvider,
             AzureStorageSection azureStorageConfig,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;

@@ -35,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             IDateTimeProvider dateTimeProvider,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";

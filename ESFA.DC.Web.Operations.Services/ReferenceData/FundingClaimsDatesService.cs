@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
@@ -22,8 +23,9 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider,
             ICollectionsService collectionsService)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _collectionsService = collectionsService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;

@@ -27,7 +27,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             ApiSettings apiSettings,
             HttpClient httpClient,
             IDateTimeProvider dateTimeProvider)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;

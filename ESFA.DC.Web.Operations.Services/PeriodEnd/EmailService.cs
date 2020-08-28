@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -16,8 +17,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider,
             ApiSettings apiSettings)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-email";
         }
