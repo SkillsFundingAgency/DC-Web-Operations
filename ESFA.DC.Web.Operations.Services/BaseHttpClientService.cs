@@ -131,12 +131,17 @@ namespace ESFA.DC.Web.Operations.Services
 
             var differentiatorInt = (int)differentiator;
 
-            if (!string.IsNullOrWhiteSpace(userName) && differentiator != null)
+            if (!string.IsNullOrWhiteSpace(userName))
             {
                 httpContent.Headers.Add("AuditUsername", userName);
-                httpContent.Headers.Add("AuditDifferentiator", differentiatorInt.ToString());
-                httpContent.Headers.Add("AuditDateTime", _dateTimeProvider.GetNowUtc().ToString());
             }
+
+            if (differentiator != null)
+            {
+                httpContent.Headers.Add("AuditDifferentiator", differentiatorInt.ToString());
+            }
+
+            httpContent.Headers.Add("AuditDateTime", _dateTimeProvider.GetNowUtc().ToString());
 
             return httpContent;
         }
