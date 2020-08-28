@@ -76,14 +76,14 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             }
         }
 
-        public async Task SendCollectionClosedEmail(int year, int period, string collectionType)
+        public async Task SendCollectionClosedEmail(int year, int period)
         {
             try
             {
                 PeriodEndState.CurrentAction = Constants.Action_CollectionClosedEmailButton;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_CollectionClosedEmailButton, false);
 
-                await _periodEndService.InitialisePeriodEndAsync(year, period, collectionType, CancellationToken.None);
+                await _periodEndService.InitialisePeriodEndAsync(year, period, CancellationToken.None);
                 await _periodEndService.CollectionClosedEmailSentAsync(year, period);
                 await _emailService.SendEmail(EmailIds.NCSConfirmCollectionClosedEmail, period, Constants.NcsPeriodPrefix);
             }

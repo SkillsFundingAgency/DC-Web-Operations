@@ -16,13 +16,13 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task CollectionClosedEmailSentAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task CollectionClosedEmailSentAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task ToggleReferenceDataJobsAsync(int year, int period, bool pause, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task PublishProviderReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task PublishProviderReportsAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task PublishMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+        Task PublishMcaReportsAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 

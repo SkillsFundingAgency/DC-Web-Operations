@@ -33,7 +33,7 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.NCS
         {
             try
             {
-                string state = await _periodEndService.GetPrepStateAsync(null, null, CollectionTypes.NCS, cancellationToken);
+                string state = await _periodEndService.GetPrepStateAsync(null, null, cancellationToken);
 
                 // Send JSON to clients.
                 await _periodEndPrepHub.SendMessage(state, cancellationToken);

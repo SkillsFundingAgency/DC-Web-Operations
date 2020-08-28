@@ -37,9 +37,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             _logger = logger;
         }
 
-        public async Task SendMessage(string paths, string collectionType, CancellationToken cancellationToken)
+        public async Task SendMessage(string paths, CancellationToken cancellationToken)
         {
-            await SetButtonStates(collectionType, cancellationToken);
+            await SetButtonStates(cancellationToken);
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
         }
@@ -57,12 +57,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             }
         }
 
-        public async Task StartPeriodEnd(int collectionYear, int period, string collectionType)
+        public async Task StartPeriodEnd(int collectionYear, int period)
         {
             try
             {
                 await _hubContext.Clients.All.SendAsync("DisableStartPeriodEnd");
-                await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
+                await _periodEndService.StartPeriodEndAsync(collectionYear, period, CollectionTypes.ILR);
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, Constants.IlrPeriodPrefix);
             }
@@ -90,7 +90,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         {
             try
             {
-                await _periodEndService.PublishProviderReportsAsync(collectionYear, period);
+                await _periodEndService.PublishProviderReportsAsync(collectionYear, period, CollectionTypes.ILR);
                 await _emailService.SendEmail(EmailIds.ReportsPublishedEmail, period, Constants.IlrPeriodPrefix);
             }
             catch (Exception e)
@@ -104,7 +104,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         {
             try
             {
-                await _periodEndService.PublishMcaReportsAsync(collectionYear, period);
+                await _periodEndService.PublishMcaReportsAsync(collectionYear, period, CollectionTypes.ILR);
             }
             catch (Exception e)
             {
@@ -113,12 +113,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             }
         }
 
-        public async Task ClosePeriodEnd(int collectionYear, int period, string collectionType)
+        public async Task ClosePeriodEnd(int collectionYear, int period)
         {
             try
             {
                 await _hubContext.Clients.All.SendAsync("TurnOffMessage");
-                var paused = await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
+                var paused = await _periodEndService.ClosePeriodEndAsync(collectionYear, period, CollectionTypes.ILR);
 
                 if (paused)
                 {
@@ -160,12 +160,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             }
         }
 
-        private async Task SetButtonStates(string collectionType, CancellationToken cancellationToken)
+        private async Task SetButtonStates(CancellationToken cancellationToken)
         {
-            var period = await _periodService.ReturnPeriod(collectionType, cancellationToken);
+            var period = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, collectionType, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, CollectionTypes.ILR, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted;
