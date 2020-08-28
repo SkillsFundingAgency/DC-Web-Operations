@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
@@ -21,49 +23,47 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     public class DevolvedPostcodesController : BaseReferenceDataController
     {
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IFileNameValidationServiceProvider _fileNameValidationServiceProvider;
+        private readonly IEnumerable<ICollection> _collections;
+
+        private readonly string[] _devolvedPostCodesCollections =
+        {
+            CollectionNames.DevolvedPostcodesFullName,
+            CollectionNames.DevolvedPostcodesSof,
+            CollectionNames.DevolvedPostcodesLocalAuthority,
+            CollectionNames.DevolvedPostcodesOnsOverride
+        };
 
         public DevolvedPostcodesController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
+            IEnumerable<ICollection> collections,
             IFileNameValidationServiceProvider fileNameValidationServiceProvider)
-            : base(storageService, logger, telemetryClient)
+            : base(storageService, logger, telemetryClient, fileNameValidationServiceProvider)
         {
             _referenceDataService = referenceDataService;
-            _fileNameValidationServiceProvider = fileNameValidationServiceProvider;
+            _collections = collections;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var collection = (await _referenceDataService.GetSubmissionsPerCollectionAsync(
-                Utils.Constants.ReferenceDataStorageContainerName,
-                CollectionNames.DevolvedPostcodesFullName,
-                ReportTypes.DevolvedPostcodesFullNameReportName,
-                cancellationToken: cancellationToken)).Files.ToList();
+            var fileUploadJobs = new List<FileUploadJobMetaDataModel>();
 
-            collection.AddRange((await _referenceDataService.GetSubmissionsPerCollectionAsync(
-                Utils.Constants.ReferenceDataStorageContainerName,
-                CollectionNames.DevolvedPostcodesSof,
-                ReportTypes.DevolvedPostcodesSofReportName,
-                cancellationToken: cancellationToken)).Files);
+            foreach (var collection in _devolvedPostCodesCollections)
+            {
+                var col = _collections.Single(s => string.Equals(collection, s.CollectionName, StringComparison.CurrentCultureIgnoreCase));
 
-            collection.AddRange((await _referenceDataService.GetSubmissionsPerCollectionAsync(
-                Utils.Constants.ReferenceDataStorageContainerName,
-                CollectionNames.DevolvedPostcodesLocalAuthority,
-                ReportTypes.DevolvedPostcodesLocalAuthorityReportName,
-                cancellationToken: cancellationToken)).Files);
-
-            collection.AddRange((await _referenceDataService.GetSubmissionsPerCollectionAsync(
-                Utils.Constants.ReferenceDataStorageContainerName,
-                CollectionNames.DevolvedPostcodesOnsOverride,
-                ReportTypes.DevolvedPostcodesOnsOverride,
-                cancellationToken: cancellationToken)).Files);
+                fileUploadJobs.AddRange((await _referenceDataService.GetSubmissionsPerCollectionAsync(
+                    Utils.Constants.ReferenceDataStorageContainerName,
+                    col.CollectionName,
+                    col.ReportName,
+                    cancellationToken: cancellationToken)).Files);
+            }
 
             var model = new ReferenceDataViewModel()
             {
-                Files = collection
+                Files = fileUploadJobs
             };
 
             return View("Index", model);
@@ -79,23 +79,24 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return RedirectToAction("Index");
             }
 
-            var fileNameValidationServices = _fileNameValidationServiceProvider.GetFileNameValidationServices(
-                new[] { CollectionNames.DevolvedPostcodesFullName, CollectionNames.DevolvedPostcodesSof, CollectionNames.DevolvedPostcodesLocalAuthority, CollectionNames.DevolvedPostcodesOnsOverride });
-
-            var collection = string.Empty;
             var model = new FileNameValidationResultModel();
+            var collectionForJob = string.Empty;
 
-            foreach (var service in fileNameValidationServices)
+            foreach (var collection in _devolvedPostCodesCollections)
             {
+                var col = _collections.Single(s =>
+                    string.Equals(collection, s.CollectionName, StringComparison.CurrentCultureIgnoreCase));
+
                 model = await ValidateFileName(
-                    service,
+                    col,
                     file.FileName,
                     file.Length,
                     cancellationToken);
 
-                if (model.ValidationResult == FileNameValidationResult.Valid || model.ValidationResult != FileNameValidationResult.InvalidFileNameFormat)
+                if (model.ValidationResult == FileNameValidationResult.Valid ||
+                    model.ValidationResult != FileNameValidationResult.InvalidFileNameFormat)
                 {
-                    collection = service.CollectionName;
+                    collectionForJob = col.CollectionName;
                     break;
                 }
             }
@@ -105,7 +106,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return View();
             }
 
-            await _referenceDataService.SubmitJob(Period, collection, User.Name(), User.Email(), file, cancellationToken);
+            await _referenceDataService.SubmitJob(Period, collectionForJob, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index");
         }

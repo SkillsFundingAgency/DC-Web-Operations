@@ -30,10 +30,6 @@ namespace ESFA.DC.Web.Operations.Utils
 
         public static readonly string OpsReportsBlobContainerName = "opsreferencedata";
 
-        public static readonly string FrmContainerName = "frm{0}-files";
-        public static readonly string FrmValidationKey = "Validation";
-        public static readonly string FrmPublishKey = "Publish";
-
         public static readonly string DASSubmission = @"PE-DAS-Submission";
 
         public static readonly string IlrPeriodPrefix = "R";

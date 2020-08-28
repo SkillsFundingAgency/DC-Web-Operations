@@ -21,7 +21,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
             IHubContext<DevolvedContractsHub> hubContext,
             IReferenceDataService referenceDataService,
             ILogger logger)
-            : base(eventBase, logger, ReferenceDataTypes.CampusIdentifier)
+            : base(eventBase, logger, ReferenceDataTypes.DevolvedContracts)
         {
             _serialisationHelperService = serialisationHelperService;
             _hubContext = hubContext;
@@ -30,7 +30,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
 
         public async Task SendMessage(CancellationToken cancellationToken)
         {
-            if (!ReferenceDataHubUserHandler.AnyConnectionIds(ReferenceDataTypes.CampusIdentifier))
+            if (!ReferenceDataHubUserHandler.AnyConnectionIds(ReferenceDataTypes.DevolvedContracts))
             {
                 return;
             }

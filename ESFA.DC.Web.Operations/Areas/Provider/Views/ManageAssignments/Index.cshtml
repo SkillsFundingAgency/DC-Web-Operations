@@ -17,39 +17,37 @@
         <div class="govuk-grid-column-two-thirds">
             <p class="govuk-heading-xl govuk-!-margin-bottom-0">Manage assignments</p>
             <p>@Model.ProviderName, @Model.Ukprn</p>
+
             <div class="govuk-!-font-weight-bold">Edit active assignments</div>
             <table class="govuk-table">
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Collection</th>
-                        <th scope="col" class="govuk-table__header">Start date</th>
-                        <th scope="col" class="govuk-table__header">End date</th>
-                        <th scope="col" class="govuk-table__header"></th>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Collection</th>
+                    <th scope="col" class="govuk-table__header">Start date</th>
+                    <th scope="col" class="govuk-table__header">End date</th>
+                </tr>
                 </thead>
                 <tbody class="govuk-table__body" id="assignments">
-                    @for (int i = 0; i < Model.ActiveCollectionsAssignments.Count; i++)
-                    {
-                        <tr class="govuk-table__row">
-                            <input asp-for="@Model.ActiveCollectionsAssignments[i].CollectionId" type="hidden" />
-                            <input asp-for="@Model.ActiveCollectionsAssignments[i].Name" type="hidden" />
-                            <input asp-for="@Model.ActiveCollectionsAssignments[i].DisplayOrder" type="hidden" />
-                            <td class="govuk-table__cell table">
-                                @Model.ActiveCollectionsAssignments[i].Name
-                            </td>
-                            <td class="govuk-table__cell">
-                                <input asp-for="@Model.ActiveCollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
-                            </td>
-                            <td class="govuk-table__cell">
-                                <input asp-for="@Model.ActiveCollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
-                            </td>
-                            <td class="govuk-table__cell">
-                                <button data-prevent-double-click="true" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-top-0" asp-controller="ManageAssignments" asp-action="Remove" asp-route-collectionId="@Model.ActiveCollectionsAssignments[i].CollectionId">Remove</button>
-                            </td>
-                        </tr>
-                    }
+                @for (int i = 0; i < Model.ActiveCollectionsAssignments.Count; i++)
+                {
+                    <tr class="govuk-table__row">
+                        <input asp-for="@Model.ActiveCollectionsAssignments[i].CollectionId" type="hidden" />
+                        <input asp-for="@Model.ActiveCollectionsAssignments[i].Name" type="hidden" />
+                        <input asp-for="@Model.ActiveCollectionsAssignments[i].DisplayOrder" type="hidden" />
+                        <td class="govuk-table__cell table">
+                            @Model.ActiveCollectionsAssignments[i].Name
+                        </td>
+                        <td class="govuk-table__cell">
+                            <input asp-for="@Model.ActiveCollectionsAssignments[i].StartDate" type="date" class="govuk-input" />
+                        </td>
+                        <td class="govuk-table__cell">
+                            <input asp-for="@Model.ActiveCollectionsAssignments[i].EndDate" type="date" class="govuk-input" />
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
+
             <div class="govuk-!-font-weight-bold">Add assignments</div>
             <table class="govuk-table">
                 <thead class="govuk-table__head">

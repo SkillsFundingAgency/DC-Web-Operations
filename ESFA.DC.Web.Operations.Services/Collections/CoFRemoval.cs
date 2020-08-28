@@ -3,16 +3,18 @@ using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
 {
-    public class CoFRemoval : ICollection
+    public class CoFRemoval : BaseCollection, ICollection
     {
-        public string CollectionName => "CoFRemoval";
+        public override string CollectionName => CollectionNames.ReferenceDataConditionsOfFundingRemoval;
 
-        public string ReportName => "CoFRemovalRD-ValidationReport";
+        public string ReportName => ReportTypes.ConditionOfFundingRemovalReportName;
 
         public string DisplayName => "Conditions of Funding Removal";
 
         public string HubName => "conditionOfFundingRemovalHub";
 
         public string FileFormat => FileNameExtensionConsts.CSV;
+
+        public string FileNameFormat => "CoFRemovalRD-YYYYMMDDHHMM.csv";
     }
 }

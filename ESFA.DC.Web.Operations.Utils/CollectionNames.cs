@@ -49,5 +49,7 @@
         public const string FrmReportCollectionName = @"FRM-Reports1920";
 
         public const string ValidationRuleDetailsReportCollectionName = @"OP-Validation-Report";
+
+        public const string ShortTermFundingInitiatives = "ShortTermFundingInitiatives";
     }
 }

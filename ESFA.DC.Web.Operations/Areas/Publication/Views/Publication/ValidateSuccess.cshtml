@@ -1,0 +1,50 @@
+﻿@model ESFA.DC.Web.Operations.Models.Publication.JobDetails
+@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@using ESFA.DC.Web.Operations.Utils.Extensions
+
+@{
+    ViewData["Title"] = "Publication Validation Successful";
+    ViewData[ViewDataConstants.GoToStart] = true;
+}
+<br />
+<h1 class="govuk-heading-xl">
+    Validation Successful
+</h1>
+<div class="govuk-panel__body govuk-!-font-size-19">
+    The @Model.CollectionName Reports have been successfully validated. Please Check CSV for violation report.
+</div>
+<br />
+<table class="govuk-table">
+    <caption class="govuk-table__caption" , style="padding-bottom:5px; text-align:center">CSV Download</caption>
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row" , style="text-align:center">
+            <th scope="col" class="govuk-table__header">Period</th>
+            <th scope="col" class="govuk-table__header">Download</th>
+            <th scope="col" class="govuk-table__header">Last Validated</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body" style="text-align:center">
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@Model.PeriodNumber.ToString("D2")</td>
+            <td class="govuk-table__cell">
+                @Html.ActionLink($"FailedFiles_{Model.PeriodNumber}.csv", "GetReportFileAsync", new { fileName = $"FailedFiles_{Model.PeriodNumber.ToPeriodName()}.csv", storageReference = Model.StorageReference, collectionName = Model.CollectionName})
+            </td>
+            <td class="govuk-table__cell">@Model.DateTimeSubmitted.ToDateTimeString()</td>
+    </tbody>
+</table>
+<table>
+    @using (Html.BeginForm("PublishAsync", "Publication", Model))
+    {
+        <br />
+        <br />
+        <br />
+        <input id="FrmJobId" name="PublicationJobId" type="hidden" value="@Model.JobId" />
+        <button type="submit" class="govuk-button">Publish</button>
+    }
+    <nbsp>  </nbsp>
+    @using (Html.BeginForm("CancelFrm", "Publication"))
+    {
+        <button type="submit" class="govuk-button">Cancel</button>
+    }
+</table>

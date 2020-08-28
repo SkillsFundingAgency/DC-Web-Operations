@@ -79,6 +79,17 @@
             <div class="govuk-grid-column-one-third">
                 <ul class="govuk-list">
                     <li>
+                        <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.ShortTermFundingInitiatives" class="govuk-link">Short Term Funding Initiatives</a></h3>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ShortTermFundingInitiatives.LastUpdatedDateTimeFormattedDisplay</p>
+                        <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ShortTermFundingInitiatives.LastUpdatedByWho</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    <li>
                         <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.DevolvedContracts" class="govuk-link">Devolved Contracts</a></h3>
                         <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
                         <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.DevolvedContracts.LastUpdatedDateTimeFormattedDisplay</p>
