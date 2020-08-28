@@ -6,7 +6,7 @@ using ESFA.DC.Web.Operations.Models.Auditing;
 
 namespace ESFA.DC.Web.Operations.Interfaces
 {
-    public interface IBaseHttpClientService
+    public interface IHttpClientService
     {
         Task<HttpRawResponse> SendDataAsyncRawResponse(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
 
