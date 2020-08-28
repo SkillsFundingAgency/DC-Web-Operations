@@ -14,7 +14,7 @@ using Flurl.Http;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class BaseHttpClientService : IBaseHttpClientService
+    public class BaseHttpClientService : IHttpClientService
     {
         protected readonly IJsonSerializationService _jsonSerializationService;
         protected readonly HttpClient _httpClient;
