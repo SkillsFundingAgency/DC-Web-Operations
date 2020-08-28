@@ -42,9 +42,9 @@
 
         public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + Constants.CollectionYearToken;
 
-        public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report";
+        public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report" + Constants.CollectionYearToken;
 
-        public const string ILRSubmissionsPerDayReport = @"OP-ILRSubmissionsPerDayReport-Report";
+        public const string ILRFileSubmissionsPerDayReport = @"OP-ILRFileSubmissionsPerDay-Report" + Constants.CollectionYearToken;
 
         public const string FrmReportCollectionName = @"FRM-Reports1920";
 

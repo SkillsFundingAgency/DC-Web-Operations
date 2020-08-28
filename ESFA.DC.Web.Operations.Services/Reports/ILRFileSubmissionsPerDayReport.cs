@@ -5,13 +5,13 @@ using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Reports
 {
-    public class ILRSubmissionsPerDayReport : IReport
+    public class ILRFileSubmissionsPerDayReport : IReport
     {
-        public string ReportName => "ILRSubmissionsPerDayReport";
+        public string ReportName => "ILRFileSubmissionsPerDayReport";
 
         public string DisplayName => "ILR File Submissions Per Day Report";
 
-        public string CollectionName => CollectionNames.ILRSubmissionsPerDayReport;
+        public string CollectionName => CollectionNames.ILRFileSubmissionsPerDayReport;
 
         public string ContainerName => Constants.OpsReportsBlobContainerName;
 
