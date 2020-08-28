@@ -97,7 +97,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
             builder.RegisterType<HttpClient>().SingleInstance();
-            builder.RegisterType<BaseHttpClientService>().As<IHttpClientService>().InstancePerRequest();
+            builder.RegisterType<BaseHttpClientService>().As<IHttpClientService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<ILRHistoryService>().As<IILRHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<NCSHistoryService>().As<INCSHistoryService>().InstancePerLifetimeScope();
