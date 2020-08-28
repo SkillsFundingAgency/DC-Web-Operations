@@ -31,7 +31,7 @@ namespace ESFA.DC.Web.Operations.Services
             HttpClient httpClient,
             ILogger logger,
             IDateTimeProvider dateTimeProvider)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _logger = logger;
             _dateTimeProvider = dateTimeProvider;

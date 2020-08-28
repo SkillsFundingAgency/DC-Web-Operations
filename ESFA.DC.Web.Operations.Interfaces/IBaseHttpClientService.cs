@@ -16,8 +16,6 @@ namespace ESFA.DC.Web.Operations.Interfaces
 
         Task<string> SendAsync(string url, CancellationToken cancellationToken);
 
-        Task<HttpRawResponse> SendAsyncRawResponse(string url, CancellationToken cancellationToken);
-
         Task<string> GetDataAsync(string url, CancellationToken cancellationToken);
 
         Task<T> GetAsync<T>(string url, CancellationToken cancellationToken);

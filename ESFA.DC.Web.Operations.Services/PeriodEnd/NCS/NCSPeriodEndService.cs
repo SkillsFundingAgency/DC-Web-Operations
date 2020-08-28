@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.PeriodEnd.Models;
@@ -22,8 +23,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.NCS
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
+            IDateTimeProvider dateTimeProvider,
             HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }

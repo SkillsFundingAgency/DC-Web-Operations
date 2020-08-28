@@ -28,7 +28,7 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
             HttpClient httpClient,
             IDateTimeProvider dateTimeProvider,
             ILogger logger)
-        : base(routeFactory, jsonSerializationService, httpClient)
+        : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _dateTimeProvider = dateTimeProvider;
             _logger = logger;

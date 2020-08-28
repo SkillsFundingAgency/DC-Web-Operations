@@ -19,17 +19,17 @@ namespace ESFA.DC.Web.Operations.Services
         protected readonly IJsonSerializationService _jsonSerializationService;
         protected readonly HttpClient _httpClient;
         private readonly IRouteFactory _routeFactory;
-        //private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public BaseHttpClientService(
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
-            //IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             HttpClient httpClient)
         {
             _routeFactory = routeFactory;
             _jsonSerializationService = jsonSerializationService;
-            //_dateTimeProvider = dateTimeProvider;
+            _dateTimeProvider = dateTimeProvider;
             _httpClient = httpClient;
         }
 
@@ -67,20 +67,6 @@ namespace ESFA.DC.Web.Operations.Services
             var response = await _httpClient.PostAsync(url, null, cancellationToken);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
-        }
-
-        public async Task<HttpRawResponse> SendAsyncRawResponse(string url, CancellationToken cancellationToken)
-        {
-            var response = await _httpClient.PostAsync(url, null, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var rawResponse = new HttpRawResponse
-            {
-                StatusCode = (int)response.StatusCode,
-                IsSuccess = response.IsSuccessStatusCode,
-                Content = await response.Content.ReadAsStringAsync()
-            };
-
-            return rawResponse;
         }
 
         public async Task<string> GetDataAsync(string url, CancellationToken cancellationToken)
@@ -149,8 +135,7 @@ namespace ESFA.DC.Web.Operations.Services
             {
                 httpContent.Headers.Add("AuditUsername", userName);
                 httpContent.Headers.Add("AuditDifferentiator", differentiatorInt.ToString());
-                //httpContent.Headers.Add("AuditDateTime", _dateTimeProvider.GetNowUtc().ToString());
-                httpContent.Headers.Add("AuditDateTime", DateTime.UtcNow.ToString());
+                httpContent.Headers.Add("AuditDateTime", _dateTimeProvider.GetNowUtc().ToString());
             }
 
             return httpContent;

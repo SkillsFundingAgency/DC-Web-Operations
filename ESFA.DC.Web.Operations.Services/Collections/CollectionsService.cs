@@ -26,19 +26,22 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         private readonly ILogger _logger;
         private IEnumerable<ICollection> _referenceDataCollections;
         private IBaseHttpClientService _baseHttpClientService;
+        private IJsonSerializationService _jsonSerializationService;
 
         public CollectionsService(
             ApiSettings apiSettings,
             IDateTimeProvider dateTimeProvider,
             ILogger logger,
             IEnumerable<ICollection> referenceDataCollections,
-            IBaseHttpClientService baseHttpClientService)
+            IBaseHttpClientService baseHttpClientService,
+            IJsonSerializationService jsonSerializationService)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
             _logger = logger;
             _referenceDataCollections = referenceDataCollections;
             _baseHttpClientService = baseHttpClientService;
+            _jsonSerializationService = jsonSerializationService;
         }
 
         public async Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken)
@@ -140,9 +143,8 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<bool> SetCollectionProcessingOverride(int collectionId, bool? collectionProcessingOverrideStatus, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await _baseHttpClientService.SendAsyncRawResponse($"{_baseUrl}/api/collections/set-collection-processing-override/{collectionId}/{collectionProcessingOverrideStatus}", cancellationToken);
-
-            return response.IsSuccess;
+            return _jsonSerializationService.Deserialize<bool>(
+                await _baseHttpClientService.SendAsync($"{_baseUrl}/api/collections/set-collection-processing-override/{collectionId}/{collectionProcessingOverrideStatus}", cancellationToken));
         }
 
         public async Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
