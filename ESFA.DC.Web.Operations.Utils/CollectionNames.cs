@@ -32,6 +32,24 @@
 
         public const string DevolvedContracts = "DevolvedContracts";
 
+        public const string PeriodEndDataQualityReportCollectionName = @"PE-DataQuality-Report" + Constants.CollectionYearToken;
+
+        public const string ProviderSubmissionsReportCollectionName = @"PE-ProviderSubmissions-Report" + Constants.CollectionYearToken;
+
+        public const string PeriodEndMetricsReportCollectionName = @"PE-Metrics-Report" + Constants.CollectionYearToken;
+
+        public const string InternalDataMatchReportCollectionName = @"PE-DAS-AppsInternalDataMatchMonthEndReport" + Constants.CollectionYearToken;
+
+        public const string ActCountReportCollectionName = @"PE-ACT-Count-Report" + Constants.CollectionYearToken;
+
+        public const string ILRProvidersReturningFirstTimePerDayReport = @"OP-ILRProvidersReturningFirstTimePerDay-Report" + Constants.CollectionYearToken;
+
+        public const string ILRFileSubmissionsPerDayReport = @"OP-ILRFileSubmissionsPerDay-Report" + Constants.CollectionYearToken;
+
+        public const string FrmReportCollectionName = @"FRM-Reports1920";
+
+        public const string ValidationRuleDetailsReportCollectionName = @"OP-Validation-Report";
+
         public const string ShortTermFundingInitiatives = "ShortTermFundingInitiatives";
     }
 }

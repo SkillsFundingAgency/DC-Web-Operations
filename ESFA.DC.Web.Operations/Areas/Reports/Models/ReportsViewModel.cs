@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.PeriodEnd.Models;
-using ESFA.DC.Web.Operations.Models.Reports;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Models
@@ -19,12 +16,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Models
         public long? JobId { get; set; }
 
         public string ReportName { get; set; }
-
-        public string ReportAction { get; set; }
-
-        public JobStatusType ReportStatus { get; set; }
-
-        public ReportDetails ReportDetails { get; set; }
 
         public IEnumerable<SelectListItem> Reports { get; set; }
 

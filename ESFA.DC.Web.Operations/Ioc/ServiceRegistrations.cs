@@ -150,6 +150,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ILRFileSubmissionsPerDayReport>().As<IReport>().InstancePerLifetimeScope();
 
             // Collections
             builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();
