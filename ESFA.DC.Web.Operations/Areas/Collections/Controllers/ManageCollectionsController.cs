@@ -9,6 +9,7 @@ using ESFA.DC.Web.Operations.Areas.Collections.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Models.Auditing;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
