@@ -16,42 +16,38 @@ using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {
-    public abstract class ProviderBaseService : BaseHttpClientService
+    public abstract class ProviderBaseService
     {
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IHttpClientService _httpClientService;
 
         public ProviderBaseService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient,
-            IDateTimeProvider dateTimeProvider)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IDateTimeProvider dateTimeProvider,
+            IHttpClientService httpClientService)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
+            _httpClientService = httpClientService;
         }
 
         public async Task<Models.Provider.Provider> GetProviderAsync(long ukprn, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<ProviderDetail>(
-                await GetDataAsync($"{_baseUrl}/api/org/{ukprn}", cancellationToken));
+            var data = await _httpClientService.GetAsync<ProviderDetail>($"{_baseUrl}/api/org/{ukprn}", cancellationToken);
 
             return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, data.IsMCA);
         }
 
         public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken)
         {
-            var response = await GetDataAsync(_baseUrl + $"/api/org/assignments/{ukprn}", cancellationToken);
-
-            var providerAssignments = _jsonSerializationService.Deserialize<IEnumerable<OrganisationCollection>>(response);
+            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_baseUrl}/api/org/assignments/{ukprn}", cancellationToken);
 
             var date = _dateTimeProvider.GetNowUtc();
             var earliestStartDate = date.AddMonths(2);
             var expiredEndDate = date.AddMonths(-2);
 
-            return providerAssignments
+            return response
                 .Where(pa => pa.StartDate <= earliestStartDate && pa.EndDate >= expiredEndDate)
                 .Select(p => new CollectionAssignment
                 {

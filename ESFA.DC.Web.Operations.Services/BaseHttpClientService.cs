@@ -14,7 +14,7 @@ using Flurl.Http;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class BaseHttpClientService : IHttpClientService
+    public sealed class BaseHttpClientService : IHttpClientService
     {
         protected readonly IJsonSerializationService _jsonSerializationService;
         protected readonly HttpClient _httpClient;
@@ -33,7 +33,7 @@ namespace ESFA.DC.Web.Operations.Services
             _httpClient = httpClient;
         }
 
-         public async Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
+        public async Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
         {
             var json = _jsonSerializationService.Serialize(data);
 

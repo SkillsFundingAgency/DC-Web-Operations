@@ -12,25 +12,22 @@ using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Services.Provider
 {
-    public class SearchProviderService : BaseHttpClientService, ISearchProviderService
+    public class SearchProviderService : ISearchProviderService
     {
+        private readonly IHttpClientService _httpClientService;
         private readonly string _baseUrl;
 
         public SearchProviderService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
-            IDateTimeProvider dateTimeProvider,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IHttpClientService httpClientService)
         {
+            _httpClientService = httpClientService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<IEnumerable<ProviderSearchResult>> GetNewProviderSearchAsync(string query, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ProviderSearchResult>> GetNewProviderSearchAsync(string query, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<Jobs.Model.ProviderSearchResult>(
-                await GetDataAsync($"{_baseUrl}/api/org/search/new/{query}", cancellationToken));
+            var data = await _httpClientService.GetAsync<Jobs.Model.ProviderSearchResult>($"{_baseUrl}/api/org/search/new/{query}", cancellationToken);
 
             var results = new List<ProviderSearchResult>();
             data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName)));
@@ -38,10 +35,9 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             return results;
         }
 
-        public async Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchAsync(string query, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ProviderSearchResult>> GetExistingProviderSearchAsync(string query, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<Jobs.Model.ProviderSearchResult>(
-                await GetDataAsync($"{_baseUrl}/api/org/search/existing/{query}", cancellationToken));
+            var data = await _httpClientService.GetAsync<Jobs.Model.ProviderSearchResult>($"{_baseUrl}/api/org/search/existing/{query}", cancellationToken);
 
             var results = new List<ProviderSearchResult>();
             data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName)));

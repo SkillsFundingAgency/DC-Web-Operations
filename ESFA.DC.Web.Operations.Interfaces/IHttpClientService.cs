@@ -13,5 +13,13 @@ namespace ESFA.DC.Web.Operations.Interfaces
         Task<string> SendAsync(string url, CancellationToken cancellationToken);
 
         Task<T> GetAsync<T>(string url, CancellationToken cancellationToken);
+
+        Task<string> GetDataAsync(string url, CancellationToken cancellationToken);
+
+        Task<string> PutDataAsync(string url, object data, CancellationToken cancellationToken);
+
+        Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
+
+        Task DeleteAsync(string url, CancellationToken cancellationToken);
     }
 }

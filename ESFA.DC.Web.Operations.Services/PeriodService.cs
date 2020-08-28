@@ -15,75 +15,58 @@ using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class PeriodService : BaseHttpClientService, IPeriodService
+    public class PeriodService : IPeriodService
     {
         private const string NoPeriodError = "No return period found in PeriodService.";
 
         private readonly ILogger _logger;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IHttpClientService _httpClientService;
 
         private readonly string _baseUrl;
 
         public PeriodService(
-            IRouteFactory routeFactory,
             ApiSettings apiSettings,
-            IJsonSerializationService jsonSerializationService,
-            HttpClient httpClient,
             ILogger logger,
-            IDateTimeProvider dateTimeProvider)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IDateTimeProvider dateTimeProvider,
+            IHttpClientService httpClientService)
         {
             _logger = logger;
             _dateTimeProvider = dateTimeProvider;
+            _httpClientService = httpClientService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
         public async Task<PathYearPeriod> ReturnPeriod(string collectionType, CancellationToken cancellationToken = default)
         {
-            PathYearPeriod period = _jsonSerializationService.Deserialize<PathYearPeriod>(
-                await GetDataAsync($"{_baseUrl}/api/returns-calendar/periodEnd/{collectionType}", cancellationToken));
+            PathYearPeriod period = await _httpClientService.GetAsync<PathYearPeriod>($"{_baseUrl}/api/returns-calendar/periodEnd/{collectionType}", cancellationToken);
 
-            if (period == null)
-            {
-                _logger.LogError(NoPeriodError);
-                throw new Exception(NoPeriodError);
-            }
+            AssertPeriodResponseValid(period);
 
             return period;
         }
 
         public async Task<ReturnPeriod> GetRecentlyClosedPeriodAsync(CancellationToken cancellationToken = default)
         {
-            ReturnPeriod period = _jsonSerializationService.Deserialize<ReturnPeriod>(
-                await GetDataAsync($"{_baseUrl}/api/returns-calendar/closed", cancellationToken));
+            ReturnPeriod period = await _httpClientService.GetAsync<ReturnPeriod>($"{_baseUrl}/api/returns-calendar/closed", cancellationToken);
 
-            if (period == null)
-            {
-                _logger.LogError(NoPeriodError);
-                throw new Exception(NoPeriodError);
-            }
+            AssertPeriodResponseValid(period);
 
             return period;
         }
 
         public async Task<List<ReturnPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default)
         {
-            var periods = _jsonSerializationService.Deserialize<List<ReturnPeriod>>(
-                await GetDataAsync($"{_baseUrl}/api/returns-calendar/open", cancellationToken));
+            var periods = await _httpClientService.GetAsync<List<ReturnPeriod>>($"{_baseUrl}/api/returns-calendar/open", cancellationToken);
 
-            if (periods == null)
-            {
-                _logger.LogError(NoPeriodError);
-                throw new Exception(NoPeriodError);
-            }
+            AssertPeriodResponseValid(periods);
 
             return periods;
         }
 
         public async Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken)
         {
-            var maxIlrPeriods = _jsonSerializationService.Deserialize<int>(
-                await GetDataAsync($"{_baseUrl}/api/returnperiod/maxPeriod/{ilrCollectionType}", cancellationToken));
+            var maxIlrPeriods = await _httpClientService.GetAsync<int>($"{_baseUrl}/api/returnperiod/maxPeriod/{ilrCollectionType}", cancellationToken);
 
             return Enumerable.Range(1, maxIlrPeriods).ToDictionary(x => $"R{x:00}");
         }
@@ -93,14 +76,9 @@ namespace ESFA.DC.Web.Operations.Services
             string collectionName,
             CancellationToken cancellationToken)
         {
-            var periods = _jsonSerializationService.Deserialize<List<ReturnPeriod>>(
-                await GetDataAsync($"{_baseUrl}/api/returns-calendar/all/{collectionName}/{collectionType}", cancellationToken));
+            var periods = await _httpClientService.GetAsync<List<ReturnPeriod>>($"{_baseUrl}/api/returns-calendar/all/{collectionName}/{collectionType}", cancellationToken);
 
-            if (periods == null)
-            {
-                _logger.LogError(NoPeriodError);
-                throw new Exception(NoPeriodError);
-            }
+            AssertPeriodResponseValid(periods);
 
             return periods
                 .Where(p => p.EndDateTimeUtc >= _dateTimeProvider.GetNowUtc())
@@ -108,6 +86,16 @@ namespace ESFA.DC.Web.Operations.Services
                 .Select(p => p.CollectionYear)
                 .Distinct()
                 .ToList();
+        }
+
+        private void AssertPeriodResponseValid<T>(T response)
+            where T : class
+        {
+            if (response == null)
+            {
+                _logger.LogError(NoPeriodError);
+                throw new Exception(NoPeriodError);
+            }
         }
     }
 }
