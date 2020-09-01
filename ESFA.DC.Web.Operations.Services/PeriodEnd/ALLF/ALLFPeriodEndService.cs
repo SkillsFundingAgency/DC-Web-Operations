@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -23,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 {
-    public class ALLFPeriodEndService : BaseHttpClientService, IALLFPeriodEndService
+    public class ALLFPeriodEndService : IALLFPeriodEndService
     {
         private const string Api = "/api/period-end-allf/";
         private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
@@ -38,25 +35,22 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         private readonly IJobService _jobService;
         private readonly ILogger _logger;
         private readonly AzureStorageSection _azureStorageConfig;
+        private readonly IHttpClientService _httpClientService;
 
         private readonly string _baseUrl;
 
         public ALLFPeriodEndService(
-            IRouteFactory routeFactory,
             IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
-            IJsonSerializationService jsonSerializationService,
             ICollectionsService collectionService,
             IPeriodService periodService,
             IStateService stateService,
             ICloudStorageService cloudStorageService,
             IJobService jobService,
             ILogger logger,
-            IDateTimeProvider dateTimeProvider,
             AzureStorageSection azureStorageConfig,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IHttpClientService httpClientService)
         {
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
@@ -68,39 +62,39 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             _jobService = jobService;
             _logger = logger;
             _azureStorageConfig = azureStorageConfig;
+            _httpClientService = httpClientService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
         public async Task InitialisePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken)
         {
-            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/initialise", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/initialise", cancellationToken);
         }
 
         public async Task StartPeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/start", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/start", cancellationToken);
         }
 
         public async Task ClosePeriodEndAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/close", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{Api}{year}/{period}/{collectionType}/close", cancellationToken);
         }
 
         public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync($"{_baseUrl}{Api}{year}/{period}/{path}/proceed", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{Api}{year}/{period}/{path}/proceed", cancellationToken);
         }
 
         public async Task<string> GetPathItemStatesAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}{Api}states-main/{collectionType}/{year}/{period}", cancellationToken);
-            return data;
+            return await _httpClientService.GetDataAsync($"{_baseUrl}{Api}states-main/{collectionType}/{year}/{period}", cancellationToken);
         }
 
         public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var jobStatusDto = new JobStatusDto(jobId, Convert.ToInt32(JobStatusType.Ready));
-            await SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
+            await _httpClientService.SendDataAsync($"{_baseUrl}/api/job/{JobStatusType.Ready}", jobStatusDto, cancellationToken);
         }
 
         public async Task SubmitJob(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken)
@@ -213,9 +207,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         {
             var url = $"{_baseUrl}{Api}file-uploads/{collectionYear}/{period}";
 
-            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
-
-            return data;
+            return await _httpClientService.GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
         }
     }
 }
