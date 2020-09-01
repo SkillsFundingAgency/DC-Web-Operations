@@ -13,7 +13,7 @@
         <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/periodEnd" class="govuk-heading-s" asp-area="periodend" asp-controller="PeriodEnd" asp-action="Index">Period end</a>
         <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/frm" class="govuk-heading-s" asp-area="publication" asp-controller="Publication" asp-action="Index">Publication</a>
         <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsOrReportsPolicy" govuk-request-path-search-text="/reports" class="govuk-heading-s" asp-area="reports" asp-controller="Reports" asp-action="Index">Reports</a>
-        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/referenceData" class="govuk-heading-s" asp-area="ReferenceData" asp-controller="ReferenceData" asp-action="Index" asp-route-collectionName="">Reference Data</a>
+        <a policy="@AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy" govuk-request-path-search-text="/referenceData" class="govuk-heading-s" asp-area="ReferenceData" asp-controller="ReferenceData" asp-action="Index" asp-route-collectionName="">Ref. Data</a>
     </div>
 
 @if (!(ViewData.ContainsKey(ViewDataConstants.DashBoard) || ViewData.ContainsKey(ViewDataConstants.LoadingPage)))
