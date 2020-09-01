@@ -34,9 +34,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             _logger = logger;
         }
 
-        public async Task SendMessage(string paths, string collectionType, CancellationToken cancellationToken)
+        public async Task SendMessage(string paths, CancellationToken cancellationToken)
         {
-            await SetButtonStates(collectionType, cancellationToken);
+            await SetButtonStates(cancellationToken);
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
         }
@@ -54,11 +54,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             }
         }
 
-        public async Task StartPeriodEnd(int collectionYear, int period, string collectionType)
+        public async Task StartPeriodEnd(int collectionYear, int period)
         {
             try
             {
-                await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType);
+                await _periodEndService.StartPeriodEndAsync(collectionYear, period);
             }
             catch (Exception e)
             {
@@ -67,12 +67,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             }
         }
 
-        public async Task ClosePeriodEnd(int collectionYear, int period, string collectionType)
+        public async Task ClosePeriodEnd(int collectionYear, int period)
         {
             try
             {
                 await _hubContext.Clients.All.SendAsync("TurnOffMessage");
-                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType);
+                await _periodEndService.ClosePeriodEndAsync(collectionYear, period);
             }
             catch (Exception e)
             {
@@ -109,12 +109,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.NCS
             }
         }
 
-        private async Task SetButtonStates(string collectionType, CancellationToken cancellationToken)
+        private async Task SetButtonStates(CancellationToken cancellationToken)
         {
-            var period = await _periodService.ReturnPeriod(collectionType, cancellationToken);
+            var period = await _periodService.ReturnPeriod(CollectionTypes.NCS, cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, collectionType, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year.Value, period.Period, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted && !state.PeriodEndFinished;

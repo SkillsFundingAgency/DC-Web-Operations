@@ -37,7 +37,7 @@
         <br />
 
         <button type="submit" class="govuk-button customised" id="startPeriodEnd"
-                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.NCS');return false;">
+                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period);return false;">
             Start Period End
         </button>
 
@@ -52,7 +52,7 @@
         <br />
 
         <div class="app-task-list__section">
-            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.NCS');return false;" value="Close Period End">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period);return false;" value="Close Period End">
         </div>
 
         <br />

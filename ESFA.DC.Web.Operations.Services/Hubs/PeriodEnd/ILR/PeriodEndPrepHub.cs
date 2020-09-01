@@ -10,6 +10,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
 {
     public class PeriodEndPrepHub : Hub
     {
+        private const string CollectionType = CollectionTypes.ILR;
         private readonly IPeriodEndPrepHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndPrepHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
@@ -49,7 +50,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         {
             var prepModel = _stateService.GetPrepState(state);
             var pauseEnabled = _stateService.PauseReferenceDataIsEnabled(prepModel.ReferenceDataJobs);
-            var period = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var period = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
             var collectionClosedEmailEnabled = period.PeriodClosed && !pauseEnabled &&
                                                !_stateService.CollectionClosedEmailSent(prepModel.State);
             var continueEnabled = !pauseEnabled && !collectionClosedEmailEnabled && period.PeriodClosed;
@@ -83,15 +84,15 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             }
         }
 
-        public async Task SendCollectionClosedEmail(int year, int period, string collectionType)
+        public async Task SendCollectionClosedEmail(int year, int period)
         {
             try
             {
                 PeriodEndState.CurrentAction = Constants.Action_CollectionClosedEmailButton;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_CollectionClosedEmailButton, false);
 
-                await _periodEndService.InitialisePeriodEndAsync(year, period, collectionType, CancellationToken.None);
-                await _periodEndService.CollectionClosedEmailSentAsync(year, period);
+                await _periodEndService.InitialisePeriodEndAsync(year, period, CollectionType, CancellationToken.None);
+                await _periodEndService.CollectionClosedEmailSentAsync(year, period, CollectionType);
                 await _emailService.SendEmail(EmailIds.ConfirmCollectionClosedEmail, period, Constants.IlrPeriodPrefix);
             }
             catch (Exception e)
