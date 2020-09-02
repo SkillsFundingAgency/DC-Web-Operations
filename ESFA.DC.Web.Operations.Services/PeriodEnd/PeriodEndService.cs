@@ -36,9 +36,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await _httpClientService.SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/{collectionType}/start", cancellationToken);
         }
 
-        public async Task CollectionClosedEmailSentAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task CollectionClosedEmailSentAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await _httpClientService.SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/collection-closed", cancellationToken);
+            await SendAsync($"{_baseUrl}/api/period-end/{year}/{period}/{collectionType}/collection-closed", cancellationToken);
         }
 
         public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
@@ -51,14 +51,14 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             await _httpClientService.SendAsync($"{_baseUrl}/api/period-end/reference-data-jobs/{year}/{period}/{pause}", cancellationToken);
         }
 
-        public async Task PublishProviderReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishProviderReportsAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await _httpClientService.SendAsync($"{_baseUrl}/api/period-end/provider-reports/{year}/{period}/publish", cancellationToken);
+            await SendAsync(_baseUrl + $"/api/period-end/provider-reports/{year}/{period}/{collectionType}/publish", cancellationToken);
         }
 
-        public async Task PublishMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task PublishMcaReportsAsync(int year, int period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await _httpClientService.SendAsync($"{_baseUrl}/api/period-end/mca-reports/{year}/{period}/publish", cancellationToken);
+            await SendAsync(_baseUrl + $"/api/period-end/mca-reports/{year}/{period}/{collectionType}/publish", cancellationToken);
         }
 
         public async Task<string> GetPrepStateAsync(int? year, int? period, string collectionType, CancellationToken cancellationToken = default(CancellationToken))

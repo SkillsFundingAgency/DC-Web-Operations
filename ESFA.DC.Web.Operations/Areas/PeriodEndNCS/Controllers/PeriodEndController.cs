@@ -64,7 +64,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
 
         private async Task<PeriodEndViewModel> ShowPath(int collectionYear, int period)
         {
-            var pathItemStates = await _periodEndService.GetPathItemStatesAsync(collectionYear, period, CollectionTypes.NCS);
+            var pathItemStates = await _periodEndService.GetPathItemStatesAsync(collectionYear, period);
             var state = _stateService.GetMainState(pathItemStates);
             var lastItemJobsFinished = _stateService.AllJobsHaveCompleted(state);
 
