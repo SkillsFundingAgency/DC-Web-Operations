@@ -39,7 +39,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.NCS
 
         public async Task CollectionClosedEmailSentAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/collection-closed", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/{CollectionType}/collection-closed", cancellationToken);
         }
 
         public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
