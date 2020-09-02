@@ -29,39 +29,37 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.NCS
 
         public async Task InitialisePeriodEndAsync(int year, int period, CancellationToken cancellationToken)
         {
-            await SendAsync($"{_baseUrl}{api}{year}/{period}/{CollectionType}/initialise", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/{CollectionType}/initialise", cancellationToken);
         }
 
         public async Task StartPeriodEndAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync($"{_baseUrl}{api}{year}/{period}/{CollectionType}/start", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/{CollectionType}/start", cancellationToken);
         }
 
         public async Task CollectionClosedEmailSentAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync($"{_baseUrl}{api}{year}/{period}/collection-closed", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/collection-closed", cancellationToken);
         }
 
         public async Task ProceedAsync(int year, int period, int path = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await _httpClientService.SendAsync(_baseUrl + $"{api}{year}/{period}/{path}/proceed", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/{path}/proceed", cancellationToken);
         }
 
         public async Task<string> GetPrepStateAsync(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"{api}states-prep/{collectionType}/{year}/{period}", cancellationToken);
-            return data;
+            return await _httpClientService.GetDataAsync($"{_baseUrl}{api}states-prep/{CollectionType}/{year}/{period}", cancellationToken);
         }
 
         public async Task<string> GetPathItemStatesAsync(int? year, int? period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string data = await GetDataAsync(_baseUrl + $"{api}states-main/{CollectionType}/{year}/{period}", cancellationToken);
-            return data;
+            return await _httpClientService.GetDataAsync($"{_baseUrl}{api}states-main/{CollectionType}/{year}/{period}", cancellationToken);
         }
 
         public async Task ClosePeriodEndAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await SendAsync(_baseUrl + $"{api}{year}/{period}/{CollectionType}/close", cancellationToken);
+            await _httpClientService.SendAsync($"{_baseUrl}{api}{year}/{period}/{CollectionType}/close", cancellationToken);
         }
 
         public async Task ReSubmitFailedJobAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
