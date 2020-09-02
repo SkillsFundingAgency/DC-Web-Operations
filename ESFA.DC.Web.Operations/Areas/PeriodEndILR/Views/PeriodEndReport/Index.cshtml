@@ -93,14 +93,17 @@
                             <td class="govuk-table__cell">@collectionType</td>
 
                             <td class="govuk-table__cell">
-                                <table>
-                                    <tr>
-                                        <td>@previous.CollectionReturnCode</td>
-                                    </tr>
-                                    <tr>
-                                        <td>@String.Format("{0:#,###.##}", previous.TotalActualValue)</td>
-                                    </tr>
-                                </table>
+                                @if (previous.CollectionReturnCode != current.CollectionReturnCode)
+                                {
+                                    <table>
+                                        <tr>
+                                            <td>@previous.CollectionReturnCode</td>
+                                        </tr>
+                                        <tr>
+                                            <td>@String.Format("{0:#,###.##}", previous.TotalActualValue)</td>
+                                        </tr>
+                                    </table>
+                                }
                             </td>
                             <td class="govuk-table__cell">
                                 <table>
