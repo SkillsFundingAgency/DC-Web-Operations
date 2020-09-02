@@ -27,7 +27,6 @@
     <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.90-beta0001" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
-    <PackageReference Include="Flurl.Http" Version="2.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">

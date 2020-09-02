@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
@@ -21,7 +19,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.ReferenceData
 {
-    public class ReferenceDataService : BaseHttpClientService, IReferenceDataService
+    public class ReferenceDataService : IReferenceDataService
     {
         private const string Api = "/api/reference-data-uploads/";
         private const string SummaryFileName = "Upload Result Report";
@@ -36,24 +34,22 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         private readonly ICloudStorageService _cloudStorageService;
         private readonly AzureStorageSection _azureStorageConfig;
         private readonly ILogger _logger;
+        private readonly IHttpClientService _httpClientService;
 
         private readonly string _baseUrl;
 
         public ReferenceDataService(
-            IRouteFactory routeFactory,
             ICollectionsService collectionsService,
             IJobService jobService,
             IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IFundingClaimsDatesService fundingClaimsDatesService,
-            IJsonSerializationService jsonSerializationService,
             IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
             ApiSettings apiSettings,
-            HttpClient httpClient,
             AzureStorageSection azureStorageConfig,
-            ILogger logger)
-        : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            ILogger logger,
+            IHttpClientService httpClientService)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;
@@ -64,6 +60,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _cloudStorageService = cloudStorageService;
             _azureStorageConfig = azureStorageConfig;
             _logger = logger;
+            _httpClientService = httpClientService;
 
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -233,18 +230,14 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var url = $"{_baseUrl}/api/returns-calendar/expired/{collectionName}";
 
-            var data = await GetAsync<bool>(url, cancellationToken);
-
-            return data;
+            return await _httpClientService.GetAsync<bool>(url, cancellationToken);
         }
 
         private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerCollectionAsync(string collectionName, CancellationToken cancellationToken)
         {
             var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
 
-            var data = await GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
-
-            return data;
+            return await _httpClientService.GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
         }
 
         private DateTime GetDate(DateTime? date)

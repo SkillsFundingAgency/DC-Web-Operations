@@ -1,44 +1,33 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.PeriodEnd.Models;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
 {
-    public abstract class AbstractHistoryService : BaseHttpClientService, IHistoryService
+    public abstract class AbstractHistoryService : IHistoryService
     {
         private readonly string _baseUrl;
+        private readonly IHttpClientService _httpClientService;
 
         protected AbstractHistoryService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
-            HttpClient httpClient,
-            IDateTimeProvider dateTimeProvider,
-            string baseUrl)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            string baseUrl,
+            IHttpClientService httpClientService)
         {
             _baseUrl = baseUrl; // $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history";
+            _httpClientService = httpClientService;
         }
 
         public async Task<IEnumerable<HistoryDetail>> GetHistoryDetails(int year, CancellationToken cancellationToken = default)
         {
-            var data = await GetDataAsync(_baseUrl + $"/{year}", cancellationToken);
-
-            var result = _jsonSerializationService.Deserialize<IEnumerable<HistoryDetail>>(data);
-            return result;
+            return await _httpClientService.GetAsync<IEnumerable<HistoryDetail>>(_baseUrl + $"/{year}", cancellationToken);
         }
 
         public async Task<IEnumerable<int>> GetCollectionYears(CancellationToken cancellationToken = default)
         {
-            var data = await GetDataAsync(_baseUrl + "/years", cancellationToken);
-
-            var result = _jsonSerializationService.Deserialize<IEnumerable<int>>(data);
-            return result;
+            return await _httpClientService.GetAsync<IEnumerable<int>>(_baseUrl + "/years", cancellationToken);
         }
     }
 }

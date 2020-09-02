@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
-using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
@@ -24,7 +19,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.Reports
 {
-    public class ReportsService : BaseHttpClientService, IReportsService
+    public class ReportsService : IReportsService
     {
         private readonly string _baseUrl;
         private IDictionary<int, IEnumerable<string>> _collectionsByYear = new Dictionary<int, IEnumerable<string>>();
@@ -32,25 +27,23 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private readonly IEnumerable<IReport> _reports;
         private readonly IAuthorizationService _authorizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpClientService _httpClientService;
         private readonly IFileService _operationsFileService;
 
         public ReportsService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient,
             ICollectionsService collectionsService,
             IEnumerable<IReport> reports,
             IAuthorizationService authorizationService,
             IHttpContextAccessor httpContextAccessor,
-            IDateTimeProvider dateTimeProvider,
-            IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IIndex<PersistenceStorageKeys, IFileService> operationsFileService,
+            IHttpClientService httpClientService)
         {
             _collectionsService = collectionsService;
             _reports = reports;
             _authorizationService = authorizationService;
             _httpContextAccessor = httpContextAccessor;
+            _httpClientService = httpClientService;
             _operationsFileService = operationsFileService[PersistenceStorageKeys.OperationsAzureStorage];
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -72,13 +65,9 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             };
 
             string url = $"{_baseUrl}/api/job";
-            var json = _jsonSerializationService.Serialize(job);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            var result = await _httpClientService.SendDataAsync(url, job, cancellationToken);
 
-            var result = await response.Content.ReadAsStringAsync();
             long.TryParse(result, out jobId);
 
             return jobId;
@@ -86,17 +75,15 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public async Task<IEnumerable<ReportDetails>> GetAllReportDetails(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
-            IEnumerable<ReportDetails> reportDetailsList = null;
             var fileLocation = Constants.ReportsBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString());
             var reportTypeCount = 3;
 
             // get all reports
             string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}/{reportTypeCount}";
 
-            var file = await GetDataAsync(reportsUrl, cancellationToken);
-            if (!string.IsNullOrEmpty(file))
+            var reportDetailsList = await _httpClientService.GetAsync<IEnumerable<ReportDetails>>(reportsUrl, cancellationToken);
+            if (reportDetailsList != null)
             {
-                reportDetailsList = _jsonSerializationService.Deserialize<IEnumerable<ReportDetails>>(file);
                 StripLeaingReturnPeriodFromReportUrl(reportDetailsList);
             }
 
@@ -133,7 +120,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             }
 
             string url = $"{_baseUrl}/api/job/{jobId}/status";
-            var response = await GetDataAsync(url, cancellationToken);
+            var response = await _httpClientService.GetDataAsync(url, cancellationToken);
             int.TryParse(response, out var result);
 
             return result;
