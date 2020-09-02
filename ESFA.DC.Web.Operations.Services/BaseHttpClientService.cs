@@ -129,8 +129,6 @@ namespace ESFA.DC.Web.Operations.Services
         {
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            var differentiatorInt = (int)differentiator;
-
             if (!string.IsNullOrWhiteSpace(userName))
             {
                 httpContent.Headers.Add("AuditUsername", userName);
@@ -138,6 +136,7 @@ namespace ESFA.DC.Web.Operations.Services
 
             if (differentiator != null)
             {
+                var differentiatorInt = (int)differentiator;
                 httpContent.Headers.Add("AuditDifferentiator", differentiatorInt.ToString());
             }
 
