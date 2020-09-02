@@ -67,7 +67,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().As<ISerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<SerialisationHelperService>().As<ISerialisationHelperService>().InstancePerLifetimeScope();
-            builder.RegisterType<RouteFactory>().As<IRouteFactory>().InstancePerLifetimeScope();
             builder.RegisterType<CloudStorageService>().As<ICloudStorageService>().SingleInstance();
 
             builder.RegisterType<HubEventBase>().As<Interfaces.IHubEventBase>().SingleInstance();
@@ -97,7 +96,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
             builder.RegisterType<HttpClient>().SingleInstance();
-            builder.RegisterType<BaseHttpClientService>().As<IHttpClientService>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpClientService>().As<IHttpClientService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<ILRHistoryService>().As<IILRHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<NCSHistoryService>().As<INCSHistoryService>().InstancePerLifetimeScope();

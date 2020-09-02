@@ -8,7 +8,7 @@ namespace ESFA.DC.Web.Operations.Interfaces
 {
     public interface IHttpClientService
     {
-        Task<HttpRawResponse> SendDataAsyncRawResponse(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
+        Task<HttpRawResponse> SendDataAsyncRawResponse<T>(string url, T data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
 
         Task<string> SendAsync(string url, CancellationToken cancellationToken);
 
@@ -16,12 +16,10 @@ namespace ESFA.DC.Web.Operations.Interfaces
 
         Task<string> GetDataAsync(string url, CancellationToken cancellationToken);
 
-        Task<string> PutDataAsync(string url, object data, CancellationToken cancellationToken);
+        Task<string> PutDataAsync<T>(string url, T data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
 
-        Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
+        Task<string> SendDataAsync<T>(string url, T data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null);
 
         Task DeleteAsync(string url, CancellationToken cancellationToken);
-
-        Task<TResult> GetAsync<TResult>(string baseUrl, IEnumerable<string> segments, CancellationToken cancellationToken);
     }
 }
