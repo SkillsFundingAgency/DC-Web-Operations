@@ -55,7 +55,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<long> RunReport(string reportName, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunReport(string reportName, int collectionYear, int collectionPeriod, string createdBy, CancellationToken cancellationToken = default(CancellationToken))
         {
             long jobId = -1;
 
@@ -68,7 +68,8 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                 CollectionName = report.CollectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 StorageReference = report.ContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
-                JobId = 0
+                JobId = 0,
+                CreatedBy = createdBy
             };
 
             string url = $"{_baseUrl}/api/job";
