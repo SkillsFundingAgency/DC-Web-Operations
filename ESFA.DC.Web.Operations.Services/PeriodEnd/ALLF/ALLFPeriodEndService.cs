@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Logging.Interfaces;
@@ -27,6 +28,7 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         private const string Api = "/api/period-end-allf/";
         private const string GenericActualsCollectionErrorReportName = "Generic Actuals Collection - Error Report";
         private const string ResultReportName = "Upload Result Report";
+        private const string CollectionType = CollectionTypes.ALLF;
 
         private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
@@ -51,10 +53,11 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             ICloudStorageService cloudStorageService,
             IJobService jobService,
             ILogger logger,
+            IDateTimeProvider dateTimeProvider,
             AzureStorageSection azureStorageConfig,
             ApiSettings apiSettings,
             HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
@@ -139,13 +142,13 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
 
         public async Task<PeriodEndViewModel> GetPathState(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ALLF, cancellationToken);
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
 
             collectionYear = collectionYear ?? currentYearPeriod.Year.Value;
             period = period ?? currentYearPeriod.Period;
 
-            var pathItemStates = await GetPathItemStatesAsync(collectionYear, period, CollectionTypes.ALLF, cancellationToken);
+            var pathItemStates = await GetPathItemStatesAsync(collectionYear, period, CollectionType, cancellationToken);
             var state = _stateService.GetMainState(pathItemStates);
             var lastItemJobsFinished = _stateService.AllJobsHaveCompleted(state);
 

@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "Period End Data Quality Report";
 
-        public string CollectionName => Constants.PeriodEndDataQualityReportCollectionName;
+        public string CollectionName => CollectionNames.PeriodEndDataQualityReportCollectionName;
 
         public string ContainerName => Constants.ReportsBlobContainerName;
 

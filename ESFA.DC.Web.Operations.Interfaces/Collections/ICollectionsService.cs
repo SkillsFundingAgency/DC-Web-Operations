@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
+using ESFA.DC.Web.Operations.Models.Auditing;
 using ESFA.DC.Web.Operations.Models.Collection;
 
 namespace ESFA.DC.Web.Operations.Interfaces.Collections
@@ -34,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Collections
 
         Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<bool> FailJob(int jobId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> FailJob(int jobId, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiatorPath = null);
 
         ICollection GetReferenceDataCollection(string collectionName);
     }

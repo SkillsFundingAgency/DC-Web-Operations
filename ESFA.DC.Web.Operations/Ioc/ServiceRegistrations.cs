@@ -97,6 +97,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
             builder.RegisterType<HttpClient>().SingleInstance();
+            builder.RegisterType<BaseHttpClientService>().As<IHttpClientService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<ILRHistoryService>().As<IILRHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<NCSHistoryService>().As<INCSHistoryService>().InstancePerLifetimeScope();
@@ -150,6 +151,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<RuleValidationDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ILRFileSubmissionsPerDayReport>().As<IReport>().InstancePerLifetimeScope();
 
             // Collections
             builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();

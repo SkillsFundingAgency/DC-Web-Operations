@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "Provider Submissions Report";
 
-        public string CollectionName => Constants.ProviderSubmissionsReportCollectionName;
+        public string CollectionName => CollectionNames.ProviderSubmissionsReportCollectionName;
 
         public string ContainerName => Constants.ReportsBlobContainerName;
 

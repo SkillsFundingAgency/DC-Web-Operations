@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.EmailDistribution.Models;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
@@ -21,9 +22,10 @@ namespace ESFA.DC.Web.Operations.Services
         public EmailDistributionService(
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
+            IDateTimeProvider dateTimeProvider,
             HttpClient httpClient,
             ApiSettings apiSettings)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _baseUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/email-distribution";
         }

@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "ACT Count Report";
 
-        public string CollectionName => Constants.ActCountReportCollectionName;
+        public string CollectionName => CollectionNames.ActCountReportCollectionName;
 
         public string ContainerName => Constants.ReportsBlobContainerName;
 

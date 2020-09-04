@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
         public string DisplayName => "Internal Data Match Report";
 
-        public string CollectionName => Constants.InternalDataMatchReportCollectionName;
+        public string CollectionName => CollectionNames.InternalDataMatchReportCollectionName;
 
         public string ContainerName => Constants.ReportsBlobContainerName;
 

@@ -53,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             HttpClient httpClient,
             AzureStorageSection azureStorageConfig,
             ILogger logger)
-        : base(routeFactory, jsonSerializationService, httpClient)
+        : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;

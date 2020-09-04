@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -12,8 +13,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ILR
             IRouteFactory routeFactory,
             IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, httpClient, $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history-ilr")
+            HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider)
+            : base(routeFactory, jsonSerializationService, httpClient, dateTimeProvider, $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history-ilr")
         {
         }
     }

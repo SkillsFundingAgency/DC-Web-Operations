@@ -1,5 +1,4 @@
 ﻿@using ESFA.DC.Web.Operations.Utils
-@using ESFA.DC.Web.Operations.Constants
 @model ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models.PeriodEndPrepViewModel
 
 @{
@@ -53,7 +52,7 @@
         <br />
 
         <button class="govuk-button customised" id="collectionClosed"
-                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period, '@CollectionTypes.NCS');" disabled>
+                onclick="window.prepClient.collectionClosedEmail(@Model.Year, @Model.Period);" disabled>
             Send Collection Closed Email
         </button>
 

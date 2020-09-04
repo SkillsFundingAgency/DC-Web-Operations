@@ -11,40 +11,42 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Models.Auditing;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ReturnPeriod = ESFA.DC.Web.Operations.Models.Collection.ReturnPeriod;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
 {
-    public class CollectionsService : BaseHttpClientService, ICollectionsService
+    public class CollectionsService : ICollectionsService
     {
         private readonly string _baseUrl;
         private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "FRM", "OP" };
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
         private IEnumerable<ICollection> _referenceDataCollections;
+        private IHttpClientService _baseHttpClientService;
+        private IJsonSerializationService _jsonSerializationService;
 
         public CollectionsService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient,
             IDateTimeProvider dateTimeProvider,
             ILogger logger,
-            IEnumerable<ICollection> referenceDataCollections)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            IEnumerable<ICollection> referenceDataCollections,
+            IHttpClientService baseHttpClientService,
+            IJsonSerializationService jsonSerializationService)
         {
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
             _logger = logger;
             _referenceDataCollections = referenceDataCollections;
+            _baseHttpClientService = baseHttpClientService;
+            _jsonSerializationService = jsonSerializationService;
         }
 
-        public async Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<CollectionSummary>> GetAllCollectionSummariesForYear(int year, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.Collection>>(
-                await GetDataAsync($"{_baseUrl}/api/collections/for-year/{year}", cancellationToken));
+            var data = await _baseHttpClientService.GetAsync<IEnumerable<CollectionsManagement.Models.Collection>>($"{_baseUrl}/api/collections/for-year/{year}", cancellationToken);
 
             return data.Where(c => !_collectionsTypesToExclude.Contains(c.CollectionType))
                 .Select(collection => new CollectionSummary
@@ -65,8 +67,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<IEnumerable<CollectionSummary>> GetAllCollectionsForYear(int year, CancellationToken cancellationToken)
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.Collection>>(
-                await GetDataAsync($"{_baseUrl}/api/collections/all-for-year/{year}", cancellationToken));
+            var data = await _baseHttpClientService.GetAsync<IEnumerable<CollectionsManagement.Models.Collection>>($"{_baseUrl}/api/collections/all-for-year/{year}", cancellationToken);
 
             return data.Where(c => !_collectionsTypesToExclude.Contains(c.CollectionType))
                 .Select(collection => new CollectionSummary
@@ -80,44 +81,38 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<IEnumerable<int>> GetAvailableCollectionYears(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _jsonSerializationService.Deserialize<IEnumerable<int>>(
-                await GetDataAsync($"{_baseUrl}/api/collections/available-years", cancellationToken));
+            return await _baseHttpClientService.GetAsync<IEnumerable<int>>($"{_baseUrl}/api/collections/available-years", cancellationToken);
         }
 
         public async Task<IEnumerable<int>> GetCollectionYearsByType(string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _jsonSerializationService.Deserialize<IEnumerable<int>>(
-                await GetDataAsync($"{_baseUrl}/api/collections/years/{collectionType}", cancellationToken));
+            return await _baseHttpClientService.GetAsync<IEnumerable<int>>($"{_baseUrl}/api/collections/years/{collectionType}", cancellationToken);
         }
 
         public async Task<IEnumerable<CollectionsManagement.Models.Collection>> GetCollectionsByType(string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.Collection>>(
-                await GetDataAsync($"{_baseUrl}/api/collections/type/{collectionType}", cancellationToken));
+            return await _baseHttpClientService.GetAsync< IEnumerable<CollectionsManagement.Models.Collection>>($"{_baseUrl}/api/collections/type/{collectionType}", cancellationToken);
         }
 
         public async Task<CollectionsManagement.Models.Collection> GetCollectionById(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
-                  await GetDataAsync($"{_baseUrl}/api/collections/byId/{collectionId}", cancellationToken));
+            return await _baseHttpClientService.GetAsync<CollectionsManagement.Models.Collection>($"{_baseUrl}/api/collections/byId/{collectionId}", cancellationToken);
         }
 
         public async Task<CollectionsManagement.Models.Collection> GetCollectionAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
-                 await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
+            return await _baseHttpClientService.GetAsync<CollectionsManagement.Models.Collection>($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken);
         }
 
         public async Task<IEnumerable<FileUploadJob>> GetCollectionJobs(string collectionName, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/all-periods/{collectionName}/{(short)JobStatusType.Ready}", cancellationToken);
-            return data != null ? _jsonSerializationService.Deserialize<IEnumerable<FileUploadJob>>(data) : new List<FileUploadJob>();
+            var data = await _baseHttpClientService.GetAsync<IEnumerable<FileUploadJob>>($"{_baseUrl}/api/job/all-periods/{collectionName}/{(short)JobStatusType.Ready}", cancellationToken);
+            return data != null ? data : new List<FileUploadJob>();
         }
 
         public async Task<CollectionsManagement.Models.Collection> GetCollectionFromName(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.Collection>(
-                await GetDataAsync($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken));
+            var data = await _baseHttpClientService.GetAsync<CollectionsManagement.Models.Collection>($"{_baseUrl}/api/collections/name/{collectionName}", cancellationToken);
 
             return new CollectionsManagement.Models.Collection()
             {
@@ -127,7 +122,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
             };
         }
 
-        public async Task<bool> FailJob(int jobId, CancellationToken cancellationToken)
+        public async Task<bool> FailJob(int jobId, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
         {
             var dto = new JobStatusDto()
             {
@@ -136,7 +131,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 JobStatus = (int)JobStatusType.Failed,
             };
 
-            var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/job/status", dto, cancellationToken);
+            var response = await _baseHttpClientService.SendDataAsyncRawResponse($"{_baseUrl}/api/job/status", dto, cancellationToken, username, differentiator);
 
             if (!response.IsSuccess)
             {
@@ -149,13 +144,12 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         public async Task<bool> SetCollectionProcessingOverride(int collectionId, bool? collectionProcessingOverrideStatus, CancellationToken cancellationToken = default(CancellationToken))
         {
             return _jsonSerializationService.Deserialize<bool>(
-                await SendAsync($"{_baseUrl}/api/collections/set-collection-processing-override/{collectionId}/{collectionProcessingOverrideStatus}", cancellationToken));
+                await _baseHttpClientService.SendAsync($"{_baseUrl}/api/collections/set-collection-processing-override/{collectionId}/{collectionProcessingOverrideStatus}", cancellationToken));
         }
 
         public async Task<IEnumerable<ReturnPeriod>> GetReturnPeriodsForCollection(int collectionId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<IEnumerable<CollectionsManagement.Models.ReturnPeriod>>(
-                await GetDataAsync($"{_baseUrl}/api/returnperiod/collectionId/{collectionId}", cancellationToken));
+            var data = await _baseHttpClientService.GetAsync<IEnumerable<CollectionsManagement.Models.ReturnPeriod>>($"{_baseUrl}/api/returnperiod/collectionId/{collectionId}", cancellationToken);
 
             var now = _dateTimeProvider.GetNowUtc();
 
@@ -171,8 +165,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
 
         public async Task<ReturnPeriod> GetReturnPeriod(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var data = _jsonSerializationService.Deserialize<CollectionsManagement.Models.ReturnPeriod>(
-                await GetDataAsync($"{_baseUrl}/api/returnperiod/{id}", cancellationToken));
+            var data = await _baseHttpClientService.GetAsync<CollectionsManagement.Models.ReturnPeriod>($"{_baseUrl}/api/returnperiod/{id}", cancellationToken);
 
             return new ReturnPeriod(data.ReturnPeriodId, $"R{data.PeriodNumber:00}", data.StartDateTimeUtc, data.EndDateTimeUtc)
             {
@@ -190,7 +183,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
                 EndDateTimeUtc = returnPeriod.CloseDate
             };
 
-            return (await SendDataAsyncRawResponse($"{_baseUrl}/api/returnperiod/update", returnPeriodDto, cancellationToken)).IsSuccess;
+            return (await _baseHttpClientService.SendDataAsyncRawResponse($"{_baseUrl}/api/returnperiod/update", returnPeriodDto, cancellationToken)).IsSuccess;
         }
 
         public ICollection GetReferenceDataCollection(string collectionName)

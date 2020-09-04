@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
@@ -42,8 +43,9 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             IEnumerable<IReport> reports,
             IAuthorizationService authorizationService,
             IHttpContextAccessor httpContextAccessor,
+            IDateTimeProvider dateTimeProvider,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
-            : base(routeFactory, jsonSerializationService, httpClient)
+            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
         {
             _collectionsService = collectionsService;
             _reports = reports;
@@ -53,7 +55,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<long> RunReport(string reportName, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunReport(string reportName, int collectionYear, int collectionPeriod, string createdBy, CancellationToken cancellationToken = default(CancellationToken))
         {
             long jobId = -1;
 
@@ -66,7 +68,8 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                 CollectionName = report.CollectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 StorageReference = report.ContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
-                JobId = 0
+                JobId = 0,
+                CreatedBy = createdBy
             };
 
             string url = $"{_baseUrl}/api/job";
@@ -157,7 +160,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             }
 
             return authorisedReports
-                .Where(w => _collectionsByYear[collectionYear].Contains(w.CollectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString())));
+                .Where(w => _collectionsByYear[collectionYear].Contains(w.CollectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString())) || w.ReportType == ReportType.Validation);
         }
 
         private void StripLeaingReturnPeriodFromReportUrl(IEnumerable<ReportDetails> reportDetailsList)

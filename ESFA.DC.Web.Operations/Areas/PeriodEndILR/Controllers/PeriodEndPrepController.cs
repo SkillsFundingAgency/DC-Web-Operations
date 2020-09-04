@@ -14,6 +14,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
     [Route(AreaNames.PeriodEndILR + "/periodEndPreparation")]
     public class PeriodEndPrepController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
+        private const string CollectionType = CollectionTypes.ILR;
         private readonly IPeriodService _periodService;
         private readonly IPeriodEndService _periodEndService;
         private readonly IStateService _stateService;
@@ -34,7 +35,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         [HttpGet("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var currentYearPeriod = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
             var model = new PeriodEndPrepViewModel();
 
@@ -54,7 +55,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.Closed = (isCurrentPeriodSelected && currentYearPeriod.PeriodClosed) || (collectionYear == currentYearPeriod.Year && period < currentYearPeriod.Period) || (collectionYear <= currentYearPeriod.Year);
 
-            string state = await _periodEndService.GetPrepStateAsync(model.Year, model.Period, CollectionTypes.ILR, cancellationToken);
+            string state = await _periodEndService.GetPrepStateAsync(model.Year, model.Period, CollectionType, cancellationToken);
             model.PeriodEndPrepModel = _stateService.GetPrepState(state);
 
             return View(model);

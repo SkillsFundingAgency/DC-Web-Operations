@@ -34,10 +34,10 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.NCS
             try
             {
                 // Get state JSON.
-                string pathItemStates = await _periodEndService.GetPathItemStatesAsync(null, null, CollectionTypes.NCS, cancellationToken);
+                string pathItemStates = await _periodEndService.GetPathItemStatesAsync(null, null, cancellationToken);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(pathItemStates, CollectionTypes.NCS, cancellationToken);
+                await _periodEndHub.SendMessage(pathItemStates, cancellationToken);
             }
             catch (Exception ex)
             {

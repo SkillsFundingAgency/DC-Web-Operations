@@ -14,6 +14,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
     [Route(AreaNames.PeriodEndILR + "/validityPeriod")]
     public class ValidityPeriodController : BaseControllerWithDevOpsOrAdvancedSupportPolicy
     {
+        private const string CollectionType = CollectionTypes.ILR;
         private readonly IPeriodEndService _periodEndService;
         private readonly IPeriodService _periodService;
         private readonly IStateService _stateService;
@@ -33,11 +34,11 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var period = await _periodService.ReturnPeriod(CollectionTypes.ILR, cancellationToken);
+            var period = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
 
-            var years = await _periodService.GetValidityYearsAsync(CollectionTypes.ILR, null, cancellationToken);
+            var years = await _periodService.GetValidityYearsAsync(CollectionType, null, cancellationToken);
 
-            var stateString = await _periodEndService.GetPrepStateAsync(period.Year, period.Period, CollectionTypes.ILR, cancellationToken);
+            var stateString = await _periodEndService.GetPrepStateAsync(period.Year, period.Period, CollectionType, cancellationToken);
             var state = _stateService.GetPrepState(stateString);
 
             var model = new ValidityPeriodViewModel
