@@ -28,11 +28,14 @@ Handlebars.registerHelper('can_retry', function (status) {
     return status === jobStatus.failed || status === jobStatus.failedRetry;
 });
 
-Handlebars.registerHelper('getProceedButtonText', function (pathItemJobs) {
+Handlebars.registerHelper('getProceedButtonText', function (pathItemJobs, isNextItemSubPath) {
     if (pathItemJobs && pathItemJobs.some(j => j.status === jobStatus.failed || j.status === jobStatus.failedRetry)){
         return "⚠ Proceed with failed jobs ▼";
     }
 
+    if (isNextItemSubPath) {
+        return "Proceed ↡";
+    }
     return "Proceed ▼";
 });
 
@@ -57,16 +60,15 @@ Handlebars.registerHelper('is_subPath', function (path) {
     return path.subPaths ? true : false;
 });
 
-Handlebars.registerHelper('getProceedLabelText', function (pathItem) {
+Handlebars.registerHelper('getProceedLabelText', function (pathItem, nextItemIsSubPath) {
     const continueStatus = getJobContinuationStatus(pathItem.pathItemJobs);
     if (continueStatus === jobContinuation.running) {
         return " Can't proceed until jobs complete";
     }
 
-    //TODO
-    //if (nextItemIsSubPath) {
-    //    return " Proceed will start sub-path(s) and run next item(s)";
-    //}
+    if (nextItemIsSubPath) {
+        return " Proceed will start sub-path(s) and run next item(s)";
+    }
 
     if (pathItem.subPath === null && continueStatus === jobContinuation.nothingRunning) {
         return " Can't proceed as jobs haven't started yet";
@@ -82,5 +84,13 @@ Handlebars.registerHelper('include_in_nav', function (pathItem, path) {
         return false;
     }
     return true;
+});
+
+Handlebars.registerHelper('is_next_item_subPath', function (pathItems, index) {
+    const nextItem = pathItems[index + 1];
+    if (nextItem) {
+        return nextItem.subPaths ? true : false;
+    }
+    return false;
 });
 

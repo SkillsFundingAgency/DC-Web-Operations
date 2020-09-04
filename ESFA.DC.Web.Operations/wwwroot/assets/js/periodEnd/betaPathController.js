@@ -39,9 +39,13 @@ class pathController {
 
         if (JSON.stringify(this._currentState) !== JSON.stringify(stateModel)) {
             document.getElementById("pathContainer").innerHTML = this._ilrPeriodEndTemplate({ viewModel: stateModel, year: this._year, period: this._period });
-            document.getElementById("summaryContainer").innerHTML = this._ilrPeriodEndNavigationTemplate({ viewModel: stateModel });
+          
             this._currentState = stateModel;
         }
+    }
+
+    renderNavigation(stateModel) {
+        document.getElementById("summaryContainer").innerHTML = this._ilrPeriodEndNavigationTemplate({ viewModel: stateModel });
     }
 
     registerHandlers(hub, state) {
