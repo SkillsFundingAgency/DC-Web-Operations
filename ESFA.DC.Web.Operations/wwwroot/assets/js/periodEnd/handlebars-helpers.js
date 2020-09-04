@@ -74,3 +74,13 @@ Handlebars.registerHelper('getProceedLabelText', function (pathItem) {
 
     return "";
 });
+
+Handlebars.registerHelper('include_in_nav', function (pathItem, path) {
+    if ((path.pathId === 0
+        && (pathItem.ordinal < path.position - 3 || pathItem.ordinal > path.position + 1))
+        || (path.pathId > 0 && path.position !== -1 && (pathItem.ordinal < path.position - 2 || pathItem.ordinal > path.position))) {
+        return false;
+    }
+    return true;
+});
+
