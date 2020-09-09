@@ -1,5 +1,3 @@
-import { removeSpaces } from './util.js';
-
 export const getHandleBarsTemplate = function (name, root) {
     if (root === undefined) {
         root = '/assets/templates/';
@@ -37,8 +35,16 @@ export let Templates = {
     ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
     FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
-    ReportListOptions: 'Reports/ReportListOptions.html'
+    ReportListOptions: 'Reports/ReportListOptions.html',
+    ILRPeriodEnd: 'PeriodEnd/ILRPeriodEnd.html',
+    ProceedButton: 'PeriodEnd/ProceedButton.html',
+    PathItemJobSummary: 'PeriodEnd/PathItemJobSummary.html',
+    ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html'
 };
+
+export const registerHelper = function (helper, helperFunction) {
+    Handlebars.registerHelper(helper, helperFunction);
+}
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
     var statusClass = displayStatus === 'Job Completed' ? 'jobCompleted'
@@ -69,10 +75,6 @@ Handlebars.registerHelper('select', function (value, options) {
             return RegExp(t).test(v) ? v.replace(t, t + ' selected="selected"') : v;
         })
         .join('\n');
-});
-
-Handlebars.registerHelper('removeSpaces', function (str) {
-    return removeSpaces(str);
 });
 
 Handlebars.registerHelper("setVar", function (varName, varValue, options) {

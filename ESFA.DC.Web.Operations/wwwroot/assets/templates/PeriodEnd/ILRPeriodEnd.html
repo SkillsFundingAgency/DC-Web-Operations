@@ -4,27 +4,23 @@
         <a id="Path{{this.pathId}}"></a>
         <h3>
             {{#if this.pathId}}
-            <a href="#{{removeSpaces (get_path_name_by_sub_path_id ../viewModel this.pathId)}}">❮ </a>
+            <a href="#{{removeSpaces (getPathNameBySubPathId ../viewModel this.pathId)}}">❮ </a>
             {{/if}}
             {{this.name}}
         </h3>
         <ul class="app-task-list__items" id="PI-{{removeSpaces this.name}}">
             {{#each this.pathItems}}
-            {{setVar "isCurrent" (is_current this.ordinal ../position)}}
-            {{setVar "isNextItemSubPath" (is_next_item_subPath ../pathItems @index)}}
+            {{setVar "isCurrent" (isCurrent this.ordinal ../position)}}
+            {{setVar "isNextItemSubPath" (isNextItemSubPath ../pathItems @index)}}
 
             {{#if @root.isCurrent}}
             <div class="app-task-list__item">
                 {{/if}}
 
                 <li id="{{removeSpaces this.name}}" class="app-task-list__item">
-                    {{#if @root.isCurrent}}
-                    <b>{{this.name}}</b>
-                    {{else}}
-                    {{this.name}} {{#unless this.pathItemJobs}} {{#if (is_past this.ordinal ../position) }}- Status : Completed{{/if}}{{/unless}}
-                    {{/if}}
+                    {{#if @root.isCurrent}}<b>{{/if}}{{this.name}}{{#if (isCompleted this ..) }}- Status : Completed{{/if}}{{#if @root.isCurrent}}</b>{{/if}}
 
-                    {{#if (is_subPath this)}}
+                    {{#if (isSubPath this)}}
                     <a href="#Path{{this.subPaths.[0]}}">❯</a>
                     {{/if}}
 
@@ -34,7 +30,7 @@
                         {{#each this.pathItemJobs}}
                         <li>
                             Job Id : {{this.jobId}}, {{getProviderName this.providerName}}Status : {{getStatus this.status}}
-                            {{#if (can_retry this.status)}}
+                            {{#if (canRetry this.status)}}
                             <a href="#/" class="govuk-link govuk-!-margin-left-3" id="retryJob_{{this.jobId}}" onclick="window.periodEndClient.resubmitJob({{this.jobId}})">Retry</a>
                             {{/if}}
                         </li>
@@ -47,7 +43,9 @@
                 </li>
 
                 {{#if @root.isCurrent}}
+                {{#unless (isCompleted this ..) }}
                 {{> proceedButton pathItem=this year=../../year period=../../period isNextItemSubPath=@root.isNextItemSubPath}}
+                {{/unless}}
             </div>
                 {{/if}}
 

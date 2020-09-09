@@ -9,19 +9,23 @@
     "jest": "26.4.0",
     "babel-jest": "26.3.0",
     "@babel/core": "7.11.1",
-    "@babel/preset-env": "7.11.0"
+    "@babel/preset-env": "7.11.0",
+    "@testing-library/jest-dom": "5.11.4"
   },
   "scripts": {
     "test": "jest"
   },
   "jest": {
-    "moduleDirectories": [ "node_modules", "wwwRoot" ],
+    "moduleDirectories": [
+      "node_modules",
+      "wwwRoot"
+    ],
     "moduleNameMapper": {
       "/assets/(.*)": "<rootDir>/wwwroot/assets/$1"
     },
-      "testPathIgnorePatterns": [
-        "<rootDir>/wwwroot/assets/images",
-        "<rootDir>/wwwroot/lib"
-      ]
-    }
+    "testPathIgnorePatterns": [
+      "<rootDir>/wwwroot/assets/images",
+      "<rootDir>/wwwroot/lib"
+    ]
   }
+}

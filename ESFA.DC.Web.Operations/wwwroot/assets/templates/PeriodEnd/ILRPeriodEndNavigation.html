@@ -3,12 +3,12 @@
     <span class="nav">
         <ul id="ST-{{removeSpaces this.name}}" class="govuk-list">
             {{#each this.pathItems}}
-                {{#if (include_in_nav this ..)}}
+                {{#if (includeInNav this ..)}}
                     <li class="compact-list-item">
-                        {{#if (is_current this.ordinal ../position)}}
+                        {{#if (isCurrent this.ordinal ../position)}}
                             <div class="triangle-right"></div>
                         {{/if}}
-                        <a class="govuk-link small-link {{#if (is_current this.ordinal ../position)}}active{{/if}}" href="#{{this.name}}">{{this.name}}</a>
+                        <a class="govuk-link small-link {{#if (isCurrent this.ordinal ../position)}}active{{/if}}" href="#{{this.name}}">{{this.name}}</a>
                     </li>
                 {{/if}}
             {{/each}}
