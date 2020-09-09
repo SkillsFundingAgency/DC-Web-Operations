@@ -288,7 +288,7 @@ class pathController {
                 pathItem.subPaths !== null,
                 path.pathItems[pathItem.ordinal + 1].subPaths !== null,
                 path.isBusy,
-                path.hasJobs));
+                pathItem.hasJobs));
             subItemList.insertBefore(panel, subItemList.children[pathItem.ordinal]);
         } else {
             subItemList.insertBefore(item, subItemList.children[pathItem.ordinal]);
