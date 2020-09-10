@@ -37,11 +37,14 @@ export let Templates = {
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
     ReportListOptions: 'Reports/ReportListOptions.html',
     ILRPeriodEnd: 'PeriodEnd/ILRPeriodEnd.html',
-    ProceedButton: 'PeriodEnd/ProceedButton.html',
-    PathItemJobSummary: 'PeriodEnd/PathItemJobSummary.html',
     ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
-    ProceedableItemWrapper: 'PeriodEnd/ProceedableItemWrapper.html'
 };
+
+export let Partials = {
+    ProceedButton: 'PeriodEnd/Partials/ProceedButton.html',
+    PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary.html',
+    ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html'
+}
 
 export const registerHelper = function (helper, helperFunction) {
     Handlebars.registerHelper(helper, helperFunction);

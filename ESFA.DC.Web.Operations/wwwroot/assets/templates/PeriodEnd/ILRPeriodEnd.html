@@ -15,7 +15,7 @@
 
                     {{#> proceedableItemWrapper pathitem=this isProceedable=(isProceedable @root.isCurrent @root.isCompleted) yearPeriod=@root.yearPeriod isNextItemSubPath=(isNextItemSubPath ../pathItems @index)}}
                         <li id="{{removeSpaces this.name}}" class="app-task-list__item">
-                            {{#if @root.isCurrent}}<b>{{/if}}{{this.name}}{{#if @root.isCompleted }}- Status : Completed{{/if}}{{#if @root.isCurrent}}</b>{{/if}}
+                            {{#if @root.isCurrent}}<b>{{/if}}{{this.name}}{{#if @root.isCompleted }} - Status : Completed{{/if}}{{#if @root.isCurrent}}</b>{{/if}}
 
                             {{#if (isSubPath this)}}
                                 <a href="#Path{{this.subPaths.[0]}}">❯</a>

@@ -1,5 +1,5 @@
 ﻿import { getHandleBarsTemplate, registerPartialTemplate } from '/assets/js/handlebars-helpers.js';
-import { Templates, registerHelper } from '/assets/js/handlebars-helpers.js';
+import { Templates, Partials, registerHelper } from '/assets/js/handlebars-helpers.js';
 import { updateSync } from '/assets/js/baseController.js';
 import { setControlEnabledState, removeSpaces } from '/assets/js/util.js';
 import * as helpers from '/assets/js/periodEnd/periodEndUtil.js';
@@ -12,13 +12,8 @@ class pathController {
         this._year = 0;
         this._period = 0;
         this._currentState = null;
-        registerPartialTemplate('proceedButton', Templates.ProceedButton);
-        registerPartialTemplate('pathItemJobSummary', Templates.PathItemJobSummary);
-        registerPartialTemplate('proceedableItemWrapper', Templates.ProceedableItemWrapper);
-        
-        this.registerHelpers();
-        this._ilrPeriodEndTemplate = getHandleBarsTemplate(Templates.ILRPeriodEnd);
-        this._ilrPeriodEndNavigationTemplate = getHandleBarsTemplate(Templates.ILRPeriodEndNavigation);
+
+        this.initialiseTemplating();
     }
 
     initialiseState(stateModel) {
@@ -34,6 +29,17 @@ class pathController {
 
         this._year = stateModel.year;
         this._period = stateModel.period;
+    }
+
+    initialiseTemplating() {
+        this.registerHelpers();
+
+        registerPartialTemplate('proceedButton', Partials.ProceedButton);
+        registerPartialTemplate('pathItemJobSummary', Partials.PathItemJobSummary);
+        registerPartialTemplate('proceedableItemWrapper', Partials.ProceedableItemWrapper);
+
+        this._ilrPeriodEndTemplate = getHandleBarsTemplate(Templates.ILRPeriodEnd);
+        this._ilrPeriodEndNavigationTemplate = getHandleBarsTemplate(Templates.ILRPeriodEndNavigation);
     }
 
     renderPaths(stateModel) {
