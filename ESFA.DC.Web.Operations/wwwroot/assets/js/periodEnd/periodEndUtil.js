@@ -90,16 +90,9 @@ export function getProceedButtonText(pathItemJobs, isNextItemSubPath) {
 }
 
 export function getPathNameBySubPathId(stateModel, pathId) {
-    let i = 0, len = stateModel.paths[0].pathItems.length;
-    for (; i < len; i++) {
-        if (stateModel.paths[0].pathItems[i].subPaths !== null &&
-            stateModel.paths[0].pathItems[i].subPaths[0] === pathId) {
-            return removeSpaces(stateModel.paths[0].pathItems[i].name);
-        }
-    }
-    return "Path0";
+    const pathItem = stateModel.paths[0].pathItems.find(p => p.subPaths && p.subPaths[0] === pathId);
+    return pathItem ? removeSpaces(pathItem.name) : "Path0";
 }
-
 
 export function canContinue(pathItemJobs) {
     const continueStatus = getJobContinuationStatus(pathItemJobs);
@@ -142,10 +135,7 @@ export function includeInNav(pathItem, path) {
 
 export function isNextItemSubPath(pathItems, index) {
     const nextItem = pathItems[index + 1];
-    if (nextItem) {
-        return nextItem.subPaths ? true : false;
-    }
-    return false;
+    return nextItem && nextItem.subPaths ? true : false;
 }
 
 
