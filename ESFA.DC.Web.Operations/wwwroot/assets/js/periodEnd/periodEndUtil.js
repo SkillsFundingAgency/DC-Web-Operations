@@ -1,4 +1,5 @@
 ﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
+import { removeSpaces } from '/assets/js/util.js';
 
 export function jobStatusConvertor(status) {
     switch (status) {
@@ -72,6 +73,7 @@ export function isCompleted(pathItem, path) {
     }
     return false;
 }
+
 export function canRetry(status) {
     return status === jobStatus.failed || status === jobStatus.failedRetry;
 }
@@ -92,7 +94,7 @@ export function getPathNameBySubPathId(stateModel, pathId) {
     for (; i < len; i++) {
         if (stateModel.paths[0].pathItems[i].subPaths !== null &&
             stateModel.paths[0].pathItems[i].subPaths[0] === pathId) {
-            return stateModel.paths[0].pathItems[i].name;
+            return removeSpaces(stateModel.paths[0].pathItems[i].name);
         }
     }
     return "Path0";
@@ -106,6 +108,10 @@ export function canContinue(pathItemJobs) {
 
 export function isSubPath(path) {
     return path.subPaths ? true : false;
+}
+
+export function isProceedable(isCurrent, isCompleted) {
+    return isCurrent && !isCompleted;
 }
 
 export function getProceedLabelText(pathItem, nextItemIsSubPath) {
@@ -141,5 +147,6 @@ export function isNextItemSubPath(pathItems, index) {
     }
     return false;
 }
+
 
 

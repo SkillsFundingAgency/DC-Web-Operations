@@ -39,7 +39,8 @@ export let Templates = {
     ILRPeriodEnd: 'PeriodEnd/ILRPeriodEnd.html',
     ProceedButton: 'PeriodEnd/ProceedButton.html',
     PathItemJobSummary: 'PeriodEnd/PathItemJobSummary.html',
-    ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html'
+    ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
+    ProceedableItemWrapper: 'PeriodEnd/ProceedableItemWrapper.html'
 };
 
 export const registerHelper = function (helper, helperFunction) {
@@ -83,3 +84,5 @@ Handlebars.registerHelper("setVar", function (varName, varValue, options) {
     }
     options.data.root[varName] = varValue;
 });
+
+

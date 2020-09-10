@@ -12,7 +12,7 @@ beforeAll(() => {
 describe('proceed button', () => {
 
     const templateHtml = fs.readFileSync(path.resolve(__dirname, `proceedButton.html`), 'utf8');
-    const viewModel = { pathItem: { "pathId": 0, "pathItemId": 4 }, year: 1920, period: 1 };
+    const viewModel = { pathItem: { "pathId": 0, "pathItemId": 4 }, yearPeriod: { "year": 1920, "period": 1 } };
 
     test('should be disabled when can continue is false', () => {
         // Arrange
@@ -45,6 +45,6 @@ describe('proceed button', () => {
         document.body.innerHTML = template(viewModel);
 
         // Assert
-        expect(document.querySelector('button[type="submit"]').getAttribute('onclick')).toBe(`window.periodEndClient.proceed(${viewModel.year},${viewModel.period},${viewModel.pathItem.pathId},${viewModel.pathItem.pathItemId})`);
+        expect(document.querySelector('button[type="submit"]').getAttribute('onclick')).toBe(`window.periodEndClient.proceed(${viewModel.yearPeriod.year},${viewModel.yearPeriod.period},${viewModel.pathItem.pathId},${viewModel.pathItem.pathItemId})`);
     });
 });

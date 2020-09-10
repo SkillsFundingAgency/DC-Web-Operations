@@ -14,7 +14,8 @@ class pathController {
         this._currentState = null;
         registerPartialTemplate('proceedButton', Templates.ProceedButton);
         registerPartialTemplate('pathItemJobSummary', Templates.PathItemJobSummary);
-
+        registerPartialTemplate('proceedableItemWrapper', Templates.ProceedableItemWrapper);
+        
         this.registerHelpers();
         this._ilrPeriodEndTemplate = getHandleBarsTemplate(Templates.ILRPeriodEnd);
         this._ilrPeriodEndNavigationTemplate = getHandleBarsTemplate(Templates.ILRPeriodEndNavigation);
@@ -39,7 +40,7 @@ class pathController {
         updateSync.call(this);
 
         if (JSON.stringify(this._currentState) !== JSON.stringify(stateModel)) {
-            document.getElementById("pathContainer").innerHTML = this._ilrPeriodEndTemplate({ viewModel: stateModel, year: this._year, period: this._period });
+            document.getElementById("pathContainer").innerHTML = this._ilrPeriodEndTemplate({ viewModel: stateModel, yearPeriod:{ year: this._year, period: this._period }});
           
             this._currentState = stateModel;
         }
