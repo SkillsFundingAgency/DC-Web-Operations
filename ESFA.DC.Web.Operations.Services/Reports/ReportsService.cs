@@ -26,6 +26,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 {
     public class ReportsService : BaseHttpClientService, IReportsService
     {
+        private const int ReportCountLimit = 3;
         private readonly string _baseUrl;
         private IDictionary<int, IEnumerable<string>> _collectionsByYear = new Dictionary<int, IEnumerable<string>>();
         private readonly ICollectionsService _collectionsService;
@@ -89,10 +90,9 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         {
             IEnumerable<ReportDetails> reportDetailsList = null;
             var fileLocation = Constants.ReportsBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString());
-            var reportTypeCount = 3;
 
             // get all reports
-            string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}/{reportTypeCount}";
+            string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}/{ReportCountLimit}";
 
             var file = await GetDataAsync(reportsUrl, cancellationToken);
             if (!string.IsNullOrEmpty(file))
@@ -112,14 +112,28 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
             foreach (var report in _reports.Where(x => x.ReportType == ReportType.Operations))
             {
+                var foundFiles = new List<string>();
                 foreach (var fileReference in fileReferences)
                 {
                     if (fileReference.IndexOf(report.DisplayName, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
-                        var lastIndexOf = fileReference.LastIndexOf("/") + 1;
-                        var url = fileReference.Substring(lastIndexOf, fileReference.Length - lastIndexOf);
-                        reportDetailsList.Add(new ReportDetails { DisplayName = report.DisplayName, Url = url });
+                        foundFiles.Add(fileReference);
                     }
+                }
+
+                var latestFileReferences = foundFiles
+                    .OrderByDescending(ff =>
+                    {
+                        var match = RegexDefinitions.ReportDate.Match(ff);
+                        return match.Value;
+                    })
+                    .Take(ReportCountLimit);
+
+                foreach (var fileReference in latestFileReferences)
+                {
+                    var lastIndexOf = fileReference.LastIndexOf("/") + 1;
+                    var url = fileReference.Substring(lastIndexOf, fileReference.Length - lastIndexOf);
+                    reportDetailsList.Add(new ReportDetails { DisplayName = report.DisplayName, Url = url });
                 }
             }
 
