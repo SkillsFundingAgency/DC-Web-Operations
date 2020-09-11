@@ -7,5 +7,8 @@ namespace ESFA.DC.Web.Operations.Settings.Models
     {
         [JsonRequired]
         public string JobManagementApiBaseUrl { get; set; }
+
+        [JsonRequired]
+        public string FundingClaimsApiBaseUrl { get; set; }
     }
 }
