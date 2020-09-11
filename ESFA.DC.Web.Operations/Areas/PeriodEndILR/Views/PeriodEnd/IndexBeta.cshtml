@@ -2,6 +2,7 @@
 @model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.PeriodEndViewModel
 @{
     ViewData["Title"] = "Index";
+    var isOpen = Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished));
 }
 
 <div class="govuk-grid-row">
@@ -29,15 +30,15 @@
         <br />
 
         <button type="submit" class="govuk-button customised" id="startPeriodEnd"
-                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period);return false;">
+                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ILR');return false;">
             Start Period End
         </button>
 
         <br />
         <br />
 
-        <div>
-            <ol id="pathContainer" class="app-task-list"></ol>
+        <div id="pathContainer">
+
         </div>
 
         <br />
@@ -58,7 +59,7 @@
         <br />
 
         <div class="app-task-list__section">
-            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period);return false;" value="Close Period End">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ILR');return false;" value="Close Period End">
         </div>
 
         <br />
@@ -87,44 +88,44 @@
     {
         <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     }
+    <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
 
     <script type="module">
-    import PathController from '/assets/js/periodEnd/pathController.js';
-
-    @if (Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)))
-    {
-        <text>
-            import Client from '/assets/js/periodEnd/client.js';
-            import Hub from '/assets/js/hubs/hub.js';
-        </text>
-    }
-
-    (function() {
-        const stateModel = @Json.Serialize(Model);
-        const pathController = new PathController();
-
-        pathController.initialiseState(stateModel);
+        import PathController from '/assets/js/periodEnd/betaPathController.js';
 
         @if (Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)))
         {
             <text>
-                const hub = new Hub('periodEndHub', pathController.displayConnectionState);
-                pathController.registerHandlers(hub, stateModel);
-                hub.startHub();
-                window.periodEndClient = new Client(hub.getConnection());
+                import Client from '/assets/js/periodEnd/client.js';
+                import Hub from '/assets/js/hubs/hub.js';
             </text>
         }
 
-        pathController.renderPaths(stateModel);
+        (function() {
+            const stateModel = @Json.Serialize(Model);
+            const pathController = new PathController();
 
-        @if (!Model?.IsCurrentPeriod ?? false)
-        {
-            <text>
-                const dateLabel = document.getElementById(`lastSync`);
-                dateLabel.textContent = `Updates disabled as historical period end`;
-            </text>
-        }
-    })();
+            pathController.initialiseState(stateModel);
 
+            @if (Model != null && (Model.IsPreviousPeriod || (Model.IsCurrentPeriod && Model.CollectionClosed && !Model.PeriodEndFinished)))
+            {
+                <text>
+                    const hub = new Hub('periodEndHub', pathController.displayConnectionState);
+                    pathController.registerHandlers(hub, stateModel);
+                    hub.startHub(stateModel);
+                    window.periodEndClient = new Client(hub.getConnection());
+                </text>
+            }
+
+            pathController.renderPaths(stateModel);
+            pathController.renderNavigation(stateModel);
+
+            @if (!Model?.IsCurrentPeriod ?? false) {
+                <text>
+                    const dateLabel = document.getElementById(`lastSync`);
+                    dateLabel.textContent = `Updates disabled as historical period end`;
+                </text>
+            }
+        })();
     </script>
 }

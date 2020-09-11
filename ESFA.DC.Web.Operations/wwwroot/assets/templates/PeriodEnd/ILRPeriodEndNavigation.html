@@ -1,0 +1,17 @@
+﻿{{#each paths}}
+    <a class="govuk-heading-s" href="#Path{{this.pathId}}">{{this.name}}</a>
+    <span class="nav">
+        <ul id="ST-{{removeSpaces this.name}}" class="govuk-list">
+            {{#each this.pathItems}}
+                {{#if (includeInNav this ..)}}
+                    <li class="compact-list-item">
+                        {{#if (isCurrent this.ordinal ../position)}}
+                            <div class="triangle-right"></div>
+                        {{/if}}
+                        <a class="govuk-link small-link {{#if (isCurrent this.ordinal ../position)}}active{{/if}}" href="#{{this.name}}">{{this.name}}</a>
+                    </li>
+                {{/if}}
+            {{/each}}
+        </ul>
+    </span>
+{{/each}}
