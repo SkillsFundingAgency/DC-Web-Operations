@@ -21,7 +21,7 @@ class pathController {
         const providerEnabled = stateModel.collectionClosed && stateModel.providerReportsReady && !stateModel.providerReportsPublished;
         const reportsFinished = !mcaEnabled && !providerEnabled && stateModel.mcaReportsReady && stateModel.providerReportsReady;
 
-        setControlEnabledState(stateModel.collectionClosed && !state.periodEndStarted, "startPeriodEnd");
+        setControlEnabledState(stateModel.collectionClosed && !stateModel.periodEndStarted, "startPeriodEnd");
         setControlEnabledState(mcaEnabled, "publishMcaReports");
         setControlEnabledState(providerEnabled, "publishProviderReports");
         setControlEnabledState(stateModel.collectionClosed && reportsFinished && !stateModel.periodEndFinished, "closePeriodEnd");
