@@ -73,7 +73,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, Constants.IlrPeriodPrefix);
 
-                await _apiAvailabilityService.SetApiAvailabilityAsync(BuildApiAvailability(false));
+                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE, enabled: false);
             }
             catch (Exception e)
             {
@@ -134,7 +134,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                     await _hubContext.Clients.All.SendAsync("ReferenceJobsButtonState");
                 }
 
-                await _apiAvailabilityService.SetApiAvailabilityAsync(BuildApiAvailability(true));
+                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE, enabled: true);
             }
             catch (Exception e)
             {
@@ -202,11 +202,6 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 var closeEnabled = periodClosed && !state.PeriodEndFinished && state.McaReportsPublished && state.ProviderReportsPublished;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
             }
-        }
-
-        private ApiAvailabilityDto BuildApiAvailability(bool enabled)
-        {
-            return new ApiAvailabilityDto { ApiName = LearnerApiName, Process = Process, Enabled = enabled };
         }
     }
 }
