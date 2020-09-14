@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -27,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Services
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task SetApiAvailabilityAsync(string apiName, string apiUpdateProcess, bool enabled, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SetApiAvailabilityAsync(string apiName, string apiUpdateProcess, bool enabled, CancellationToken cancellationToken)
         {
             var apiAvailability = new ApiAvailabilityDto { ApiName = apiName, Process = apiUpdateProcess, Enabled = enabled };
             await SendDataAsync($"{_baseUrl}/api/apiavailability/set", apiAvailability, cancellationToken);

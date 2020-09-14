@@ -13,8 +13,6 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
     public class PeriodEndHub : Hub
     {
         private const string CollectionType = CollectionTypes.ILR;
-        private const string LearnerApiName = "Learner";
-        private const string Process = "PE";
         private readonly IHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
@@ -73,7 +71,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, Constants.IlrPeriodPrefix);
 
-                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE, enabled: false);
+                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE,  false, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -134,7 +132,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                     await _hubContext.Clients.All.SendAsync("ReferenceJobsButtonState");
                 }
 
-                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE, enabled: true);
+                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE,  true, CancellationToken.None);
             }
             catch (Exception e)
             {
