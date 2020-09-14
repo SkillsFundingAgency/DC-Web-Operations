@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -12,12 +13,15 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
     public class PeriodEndHub : Hub
     {
         private const string CollectionType = CollectionTypes.ILR;
+        private const string LearnerApiName = "Learner";
+        private const string Process = "PE";
         private readonly IHubEventBase _eventBase;
         private readonly IHubContext<PeriodEndHub> _hubContext;
         private readonly IPeriodEndService _periodEndService;
         private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
         private readonly IPeriodService _periodService;
+        private readonly IApiAvailabilityService _apiAvailabilityService;
         private readonly ILogger _logger;
 
         public PeriodEndHub(
@@ -27,6 +31,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             IEmailService emailService,
             IStateService stateService,
             IPeriodService periodService,
+            IApiAvailabilityService apiAvailabilityService,
             ILogger logger)
         {
             _eventBase = eventBase;
@@ -35,6 +40,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             _emailService = emailService;
             _stateService = stateService;
             _periodService = periodService;
+            _apiAvailabilityService = apiAvailabilityService;
             _logger = logger;
         }
 
@@ -66,6 +72,8 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 await _periodEndService.StartPeriodEndAsync(collectionYear, period, CollectionType);
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, Constants.IlrPeriodPrefix);
+
+                await _apiAvailabilityService.SetApiAvailabilityAsync(BuildApiAvailability(false));
             }
             catch (Exception e)
             {
@@ -125,6 +133,8 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 {
                     await _hubContext.Clients.All.SendAsync("ReferenceJobsButtonState");
                 }
+
+                await _apiAvailabilityService.SetApiAvailabilityAsync(BuildApiAvailability(true));
             }
             catch (Exception e)
             {
@@ -192,6 +202,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 var closeEnabled = periodClosed && !state.PeriodEndFinished && state.McaReportsPublished && state.ProviderReportsPublished;
                 await _hubContext.Clients.All.SendAsync(Constants.Action_PeriodClosedButton, closeEnabled, cancellationToken);
             }
+        }
+
+        private ApiAvailabilityDto BuildApiAvailability(bool enabled)
+        {
+            return new ApiAvailabilityDto { ApiName = LearnerApiName, Process = Process, Enabled = enabled };
         }
     }
 }
