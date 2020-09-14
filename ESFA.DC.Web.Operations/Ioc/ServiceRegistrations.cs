@@ -145,6 +145,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobFailedCurrentPeriodService>().As<IJobFailedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ProvidersReturnedCurrentPeriodService>().As<IJobProvidersReturnedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidityPeriodService>().As<IValidityPeriodService>().InstancePerLifetimeScope();
+            builder.RegisterType<ApiAvailabilityService>().As<IApiAvailabilityService>().InstancePerLifetimeScope();
 
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();
