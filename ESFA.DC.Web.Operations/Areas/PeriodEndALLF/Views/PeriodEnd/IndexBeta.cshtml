@@ -112,9 +112,6 @@
     <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
 
     <script type="module">
-
-        const t0 = performance.now();
-        
         import PathController from '/assets/js/periodEnd/allf/betaPathController.js';
 
         @if (Model != null && Model.IsCurrentPeriod && !Model.PeriodEndFinished) {
@@ -148,9 +145,6 @@
                     dateLabel.textContent = `Updates disabled as historical period end`;
                 </text>
             }
-
-            const t1 = performance.now();
-            console.log(`Call to doSomething took ${t1 - t0} milliseconds.`);
         })();
     </script>
 }
