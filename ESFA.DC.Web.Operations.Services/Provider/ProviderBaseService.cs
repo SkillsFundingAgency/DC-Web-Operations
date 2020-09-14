@@ -47,21 +47,33 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             var providerAssignments = _jsonSerializationService.Deserialize<IEnumerable<OrganisationCollection>>(response);
 
-            var date = _dateTimeProvider.GetNowUtc();
-            var earliestStartDate = date.AddMonths(2);
-            var expiredEndDate = date.AddMonths(-2);
+            var dateTimeNow = _dateTimeProvider.GetNowUtc();
 
-            return providerAssignments
-                .Where(pa => pa.StartDate <= earliestStartDate && pa.EndDate >= expiredEndDate)
-                .Select(p => new CollectionAssignment
+            var collectionAssignments = new List<CollectionAssignment>();
+
+            foreach (var assignment in providerAssignments)
+            {
+                var startDate = _dateTimeProvider.ConvertUtcToUk(assignment.StartDate);
+                var endDate = _dateTimeProvider.ConvertUtcToUk(assignment.EndDate ?? dateTimeNow);
+
+                var displayDateStart = startDate.AddMonths(-2);
+                var displayDateEnd = endDate.AddMonths(2);
+
+                if (dateTimeNow >= displayDateStart && dateTimeNow <= displayDateEnd)
                 {
-                    CollectionId = p.CollectionId,
-                    Name = p.CollectionName,
-                    StartDate = _dateTimeProvider.ConvertUtcToUk(p.StartDate),
-                    EndDate = _dateTimeProvider.ConvertUtcToUk(p.EndDate.GetValueOrDefault()),
-                    DisplayOrder = SetDisplayOrder(p.CollectionType, p.CollectionName),
-                    ToBeDeleted = false
-                });
+                    collectionAssignments.Add(new CollectionAssignment
+                    {
+                        CollectionId = assignment.CollectionId,
+                        Name = assignment.CollectionName,
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        DisplayOrder = SetDisplayOrder(assignment.CollectionType, assignment.CollectionName),
+                        ToBeDeleted = false
+                    });
+                }
+            }
+
+            return collectionAssignments;
         }
 
         public int SetDisplayOrder(CollectionType collectionType, string collectionName)
