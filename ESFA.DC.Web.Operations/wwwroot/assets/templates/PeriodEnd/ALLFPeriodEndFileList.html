@@ -1,0 +1,25 @@
+﻿<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File</th>
+            <th scope="col" class="govuk-table__header table-width-min">Status</th>
+            <th scope="col" class="govuk-table__header">Reports</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        {{#each files}}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                        <a href="/periodendallf/periodEnd/getReportFile/{{this.fileName}}">{{this.fileName}}</a>
+                </td>
+                <td class="govuk-table__cell">
+                    <span class="${{jobStatusClass this.displayStatus}}">{{this.displayStatus}}</span> <br />
+                    <span class="govuk-!-font-weight-bold">{{this.recordCount}} records</span> <br />
+                    <span class="govuk-!-font-weight-bold">{{this.errorCount}} errors</span> <br />
+                </td>
+                <td class="govuk-table__cell"><a href="/periodendallf/periodEnd/getReportFile/{{this.reportName}}/{{period}}/{{this.jobId}}">{{this.reportName}}</a>
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

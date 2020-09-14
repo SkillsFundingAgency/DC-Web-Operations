@@ -36,18 +36,27 @@ export let Templates = {
     FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
     ReportListOptions: 'Reports/ReportListOptions.html',
-    ILRPeriodEnd: 'PeriodEnd/ILRPeriodEnd.html',
+    PeriodEnd: 'PeriodEnd/PeriodEnd.html',
     ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
+    ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html'
 };
 
 export let Partials = {
     ProceedButton: 'PeriodEnd/Partials/ProceedButton.html',
     PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary.html',
-    ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html'
+    ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html',
+    PathHeader: 'PeriodEnd/Partials/PathHeader.html',
+    ALLFPathHeader: 'PeriodEnd/Partials/ALLFPathHeader.html'
 }
 
 export const registerHelper = function (helper, helperFunction) {
     Handlebars.registerHelper(helper, helperFunction);
+}
+
+export const registerHelpers = function(helpers) {
+    for (let [helper, helperFunction] of Object.entries(helpers)) {
+        registerHelper(helper, helperFunction);
+    }
 }
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {

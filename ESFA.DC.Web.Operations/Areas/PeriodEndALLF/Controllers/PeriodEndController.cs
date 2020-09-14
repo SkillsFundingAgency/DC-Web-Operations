@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
@@ -28,12 +29,17 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             _periodEndService = periodEndService;
         }
 
-        [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period)
+        [HttpGet("{collectionYear?}/{period?}/{betaView?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period, string betaView)
         {
             var cancellationToken = CancellationToken.None;
 
             var model = await _periodEndService.GetPathState(collectionYear, period, cancellationToken);
+
+            if (betaView?.ToLower(CultureInfo.CurrentUICulture) == "beta")
+            {
+                return View("IndexBeta", model);
+            }
 
             return View(model);
         }

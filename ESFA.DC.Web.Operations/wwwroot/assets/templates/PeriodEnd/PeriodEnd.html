@@ -1,0 +1,40 @@
+﻿<ol class="app-task-list">
+    {{#each viewModel.paths}}
+        <li>
+            {{> pathHeader path=this parentPathName=(getPathNameBySubPathId ../viewModel this.pathId)}}
+            <ul class="app-task-list__items" id="PI-{{removeSpaces this.name}}">
+                {{#each this.pathItems}}
+                {{setVar "isCurrent" (isCurrent this.ordinal ../position)}}
+                {{setVar "isCompleted"  (isCompleted this ..)}}
+
+                {{#> proceedableItemWrapper pathitem=this isProceedable=(isProceedable @root.isCurrent @root.isCompleted) yearPeriod=@root.yearPeriod isNextItemSubPath=(isNextItemSubPath ../pathItems @index)}}
+                <li id="{{removeSpaces this.name}}" class="app-task-list__item">
+                    {{#if @root.isCurrent}}<b>{{/if}}{{this.name}}{{#if @root.isCompleted }} - Status : Completed{{/if}}{{#if @root.isCurrent}}</b>{{/if}}
+
+                    {{#if (isSubPath this)}}
+                    <a href="#Path{{this.subPaths.[0]}}">❯</a>
+                    {{/if}}
+
+                    <a id="{{this.name}}"></a>
+                    {{#if this.pathItemJobs}}
+                    <ul id="JL-{{removeSpaces this.name}}">
+                        {{#each this.pathItemJobs}}
+                        <li>
+                            Job Id : {{this.jobId}}, {{getProviderName this.providerName}}Status : {{getStatus this.status}}
+                            {{#if (canRetry this.status)}}
+                            <a href="#/" class="govuk-link govuk-!-margin-left-3" id="retryJob_{{this.jobId}}" onclick="window.periodEndClient.resubmitJob({{this.jobId}})">Retry</a>
+                            {{/if}}
+                        </li>
+                        {{#if @last}}
+                        {{> pathItemJobSummary summary=../pathItemJobSummary}}
+                        {{/if}}
+                        {{/each}}
+                    </ul>
+                    {{/if}}
+                </li>
+                {{/proceedableItemWrapper}}
+                {{/each}}
+            </ul>
+        </li>
+    {{/each}}
+</ol>

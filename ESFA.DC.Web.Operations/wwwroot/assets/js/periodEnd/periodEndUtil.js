@@ -47,7 +47,6 @@ export function getJobContinuationStatus(pathItemsJobs) {
     return jobContinuation.nothingRunning;
 }
 
-
 export function getProviderName(providerName) {
     return providerName !== "0" ? `Provider : ${providerName}, ` : '';
 }

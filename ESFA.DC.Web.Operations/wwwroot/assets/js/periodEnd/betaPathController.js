@@ -1,5 +1,4 @@
-﻿import { getHandleBarsTemplate, registerPartialTemplate } from '/assets/js/handlebars-helpers.js';
-import { Templates, Partials, registerHelper } from '/assets/js/handlebars-helpers.js';
+﻿import { Templates, Partials, registerHelper, registerHelpers, getHandleBarsTemplate, registerPartialTemplate  } from '/assets/js/handlebars-helpers.js';
 import { updateSync } from '/assets/js/baseController.js';
 import { setControlEnabledState, removeSpaces } from '/assets/js/util.js';
 import * as helpers from '/assets/js/periodEnd/periodEndUtil.js';
@@ -32,13 +31,15 @@ class pathController {
     }
 
     initialiseTemplating() {
-        this.registerHelpers();
+        registerHelpers(helpers);
+        registerHelper('removeSpaces', removeSpaces);
 
         registerPartialTemplate('proceedButton', Partials.ProceedButton);
         registerPartialTemplate('pathItemJobSummary', Partials.PathItemJobSummary);
         registerPartialTemplate('proceedableItemWrapper', Partials.ProceedableItemWrapper);
+        registerPartialTemplate('pathHeader', Partials.PathHeader);
 
-        this._ilrPeriodEndTemplate = getHandleBarsTemplate(Templates.ILRPeriodEnd);
+        this._ilrPeriodEndTemplate = getHandleBarsTemplate(Templates.PeriodEnd);
         this._ilrPeriodEndNavigationTemplate = getHandleBarsTemplate(Templates.ILRPeriodEndNavigation);
     }
 
@@ -72,13 +73,6 @@ class pathController {
 
         hub.registerMessageHandler("ReferenceJobsButtonState", () => setControlEnabledState(true, "resumeReferenceData"));
         hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => setControlEnabledState(false, "proceed_" + pathItemId));
-    }
-
-    registerHelpers() {
-        for (let [helper, helperFunction] of Object.entries(helpers)) {
-            registerHelper(helper, helperFunction);
-        }
-        registerHelper('removeSpaces', removeSpaces);
     }
 }
 
