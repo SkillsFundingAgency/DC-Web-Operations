@@ -1,18 +1,19 @@
-﻿import { Templates, Partials, registerHelper, registerHelpers, getHandleBarsTemplate, registerPartialTemplate  } from '/assets/js/handlebars-helpers.js';
+﻿import { Templates, getHandleBarsTemplate} from '/assets/js/handlebars-helpers.js';
 import { updateSync } from '/assets/js/baseController.js';
-import { setControlEnabledState, removeSpaces } from '/assets/js/util.js';
+import { setControlEnabledState } from '/assets/js/util.js';
+import { getPathTemplate, isStateModelDifferent } from '/assets/js/periodEnd/basePathController.js';
 import * as helpers from '/assets/js/periodEnd/periodEndUtil.js';
 
 class pathController {
 
     constructor() {
-        this._slowTimer = null;
-        this.lastMessage = null;
         this._year = 0;
         this._period = 0;
         this._currentState = null;
-
-        this.initialiseTemplating();
+        this._slowTimer = null;
+        this.lastMessage = null;
+        this._ilrPeriodEndTemplate = getPathTemplate(helpers);
+        this._ilrPeriodEndNavigationTemplate = getHandleBarsTemplate(Templates.ILRPeriodEndNavigation);
     }
 
     initialiseState(stateModel) {
@@ -30,23 +31,10 @@ class pathController {
         this._period = stateModel.period;
     }
 
-    initialiseTemplating() {
-        registerHelpers(helpers);
-        registerHelper('removeSpaces', removeSpaces);
-
-        registerPartialTemplate('proceedButton', Partials.ProceedButton);
-        registerPartialTemplate('pathItemJobSummary', Partials.PathItemJobSummary);
-        registerPartialTemplate('proceedableItemWrapper', Partials.ProceedableItemWrapper);
-        registerPartialTemplate('pathHeader', Partials.PathHeader);
-
-        this._ilrPeriodEndTemplate = getHandleBarsTemplate(Templates.PeriodEnd);
-        this._ilrPeriodEndNavigationTemplate = getHandleBarsTemplate(Templates.ILRPeriodEndNavigation);
-    }
-
     renderPaths(stateModel) {
         updateSync.call(this);
 
-        if (JSON.stringify(this._currentState) !== JSON.stringify(stateModel)) {
+        if (isStateModelDifferent(this._currentState, stateModel)) {
             document.getElementById("pathContainer").innerHTML = this._ilrPeriodEndTemplate({ viewModel: stateModel, yearPeriod:{ year: this._year, period: this._period }});
             this._currentState = stateModel;
         }

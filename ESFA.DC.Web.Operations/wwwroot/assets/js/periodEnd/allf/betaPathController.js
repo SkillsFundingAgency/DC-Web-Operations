@@ -1,6 +1,7 @@
 ﻿import { updateSync } from '/assets/js/baseController.js';
-import { setControlEnabledState, removeSpaces } from '/assets/js/util.js';
-import { Templates, Partials, registerHelper, registerHelpers, getHandleBarsTemplate, registerPartialTemplate  } from '/assets/js/handlebars-helpers.js';
+import { setControlEnabledState } from '/assets/js/util.js';
+import { Templates, Partials, getHandleBarsTemplate } from '/assets/js/handlebars-helpers.js';
+import { getPathTemplate, isStateModelDifferent } from '/assets/js/periodEnd/basePathController.js';
 import * as helpers from '/assets/js/periodEnd/periodEndUtil.js';
 
 class pathController {
@@ -9,34 +10,19 @@ class pathController {
         this._slowTimer = null;
         this._year = 0;
         this._period = 0;
-        this._periodEndTemplate = null;
-        this._allfFileListTemplate = null;
         this._currentState = null;
+        this._periodEndTemplate = getPathTemplate(helpers, { pathHeader: Partials.ALLFPathHeader });
+        this._allfFileListTemplate = getHandleBarsTemplate(Templates.ALLFPeriodEndFileList);
     }
 
     initialiseState(stateModel) {
-
         setControlEnabledState(!stateModel.periodEndFinished, "uploadFile");
         setControlEnabledState(stateModel.collectionClosed && !stateModel.periodEndStarted, "startPeriodEnd");
         setControlEnabledState(stateModel.collectionClosed && !stateModel.periodEndFinished && stateModel.closePeriodEndEnabled, "closePeriodEnd");
 
         this._year = stateModel.year;
         this._period = stateModel.period;
-        this.initialiseTemplating();
     }
-
-    initialiseTemplating() {
-        registerHelpers(helpers);
-        registerHelper('removeSpaces', removeSpaces);
-
-        registerPartialTemplate('proceedButton', Partials.ProceedButton);
-        registerPartialTemplate('pathItemJobSummary', Partials.PathItemJobSummary);
-        registerPartialTemplate('proceedableItemWrapper', Partials.ProceedableItemWrapper);
-        registerPartialTemplate('pathHeader', Partials.ALLFPathHeader);
-
-        this._periodEndTemplate = getHandleBarsTemplate(Templates.PeriodEnd);
-        this._allfFileListTemplate = getHandleBarsTemplate(Templates.ALLFPeriodEndFileList);
-     }
 
     registerHandlers(hub, state) {
 
@@ -61,11 +47,10 @@ class pathController {
     renderFiles(stateModel) {
         updateSync.call(this);
         document.getElementById('fileContainer').innerHTML = this._allfFileListTemplate({ files: stateModel.files, period: this._period});
-
     }
 
     renderPaths(stateModel) {
-        if (JSON.stringify(this._currentState) !== JSON.stringify(stateModel)) {
+        if (isStateModelDifferent(this._currentState, stateModel )) {
             document.getElementById('pathContainer').innerHTML = this._periodEndTemplate({ viewModel: stateModel, yearPeriod: { year: this._year, period: this._period } });
             this._currentState = stateModel;
         }

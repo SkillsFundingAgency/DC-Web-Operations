@@ -4,14 +4,13 @@ export const getHandleBarsTemplate = function (name, root) {
     }
 
     if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
+
         var xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
-                    if (Handlebars.templates === undefined) {
-                        Handlebars.templates = {};
-                    }
+                    Handlebars.templates = Handlebars.templates || {};
                     Handlebars.templates[name] = Handlebars.compile(xhr.responseText);
                 }
                 else {
@@ -31,7 +30,7 @@ export const registerPartialTemplate = function (name, template) {
     Handlebars.registerPartial(name, partialTemplate);
 }
 
-export let Templates = {
+export const Templates = {
     ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
     FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
@@ -41,7 +40,7 @@ export let Templates = {
     ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html'
 };
 
-export let Partials = {
+export const Partials = {
     ProceedButton: 'PeriodEnd/Partials/ProceedButton.html',
     PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary.html',
     ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html',
