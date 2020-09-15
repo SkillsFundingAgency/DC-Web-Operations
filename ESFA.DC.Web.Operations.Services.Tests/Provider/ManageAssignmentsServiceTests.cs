@@ -70,9 +70,9 @@ namespace ESFA.DC.Web.Operations.Services.Tests
             var dateTimeProvider = new Mock<IDateTimeProvider>();
             dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(dateTimeNow);
             dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate1)).Returns(startDate1);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate1 ?? dateTimeNow)).Returns(endDate1.Value);
+            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate1.Value)).Returns(endDate1.Value);
             dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate2)).Returns(startDate2);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate2 ?? dateTimeNow)).Returns(endDate2.Value);
+            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate2.Value)).Returns(endDate2.Value);
 
             var httpClientService = new Mock<IHttpClientService>();
             httpClientService.Setup(x => x.GetAsync<IEnumerable<OrganisationCollection>>($"Url/api/org/assignments/{ukprn}", cancellationToken)).ReturnsAsync(collectionAssignments);
@@ -124,7 +124,7 @@ namespace ESFA.DC.Web.Operations.Services.Tests
             var dateTimeProvider = new Mock<IDateTimeProvider>();
             dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(dateTimeNow);
             dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate)).Returns(startDate);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate ?? dateTimeNow)).Returns(dateTimeNow);
+            dateTimeProvider.Setup(x => x.ConvertUtcToUk(dateTimeNow)).Returns(dateTimeNow);
 
             var httpClientService = new Mock<IHttpClientService>();
             httpClientService.Setup(x => x.GetAsync<IEnumerable<OrganisationCollection>>($"Url/api/org/assignments/{ukprn}", cancellationToken)).ReturnsAsync(collectionAssignments);
@@ -173,9 +173,9 @@ namespace ESFA.DC.Web.Operations.Services.Tests
             var dateTimeProvider = new Mock<IDateTimeProvider>();
             dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(dateTimeNow);
             dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate1)).Returns(startDate1);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate1 ?? dateTimeNow)).Returns(endDate1.Value);
+            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate1.Value)).Returns(endDate1.Value);
             dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate2)).Returns(startDate2);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate2 ?? dateTimeNow)).Returns(endDate2.Value);
+            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate2.Value)).Returns(endDate2.Value);
 
             var httpClientService = new Mock<IHttpClientService>();
             httpClientService.Setup(x => x.GetAsync<IEnumerable<OrganisationCollection>>($"Url/api/org/assignments/{ukprn}", cancellationToken)).ReturnsAsync(collectionAssignments);
