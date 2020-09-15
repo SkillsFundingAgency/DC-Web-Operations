@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Autofac.Features.Indexed;
-using Castle.Components.DictionaryAdapter;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.JobQueueManager.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models.Dtos;
 using ESFA.DC.Web.Operations.Areas.Publication.Controllers;

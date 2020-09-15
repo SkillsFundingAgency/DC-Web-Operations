@@ -45,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             var collectionAssignments = new List<CollectionAssignment>();
 
-            foreach (var assignment in providerAssignments)
+            foreach (var assignment in response)
             {
                 var startDate = _dateTimeProvider.ConvertUtcToUk(assignment.StartDate);
                 var endDate = _dateTimeProvider.ConvertUtcToUk(assignment.EndDate ?? dateTimeNow);
