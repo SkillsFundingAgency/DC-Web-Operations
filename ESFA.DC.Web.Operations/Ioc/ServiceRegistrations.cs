@@ -83,13 +83,15 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ProvidersReturnedCurrentPeriodHubEventBase>().As<IJobProvidersReturnedCurrentPeriodHubEventBase>().SingleInstance();
             builder.RegisterType<ValidityPeriodHubEventBase>().As<IValidityPeriodHubEventBase>().SingleInstance();
 
-            builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<DevolvedContractsHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<OnsPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ShortTermFundingInitiativesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -142,6 +144,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobFailedCurrentPeriodService>().As<IJobFailedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ProvidersReturnedCurrentPeriodService>().As<IJobProvidersReturnedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidityPeriodService>().As<IValidityPeriodService>().InstancePerLifetimeScope();
+            builder.RegisterType<ApiAvailabilityService>().As<IApiAvailabilityService>().InstancePerLifetimeScope();
 
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();

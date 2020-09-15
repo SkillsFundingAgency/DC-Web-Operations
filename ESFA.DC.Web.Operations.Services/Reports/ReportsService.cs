@@ -21,6 +21,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 {
     public class ReportsService : IReportsService
     {
+        private const int ReportCountLimit = 3;
         private readonly string _baseUrl;
         private IDictionary<int, IEnumerable<string>> _collectionsByYear = new Dictionary<int, IEnumerable<string>>();
         private readonly ICollectionsService _collectionsService;
@@ -48,7 +49,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<long> RunReport(string reportName, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<long> RunReport(string reportName, int collectionYear, int collectionPeriod, string createdBy, CancellationToken cancellationToken = default(CancellationToken))
         {
             long jobId = -1;
 
@@ -61,7 +62,8 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                 CollectionName = report.CollectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 StorageReference = report.ContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString()),
                 Status = Jobs.Model.Enums.JobStatusType.Ready,
-                JobId = 0
+                JobId = 0,
+                CreatedBy = createdBy
             };
 
             string url = $"{_baseUrl}/api/job";
@@ -76,10 +78,9 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         public async Task<IEnumerable<ReportDetails>> GetAllReportDetails(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fileLocation = Constants.ReportsBlobContainerName.Replace(Constants.CollectionYearToken, collectionYear.ToString());
-            var reportTypeCount = 3;
 
             // get all reports
-            string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}/{reportTypeCount}";
+            string reportsUrl = $"{_baseUrl}/api/period-end/reports/{collectionYear}/{collectionPeriod}/{fileLocation}/{ReportCountLimit}";
 
             var reportDetailsList = await _httpClientService.GetAsync<IEnumerable<ReportDetails>>(reportsUrl, cancellationToken);
             if (reportDetailsList != null)
@@ -98,14 +99,28 @@ namespace ESFA.DC.Web.Operations.Services.Reports
 
             foreach (var report in _reports.Where(x => x.ReportType == ReportType.Operations))
             {
+                var foundFiles = new List<string>();
                 foreach (var fileReference in fileReferences)
                 {
                     if (fileReference.IndexOf(report.DisplayName, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
-                        var lastIndexOf = fileReference.LastIndexOf("/") + 1;
-                        var url = fileReference.Substring(lastIndexOf, fileReference.Length - lastIndexOf);
-                        reportDetailsList.Add(new ReportDetails { DisplayName = report.DisplayName, Url = url });
+                        foundFiles.Add(fileReference);
                     }
+                }
+
+                var latestFileReferences = foundFiles
+                    .OrderByDescending(ff =>
+                    {
+                        var match = RegexDefinitions.ReportDate.Match(ff);
+                        return match.Value;
+                    })
+                    .Take(ReportCountLimit);
+
+                foreach (var fileReference in latestFileReferences)
+                {
+                    var lastIndexOf = fileReference.LastIndexOf("/") + 1;
+                    var url = fileReference.Substring(lastIndexOf, fileReference.Length - lastIndexOf);
+                    reportDetailsList.Add(new ReportDetails { DisplayName = report.DisplayName, Url = url });
                 }
             }
 

@@ -9,6 +9,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.Reports.Models;
 using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Controllers;
+using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
@@ -93,7 +94,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             }
 
             // queue the report job
-            var jobId = await _reportsService.RunReport(reportName, year.Value, period.Value);
+            var jobId = await _reportsService.RunReport(reportName, year.Value, period.Value, User.Name());
 
             // display the processing report spinner page while the report is running
             return RedirectToAction("ProcessingReport", "Reports", new { ReportName = reportName, ReportAction = ReportActions.ProcessingRunReport, CollectionYear = year, CollectionPeriod = period, JobId = jobId });

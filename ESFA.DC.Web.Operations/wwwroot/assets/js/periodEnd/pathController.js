@@ -94,8 +94,8 @@ class pathController {
         return "";
     }
 
-    renderProceed(pathId, pathItemId, jobState, itemIsSubPath, nextItemIsSubPath, isBusy) {
-        const proceedEnabled = ((!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running)) && !isBusy;
+    renderProceed(pathId, pathItemId, jobState, itemIsSubPath, nextItemIsSubPath, isBusy, hasJobs) {
+        const proceedEnabled = ((!itemIsSubPath && jobState < jobContinuation.running) || (itemIsSubPath === true && jobState !== jobContinuation.running) || (hasJobs === false)) && !isBusy;
         let proceedLi = document.createElement("li");
         proceedLi.className = "app-task-list__item";
         proceedLi.id = `PL_${pathItemId}`;
@@ -287,7 +287,8 @@ class pathController {
                 jobStatus,
                 pathItem.subPaths !== null,
                 path.pathItems[pathItem.ordinal + 1].subPaths !== null,
-                path.isBusy));
+                path.isBusy,
+                pathItem.hasJobs));
             subItemList.insertBefore(panel, subItemList.children[pathItem.ordinal]);
         } else {
             subItemList.insertBefore(item, subItemList.children[pathItem.ordinal]);

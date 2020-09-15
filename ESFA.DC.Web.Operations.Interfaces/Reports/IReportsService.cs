@@ -8,7 +8,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Reports
 {
     public interface IReportsService
     {
-        Task<long> RunReport(string reportType, int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> RunReport(string reportType, int collectionYear, int collectionPeriod, string createdBy, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<ReportDetails>> GetAllReportDetails(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
 

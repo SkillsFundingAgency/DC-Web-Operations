@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
@@ -18,6 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
         private readonly IEmailService _emailService;
         private readonly IStateService _stateService;
         private readonly IPeriodService _periodService;
+        private readonly IApiAvailabilityService _apiAvailabilityService;
         private readonly ILogger _logger;
 
         public PeriodEndHub(
@@ -27,6 +29,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             IEmailService emailService,
             IStateService stateService,
             IPeriodService periodService,
+            IApiAvailabilityService apiAvailabilityService,
             ILogger logger)
         {
             _eventBase = eventBase;
@@ -35,6 +38,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
             _emailService = emailService;
             _stateService = stateService;
             _periodService = periodService;
+            _apiAvailabilityService = apiAvailabilityService;
             _logger = logger;
         }
 
@@ -66,6 +70,8 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 await _periodEndService.StartPeriodEndAsync(collectionYear, period, CollectionType);
 
                 await _emailService.SendEmail(EmailIds.PeriodEndStartedEmail, period, Constants.IlrPeriodPrefix);
+
+                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE,  false, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -125,6 +131,8 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR
                 {
                     await _hubContext.Clients.All.SendAsync("ReferenceJobsButtonState");
                 }
+
+                await _apiAvailabilityService.SetApiAvailabilityAsync(ApiNameConstants.Learner, ApiUpdateProcessConstants.PE,  true, CancellationToken.None);
             }
             catch (Exception e)
             {
