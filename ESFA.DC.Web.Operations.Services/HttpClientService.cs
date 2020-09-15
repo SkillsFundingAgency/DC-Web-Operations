@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -10,56 +9,55 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Auditing;
-using Flurl.Http;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class BaseHttpClientService : IHttpClientService
+    public class HttpClientService : IHttpClientService
     {
-        protected readonly IJsonSerializationService _jsonSerializationService;
-        protected readonly HttpClient _httpClient;
-        private readonly IRouteFactory _routeFactory;
+        private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly HttpClient _httpClient;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        public BaseHttpClientService(
-            IRouteFactory routeFactory,
+        public HttpClientService(
             IJsonSerializationService jsonSerializationService,
             IDateTimeProvider dateTimeProvider,
             HttpClient httpClient)
         {
-            _routeFactory = routeFactory;
             _jsonSerializationService = jsonSerializationService;
             _dateTimeProvider = dateTimeProvider;
             _httpClient = httpClient;
         }
 
-         public async Task<string> SendDataAsync(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
+        public async Task<string> SendDataAsync<T>(string url, T data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
         {
             var json = _jsonSerializationService.Serialize(data);
 
-            var content = BuildContent(json, username, differentiator);
+            using (var content = BuildContent(json, username, differentiator))
+            {
+                var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
-            var response = await _httpClient.PostAsync(url, content, cancellationToken);
-
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
-        public async Task<HttpRawResponse> SendDataAsyncRawResponse(string url, object data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
+        public async Task<HttpRawResponse> SendDataAsyncRawResponse<T>(string url, T data, CancellationToken cancellationToken, string username = null, DifferentiatorPath? differentiator = null)
         {
             var json = _jsonSerializationService.Serialize(data);
-            var content = BuildContent(json, username, differentiator);
 
-            var response = await _httpClient.PostAsync(url, content, cancellationToken);
-
-            var rawResponse = new HttpRawResponse
+            using (var content = BuildContent(json, username, differentiator))
             {
-                StatusCode = (int)response.StatusCode,
-                IsSuccess = response.IsSuccessStatusCode,
-                Content = await response.Content.ReadAsStringAsync()
-            };
+                var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
-            return rawResponse;
+                var rawResponse = new HttpRawResponse
+                {
+                    StatusCode = (int)response.StatusCode,
+                    IsSuccess = response.IsSuccessStatusCode,
+                    Content = await response.Content.ReadAsStringAsync()
+                };
+
+                return rawResponse;
+            }
         }
 
         public async Task<string> SendAsync(string url, CancellationToken cancellationToken)
@@ -84,15 +82,16 @@ namespace ESFA.DC.Web.Operations.Services
             return string.IsNullOrWhiteSpace(data) ? default(T) : _jsonSerializationService.Deserialize<T>(data);
         }
 
-        public async Task<string> PutDataAsync(string url, object data, CancellationToken cancellationToken)
+        public async Task<string> PutDataAsync<T>(string url, T data, CancellationToken cancellationToken, string userName = null, DifferentiatorPath? differentiator = null)
         {
             var json = _jsonSerializationService.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using (var content = BuildContent(json, userName, differentiator))
+            {
+                var response = await _httpClient.PutAsync(url, content, cancellationToken);
 
-            var response = await _httpClient.PutAsync(url, content, cancellationToken);
-
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
         public async Task DeleteAsync(string url, CancellationToken cancellationToken)
@@ -100,29 +99,6 @@ namespace ESFA.DC.Web.Operations.Services
             var response = await _httpClient.DeleteAsync(url, cancellationToken);
 
             response.EnsureSuccessStatusCode();
-        }
-
-        public async Task<TResult> PostAsync<TContent, TResult>(
-            string baseUrl,
-            TContent content,
-            IEnumerable<string> segments = null,
-            CancellationToken cancellationToken = default)
-        {
-            var clientUrl = _routeFactory.BuildRoute(baseUrl, segments);
-
-            return await clientUrl
-                .PostJsonAsync(content, cancellationToken)
-                .ReceiveJson<TResult>();
-        }
-
-        public async Task<TResult> GetAsync<TResult>(
-            string baseUrl,
-            IEnumerable<string> segments = null,
-            CancellationToken cancellationToken = default)
-        {
-            var clientUrl = _routeFactory.BuildRoute(baseUrl, segments);
-
-            return await clientUrl.GetJsonAsync<TResult>(cancellationToken);
         }
 
         private HttpContent BuildContent(string content, string userName, DifferentiatorPath? differentiator)

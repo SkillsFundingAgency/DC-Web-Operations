@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models;
@@ -16,13 +13,10 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
         private readonly IALLFPeriodEndService _periodEndService;
 
         public ALLFHistoryService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
             IALLFPeriodEndService periodEndService,
-            HttpClient httpClient,
-            IDateTimeProvider dateTimeProvider)
-            : base(routeFactory, jsonSerializationService, httpClient, dateTimeProvider, $"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history-allf")
+            IHttpClientService httpClientService)
+            : base($"{apiSettings.JobManagementApiBaseUrl}/api/period-end-history-allf", httpClientService)
         {
             _periodEndService = periodEndService;
         }

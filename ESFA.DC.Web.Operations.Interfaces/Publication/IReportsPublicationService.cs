@@ -17,11 +17,11 @@ namespace ESFA.DC.Web.Operations.Interfaces.Publication
 
         Task PublishSldAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync();
+        Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType);
+        Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType, CancellationToken cancellationToken = default(CancellationToken));
 
         Task UnpublishSldDeleteFolderAsync(string containerName, int period, CancellationToken cancellationToken = default(CancellationToken));
     }

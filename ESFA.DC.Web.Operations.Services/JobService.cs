@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services
 {
-    public class JobService : BaseHttpClientService, IJobService
+    public class JobService : IJobService
     {
+        private readonly IHttpClientService _httpClientService;
         private readonly string _baseUrl;
 
         public JobService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
-            IDateTimeProvider dateTimeProvider,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IHttpClientService httpClientService)
         {
+            _httpClientService = httpClientService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -50,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Services
                 TermsAccepted = submittedJobSubmission.TermsAccepted,
             };
 
-            var response = await SendDataAsync($"{_baseUrl}/api/job", job, cancellationToken);
+            var response = await _httpClientService.SendDataAsync($"{_baseUrl}/api/job", job, cancellationToken);
             long.TryParse(response, out var result);
 
             return result;
@@ -58,39 +53,27 @@ namespace ESFA.DC.Web.Operations.Services
 
         public async Task<JobStatusType> GetJobStatus(long jobId, CancellationToken cancellationToken = default)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/{jobId}/status", cancellationToken);
-            return _jsonSerializationService.Deserialize<JobStatusType>(data);
+            return await _httpClientService.GetAsync<JobStatusType>($"{_baseUrl}/api/job/{jobId}/status", cancellationToken);
         }
 
         public async Task<SubmittedJob> GetJob(long ukprn, long jobId, CancellationToken cancellationToken = default)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/{ukprn}/{jobId}", cancellationToken);
-            return _jsonSerializationService.Deserialize<SubmittedJob>(data);
+            return await _httpClientService.GetAsync<SubmittedJob>($"{_baseUrl}/api/job/{ukprn}/{jobId}", cancellationToken);
         }
 
         public async Task<IEnumerable<SubmittedJob>> GetLatestJobForReferenceDataCollectionsAsync(string collectionType, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/{collectionType}/latestByType", cancellationToken);
-
-            return data == null ? null : _jsonSerializationService.Deserialize<IEnumerable<SubmittedJob>>(data);
+            return await _httpClientService.GetAsync<IEnumerable<SubmittedJob>>($"{_baseUrl}/api/job/{collectionType}/latestByType", cancellationToken);
         }
 
         public async Task<SubmittedJob> GetLatestJobForCollectionAsync(string collection, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}/api/job/{collection}/latest", cancellationToken);
-
-            return data == null ? null : _jsonSerializationService.Deserialize<SubmittedJob>(data);
+            return await _httpClientService.GetAsync<SubmittedJob>($"{_baseUrl}/api/job/{collection}/latest", cancellationToken);
         }
 
         public async Task<SubmittedJob> GetLatestJobAsync(long ukprn, string collectionName, CancellationToken cancellationToken)
         {
-            var data = await GetDataAsync($"{_baseUrl}/{ukprn}/{collectionName}/latest", cancellationToken);
-            if (string.IsNullOrEmpty(data))
-            {
-                return null;
-            }
-
-            return _jsonSerializationService.Deserialize<SubmittedJob>(data);
+            return await _httpClientService.GetAsync<SubmittedJob>($"{_baseUrl}/{ukprn}/{collectionName}/latest", cancellationToken);
         }
     }
 }
