@@ -33,7 +33,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ESFA.DC.Web.Operations.Audi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Security", "ESFA.DC.Web.Operations.Security\ESFA.DC.Web.Operations.Security.csproj", "{8DF4D162-DD76-4CB7-AB51-C2FEFDD0ABE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.Web.Operations.Services.Tests", "ESFA.DC.Web.Operations.Services.Tests\ESFA.DC.Web.Operations.Services.Tests.csproj", "{642D03AA-7068-4699-9AC9-FDD5A0301289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.Web.Operations.Services.Tests", "ESFA.DC.Web.Operations.Services.Tests\ESFA.DC.Web.Operations.Services.Tests.csproj", "{642D03AA-7068-4699-9AC9-FDD5A0301289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
