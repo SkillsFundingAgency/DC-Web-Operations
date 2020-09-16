@@ -46,7 +46,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
 
         [RequestSizeLimit(524_288_000)]
         [AutoValidateAntiforgeryToken]
-        [HttpPost("{collectionYear?}/{period?}")]
+        [HttpPost("{collectionYear?}/{period?}/{beta?}")]
         public async Task<IActionResult> Index([FromForm]int collectionYear, [FromForm]int period, IFormFile file)
         {
             var cancellationToken = CancellationToken.None;
