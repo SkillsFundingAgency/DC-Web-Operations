@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Collection;
@@ -25,19 +24,19 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         private readonly ILogger _logger;
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IHttpClientService _httpClientService;
 
         public ManageAssignmentsService(
-            IRouteFactory routeFactory,
             ILogger logger,
             IDateTimeProvider dateTimeProvider,
-            IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, apiSettings, httpClient, dateTimeProvider)
+            IHttpClientService httpClientService)
+            : base(apiSettings, dateTimeProvider, httpClientService)
         {
             _logger = logger;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
+            _httpClientService = httpClientService;
         }
 
         public async Task<IEnumerable<CollectionAssignment>> GetAvailableCollectionsAsync(CancellationToken cancellationToken)
@@ -63,8 +62,9 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             foreach (var collectionYear in collectionYears)
             {
-                collections.AddRange(_jsonSerializationService.Deserialize<IEnumerable<Collection>>(
-                        await GetDataAsync(_baseUrl + $"/api/collections/for-year/{collectionYear}", cancellationToken)));
+                var data = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_baseUrl}/api/collections/for-year/{collectionYear}", cancellationToken);
+
+                collections.AddRange(data);
             }
 
             return collections
@@ -102,10 +102,10 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             try
             {
-                await SendDataAsync($"{_baseUrl}/api/org/assignments/delete/{ukprn}", organisationToDelete, cancellationToken);
+                await _httpClientService.SendDataAsync($"{_baseUrl}/api/org/assignments/delete/{ukprn}", organisationToDelete, cancellationToken);
                 _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Successfully deleted:{organisationToDelete.Count}");
 
-                await SendDataAsync($"{_baseUrl}/api/org/assignments/update/{ukprn}", organisationToUpdate, cancellationToken);
+                await _httpClientService.SendDataAsync($"{_baseUrl}/api/org/assignments/update/{ukprn}", organisationToUpdate, cancellationToken);
                 _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Successfully updated:{organisationToUpdate.Count}");
                 return true;
             }

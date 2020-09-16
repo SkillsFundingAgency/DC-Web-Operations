@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Auditing;
-using ESFA.DC.Web.Operations.Models.Auditing;
-using ESFA.DC.Web.Operations.Topics.Data.Auditing;
-using ESFA.DC.Web.Operations.Topics.Data.Auditing.Entities;
-using Newtonsoft.Json.Linq;
 
 namespace ESFA.DC.Web.Operations.Services.Auditing
 {
