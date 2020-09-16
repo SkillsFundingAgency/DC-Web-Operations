@@ -1,4 +1,5 @@
-﻿import { getPathNameBySubPathId, isNextItemSubPath } from '/assets/js/periodEnd/periodEndUtil.js';
+﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus } from '/assets/js/periodEnd/periodEndUtil.js';
+import { jobContinuation, jobStatus } from '/assets/js/periodEnd/state.js';
 
 describe('period end util', () => {
 
@@ -33,7 +34,7 @@ describe('period end util', () => {
             // Act
             const result = isNextItemSubPath(pathItems, 1);
 
-            // Arrange
+            // Assert
             expect(result).toBe(true);
         });
 
@@ -44,8 +45,129 @@ describe('period end util', () => {
             // Act
             const result = isNextItemSubPath(pathItems, 0);
 
-            // Arrange
+            // Assert
             expect(result).toBe(false);
+        });
+    });
+
+    describe('getJobContinuationStatus', () => {
+        describe('with no job returns nothingRunning', () => {
+            test('null jobs', () => {
+                 // Act
+                const result = getJobContinuationStatus(null);
+
+                // Assert
+                expect(result).toBe(jobContinuation.nothingRunning);
+            });
+
+            test('empty jobs', () => {
+                // Act
+                const result = getJobContinuationStatus([]);
+
+                // Assert
+                expect(result).toBe(jobContinuation.nothingRunning);
+            });
+
+            test('undefined', () => {
+                // Act
+                const result = getJobContinuationStatus();
+
+                // Assert
+                expect(result).toBe(jobContinuation.nothingRunning);
+            });
+        });
+
+        describe('with failed jobs returns someFailed', () => {
+            test('failed and completed job', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, ]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.someFailed);
+            });
+
+            test('retry failed and completed job', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.failedRetry }, { status: jobStatus.failed }]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.someFailed);
+            });
+        });
+
+        test('all completed returns allCompleted', () => {
+            //arrange
+            const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.completed }]
+
+            // Act
+            const result = getJobContinuationStatus(pathItems);
+
+            // Assert
+            expect(result).toBe(jobContinuation.allCompleted);
+        });
+
+        describe('returns is running if job still running irrespective of other results', () => {
+
+            test('when job processing', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.processing }]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.running);
+            });
+
+            test('when job ready', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.ready }]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.running);
+            });
+
+            test('when job movedForProcessing', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.movedForProcessing }]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.running);
+            });
+
+            test('when job paused', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.paused }]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.running);
+            });
+
+            test('when job waiting', () => {
+                //arrange
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.waiting }]
+
+                // Act
+                const result = getJobContinuationStatus(pathItems);
+
+                // Assert
+                expect(result).toBe(jobContinuation.running);
+            });
         });
     });
 

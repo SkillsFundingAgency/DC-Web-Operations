@@ -43,6 +43,10 @@
         this._connection.off(message);
     }
 
+    unregisterMessageHandlers(messages) {
+        messages.forEeach(m => this.unregisterMessageHandler(m));
+    }
+
     clearInterval() {
         clearInterval(this._timerId);
     }

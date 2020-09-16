@@ -45,6 +45,6 @@ describe('proceed button', () => {
         document.body.innerHTML = template(viewModel);
 
         // Assert
-        expect(document.querySelector('button[type="submit"]').getAttribute('onclick')).toBe(`window.periodEndClient.proceed(${viewModel.yearPeriod.year},${viewModel.yearPeriod.period},${viewModel.pathItem.pathId},${viewModel.pathItem.pathItemId})`);
+        expect(document.querySelector('button[type="submit"]').getAttribute('onclick')).toBe(`window.periodEndClient.proceed(${viewModel.yearPeriod.year},${viewModel.yearPeriod.period},${viewModel.pathItem.pathId},${viewModel.pathItem.pathItemId});this.disabled=true;`);
     });
 });

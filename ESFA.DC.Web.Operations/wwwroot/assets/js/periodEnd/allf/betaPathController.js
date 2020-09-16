@@ -36,10 +36,7 @@ class pathController {
         hub.registerMessageHandler("DisablePathItemProceed", (pathItemId) => setControlEnabledState(false, `proceed_${pathItemId}`));
 
         hub.registerMessageHandler("TurnOffMessage", () => {
-            hub.unregisterMessageHandler("UploadState");
-            hub.unregisterMessageHandler("StartPeriodEndState");
-            hub.unregisterMessageHandler("PeriodClosedState");
-            hub.unregisterMessageHandler("ReceiveMessage");
+            hub.unregisterMessageHandlers(["UploadState", "StartPeriodEndState", "PeriodClosedState", "ReceiveMessage"]);
             hub.clearInterval();
         });
     }

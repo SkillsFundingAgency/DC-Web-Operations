@@ -26,7 +26,7 @@ export function jobStatusConvertor(status) {
 
 export function getJobContinuationStatus(pathItemsJobs) {
 
-    if (pathItemsJobs) {
+    if (Array.isArray(pathItemsJobs) && pathItemsJobs.length) {
         if (pathItemsJobs.some(j => j.status === jobStatus.processing
             || j.status === jobStatus.ready
             || j.status === jobStatus.movedForProcessing
@@ -136,6 +136,3 @@ export function isNextItemSubPath(pathItems, index) {
     const nextItem = pathItems[index + 1];
     return nextItem && nextItem.subPaths ? true : false;
 }
-
-
-
