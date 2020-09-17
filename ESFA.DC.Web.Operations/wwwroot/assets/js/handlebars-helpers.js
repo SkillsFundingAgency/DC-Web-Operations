@@ -38,6 +38,7 @@ export let Templates = {
     ReportListOptions: 'Reports/ReportListOptions.html',
     ILRPeriodEnd: 'PeriodEnd/ILRPeriodEnd.html',
     ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
+    FisFilesList: 'ReferenceData/FisFilesListTemplate.html'
 };
 
 export let Partials = {

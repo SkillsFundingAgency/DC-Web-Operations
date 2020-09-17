@@ -51,5 +51,7 @@
         public const string ValidationRuleDetailsReportCollectionName = @"OP-Validation-Report";
 
         public const string ShortTermFundingInitiatives = "ShortTermFundingInitiatives";
+
+        public const string FisReferenceData2021 = "FISReferenceData2021";
     }
 }

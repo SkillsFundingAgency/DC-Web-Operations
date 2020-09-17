@@ -16,6 +16,7 @@
         public const string DevolvedContractsReportName = "DevolvedContractsRD-ValidationReport";
         public const string ValidationMessagesReportName = "ValidationMessagesRD-ValidationReport";
         public const string ShortTermFundingInitiativesReportName = "ShortTermFundingInitiativesRD-ValidationReport";
+        public const string FisReferenceDataReportName = "";
 
         public const string DevolvedPostcodesFullNameReportName = "MCAGLA_FullName_RD-ValidationReport";
         public const string DevolvedPostcodesLocalAuthorityReportName = "MCAGLA_LocalAuthority_RD-ValidationReport";

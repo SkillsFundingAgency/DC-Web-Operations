@@ -94,6 +94,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ShortTermFundingInitiativesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<FisReferenceData2021Hub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -171,6 +172,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<DevolvedPostcodesSof>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<RefOps>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ShortTermFundingInitiatives>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<FisReferenceData2021>().As<ICollection>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();

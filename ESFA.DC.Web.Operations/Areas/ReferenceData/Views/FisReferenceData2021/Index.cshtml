@@ -1,0 +1,75 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
+@model ESFA.DC.Web.Operations.Models.ReferenceData.ReferenceDataViewModel
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="govuk-width-container">
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="/">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="/referenceData/referenceData">Reference data</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">@Model.ReferenceDataCollectionName</li>
+        </ol>
+    </div>
+</div>
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl heading-bottom-margin">@Model.CollectionDisplayName</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form asp-controller="FisReferenceData2021" asp-action="Post" method="post" enctype="multipart/form-data">
+            <input asp-for="ReferenceDataCollectionName" type="hidden" />
+            <input asp-for="HubName" type="hidden" />
+            <input asp-for="CollectionDisplayName" type="hidden" />
+
+            <button class="govuk-button" id="run">
+                Run
+            </button>
+        </form>
+    </div>
+</div>
+
+<div id="fisFilesList">
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <label id="slowConnection" alt="Connection is slow at the moment"></label>
+        <label id="lastSync"></label>
+        <label id="state"></label>
+    </div>
+</div>
+
+@section PageScripts
+{
+    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
+
+    <script type="module">
+        import Controller from '/assets/js/referenceData/fis2021/fis2021Controller.js';
+        import Hub from '/assets/js/hubs/hub.js';
+
+        (function() {
+            const model = @Json.Serialize(Model);
+            const controller = new Controller();
+            const hub = new Hub('@Model.HubName', controller.displayConnectionState);
+
+            controller.registerHandlers(hub, '@Model.ReferenceDataCollectionName');
+            hub.startHub();
+            controller.renderFiles('@Model.ReferenceDataCollectionName', model);
+        })();
+    </script>
+}
