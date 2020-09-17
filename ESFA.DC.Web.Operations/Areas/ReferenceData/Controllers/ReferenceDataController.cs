@@ -82,7 +82,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return View("FileUpload", model);
             }
 
-            await _referenceDataService.SubmitJob(Period, model.ReferenceDataCollectionName, User.Name(), User.Email(), file, cancellationToken);
+            await _referenceDataService.SubmitJobAsync(Period, model.ReferenceDataCollectionName, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index", "ReferenceData", new { collectionName = model.ReferenceDataCollectionName });
         }

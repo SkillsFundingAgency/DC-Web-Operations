@@ -22,6 +22,7 @@ using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
+using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Models.Reports;
@@ -67,7 +68,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<StorageService>().As<IStorageService>().WithAttributeFiltering().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().As<ISerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<SerialisationHelperService>().As<ISerialisationHelperService>().InstancePerLifetimeScope();
-            builder.RegisterType<RouteFactory>().As<IRouteFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<ReportsService>().As<IReportsService>().InstancePerLifetimeScope();
             builder.RegisterType<CloudStorageService>().As<ICloudStorageService>().SingleInstance();
 
             builder.RegisterType<HubEventBase>().As<Interfaces.IHubEventBase>().SingleInstance();
@@ -84,20 +85,23 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ProvidersReturnedCurrentPeriodHubEventBase>().As<IJobProvidersReturnedCurrentPeriodHubEventBase>().SingleInstance();
             builder.RegisterType<ValidityPeriodHubEventBase>().As<IValidityPeriodHubEventBase>().SingleInstance();
 
-            builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<CampusIdentifiersHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<DevolvedContractsHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<OnsPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ShortTermFundingInitiativesHub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<FisReferenceData2021Hub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().SingleInstance();
             builder.RegisterType<HttpClient>().SingleInstance();
-            builder.RegisterType<BaseHttpClientService>().As<IHttpClientService>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpClientService>().As<IHttpClientService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<ILRHistoryService>().As<IILRHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<NCSHistoryService>().As<INCSHistoryService>().InstancePerLifetimeScope();
@@ -143,6 +147,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobFailedCurrentPeriodService>().As<IJobFailedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ProvidersReturnedCurrentPeriodService>().As<IJobProvidersReturnedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidityPeriodService>().As<IValidityPeriodService>().InstancePerLifetimeScope();
+            builder.RegisterType<ApiAvailabilityService>().As<IApiAvailabilityService>().InstancePerLifetimeScope();
 
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();
@@ -167,6 +172,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<DevolvedPostcodesSof>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<RefOps>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ShortTermFundingInitiatives>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<FisReferenceData2021>().As<ICollection>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();

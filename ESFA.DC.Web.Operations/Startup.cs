@@ -9,6 +9,7 @@ using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Web.Operations.Extensions;
+using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
@@ -107,6 +108,10 @@ namespace ESFA.DC.Web.Operations
 
             services.AddSignalR();
 
+            services.AddHttpClient<IHttpClientService, HttpClientService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
+                .AddPolicyHandler(GetRetryPolicy());
+
             services.AddHostedService<PeriodEndPrepTimedHostedService>();
             services.AddHostedService<PeriodEndTimedHostedService>();
             services.AddHostedService<DashboardTimedHostedService>();
@@ -124,34 +129,6 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<ALLFPeriodEndTimedHostedService>();
 
             services.AddHostedService<ReferenceDataTimedHostedService>();
-
-            services.AddHttpClient<IPeriodEndService, PeriodEndService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
-
-            services.AddHttpClient<IPeriodService, PeriodService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
-
-            services.AddHttpClient<IReportsService, ReportsService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
-
-            services.AddHttpClient<IReportsPublicationService, ReportsPublicationService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
-
-            services.AddHttpClient<INCSPeriodEndService, NCSPeriodEndService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
-
-            services.AddHttpClient<IALLFPeriodEndService, ALLFPeriodEndService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
-
-            services.AddHttpClient<IReferenceDataService, ReferenceDataService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // Set lifetime to five minutes
-                .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpContextAccessor();
 
@@ -316,6 +293,11 @@ namespace ESFA.DC.Web.Operations
                 });
 
                 routes.MapHub<ShortTermFundingInitiativesHub>("/shortTermFundingInitiativesHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
+
+                routes.MapHub<FisReferenceData2021Hub>("/fisReferenceData2021Hub", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });

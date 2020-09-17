@@ -1,47 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
-using ESFA.DC.Jobs.Model.Processing.Detail;
 using ESFA.DC.PeriodEnd.Models.Dtos;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
 using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Services.Frm
 {
-    public class ReportsPublicationService : BaseHttpClientService, IReportsPublicationService
+    public class ReportsPublicationService : IReportsPublicationService
     {
         private readonly IFileService _fileService;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientService _httpClientService;
         private readonly string _jobApiUrl;
         private readonly string _baseJobApiUrl;
 
         public ReportsPublicationService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
             IIndex<PersistenceStorageKeys, IFileService> fileService,
             IDateTimeProvider dateTimeProvider,
             ApiSettings apiSettings,
-            HttpClient httpClient)
-            : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            IHttpClientService httpClientService)
         {
             _fileService = fileService[PersistenceStorageKeys.DctAzureStorage];
             _baseJobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api";
             _jobApiUrl = $"{apiSettings.JobManagementApiBaseUrl}/api/job";
             _dateTimeProvider = dateTimeProvider;
-            _httpClient = httpClient;
+            _httpClientService = httpClientService;
         }
 
         public async Task<int> GetFrmStatusAsync(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
@@ -52,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             }
 
             string url = $"{_jobApiUrl}/{jobId}/status";
-            var response = await GetDataAsync(url, cancellationToken);
+            var response = await _httpClientService.GetDataAsync(url, cancellationToken);
             int.TryParse(response, out var result);
             return result;
         }
@@ -65,8 +57,7 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             }
 
             string url = $"{_jobApiUrl}/0/{jobId}";
-            var jobinfojson = await GetDataAsync(url, cancellationToken);
-            var jobinfo = _jsonSerializationService.Deserialize<FileUploadJob>(jobinfojson);
+            var jobinfo = await _httpClientService.GetAsync<FileUploadJob>(url, cancellationToken);
 
             return new Models.Publication.JobDetails() {
                 CollectionYear = jobinfo.CollectionYear,
@@ -93,13 +84,8 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             };
 
             string url = $"{_jobApiUrl}/publication/validate";
-            var json = _jsonSerializationService.Serialize(job);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = await _httpClientService.SendDataAsync(url, job, cancellationToken);
 
-            HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-
-            var result = await response.Content.ReadAsStringAsync();
             long.TryParse(result, out var jobId);
 
             return jobId;
@@ -114,11 +100,8 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             };
 
             string url = $"{_jobApiUrl}/1";
-            var json = _jsonSerializationService.Serialize(statusDto);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            var result = _httpClientService.SendDataAsync(url, statusDto, cancellationToken);
 
             return jobId;
         }
@@ -126,16 +109,14 @@ namespace ESFA.DC.Web.Operations.Services.Frm
         public async Task PublishSldAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_jobApiUrl}/publication/mark-as-published/{jobId}";
-            HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            await _httpClientService.SendAsync(url, cancellationToken);
         }
 
         public async Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             string path = $"{yearPeriod}/{periodNumber}";
             string url = $"{_jobApiUrl}/publication/mark-as-unpublished/{path}";
-            HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            await _httpClientService.SendAsync(url, cancellationToken);
         }
 
         public async Task UnpublishSldDeleteFolderAsync(string containerName, int period, CancellationToken cancellationToken = default(CancellationToken))
@@ -144,21 +125,18 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             await _fileService.DeleteFolderAsync(folder, containerName, cancellationToken);
         }
 
-        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync()
+        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_jobApiUrl}/publication/published-periods";
-            var response = await _httpClient.GetStringAsync(url);
-            var unsortedJson = _jsonSerializationService.Deserialize<List<PeriodEndCalendarYearAndPeriodModel>>(response);
-            return unsortedJson.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
+            var result = await _httpClientService.GetAsync<List<PeriodEndCalendarYearAndPeriodModel>>(url, cancellationToken);
+            return result.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }
 
-        public async Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType)
+        public async Task<IEnumerable<int>> GetLastTwoCollectionYearsAsync(string collectionType, CancellationToken cancellationToken = default(CancellationToken))
         {
             string url = $"{_baseJobApiUrl}/collections/years/{collectionType}";
-            var reponse = await _httpClient.GetStringAsync(url);
-            var years = _jsonSerializationService.Deserialize<List<int>>(reponse);
-            years.OrderBy(year => years);
-            return years.TakeLast(2);
+            var result = await _httpClientService.GetAsync<List<int>>(url, cancellationToken);
+            return result.OrderBy(y => y).TakeLast(2);
          }
     }
 }

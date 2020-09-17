@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Notifications;
 using ESFA.DC.Web.Operations.Models.Notifications;
@@ -15,23 +13,22 @@ using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.Notifications
 {
-    public class NotificationsService : BaseHttpClientService, INotificationsService
+    public class NotificationsService : INotificationsService
     {
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger _logger;
+        private readonly IHttpClientService _httpClientService;
 
         public NotificationsService(
-            IRouteFactory routeFactory,
-            IJsonSerializationService jsonSerializationService,
             ApiSettings apiSettings,
-            HttpClient httpClient,
             IDateTimeProvider dateTimeProvider,
-            ILogger logger)
-        : base(routeFactory, jsonSerializationService, dateTimeProvider, httpClient)
+            ILogger logger,
+            IHttpClientService httpClientService)
         {
             _dateTimeProvider = dateTimeProvider;
             _logger = logger;
+            _httpClientService = httpClientService;
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -39,7 +36,7 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
         {
             var url = $"{_baseUrl}/api/service-message/all";
 
-            var data = await GetAsync<IEnumerable<Jobs.Model.ServiceMessageDto>>(url, cancellationToken);
+            var data = await _httpClientService.GetAsync<IEnumerable<Jobs.Model.ServiceMessageDto>>(url, cancellationToken);
 
             var result = new List<Notification>();
 
@@ -56,7 +53,7 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
         {
             var url = $"{_baseUrl}/api/service-message/id/{id}";
 
-            var data = await GetAsync<ServiceMessageDto>(url, cancellationToken);
+            var data = await _httpClientService.GetAsync<ServiceMessageDto>(url, cancellationToken);
 
             var result = ConvertToOperationsServiceMessageDto(data);
 
@@ -66,7 +63,7 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
         public async Task DeleteNotificationAsync(int id, CancellationToken cancellationToken)
         {
             var url = $"{_baseUrl}/api/service-message/{id}";
-            await DeleteAsync(url, cancellationToken);
+            await _httpClientService.DeleteAsync(url, cancellationToken);
         }
 
         public async Task<bool> SaveNotificationAsync(CancellationToken cancellationToken, Notification model)
@@ -84,7 +81,7 @@ namespace ESFA.DC.Web.Operations.Services.Notifications
                 IsEnabled = true,
             };
 
-            var response = await SendDataAsyncRawResponse($"{_baseUrl}/api/service-message", data, cancellationToken);
+            var response = await _httpClientService.SendDataAsyncRawResponse($"{_baseUrl}/api/service-message", data, cancellationToken);
 
             if (!response.IsSuccess)
             {

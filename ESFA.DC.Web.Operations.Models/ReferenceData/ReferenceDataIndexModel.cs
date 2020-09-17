@@ -21,5 +21,7 @@
         public ReferenceDataIndexBase DevolvedContracts { get; set; }
 
         public ReferenceDataIndexBase ShortTermFundingInitiatives { get; set; }
+
+        public ReferenceDataIndexBase FisReferenceData2021 { get; set; }
     }
 }

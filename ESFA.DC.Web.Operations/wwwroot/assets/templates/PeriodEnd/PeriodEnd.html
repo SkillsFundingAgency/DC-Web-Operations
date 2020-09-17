@@ -7,9 +7,9 @@
             {{setVar "isCurrent" (isCurrent this.ordinal ../position)}}
             {{setVar "isCompleted"  (isCompleted this ..)}}
 
-            {{#> proceedableItemWrapper pathitem=this isProceedable=(isProceedable @root.isCurrent @root.isCompleted @last) yearPeriod=@root.yearPeriod isNextItemSubPath=(isNextItemSubPath ../pathItems @index)}}
-            <li id="{{removeSpaces this.name}}" class="app-task-list__item">
-                {{#if @root.isCurrent}}<b>{{/if}}{{this.name}}{{#if @root.isCompleted }} - Status : Completed{{/if}}{{#if @root.isCurrent}}</b>{{/if}}
+                {{#> proceedableItemWrapper pathitem=this isProceedable=(isProceedable @root.isCurrent @root.isCompleted @last) yearPeriod=@root.yearPeriod isNextItemSubPath=(isNextItemSubPath ../pathItems @index)}}
+                <li id="{{removeSpaces this.name}}" class="app-task-list__item">
+                    {{#if @root.isCurrent}}<b>{{/if}}{{this.name}}{{#if @root.isCompleted }} - Status : Completed{{/if}}{{#if @root.isCurrent}}</b>{{/if}}
 
                 {{#if (isSubPath this)}}
                 <a href="#Path{{this.subPaths.[0]}}">❯</a>

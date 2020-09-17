@@ -106,7 +106,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return View();
             }
 
-            await _referenceDataService.SubmitJob(Period, collectionForJob, User.Name(), User.Email(), file, cancellationToken);
+            await _referenceDataService.SubmitJobAsync(Period, collectionForJob, User.Name(), User.Email(), file, cancellationToken);
 
             return RedirectToAction("Index");
         }

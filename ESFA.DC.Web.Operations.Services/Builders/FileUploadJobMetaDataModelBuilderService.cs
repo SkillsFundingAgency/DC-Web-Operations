@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models;
-using ESFA.DC.Web.Operations.Models.ALLF;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.Azure.Storage.Blob;
 
@@ -71,7 +70,6 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             file.DisplayDate = string.Concat(clockDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture), " at ", clockDate.ToString("h:mm tt", CultureInfo.InvariantCulture).ToLower(CultureInfo.CurrentUICulture));
 
-            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
             file.FileName = Path.GetFileName(file.FileName);
             file.CollectionName = collectionName;
 
@@ -79,6 +77,7 @@ namespace ESFA.DC.Web.Operations.Services.Builders
 
             if (file.JobStatus != JobStatuses.JobStatus_Completed)
             {
+                file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
                 return file;
             }
 
@@ -95,6 +94,8 @@ namespace ESFA.DC.Web.Operations.Services.Builders
                 file.RecordCount = submissionSummary.RecordCount;
                 file.ErrorCount = submissionSummary.ErrorCount;
             }
+
+            file.DisplayStatus = _jobStatusService.GetDisplayStatusFromJobStatus(file);
 
             return file;
         }

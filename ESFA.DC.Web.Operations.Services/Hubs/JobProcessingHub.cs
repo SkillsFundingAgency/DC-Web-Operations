@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
+﻿using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using Microsoft.AspNetCore.SignalR;
 
