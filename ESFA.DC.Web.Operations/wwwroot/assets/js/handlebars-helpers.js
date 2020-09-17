@@ -5,7 +5,7 @@ export const getHandleBarsTemplate = function (name, root) {
 
     if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
         var xhr = new XMLHttpRequest();
-        
+
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
@@ -26,19 +26,36 @@ export const getHandleBarsTemplate = function (name, root) {
     return Handlebars.templates[name];
 };
 
+export const registerPartialTemplate = function (name, template) {
+    const partialTemplate = getHandleBarsTemplate(template);
+    Handlebars.registerPartial(name, partialTemplate);
+}
+
 export let Templates = {
     ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
     FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
     ReportListOptions: 'Reports/ReportListOptions.html',
+    ILRPeriodEnd: 'PeriodEnd/ILRPeriodEnd.html',
+    ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
     FisFilesList: 'ReferenceData/FisFilesListTemplate.html'
 };
 
+export let Partials = {
+    ProceedButton: 'PeriodEnd/Partials/ProceedButton.html',
+    PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary.html',
+    ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html'
+}
+
+export const registerHelper = function (helper, helperFunction) {
+    Handlebars.registerHelper(helper, helperFunction);
+}
+
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
     var statusClass = displayStatus === 'Job Completed' ? 'jobCompleted'
-                    : displayStatus === 'Job Rejected' ? 'jobRejected'
-                    : displayStatus === 'Job Failed' ? 'jobFailed'
-                    : '';
+        : displayStatus === 'Job Rejected' ? 'jobRejected'
+            : displayStatus === 'Job Failed' ? 'jobFailed'
+                : '';
     return statusClass;
 });
 
@@ -64,3 +81,12 @@ Handlebars.registerHelper('select', function (value, options) {
         })
         .join('\n');
 });
+
+Handlebars.registerHelper("setVar", function (varName, varValue, options) {
+    if (!options.data.root) {
+        options.data.root = {};
+    }
+    options.data.root[varName] = varValue;
+});
+
+

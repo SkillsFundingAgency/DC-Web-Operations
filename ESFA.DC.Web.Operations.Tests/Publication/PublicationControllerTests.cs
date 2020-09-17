@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Autofac.Features.Indexed;
-using Castle.Components.DictionaryAdapter;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.JobQueueManager.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.PeriodEnd.Models.Dtos;
 using ESFA.DC.Web.Operations.Areas.Publication.Controllers;
@@ -297,8 +295,8 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
         private PublicationController SetupControllerNoDataChoiceSelection()
         {
             var frmServiceMock = new Mock<IReportsPublicationService>();
-            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync()).ReturnsAsync(new List<PeriodEndCalendarYearAndPeriodModel>());
-            frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>())).ReturnsAsync(new List<int>());
+            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<PeriodEndCalendarYearAndPeriodModel>());
+            frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<int>());
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var controller = new PublicationController(null, frmServiceMock.Object, null, null, null);
             return controller;
@@ -319,12 +317,12 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
                 CollectionYear = 1920,
                 PeriodNumber = 2
             });
-            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync()).ReturnsAsync(yearModelList);
+            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync(It.IsAny<CancellationToken>())).ReturnsAsync(yearModelList);
             var yearList = new List<int>()
             {
                 1920
             };
-            frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>())).ReturnsAsync(yearList);
+            frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(yearList);
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var controller = new PublicationController(null, frmServiceMock.Object, null, null, null);
             return controller;
@@ -344,13 +342,13 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
                 CollectionYear = 1819,
                 PeriodNumber = 1
             });
-            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync()).ReturnsAsync(yearModelList);
+            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync(It.IsAny<CancellationToken>())).ReturnsAsync(yearModelList);
             var yearList = new List<int>()
             {
                 1819,
                 1920
             };
-            frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>())).ReturnsAsync(yearList);
+            frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(yearList);
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var controller = new PublicationController(null, frmServiceMock.Object, null, null, null);
             return controller;
