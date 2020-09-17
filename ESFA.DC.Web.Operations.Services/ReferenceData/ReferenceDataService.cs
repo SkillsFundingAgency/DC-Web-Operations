@@ -68,7 +68,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task SubmitJob(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken)
+        public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken)
         {
             if (file == null)
             {
@@ -101,7 +101,38 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error trying to submit Campus Identifiers Reference Data file with name : {file.Name}", ex);
+                _logger.LogError($"Error trying to submit Reference Data file with name : {file.Name}", ex);
+                throw;
+            }
+        }
+
+        public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, CancellationToken cancellationToken)
+        {
+            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
+
+            try
+            {
+                var fileName = "ValueNeededButNotUsed";
+                var fileSizeInBytes = 0;
+
+                var job = new JobSubmission
+                {
+                    CollectionName = collection.CollectionTitle,
+                    FileName = fileName,
+                    FileSizeBytes = fileSizeInBytes,
+                    SubmittedBy = userName,
+                    NotifyEmail = email,
+                    StorageReference = collection.StorageReference,
+                    Period = period,
+                    CollectionYear = collection.CollectionYear
+                };
+
+                // add to the queue
+                await _jobService.SubmitJob(job, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error trying to submit Reference Data job", ex);
                 throw;
             }
         }
@@ -161,6 +192,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var latestSuccessfulOnsPostcodes = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.OnsPostcodes);
             var latestSuccessfulDevolvedContracts = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.DevolvedContracts);
             var latestSuccessfulShortTermFundingInitiatives = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ShortTermFundingInitiatives);
+            var latestSuccessfulFisReferenceDataJobs = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.FisReferenceData2021);
 
             var model = new ReferenceDataIndexModel
             {
@@ -222,6 +254,12 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulShortTermFundingInitiatives?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulShortTermFundingInitiatives?.CreatedBy ?? CreatedByPlaceHolder,
+                    Valid = true
+                },
+                FisReferenceData2021 = new ReferenceDataIndexBase()
+                {
+                    LastUpdatedDateTime = GetDate(latestSuccessfulFisReferenceDataJobs?.DateTimeSubmittedUtc),
+                    LastUpdatedByWho = latestSuccessfulFisReferenceDataJobs?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 }
             };

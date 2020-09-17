@@ -161,6 +161,18 @@
                             </li>
                         </ul>
                     </div>
+
+                    <div class="govuk-grid-column-one-third">
+                        <ul class="govuk-list">
+                            <li>
+                                <h3 class="home-services__heading"><a asp-action="Index" asp-controller="FisReferenceData2021" asp-area="ReferenceData" class="govuk-link">FIS reference data 2021</a></h3>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.FisReferenceData2021.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.FisReferenceData2021.LastUpdatedByWho</p>
+                                <br />
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </main>
         </div>

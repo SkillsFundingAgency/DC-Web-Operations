@@ -30,7 +30,8 @@ export let Templates = {
     ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
     FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
-    ReportListOptions: 'Reports/ReportListOptions.html'
+    ReportListOptions: 'Reports/ReportListOptions.html',
+    FisFilesList: 'ReferenceData/FisFilesListTemplate.html'
 };
 
 Handlebars.registerHelper('jobStatusClass', function (displayStatus) {
