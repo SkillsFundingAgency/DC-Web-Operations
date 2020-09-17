@@ -44,7 +44,7 @@
     }
 
     unregisterMessageHandlers(messages) {
-        messages.forEeach(m => this.unregisterMessageHandler(m));
+        messages.forEach(m => this.unregisterMessageHandler(m));
     }
 
     clearInterval() {
