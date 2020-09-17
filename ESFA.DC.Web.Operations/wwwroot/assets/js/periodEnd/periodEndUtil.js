@@ -66,8 +66,8 @@ export function isPast(pathItemOrdinal, pathPosition) {
 export function isCompleted(pathItem, path) {
     const jobItems = pathItem.pathItemJobs;
     if ((pathItem.ordinal < path.position - 1 ||
-        (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === path.pathItems.length)) && 
-        (jobItems === undefined || jobItems === null || jobItems.length === 0)) {
+        (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === path.pathItems.length))
+        && (jobItems === undefined || jobItems === null || jobItems.length === 0 || canContinue(jobItems))) {
         return true;
     }
     return false;
@@ -102,7 +102,9 @@ export function isSubPath(path) {
     return path.subPaths ? true : false;
 }
 
-export function isProceedable(isCurrent, isCompleted) {
+export function isProceedable(isCurrent, isCompleted, item, model) {
+    var model1 = model;
+    var item1 = item;
     return isCurrent && !isCompleted;
 }
 

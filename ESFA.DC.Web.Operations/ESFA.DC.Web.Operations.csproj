@@ -104,7 +104,6 @@
     <Folder Include="Areas\DevOps\Models\" />
     <Folder Include="Connected Services\" />
     <Folder Include="wwwroot\assets\js\chartJs\" />
-    <Folder Include="wwwroot\assets\js\periodEnd\ncs\" />
     <Folder Include="wwwroot\assets\minified\" />
   </ItemGroup>
 
