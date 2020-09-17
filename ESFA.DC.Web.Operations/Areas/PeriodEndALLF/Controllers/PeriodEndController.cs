@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Constants;
@@ -28,19 +29,24 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             _periodEndService = periodEndService;
         }
 
-        [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period)
+        [HttpGet("{collectionYear?}/{period?}/{featureSwitch?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period, string featureSwitch)
         {
             var cancellationToken = CancellationToken.None;
 
             var model = await _periodEndService.GetPathState(collectionYear, period, cancellationToken);
+
+            if (string.Equals(featureSwitch, FeatureSwitch.Beta, StringComparison.OrdinalIgnoreCase))
+            {
+                return View("IndexBeta", model);
+            }
 
             return View(model);
         }
 
         [RequestSizeLimit(524_288_000)]
         [AutoValidateAntiforgeryToken]
-        [HttpPost("{collectionYear?}/{period?}")]
+        [HttpPost("{collectionYear?}/{period?}/{featureSwitch?}")]
         public async Task<IActionResult> Index([FromForm]int collectionYear, [FromForm]int period, IFormFile file)
         {
             var cancellationToken = CancellationToken.None;

@@ -26,7 +26,7 @@ export function jobStatusConvertor(status) {
 
 export function getJobContinuationStatus(pathItemsJobs) {
 
-    if (pathItemsJobs) {
+    if (Array.isArray(pathItemsJobs) && pathItemsJobs.length) {
         if (pathItemsJobs.some(j => j.status === jobStatus.processing
             || j.status === jobStatus.ready
             || j.status === jobStatus.movedForProcessing
@@ -46,7 +46,6 @@ export function getJobContinuationStatus(pathItemsJobs) {
 
     return jobContinuation.nothingRunning;
 }
-
 
 export function getProviderName(providerName) {
     return providerName !== "0" ? `Provider : ${providerName}, ` : '';
@@ -103,8 +102,8 @@ export function isSubPath(path) {
     return path.subPaths ? true : false;
 }
 
-export function isProceedable(isCurrent, isCompleted) {
-    return isCurrent && !isCompleted;
+export function isProceedable(isCurrent, isCompleted, isLast) {
+    return isCurrent && !isCompleted && !isLast;
 }
 
 export function getProceedLabelText(pathItem, nextItemIsSubPath) {
@@ -137,6 +136,3 @@ export function isNextItemSubPath(pathItems, index) {
     const nextItem = pathItems[index + 1];
     return nextItem && nextItem.subPaths ? true : false;
 }
-
-
-
