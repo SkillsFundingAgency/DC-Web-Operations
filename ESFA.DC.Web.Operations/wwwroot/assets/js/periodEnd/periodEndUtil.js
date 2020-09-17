@@ -102,8 +102,8 @@ export function isSubPath(path) {
     return path.subPaths ? true : false;
 }
 
-export function isProceedable(isCurrent, isCompleted) {
-    return isCurrent && !isCompleted;
+export function isProceedable(isCurrent, isCompleted, isLast) {
+    return isCurrent && !isCompleted && !isLast;
 }
 
 export function getProceedLabelText(pathItem, nextItemIsSubPath) {
