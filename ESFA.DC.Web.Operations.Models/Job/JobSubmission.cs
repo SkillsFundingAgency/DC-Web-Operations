@@ -25,9 +25,5 @@ namespace ESFA.DC.Web.Operations.Models.Job
         public int CollectionYear { get; set; }
 
         public bool? TermsAccepted { get; set; }
-
-        public string DesktopReferenceDataStoragePath { get; set; }
-
-        public string IlrReferenceData { get; set; }
     }
 }
