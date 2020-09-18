@@ -37,7 +37,7 @@ export const Templates = {
     ReportListOptions: 'Reports/ReportListOptions.html',
     PeriodEnd: 'PeriodEnd/PeriodEnd.html',
     ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
-    FisFilesList: 'ReferenceData/FisFilesListTemplate.html'
+    FisFilesList: 'ReferenceData/FisFilesListTemplate.html',
     ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html'
 };
 
