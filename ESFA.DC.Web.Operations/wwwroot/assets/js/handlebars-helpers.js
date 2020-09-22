@@ -36,7 +36,7 @@ export const Templates = {
     InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
     ReportListOptions: 'Reports/ReportListOptions.html',
     PeriodEnd: 'PeriodEnd/PeriodEnd.html',
-    ILRPeriodEndNavigation: 'PeriodEnd/ILRPeriodEndNavigation.html',
+    PeriodEndNavigation: 'PeriodEnd/PeriodEndNavigation.html',
     FisFilesList: 'ReferenceData/FisFilesListTemplate.html',
     ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html'
 };
@@ -46,7 +46,7 @@ export const Partials = {
     PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary.html',
     ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html',
     PathHeader: 'PeriodEnd/Partials/PathHeader.html',
-    ALLFPathHeader: 'PeriodEnd/Partials/ALLFPathHeader.html'
+    ILRPathHeader: 'PeriodEnd/Partials/ILRPathHeader.html'
 }
 
 export const registerHelper = function (helper, helperFunction) {

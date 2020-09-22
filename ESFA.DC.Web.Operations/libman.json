@@ -18,6 +18,14 @@
       "files": [
         "dist/handlebars.js"
       ]
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/chart.js",
+      "destination": "wwwroot/lib/chartjs/",
+      "files": [
+        "dist/Chart.bundle.min.js"
+      ]
     }
   ]
 }

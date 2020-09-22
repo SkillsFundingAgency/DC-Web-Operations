@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Models;
+using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Utils;
@@ -35,8 +38,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
             _stateService = stateService;
         }
 
-        [HttpGet("{collectionYear?}/{period?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
+        [HttpGet("{collectionYear?}/{period?}/{featureSwitch?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period, string featureSwitch, CancellationToken cancellationToken)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.NCS, cancellationToken);
             currentYearPeriod.Year = currentYearPeriod.Year ?? 0;
@@ -58,6 +61,11 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndNCS.Controllers
             var isCurrentPeriodSelected = currentYearPeriod.Year == model.Year && currentYearPeriod.Period == model.Period;
             model.IsCurrentPeriod = isCurrentPeriodSelected;
             model.CollectionClosed = isCurrentPeriodSelected && currentYearPeriod.PeriodClosed;
+
+            if (string.Equals(featureSwitch, FeatureSwitch.Beta, StringComparison.OrdinalIgnoreCase))
+            {
+                return View("IndexBeta", model);
+            }
 
             return View(model);
         }
