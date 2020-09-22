@@ -3,5 +3,5 @@
     {{#if path.pathId}}
         <a href="#{{parentPathName}}">❮ </a>
     {{/if}}
-    {{path.name}}
+    {{path.name}} {{#if path.isBusy}}⌛{{/if}}
 </h3>

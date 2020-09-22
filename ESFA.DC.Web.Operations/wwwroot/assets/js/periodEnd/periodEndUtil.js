@@ -93,8 +93,16 @@ export function getPathNameBySubPathId(stateModel, pathId) {
     return pathItem ? removeSpaces(pathItem.name) : "Path0";
 }
 
-export function canContinue(pathItemJobs) {
-    const continueStatus = getJobContinuationStatus(pathItemJobs);
+export function canContinue(pathItem, isBusy) {
+    if (isBusy) {
+        return false;
+    }
+
+    if (!pathItem.hasJobs) {
+        return true;
+    }
+
+    const continueStatus = getJobContinuationStatus(pathItem.pathItemJobs);
     return continueStatus === jobContinuation.allCompleted || continueStatus === jobContinuation.someFailed;
 }
 
