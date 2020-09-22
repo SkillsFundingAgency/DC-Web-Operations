@@ -1,8 +1,8 @@
 ﻿{{#if isProceedable}}
-    <div class="app-task-list__item">
-        {{> @partial-block}}
-        {{> proceedButton pathItem=this yearPeriod=yearPeriod isNextItemSubPath=isNextItemSubPath}}
-    </div>
+<div class="app-task-list__item">
+    {{> @partial-block}}
+    {{> proceedButton pathItem=this yearPeriod=yearPeriod isNextItemSubPath=isNextItemSubPath isBusy=isBusy}}
+</div>
 {{else}}
    {{> @partial-block}}
 {{/if}}

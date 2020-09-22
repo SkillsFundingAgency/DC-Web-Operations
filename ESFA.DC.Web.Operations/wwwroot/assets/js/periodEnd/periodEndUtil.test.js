@@ -1,4 +1,4 @@
-﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus } from '/assets/js/periodEnd/periodEndUtil.js';
+﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus, canContinue } from '/assets/js/periodEnd/periodEndUtil.js';
 import { jobContinuation, jobStatus } from '/assets/js/periodEnd/state.js';
 
 describe('period end util', () => {
@@ -9,7 +9,7 @@ describe('period end util', () => {
             "paths": [{ pathItems: [{ name: 'One', subPaths: [1] }, { name: 'Two', subPaths: [2] }, { name: 'Three', subPaths: [3] }] }]
         };
 
-        test('getPathNameBySubPathId gets correct name by id', () => {
+        test('returns correct name by id', () => {
             //Act
             const result = getPathNameBySubPathId(stateModel, 2);
 
@@ -17,7 +17,7 @@ describe('period end util', () => {
             expect(result).toBe('Two');
         });
 
-        test('getPathNameBySubPathId defaults to path0 when no match', () => {
+        test('returns Path0 when no match', () => {
             //Act
             const result = getPathNameBySubPathId(stateModel, 5);
 
@@ -26,11 +26,11 @@ describe('period end util', () => {
         });
     });
 
-    describe('getPathNameBySubPathId', () => {
+    describe('isNextItemSubPath', () => {
 
         const pathItems = [{ pathItemId: 1 }, { pathItemId: 2 }, { pathItemId: 3, subPaths: [1] }];
 
-        test('getPathNameBySubPathId returns true when next item is subpath', () => {
+        test('returns true when next item is subpath', () => {
             // Act
             const result = isNextItemSubPath(pathItems, 1);
 
@@ -38,7 +38,7 @@ describe('period end util', () => {
             expect(result).toBe(true);
         });
 
-        test('getPathNameBySubPathId returns false when next item is not subpath ', () => {
+        test('returns false when next item is not subpath ', () => {
             //Arrange
             const pathItems = [{ pathItemId: 1 }, { pathItemId: 2 }, { pathItemId: 3, subPaths: [1] }];
 
@@ -51,8 +51,8 @@ describe('period end util', () => {
     });
 
     describe('getJobContinuationStatus', () => {
-        describe('with no job returns nothingRunning', () => {
-            test('null jobs', () => {
+        describe('returns nothingRunning', () => {
+            test('when jobs are null', () => {
                  // Act
                 const result = getJobContinuationStatus(null);
 
@@ -60,7 +60,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.nothingRunning);
             });
 
-            test('empty jobs', () => {
+            test('when jobs are empty', () => {
                 // Act
                 const result = getJobContinuationStatus([]);
 
@@ -68,7 +68,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.nothingRunning);
             });
 
-            test('undefined', () => {
+            test('when jobs are undefined', () => {
                 // Act
                 const result = getJobContinuationStatus();
 
@@ -77,8 +77,8 @@ describe('period end util', () => {
             });
         });
 
-        describe('with failed jobs returns someFailed', () => {
-            test('failed and completed job', () => {
+        describe('returns someFailed', () => {
+            test('when has failed and completed job', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, ]
 
@@ -89,7 +89,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.someFailed);
             });
 
-            test('retry failed and completed job', () => {
+            test('when has retry failed and completed job', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.failedRetry }, { status: jobStatus.failed }]
 
@@ -101,7 +101,7 @@ describe('period end util', () => {
             });
         });
 
-        test('all completed returns allCompleted', () => {
+        test('returns allCompleted', () => {
             //arrange
             const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.completed }]
 
@@ -112,9 +112,9 @@ describe('period end util', () => {
             expect(result).toBe(jobContinuation.allCompleted);
         });
 
-        describe('returns is running if job still running irrespective of other results', () => {
+        describe('returns is running', () => {
 
-            test('when job processing', () => {
+            test('when at least one job processing', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.processing }]
 
@@ -125,7 +125,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.running);
             });
 
-            test('when job ready', () => {
+            test('when at least one job ready', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.ready }]
 
@@ -136,7 +136,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.running);
             });
 
-            test('when job movedForProcessing', () => {
+            test('when at least one job movedForProcessing', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.movedForProcessing }]
 
@@ -147,7 +147,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.running);
             });
 
-            test('when job paused', () => {
+            test('when at least job paused', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.paused }]
 
@@ -158,7 +158,7 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.running);
             });
 
-            test('when job waiting', () => {
+            test('when at least job waiting', () => {
                 //arrange
                 const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, { status: jobStatus.waiting }]
 
@@ -169,6 +169,53 @@ describe('period end util', () => {
                 expect(result).toBe(jobContinuation.running);
             });
         });
+    });
+
+    describe('canContinue', () => {
+        test('when isBusy returns false', () => {
+            //arrange
+            const pathItem = {};
+
+            // Act
+            const result = canContinue(pathItem, true);
+
+            // Assert
+            expect(result).toBe(false);
+        });
+
+        test('when all jobs completed returns true ', () => {
+            //arrange
+            const pathItem = { pathItemJobs: [{ status: jobStatus.completed }, { status: jobStatus.completed }]};
+
+            // Act
+            const result = canContinue(pathItem, false);
+
+            // Assert
+            expect(result).toBe(true);
+        });
+
+        test('when has no jobs returns true', () => {
+            //arrange
+            const pathItem = { hasJobs: false };
+
+            // Act
+            const result = canContinue(pathItem, false);
+
+            // Assert
+            expect(result).toBe(true);
+        });
+
+        test('when has no jobs but is busy returns false', () => {
+            //arrange
+            const pathItem = { hasJobs: false };
+
+            // Act
+            const result = canContinue(pathItem, true);
+
+            // Assert
+            expect(result).toBe(false);
+        });
+
     });
 
 });
