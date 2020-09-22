@@ -11,7 +11,7 @@ class pathController {
         this._year = 0;
         this._period = 0;
         this._currentState = null;
-        this._periodEndTemplate = getPathTemplate(helpers, { pathHeader: Partials.ALLFPathHeader });
+        this._periodEndTemplate = getPathTemplate(helpers);
         this._allfFileListTemplate = getHandleBarsTemplate(Templates.ALLFPeriodEndFileList);
     }
 
