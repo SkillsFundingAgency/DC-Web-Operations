@@ -21,7 +21,7 @@ a:active, .govuk-list a:active {
 .govuk-list.govuk-error-summary__list a:hover,
 .govuk-list.govuk-error-summary__list a:active,
 .govuk-list.govuk-error-summary__list a:focus {
-    color: $govuk-error-colour;
+    color: govuk-colour("black");
 }
 
 a:focus, .govuk-list a:focus {
