@@ -21,10 +21,13 @@
             </h2>
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
-                    @foreach (var error in errorMessages)
+                    <li>
+                        <a href="#controls" autofocus>@errorMessages[0]</a>
+                    </li>
+                    @for (var i = 1; i < errorMessages.Count; i ++)
                     {
                         <li>
-                            <a href="#controls">@error</a>
+                            <a href="#controls">@errorMessages[i]</a>
                         </li>
                     }
                 </ul>
