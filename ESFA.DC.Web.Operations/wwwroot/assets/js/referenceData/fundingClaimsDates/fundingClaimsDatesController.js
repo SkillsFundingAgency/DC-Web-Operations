@@ -50,11 +50,11 @@ class FundingClaimsDatesController {
     }
 
     modify(event) {
-        let id = event.target.dataset.id;
-        let found = this._fundingClaimsDatesList.find(x => x.id == id);
+        let collectionId = event.target.dataset.collectionid;
+        let found = this._fundingClaimsDatesList.find(x => x.collectionId == collectionId);
         found.inEditMode = true;
 
-        let others = this._fundingClaimsDatesList.filter(x => x.id !== found.id);
+        let others = this._fundingClaimsDatesList.filter(x => x.collectionId !== found.collectionId);
         for (const other of others) {
             other.inEditMode = false;
         }
@@ -63,8 +63,8 @@ class FundingClaimsDatesController {
     }
 
     cancel(event) {
-        let id = event.target.dataset.id;
-        let fundingClaimsDates = this._fundingClaimsDatesList.find(x => x.id == id);
+        let collectionId = event.target.dataset.collectionid;
+        let fundingClaimsDates = this._fundingClaimsDatesList.find(x => x.collectionId == collectionId);
         fundingClaimsDates.inEditMode = false;
         this.render(this._fundingClaimsDatesList);
     }

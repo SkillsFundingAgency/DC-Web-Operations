@@ -33,7 +33,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 
             viewModel.CollectionYears = fundingClaimsDatesModel.Collections.Select(x => x.CollectionYear).Distinct().OrderByDescending(x => x).ToList();
             var selectedCollectionYear = viewModel.CollectionYears.FirstOrDefault();
-            viewModel.Collections = fundingClaimsDatesModel.Collections.Where(x => x.CollectionYear == selectedCollectionYear).Distinct().OrderByDescending(x => x).ToList();
+            viewModel.Collections = fundingClaimsDatesModel.Collections.Where(x => x.CollectionYear == selectedCollectionYear).ToList();
             viewModel.FundingClaimsDatesList = fundingClaimsDatesList.Where(x => x.CollectionYear == selectedCollectionYear);
 
             return View(viewModel);
