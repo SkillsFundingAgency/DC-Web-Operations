@@ -1,4 +1,4 @@
-﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus, canContinue } from '/assets/js/periodEnd/periodEndUtil.js';
+﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus, canContinue, isAutoCompleted } from '/assets/js/periodEnd/periodEndUtil.js';
 import { jobContinuation, jobStatus } from '/assets/js/periodEnd/state.js';
 
 describe('period end util', () => {
@@ -216,6 +216,57 @@ describe('period end util', () => {
             expect(result).toBe(false);
         });
 
+    });
+
+    describe('isAutoCompleted', () => {
+
+        test('when no jobs and pathItem in past should be true', () => {
+            //arrange
+            const pathItem = { ordinal:1 };
+            const path = { position: 3 };
+
+            // Act
+            const result = isAutoCompleted(pathItem, path);
+
+            // Assert
+            expect(result).toBe(true);
+        });
+
+        test('when has jobs and pathItem in past should be false', () => {
+            //arrange
+            const pathItem = { ordinal: 1, pathItemJobs: [{}, {}] };
+            const path = { position: 3 };
+
+            // Act
+            const result = isAutoCompleted(pathItem, path);
+
+            // Assert
+            expect(result).toBe(false);
+        });
+
+        test('when no jobs and pathItem is last in list should be true', () => {
+            //arrange
+            const pathItem = { ordinal: 0 };
+            const path = { position: 1, pathItems: [{}] };
+
+            // Act
+            const result = isAutoCompleted(pathItem, path);
+
+            // Assert
+            expect(result).toBe(true);
+        });
+
+        test('when has jobs and pathItem is last should be false', () => {
+            //arrange
+            const pathItem = { ordinal: 0, pathItemJobs: [{}, {}] };
+            const path = { position: 1, pathItems: [{}] };
+
+            // Act
+            const result = isAutoCompleted(pathItem, path);
+
+            // Assert
+            expect(result).toBe(false);
+        });
     });
 
 });
