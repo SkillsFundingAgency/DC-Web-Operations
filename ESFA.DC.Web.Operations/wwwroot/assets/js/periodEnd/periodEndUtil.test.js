@@ -256,7 +256,6 @@ describe('period end util', () => {
             expect(result).toBe(true);
         });
 
-
         test('when has jobs and pathItem is last should be false', () => {
             //arrange
             const pathItem = { ordinal: 0, pathItemJobs: [{}, {}] };
@@ -268,7 +267,6 @@ describe('period end util', () => {
             // Assert
             expect(result).toBe(false);
         });
-
     });
 
 });

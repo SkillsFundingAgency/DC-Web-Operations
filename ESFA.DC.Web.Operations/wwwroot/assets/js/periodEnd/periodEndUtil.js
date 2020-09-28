@@ -63,14 +63,14 @@ export function isPathItemPast(pathItemOrdinal, pathPosition) {
     return pathItemOrdinal < pathPosition - 1;
 }
 
-export function isLastPathItem(pathItem, pathItems) {
-    return pathItem.ordinal + 1 === pathItems.length
+export function isLastPathItem(pathItemOrdinal, pathItems) {
+    return pathItemOrdinal + 1 === pathItems.length
 }
 
 export function isAutoCompleted(pathItem, path) {
     const hasPathItemJobs = Array.isArray(pathItem.pathItemJobs) && pathItem.pathItemJobs.length > 0;
     if (!hasPathItemJobs
-        && (isPathItemPast(pathItem.ordinal, path.position) || (isPathItemCurrent(pathItem.ordinal, path.position) && isLastPathItem(pathItem, path.pathItems)))) {
+        && (isPathItemPast(pathItem.ordinal, path.position) || (isPathItemCurrent(pathItem.ordinal, path.position) && isLastPathItem(pathItem.ordinal, path.pathItems)))) {
         return true;
     }
     return false;
