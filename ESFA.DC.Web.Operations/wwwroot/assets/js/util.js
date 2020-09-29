@@ -125,3 +125,21 @@ export function sumArrayProperty(array, key) {
     }
     return 0;
 }
+
+export function getInitialStateModel() {
+    const stateContainer = document.getElementById('initialState');
+    return stateContainer && stateContainer.innerHTML ? JSON.parse(stateContainer.innerHTML) : {};
+} 
+
+export function displayConnectionState(state) {
+    const stateLabel = document.getElementById("state");
+    if (stateLabel) {
+        stateLabel.textContent = `Status: ${state}`;
+    }
+}
+
+export function $on(target, type, callback, capture) {
+    target.addEventListener(type, callback, !!capture);
+}
+
+
