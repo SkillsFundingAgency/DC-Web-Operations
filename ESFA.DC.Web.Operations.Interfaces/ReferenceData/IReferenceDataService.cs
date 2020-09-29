@@ -10,6 +10,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
     {
         Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken);
 
+        Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, string containingFolder, CancellationToken cancellationToken);
+
         Task SubmitJobAsync(int period, string collectionName, string userName, string email, CancellationToken cancellationToken);
 
         Task<ReferenceDataViewModel> GetSubmissionsPerCollectionAsync(
