@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Features.Indexed;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Models.ReferenceData;
@@ -27,41 +28,37 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         private readonly ICollectionsService _collectionsService;
         private readonly IJobService _jobService;
-        private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly IFundingClaimsDatesService _fundingClaimsDatesService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICloudStorageService _cloudStorageService;
-        private readonly AzureStorageSection _azureStorageConfig;
         private readonly ILogger _logger;
         private readonly IHttpClientService _httpClientService;
+        private readonly IFileService _fileService;
 
         private readonly string _baseUrl;
 
         public ReferenceDataService(
             ICollectionsService collectionsService,
             IJobService jobService,
-            IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IFundingClaimsDatesService fundingClaimsDatesService,
             IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
             ApiSettings apiSettings,
-            AzureStorageSection azureStorageConfig,
             ILogger logger,
-            IHttpClientService httpClientService)
+            IHttpClientService httpClientService,
+            IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;
-            _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
             _fundingClaimsDatesService = fundingClaimsDatesService;
             _dateTimeProvider = dateTimeProvider;
             _cloudStorageService = cloudStorageService;
-            _azureStorageConfig = azureStorageConfig;
             _logger = logger;
             _httpClientService = httpClientService;
-
+            _fileService = operationsFileService[PersistenceStorageKeys.DctAzureStorage];
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
@@ -72,66 +69,28 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 return;
             }
 
-            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
+            var fileName = $"{collectionName}/{Path.GetFileName(file.FileName)}";
+            await SubmitJobAndPutFileInStorage(period, collectionName, userName, email, file, fileName, cancellationToken);
+        }
 
-            try
+        public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, string containingFolder, CancellationToken cancellationToken)
+        {
+            if (file == null
+                || string.IsNullOrWhiteSpace(containingFolder))
             {
-                var fileName = $"{collectionName}/{Path.GetFileName(file.FileName)}";
-
-                var job = new JobSubmission
-                {
-                    CollectionName = collection.CollectionTitle,
-                    FileName = fileName,
-                    FileSizeBytes = file.Length,
-                    SubmittedBy = userName,
-                    NotifyEmail = email,
-                    StorageReference = collection.StorageReference,
-                    Period = period,
-                    CollectionYear = collection.CollectionYear
-                };
-
-                // add to the queue
-                await _jobService.SubmitJob(job, cancellationToken);
-
-                await (await _storageService.GetAzureStorageReferenceService(_azureStorageConfig.ConnectionString, collection.StorageReference))
-                    .SaveAsync(fileName, file.OpenReadStream(), cancellationToken);
+                return;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error trying to submit Reference Data file with name : {file.Name}", ex);
-                throw;
-            }
+
+            var fileName = $"{containingFolder}/{collectionName}/{Path.GetFileName(file.FileName)}";
+            await SubmitJobAndPutFileInStorage(period, collectionName, userName, email, file, fileName, cancellationToken);
         }
 
         public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, CancellationToken cancellationToken)
         {
-            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
+            var job = await CreateJobSubmissionAsync(period, collectionName, userName, email, "ValueNeededButNotUsed", 0, cancellationToken);
 
-            try
-            {
-                var fileName = "ValueNeededButNotUsed";
-                var fileSizeInBytes = 0;
-
-                var job = new JobSubmission
-                {
-                    CollectionName = collection.CollectionTitle,
-                    FileName = fileName,
-                    FileSizeBytes = fileSizeInBytes,
-                    SubmittedBy = userName,
-                    NotifyEmail = email,
-                    StorageReference = collection.StorageReference,
-                    Period = period,
-                    CollectionYear = collection.CollectionYear
-                };
-
-                // add to the queue
-                await _jobService.SubmitJob(job, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error trying to submit Reference Data job", ex);
-                throw;
-            }
+            // add to the queue
+            await _jobService.SubmitJob(job, cancellationToken);
         }
 
         public async Task<ReferenceDataViewModel> GetSubmissionsPerCollectionAsync(
@@ -264,10 +223,38 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             return model;
         }
 
+        private async Task<JobSubmission> CreateJobSubmissionAsync(int period, string collectionName, string userName, string email, string fileName, long fileSizeInBytes, CancellationToken cancellationToken)
+        {
+            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
+
+            return new JobSubmission
+            {
+                CollectionName = collection.CollectionTitle,
+                FileName = fileName,
+                FileSizeBytes = fileSizeInBytes,
+                SubmittedBy = userName,
+                NotifyEmail = email,
+                StorageReference = collection.StorageReference,
+                Period = period,
+                CollectionYear = collection.CollectionYear
+            };
+        }
+
+        private async Task SubmitJobAndPutFileInStorage(int period, string collectionName, string userName, string email, IFormFile file, string fileName, CancellationToken cancellationToken)
+        {
+            var job = await CreateJobSubmissionAsync(period, collectionName, userName, email, fileName, file.Length, cancellationToken);
+
+            await _jobService.SubmitJob(job, cancellationToken);
+
+            using (Stream stream = await _fileService.OpenWriteStreamAsync(fileName, job.StorageReference, cancellationToken))
+            {
+                await file.CopyToAsync(stream);
+            }
+        }
+
         private async Task<bool> IsReferenceDataCollectionExpired(string collectionName, CancellationToken cancellationToken)
         {
             var url = $"{_baseUrl}/api/returns-calendar/expired/{collectionName}";
-
             return await _httpClientService.GetAsync<bool>(url, cancellationToken);
         }
 
