@@ -89,7 +89,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedContractsHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<OnsPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ShortTermFundingInitiativesHub>().As<IReferenceDataHub>().SingleInstance();
@@ -161,7 +160,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             // Collections
             builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<CoFRemoval>().As<ICollection>().InstancePerLifetimeScope();
-            builder.RegisterType<FundingClaimsProviderData>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<OnsPostcodes>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ProviderPostcodeSpecialistResources>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationMessages2021>().As<ICollection>().InstancePerLifetimeScope();

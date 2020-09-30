@@ -12,8 +12,6 @@
 
         public const string ReferenceDataConditionsOfFundingRemoval = "CoFRemoval";
 
-        public const string ReferenceDataFundingClaimsProviderData = "FundingClaimsProviderData";
-
         public const string ReferenceDataProviderPostcodeSpecialistResources = "ProviderPostcodeSpecialistResources";
 
         public const string ReferenceDataValidationMessages2021 = "ILRValidationMessages2021";
