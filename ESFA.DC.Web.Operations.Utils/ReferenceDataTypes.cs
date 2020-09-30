@@ -3,7 +3,6 @@
     public enum ReferenceDataTypes
     {
         ConditionOfFundingRemoval,
-        FundingClaimsProviderData,
         ProviderPostcodeSpecialistResourcesHub,
         CampusIdentifier,
         ValidationMessages2021,

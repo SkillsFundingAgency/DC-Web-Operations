@@ -6,8 +6,6 @@
 
         public ReferenceDataIndexBase ConditionOfFundingRemoval { get; set; }
 
-        public ReferenceDataIndexBase FundingClaimsProviderData { get; set; }
-
         public ReferenceDataIndexBase ProviderPostcodeSpecialistResources { get; set; }
 
         public ReferenceDataIndexBase DevolvedPostcodes { get; set; }
