@@ -1,4 +1,5 @@
-﻿import { getColorForPercentage, getMessageForPercentage, padLeft, sumArrayProperty } from '/assets/js/util.js';
+﻿import { getColorForPercentage, getMessageForPercentage, padLeft, sumArrayProperty, getInitialStateModel, displayConnectionState, $on } from '/assets/js/util.js';
+import Hub from '/assets/js/hubs/hub.js';
 
 class DashBoardController {
     constructor() {
@@ -18,10 +19,18 @@ class DashBoardController {
         this._percentageTextRangeJobQueued = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
         this._percentageTextRangeSubmissionsToday = [{ value: 75, label: 'Super excited!' }, { value: 50, label: 'Feeling happy' }, { value: 0, label: 'Looking Good' }];
 
-        document.getElementById('collectionYears').addEventListener('change', (event) => {
+        $on(document.getElementById('collectionYears'), 'change', (event) => {
             this._year = parseInt(event.target.value);
             this.updateProcessingInDetails(this._data.jobStats, this._year);
         });
+
+        $on(window, 'pageshow', () => {
+            const hub = new Hub('dashBoardHub', displayConnectionState);
+            this.registerHandlers(hub);
+            hub.startHub();
+            this.updatePage(getInitialStateModel());
+        });
+
     }
 
     registerHandlers(hub) {
@@ -300,11 +309,6 @@ class DashBoardController {
         const timeLabel = document.getElementById("lastTime");
         timeLabel.textContent = `${hours}:${minutes}:${seconds}`;
     }
-
-    displayConnectionState(state) {
-        const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
-    }
 }
 
-export default DashBoardController
+export const dashboardController = new DashBoardController();
