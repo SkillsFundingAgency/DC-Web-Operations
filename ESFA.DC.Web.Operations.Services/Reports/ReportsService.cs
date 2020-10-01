@@ -127,6 +127,20 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             return reportDetailsList;
         }
 
+        public async Task<IEnumerable<ReportDetails>> GetFundingClaimsReportsDetails(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            List<ReportDetails> reportDetailsList = new List<ReportDetails>();
+            var fileReferences = (await _operationsFileService.GetFileReferencesAsync(Constants.OpsReportsBlobContainerName, $"Reports/", true, CancellationToken.None)).ToList();
+
+            foreach (var report in _reports.Where(x => x.ReportType == ReportType.FundingClaims))
+            {
+                var reports = filterReports(report, fileReferences);
+                reportDetailsList.AddRange(reports);
+            }
+
+            return reportDetailsList;
+        }
+
         public async Task<int> GetReportStatus(long? jobId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!jobId.HasValue)
@@ -183,6 +197,36 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private async Task<bool> IsAuthorised(IReport report)
         {
             return (await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, report.Policy)).Succeeded;
+        }
+
+        private List<ReportDetails> filterReports(IReport report, List<string> fileReferences)
+        {
+            List<ReportDetails> reportDetailsList = new List<ReportDetails>();
+            var foundFiles = new List<string>();
+            foreach (var fileReference in fileReferences)
+            {
+                if (fileReference.IndexOf(report.DisplayName, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                {
+                    foundFiles.Add(fileReference);
+                }
+            }
+
+            var latestFileReferences = foundFiles
+                .OrderByDescending(ff =>
+                {
+                    var match = RegexDefinitions.ReportDate.Match(ff);
+                    return match.Value;
+                })
+                .Take(ReportCountLimit);
+
+            foreach (var fileReference in latestFileReferences)
+            {
+                var lastIndexOf = fileReference.LastIndexOf("/") + 1;
+                var url = fileReference.Substring(lastIndexOf, fileReference.Length - lastIndexOf);
+                reportDetailsList.Add(new ReportDetails { DisplayName = report.DisplayName, Url = url });
+            }
+
+            return reportDetailsList;
         }
     }
 }
