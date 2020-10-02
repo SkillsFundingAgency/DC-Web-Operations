@@ -5,7 +5,6 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF;
-using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF
 {
@@ -39,7 +38,7 @@ namespace ESFA.DC.Web.Operations.Services.TimedHostedService.ALLF
                 var state = SerialiseToCamelCase(model);
 
                 // Send JSON to clients.
-                await _periodEndHub.SendMessage(state, CollectionTypes.ALLF, cancellationToken);
+                await _periodEndHub.SendMessage(state, cancellationToken);
             }
             catch (Exception ex)
             {

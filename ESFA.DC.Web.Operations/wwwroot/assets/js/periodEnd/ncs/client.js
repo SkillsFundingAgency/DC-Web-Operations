@@ -1,19 +1,18 @@
-﻿import JobController from '/assets/js/periodEnd/ncs/jobController.js';
+﻿import { setControlEnabledState } from '/assets/js/util.js';
 
 class client {
     
     constructor(connection) {
         this.connection = connection;
-        this.jobController = new JobController();
     }
 
     startPeriodEnd(collectionYear, period) {
-        this.jobController.setStartPeriodEndButtonState(false);
+        setControlEnabledState(false, "startPeriodEnd");
         this.invokeActionWithType("StartPeriodEnd", collectionYear, period);
     }
 
     closePeriodEnd(collectionYear, period) {
-        this.jobController.setClosePeriodEndButtonState(false);
+        setControlEnabledState(false, "closePeriodEnd");
         this.invokeActionWithType("ClosePeriodEnd", collectionYear, period);
     }
 
@@ -25,7 +24,7 @@ class client {
     }
 
     collectionClosedEmail(collectionYear, period) {
-        this.jobController.setCollectionClosedEmailButtonState(false);
+        setControlEnabledState(false, "collectionClosed")
         this.invokeActionWithType("SendCollectionClosedEmail", collectionYear, period);
     }
 
