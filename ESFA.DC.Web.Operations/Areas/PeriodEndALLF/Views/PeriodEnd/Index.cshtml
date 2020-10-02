@@ -69,17 +69,7 @@
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">File</th>
-                    <th scope="col" class="govuk-table__header table-width-min">Status</th>
-                    <th scope="col" class="govuk-table__header">Reports</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body" id="fileContainer"></tbody>
-        </table>
+    <div class="govuk-grid-column-full" id="fileContainer">
     </div>
 </div>
 
@@ -90,7 +80,7 @@
     <div class="govuk-grid-column-full">
 
         <button type="submit" class="govuk-button customised" id="startPeriodEnd"
-                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ALLF');return false;">
+                onclick="window.periodEndClient.startPeriodEnd(@Model.Year, @Model.Period);return false;">
             Start Period End
         </button>
 
@@ -103,7 +93,7 @@
 
 
         <div class="app-task-list__section">
-            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period, '@CollectionTypes.ALLF');return false;" value="Close Period End">
+            <input id="closePeriodEnd" type="submit" class="govuk-button customised" onclick="window.periodEndClient.closePeriodEnd(@Model.Year, @Model.Period);return false;" value="Close Period End">
         </div>
     </div>
 </div>
@@ -119,6 +109,7 @@
 @section PageScripts
 {
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
 
     <script type="module">
         import PathController from '/assets/js/periodEnd/allf/pathController.js';

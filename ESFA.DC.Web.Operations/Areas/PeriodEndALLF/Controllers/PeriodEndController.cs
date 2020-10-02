@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Constants;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
@@ -29,31 +27,24 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
             _periodEndService = periodEndService;
         }
 
-        [HttpGet("{collectionYear?}/{period?}/{featureSwitch?}")]
-        public async Task<IActionResult> Index(int? collectionYear, int? period, string featureSwitch)
+        [HttpGet("{collectionYear?}/{period?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period)
         {
             var cancellationToken = CancellationToken.None;
-
             var model = await _periodEndService.GetPathState(collectionYear, period, cancellationToken);
-
-            if (string.Equals(featureSwitch, FeatureSwitch.Beta, StringComparison.OrdinalIgnoreCase))
-            {
-                return View("IndexBeta", model);
-            }
 
             return View(model);
         }
 
         [RequestSizeLimit(524_288_000)]
         [AutoValidateAntiforgeryToken]
-        [HttpPost("{collectionYear?}/{period?}/{featureSwitch?}")]
+        [HttpPost("{collectionYear?}/{period?}")]
         public async Task<IActionResult> Index([FromForm]int collectionYear, [FromForm]int period, IFormFile file)
         {
             var cancellationToken = CancellationToken.None;
             if (file != null)
             {
                 await _periodEndService.InitialisePeriodEndAsync(collectionYear, period, CollectionTypes.ALLF, cancellationToken);
-
                 await _periodEndService.SubmitJob(period, CollectionNames.ALLFCollection, User.Name(), User.Email(), file, cancellationToken);
             }
 

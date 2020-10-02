@@ -1,21 +1,20 @@
-﻿import PathController from '/assets/js/periodEnd/allf/pathController.js';
+﻿import { setControlEnabledState } from '/assets/js/util.js';
 
 class client {
     
     constructor(connection) {
-        this.pathController = new PathController();
         this.connection = connection;
     }
 
-    startPeriodEnd(collectionYear, period, collectionType) {
-        this.pathController.setButtonState(false, "startPeriodEnd");
-        this.invokeActionWithType("StartPeriodEnd", collectionYear, period, collectionType);
+    startPeriodEnd(collectionYear, period) {
+        setControlEnabledState(false, "startPeriodEnd");
+        this.invokeActionWithType("StartPeriodEnd", collectionYear, period);
     }
 
-    closePeriodEnd(collectionYear, period, collectionType) {
-        this.pathController.setButtonState(false, "closePeriodEnd");
-        this.pathController.setButtonState(false, "uploadFile");
-        this.invokeActionWithType("ClosePeriodEnd", collectionYear, period, collectionType);
+    closePeriodEnd(collectionYear, period) {
+        setControlEnabledState(false, "closePeriodEnd");
+        setControlEnabledState(false, "uploadFile");
+        this.invokeActionWithType("ClosePeriodEnd", collectionYear, period);
     }
 
     resubmitJob(jobId) {
@@ -38,9 +37,9 @@ class client {
             .catch(err => console.error(err.toString()));
     }
 
-    invokeActionWithType(action, collectionYear, period, collectionType) {
+    invokeActionWithType(action, collectionYear, period) {
         this.connection
-            .invoke(action, collectionYear, period, collectionType)
+            .invoke(action, collectionYear, period)
             .catch(err => console.error(err.toString()));
     }
 }
