@@ -3,8 +3,9 @@ import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.
 
 class referenceDataController {
 
-    constructor() {
+    constructor(downloadController) {
         this._slowTimer = null;
+        this._downloadController = downloadController;
     }
 
     registerHandlers(hub, type) {
@@ -44,7 +45,7 @@ class referenceDataController {
         this.sortByDate(stateModel);
 
         var compiledTemplate = getHandleBarsTemplate(Templates.ReferenceDataFilesList);
-        document.getElementById("filesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName });
+        document.getElementById("filesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName, downloadController: this._downloadController });
 
         // Can be written in a single line.
         //document.getElementById("filesList").innerHTML = getHandleBarsTemplate(Templates.ReferenceDataFilesList)({ viewModel: stateModel,controllerName: controllerName });

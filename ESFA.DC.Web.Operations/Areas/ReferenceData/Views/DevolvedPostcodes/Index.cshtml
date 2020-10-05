@@ -71,7 +71,8 @@
 
         (function () {
             const model = @Json.Serialize(Model);
-            const controller = new Controller();
+            const controller = new Controller('@Url.Action("GetCollectionReportFileAsync", "DevolvedPostcodes")');
+
             const hub = new Hub('devolvedPostcodesHub', controller.displayConnectionState);
 
             controller.registerHandlers(hub, 'DevolvedPostcodes');
