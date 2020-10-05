@@ -110,7 +110,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 var decodedFileName = HttpUtility.HtmlDecode(fileName);
                 var report = _reports.Single(x => x.DisplayName.CaseInsensitiveEquals(reportDisplayName));
                 var containerName = report.ContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
-                fileName = BuildFileName(report.ReportType, collectionYear, periodString, decodedFileName);
+                fileName = _reportsService.BuildFileName(report.ReportType, collectionYear, periodString, decodedFileName);
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))
@@ -170,21 +170,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             model.CollectionYears = collectionYearsTask.Result;
 
             return model;
-        }
-
-        private string BuildFileName(ReportType reportType, int collectionYear, string periodString, string decodedFileName)
-        {
-            switch (reportType)
-            {
-                case ReportType.Operations:
-                    return $"Reports/{collectionYear}/{periodString}/{decodedFileName}";
-                case ReportType.PeriodEnd:
-                    return $"{periodString}/{decodedFileName}";
-                case ReportType.FundingClaims:
-                    return $"Reports/{decodedFileName}";
-                default:
-                    return string.Empty;
-            }
         }
     }
 }

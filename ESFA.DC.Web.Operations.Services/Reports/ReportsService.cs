@@ -178,6 +178,25 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                 .Where(w => _collectionsByYear[collectionYear].Contains(w.CollectionName.Replace(Constants.CollectionYearToken, collectionYear.ToString())) || w.ReportType == ReportType.Validation);
         }
 
+        public string BuildFileName(
+            ReportType reportType,
+            int collectionYear,
+            string periodString,
+            string decodedFileName)
+        {
+            switch (reportType)
+            {
+                case ReportType.Operations:
+                    return $"Reports/{collectionYear}/{periodString}/{decodedFileName}";
+                case ReportType.PeriodEnd:
+                    return $"{periodString}/{decodedFileName}";
+                case ReportType.FundingClaims:
+                    return $"Reports/{decodedFileName}";
+                default:
+                    return string.Empty;
+            }
+        }
+
         private void StripLeaingReturnPeriodFromReportUrl(IEnumerable<ReportDetails> reportDetailsList)
         {
             if (reportDetailsList != null)
