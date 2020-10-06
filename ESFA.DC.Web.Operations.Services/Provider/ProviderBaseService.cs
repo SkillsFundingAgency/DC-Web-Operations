@@ -50,7 +50,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 var startDate = _dateTimeProvider.ConvertUtcToUk(assignment.StartDate);
                 var endDate = _dateTimeProvider.ConvertUtcToUk(assignment.EndDate ?? dateTimeNow);
 
-                if (startDate == DateTime.MinValue)
+                if (startDate.Equals(DateTime.MinValue))
                 {
                     continue;
                 }
