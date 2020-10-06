@@ -9,39 +9,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Jobs queued</h1>
-        <div id="typeFilter" class="govuk-checkboxes">
-            <div id="minusMargin" class="govuk-form-group margin-right">
-                <label class="govuk-label" for="sort">
-                    Sort by
-                </label>
-                <select class="govuk-select" id="sort" name="sort" onchange="window.change();">
-                    <option value="LongestTimeInTheQueue" selected>Longest time in the queue</option>
-                    <option value="ShortestTimeInTheQueue">Shortest time in the queue</option>
-                    <option value="Alphabetical">Alphabetical</option>
-                    <option value="Ukprn">UKPRN</option>
-                </select>
-            </div>
-            <div class="flex">
-                <div class="govuk-checkboxes__item">
-                    <input id="ILR" class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="ILR">
-                    <label class="govuk-label govuk-checkboxes__label" for="waste-1">
-                        ILR
-                    </label>
-                </div>
-                <div class="govuk-checkboxes__item">
-                    <input id="EAS" class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="EAS">
-                    <label class="govuk-label govuk-checkboxes__label" for="waste-2">
-                        EAS
-                    </label>
-                </div>
-                <div class="govuk-checkboxes__item">
-                    <input id="ESF" class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="ESF">
-                    <label class="govuk-label govuk-checkboxes__label" for="waste-3">
-                        ESF
-                    </label>
-                </div>
-            </div>
-        </div>
+        <partial name="_SortAndFilters" model="@(new List<SelectListItem>{
+                                                        new SelectListItem { Text="Longest time in the queue",Value="LongestTimeInTheQueue", Selected=true},
+                                                        new SelectListItem { Text="Shortest time in the queue",Value="ShortestTimeInTheQueue"},
+                                                        new SelectListItem { Text="Alphabetical",Value="Alphabetical"},
+                                                        new SelectListItem { Text="UKPRN",Value="Ukprn"}})" />
         <br>
     </div>
     <div class="govuk-grid-column-one-third">
