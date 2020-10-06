@@ -18,14 +18,24 @@ namespace ESFA.DC.Web.Operations.Services.Tests.Reports
     public class ReportServiceTests
     {
         [Fact]
-        public void BuildReportFileName_Returns_FilenameAsExpected()
+        public void BuildReportFileName_Returns_OperationsReportFilenameAsExpected()
         {
             var operationsFileName = NewService().BuildFileName(ReportType.Operations, 1920, "R01", "ILRProviderSubmissions.xlsx");
-            var fundingClaimsReportFileName = NewService().BuildFileName(ReportType.FundingClaims, 0, null, "FundingClaimsProviders1920.xlsx");
-            var periodEndReportFileName = NewService().BuildFileName(ReportType.PeriodEnd, 1920, "R03", "ActCountReport.xlsx");
-
             operationsFileName.Should().Be("Reports/1920/R01/ILRProviderSubmissions.xlsx");
+        }
+
+        [Fact]
+        public void BuildReportFileName_Returns_FundingClaimsReportFilenameAsExpected()
+        {
+            var fundingClaimsReportFileName = NewService().BuildFileName(ReportType.FundingClaims, 0, null, "FundingClaimsProviders1920.xlsx");
             fundingClaimsReportFileName.Should().Be("Reports/FundingClaimsProviders1920.xlsx");
+
+        }
+
+        [Fact]
+        public void BuildReportFileName_Returns_PeriodEndReportsFilenameAsExpected()
+        {
+            var periodEndReportFileName = NewService().BuildFileName(ReportType.PeriodEnd, 1920, "R03", "ActCountReport.xlsx");
             periodEndReportFileName.Should().Be("R03/ActCountReport.xlsx");
         }
 
@@ -33,7 +43,7 @@ namespace ESFA.DC.Web.Operations.Services.Tests.Reports
             ApiSettings apiSettings = null,
             ICollectionsService collectionsService = null,
             IEnumerable<IReport> reports = null,
-            IAuthorizationService authorizationService= null,
+            IAuthorizationService authorizationService = null,
             IHttpContextAccessor httpContextAccessor = null,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService = null,
             IHttpClientService httpClientService = null)
