@@ -16,6 +16,7 @@ using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
+using ESFA.DC.Web.Operations.Services.Enums;
 using ESFA.DC.Web.Operations.Utils;
 using ESFA.DC.Web.Operations.Utils.Extensions;
 using Microsoft.ApplicationInsights;
@@ -108,9 +109,8 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 var periodString = $"R{collectionPeriod:D2}";
                 var decodedFileName = HttpUtility.HtmlDecode(fileName);
                 var report = _reports.Single(x => x.DisplayName.CaseInsensitiveEquals(reportDisplayName));
-                var containerName = report.ContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString()); ;
-                fileName = report.ReportType == ReportType.Operations ? $"Reports/{collectionYear}/{periodString}/{decodedFileName}" : $"{periodString}/{decodedFileName}";
-
+                var containerName = report.ContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
+                fileName = _reportsService.BuildFileName(report.ReportType, collectionYear, periodString, decodedFileName);
                 var blobStream = await _storageService.GetFile(containerName, fileName, CancellationToken.None);
 
                 return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(fileName))

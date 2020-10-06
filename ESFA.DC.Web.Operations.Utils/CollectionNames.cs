@@ -46,6 +46,8 @@
 
         public const string FrmReportCollectionName = @"FRM-Reports1920";
 
+        public const string FundingClaimsProviderSubmission1920Report = @"OP-FundingClaimsProviderSubmission1920-Report";
+
         public const string ValidationRuleDetailsReportCollectionName = @"OP-Validation-Report";
 
         public const string ShortTermFundingInitiatives = "ShortTermFundingInitiatives";
