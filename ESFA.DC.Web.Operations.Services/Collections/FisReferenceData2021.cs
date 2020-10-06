@@ -7,14 +7,14 @@ namespace ESFA.DC.Web.Operations.Services.Collections
     {
         public override string CollectionName => CollectionNames.FisReferenceData2021;
 
-        public string ReportName => string.Empty;
+        public string ReportName => ReportTypes.FisReferenceData2021SummaryReportName;
 
-        public string DisplayName => "FIS reference data";
+        public string DisplayName => "FIS reference data 2021";
 
         public string HubName => "fisReferenceData2021Hub";
 
-        public string FileFormat => string.Empty;
+        public string FileFormat => FileNameExtensionConsts.ZIP;
 
-        public string FileNameFormat => string.Empty;
+        public string FileNameFormat => ReferenceDataOutputTypes.FisReferenceData2021ZipPreFix;
     }
 }

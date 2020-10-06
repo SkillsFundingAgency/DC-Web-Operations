@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -11,10 +10,8 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
-using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Models.ReferenceData;
-using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
 
@@ -33,10 +30,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICloudStorageService _cloudStorageService;
         private readonly ILogger _logger;
-        private readonly IHttpClientService _httpClientService;
+        private readonly IReferenceDataServiceClient _referenceDataServiceClient;
         private readonly IFileService _fileService;
-
-        private readonly string _baseUrl;
 
         public ReferenceDataService(
             ICollectionsService collectionsService,
@@ -45,9 +40,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             IFundingClaimsDatesService fundingClaimsDatesService,
             IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
-            ApiSettings apiSettings,
             ILogger logger,
-            IHttpClientService httpClientService,
+            IReferenceDataServiceClient referenceDataServiceClient,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
         {
             _collectionsService = collectionsService;
@@ -57,9 +51,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _dateTimeProvider = dateTimeProvider;
             _cloudStorageService = cloudStorageService;
             _logger = logger;
-            _httpClientService = httpClientService;
+            _referenceDataServiceClient = referenceDataServiceClient;
             _fileService = operationsFileService[PersistenceStorageKeys.DctAzureStorage];
-            _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
         public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken)
@@ -103,7 +96,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var model = new ReferenceDataViewModel();
 
             // get job info from db
-            var files = (await GetSubmittedFilesPerCollectionAsync(collectionName, cancellationToken))
+            var files = (await _referenceDataServiceClient.GetSubmittedFilesPerCollectionAsync(Api, collectionName, cancellationToken))
                 .OrderByDescending(f => f.SubmissionDate)
                 .Take(maxRows)
                 .ToList();
@@ -114,7 +107,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             await Task.WhenAll(
                 files
                     .Select(file => _fileUploadJobMetaDataModelBuilderService
-                        .PopulateFileUploadJobMetaDataModelForReferenceData(
+                        .PopulateFileUploadJobMetaDataModelForReferenceDataUpload(
                             file,
                             reportName,
                             SummaryFileName,
@@ -185,7 +178,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = !(await IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
+                    Valid = !(await _referenceDataServiceClient.IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
                 },
                 FundingClaimsDates = new ReferenceDataIndexBase()
                 {
@@ -243,19 +236,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             {
                 await file.CopyToAsync(stream);
             }
-        }
-
-        private async Task<bool> IsReferenceDataCollectionExpired(string collectionName, CancellationToken cancellationToken)
-        {
-            var url = $"{_baseUrl}/api/returns-calendar/expired/{collectionName}";
-            return await _httpClientService.GetAsync<bool>(url, cancellationToken);
-        }
-
-        private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerCollectionAsync(string collectionName, CancellationToken cancellationToken)
-        {
-            var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
-
-            return await _httpClientService.GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
         }
 
         private DateTime GetDate(DateTime? date)

@@ -13,13 +13,13 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
     {
         private readonly ISerialisationHelperService _serialisationHelperService;
         private readonly IHubContext<FisReferenceData2021Hub> _hubContext;
-        private readonly IReferenceDataService _referenceDataService;
+        private readonly IReferenceDataProcessService _referenceDataService;
 
         public FisReferenceData2021Hub(
             IHubEventBase eventBase,
             ISerialisationHelperService serialisationHelperService,
             IHubContext<FisReferenceData2021Hub> hubContext,
-            IReferenceDataService referenceDataService,
+            IReferenceDataProcessService referenceDataService,
             ILogger logger)
             : base(eventBase, logger, ReferenceDataTypes.FisReferenceData2021)
         {
@@ -35,10 +35,13 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.ReferenceData
                 return;
             }
 
-            var stateModel = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+            var stateModel = await _referenceDataService.GetProcessOutputsForCollectionAsync(
                 Constants.ReferenceDataStorageContainerName,
                 CollectionNames.FisReferenceData2021,
-                ReportTypes.FisReferenceDataReportName,
+                ReportTypes.FisReferenceData2021SummaryReportName,
+                FileNameExtensionConsts.CSV,
+                ReferenceDataOutputTypes.FisReferenceData2021ZipPreFix,
+                FileNameExtensionConsts.ZIP,
                 cancellationToken: cancellationToken);
 
             var state = _serialisationHelperService.SerialiseToCamelCase(stateModel);
