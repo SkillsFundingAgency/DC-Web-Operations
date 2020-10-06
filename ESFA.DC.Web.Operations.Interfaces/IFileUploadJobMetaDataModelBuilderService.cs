@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Models;
 using Microsoft.Azure.Storage.Blob;
@@ -15,12 +16,22 @@ namespace ESFA.DC.Web.Operations.Interfaces
             string periodPrefix,
             CancellationToken cancellationToken);
 
-        Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModelForReferenceData(
+        Task<FileUploadJobMetaDataModel> PopulateFileUploadJobMetaDataModelForReferenceDataUpload(
             FileUploadJobMetaDataModel file,
             string resultsReportName,
             string summaryFileName,
             CloudBlobContainer container,
             string collectionName,
+            CancellationToken cancellationToken);
+
+        Task<ICollection<FileUploadJobMetaDataModel>> BuildFileUploadJobMetaDataModelForReferenceDataProcess(
+            List<FileUploadJobMetaDataModel> files,
+            string collectionName,
+            string containerName,
+            string reportFormat,
+            string reportExtension,
+            string fileNameFormat,
+            string fileNameExtension,
             CancellationToken cancellationToken);
     }
 }

@@ -2,23 +2,27 @@
     <div class="govuk-grid-column-full">
         <table class="govuk-table">
             <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header td--width-100-wrap">Date</th>
-                <th scope="col" class="govuk-table__header">Processed by</th>
-                <th scope="col" class="govuk-table__header">Job ID</th>
-                <th scope="col" class="govuk-table__header table-width-min">Status</th>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header td--width-100-wrap">Date</th>
+                    <th scope="col" class="govuk-table__header">Processed by</th>
+                    <th scope="col" class="govuk-table__header">Job ID</th>
+                    <th scope="col" class="govuk-table__header table-width-min">Status</th>
+                    <th scope="col" class="govuk-table__header td--width-150-wrap">Report</th>
+                    <th scope="col" class="govuk-table__header td--width-150-wrap">File</th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body" id="fileContainer">
             {{#each viewModel.files}}
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-!-font-weight-bold td--width-100-wrap">{{displayDate}}</td>
-                <td class="govuk-table__cell">{{submittedBy}}</td>
-                <td class="govuk-table__cell">{{jobId}}</td>
-                <td class="govuk-table__cell">
-                    <span class="{{jobStatusClass displayStatus}}">{{displayStatus}}</span> <br />
-                </td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-font-weight-bold td--width-100-wrap">{{displayDate}}</td>
+                    <td class="govuk-table__cell">{{submittedBy}}</td>
+                    <td class="govuk-table__cell">{{jobId}}</td>
+                    <td class="govuk-table__cell">
+                        <span class="{{jobStatusClass displayStatus}}">{{displayStatus}}</span> <br />
+                    </td>
+                    <td class="govuk-table__cell td--width-150-wrap"><a href="/referencedata/referenceData/getReportFile/{{collectionName}}/{{reportName}}/{{jobId}}">{{reportName}}</a></td>
+                    <td class="govuk-table__cell td--width-150-wrap"><a href="/referencedata/referenceData/getReportFile/{{collectionName}}/{{fileName}}/{{jobId}}">{{fileName}}</a></td>
+                </tr>
             {{/each}}
             </tbody>
         </table>
