@@ -7,6 +7,8 @@ namespace ESFA.DC.Web.Operations.Utils
         public const int MaxFilesToDisplay = 15;
         public const int ValidationMessagesMaxFilesToDisplay = 25;
 
+        public const int DefaultSubmissionCount = 15;
+
         public const string IlrCollectionNamePrefix = "ILR";
         public const int YearStartMonth = 8;
         public const int CriticalPathHubId = 0;

@@ -14,7 +14,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.ReferenceData
             string reportExtension,
             string fileNameFormat,
             string fileNameExtension,
-            int maxRows = Constants.MaxFilesToDisplay,
+            int submissionCount = Constants.DefaultSubmissionCount,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

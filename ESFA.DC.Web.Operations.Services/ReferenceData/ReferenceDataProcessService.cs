@@ -37,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             string reportExtension,
             string fileNameFormat,
             string fileNameExtension,
-            int maxRows = Constants.MaxFilesToDisplay,
+            int submissionCount = Constants.DefaultSubmissionCount,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var model = new ReferenceDataViewModel();
@@ -45,7 +45,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             // get job info from db
             var files = (await _referenceDataServiceClient.GetSubmittedFilesPerCollectionAsync(Api, collectionName, cancellationToken))
                 .OrderByDescending(f => f.SubmissionDate)
-                .Take(maxRows)
+                .Take(submissionCount)
                 .ToList();
 
             var outputFiles = await _fileUploadJobMetaDataModelBuilderService

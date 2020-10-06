@@ -69,7 +69,6 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 FileNameExtensionConsts.CSV,
                 collection.FileNameFormat,
                 collection.FileFormat,
-                15,
                 cancellationToken: cancellationToken);
 
             model.CollectionDisplayName = collection.DisplayName;
