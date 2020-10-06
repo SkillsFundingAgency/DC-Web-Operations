@@ -31,42 +31,20 @@
     </div>
 </div>
 
-<a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
-
+<a href="#" class="govuk-button" id="aBtnDownloadCSV">Download CSV</a>
 <br />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-        <label id="lastSync"></label>
-
-        <label id="state"></label>
+        <state-display></state-display>
     </div>
 </div>
 
-<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-<script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
-
-<script type="module">
-    import JobProvidersReturnedCurrentPeriodController from "/assets/js/processing/jobProvidersReturnedCurrentPeriodController.js";
-    import Hub from '/assets/js/hubs/hub.js';
-
-    (function () {
-        const jobProvidersReturnedCurrentPeriodController = new JobProvidersReturnedCurrentPeriodController();
-        const hub = new Hub('jobProvidersReturnedCurrentPeriodHub', jobProvidersReturnedCurrentPeriodController.displayConnectionState);
-        const data = @Json.Serialize(Model);
-
-        jobProvidersReturnedCurrentPeriodController.registerHandlers(hub);
-        hub.startHub();
-
-        jobProvidersReturnedCurrentPeriodController.updatePage(data);
-
-        window.change = function () {
-            jobProvidersReturnedCurrentPeriodController.updatePage(jobProvidersReturnedCurrentPeriodController._data);
-        };
-
-        window.downloadCSV = function () {
-            jobProvidersReturnedCurrentPeriodController.downloadCSV();
-        };
-    })();
-</script>
+@section PageScripts
+{
+    <partial name="_InitialState" model="Model" />
+    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/processing/jobProvidersReturnedCurrentPeriodController.js" asp-append-version="true" type="module"></script>
+}

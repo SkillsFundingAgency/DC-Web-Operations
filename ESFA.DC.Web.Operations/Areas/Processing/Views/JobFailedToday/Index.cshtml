@@ -31,43 +31,20 @@
     </div>
 </div>
 
-<a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
-
+<a href="#" class="govuk-button" id="aBtnDownloadCSV">Download CSV</a>
 <br />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">&nbsp;</div>
     <div class="govuk-grid-column-two-thirds">
-        <label id="lastSync"></label>
-
-        <label id="state"></label>
+        <state-display></state-display>
     </div>
 </div>
 
-<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-<script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
-
-<script type="module">
-    import JobFailedTodayController from "/assets/js/processing/jobFailedTodayController.js";
-    import Hub from '/assets/js/hubs/hub.js';
-
-    (function () {
-        const jobFailedTodayController = new JobFailedTodayController();
-
-        const hub = new Hub('jobFailedTodayHub', jobFailedTodayController.displayConnectionState);
-        jobFailedTodayController.registerHandlers(hub);
-
-        hub.startHub();
-
-        const data = @Json.Serialize(Model);
-        jobFailedTodayController.updatePage(data);
-
-        window.change = function () {
-            jobFailedTodayController.updatePage(jobFailedTodayController._data);
-        };
-
-        window.downloadCSV = function () {
-            jobFailedTodayController.downloadCSV();
-        };
-    })();
-</script>
+@section PageScripts
+{
+    <partial name="_InitialState" model="Model"/>
+    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/processing/jobFailedTodayController.js" asp-append-version="true" type="module"></script>
+}

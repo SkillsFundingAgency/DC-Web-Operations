@@ -1,14 +1,11 @@
-﻿import { getColorForPercentage } from '/assets/js/util.js';
-import { convertToCsv } from '/assets/js/csv-operations.js';
-import { getMessageForPercentage } from '/assets/js/util.js';
-import { getFormattedDatetimeString } from '/assets/js/util.js';
-import { getDatetimeFromString } from '/assets/js/util.js';
-import { replaceNullOrEmpty } from '/assets/js/util.js';
+﻿import { convertToCsv } from '/assets/js/csv-operations.js';
+import { getFormattedDatetimeString, getDatetimeFromString, getMessageForPercentage, getColorForPercentage, replaceNullOrEmpty, displayConnectionState, getInitialStateModel, $on, $onAll, parseToObject } from '/assets/js/util.js';
+import Hub from '/assets/js/hubs/hub.js';
 
 class JobSubmittedController {
 
     constructor() {
-
+        this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
         this._firstDonutText = document.getElementById("firstDonutText");
@@ -18,39 +15,45 @@ class JobSubmittedController {
         this._eas = document.getElementById('EAS');
         this._esf = document.getElementById('ESF');
 
-        this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
-
         this._percentageTextRangeJobSubmitted = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
 
-        this._data = {};
+        const hub = new Hub('jobSubmittedHub', displayConnectionState);
+        this.registerHandlers(hub);
+        hub.startHub();
 
+        this.registerEvents();
+        this.updatePage(getInitialStateModel());
     }
 
     updatePage(data) {
-
-        if (typeof data === 'object') {
-            this._data = data;
-        }
-        else {
-            this._data = JSON.parse(data);
-            this._data.jobs.map(p => {
-                p.providerName = replaceNullOrEmpty(p.providerName),
-                    p.fileName = replaceNullOrEmpty(p.fileName),
-                    p.datetime = getDatetimeFromString(p.createdDate),
-                    p.createdDateStr = getFormattedDatetimeString(p.createdDate)
-            });
-        }
+        this._data = parseToObject(data);
+        this._data.jobs.map(p => {
+            p.providerName = replaceNullOrEmpty(p.providerName),
+                p.fileName = replaceNullOrEmpty(p.fileName),
+                p.datetime = getDatetimeFromString(p.createdDate),
+                p.createdDateStr = getFormattedDatetimeString(p.createdDate)
+        });
 
         this.drawGrid();
-
     }
 
     registerHandlers(hub) {
-        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+        hub.registerMessageHandler("ReceiveMessage", (data) => { this.updatePage(data) });
+    }
+
+    registerEvents() {
+        const dataRefreshElements = document.querySelectorAll("[name='sort'], [name='waste']");
+
+        $onAll(dataRefreshElements, 'change', () => {
+            this.updatePage(this._data);
+        });
+    
+        $on(this._aBtnDownloadCSV, 'click', () => {
+            this.downloadCSV();
+        });
     }
 
     setDonut(filteredData) {
-
         this._firstDonut.setAttribute("data-count", filteredData.length);
         this._firstDonut.textContent = filteredData.length;
 
@@ -62,24 +65,15 @@ class JobSubmittedController {
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage}, 100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
         this._firstDonutText.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobSubmitted);
-
-    }
-
-    displayConnectionState(state) {
-
-        const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
-
     }
 
     drawGrid() {
-
-        var filteredData = this.filterBy();
+        const filteredData = this.filterBy();
         this._aBtnDownloadCSV.style.visibility = (filteredData.length > 0) ? 'visible' : 'hidden';
         this.setDonut(filteredData);
         this.sortBy(filteredData);
 
-        var sb = [];
+        let sb = [];
 
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
@@ -92,16 +86,13 @@ class JobSubmittedController {
             `</tr>`);
         }
 
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
+        const dataContent = document.getElementById("dataContent");
+        dataContent.innerHTML = sb.join('');
 
     }
 
     filterBy() {
-
-        var filters = [];
+        let filters = [];
 
         if (this._ilr && this._ilr.checked) {
             filters.push(this._ilr.value);
@@ -116,21 +107,17 @@ class JobSubmittedController {
         }
 
         if (filters.length > 0) {
-
             return this._data.jobs.filter(function (array_el) {
                 return filters.filter(function (anotherOne_el) {
                     return anotherOne_el == array_el.collectionType;
                 }).length > 0
             });
-
         }
 
         return this._data.jobs;
-
     }
 
     sortBy(filteredData) {
-
         if (this._sort) {
             switch (this._sort.value) {
                 case 'Datetime':
@@ -160,11 +147,9 @@ class JobSubmittedController {
                     break;
             }
         }
-
     }
 
     downloadCSV() {
-
         var filteredData = this.filterBy();
 
         if (filteredData.length > 0) {
@@ -177,12 +162,9 @@ class JobSubmittedController {
                     "Job status": obj.statusDescription
                 }
             });
-
             convertToCsv({ filename: 'Jobs-Submitted.csv', data: newData });
-
         }
-
     }
 }
 
-export default JobSubmittedController
+export const jobSubmittedController = new JobSubmittedController()

@@ -1,7 +1,6 @@
-﻿import { getColorForPercentage } from '/assets/js/util.js';
+﻿import { getColorForPercentage, replaceNullOrEmpty, getMessageForPercentage, displayConnectionState, $on, $onAll, parseToObject, getInitialStateModel} from '/assets/js/util.js';
 import { convertToCsv } from '/assets/js/csv-operations.js';
-import { getMessageForPercentage } from '/assets/js/util.js';
-import { replaceNullOrEmpty } from '/assets/js/util.js';
+import Hub from '/assets/js/hubs/hub.js';
 
 class JobQueuedController {
     constructor() {
@@ -15,26 +14,36 @@ class JobQueuedController {
         this._esf = document.getElementById('ESF');
 
         this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
+        this.registerEvents();
 
         this._percentageTextRangeJobQueued = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
-
-        this._data = {};
+       
+        const hub = new Hub('jobQueuedHub', displayConnectionState);
+        this.registerHandlers(hub);
+        hub.startHub();
+        this.updatePage(getInitialStateModel())
     }
 
     updatePage(data) {
-        
-        if (typeof data === 'object') {
-            this._data = data;
-        }
-        else {
-            this._data = JSON.parse(data);
-            this._data.jobs.map(p => {
-                p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA')
-            });
-        }
+        this._data = parseToObject(data);
+
+        this._data.jobs.map(p => {
+            p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA')
+        });
 
         this.drawGrid();
+    }
 
+    registerEvents() {
+        const dataRefreshElements = document.querySelectorAll("[name='sort'], [name='waste']");
+
+        $onAll(dataRefreshElements, 'change', () => {
+            this.updatePage(this._data);
+        });
+
+        $on(this._aBtnDownloadCSV, 'click', () => {
+            this.downloadCSV();
+        });
     }
 
     registerHandlers(hub) {
@@ -45,26 +54,22 @@ class JobQueuedController {
         this._firstDonut.setAttribute("data-count", filteredData.length);
         this._firstDonut.textContent = filteredData.length;
 
-        let percentage = (filteredData.length / 125) * 100;
+        const percentage = (filteredData.length / 125) * 100;
         this._firstCircle.setAttribute("stroke-dasharray", `${percentage},100`);
         this._firstCircle.setAttribute("style", "stroke:" + getColorForPercentage(percentage));
         this._firstDonutText.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobQueued);
     }
 
-    displayConnectionState(state) {
-        const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
-    }
-
     drawGrid() {
-        var filteredData = this.filterBy();
+        const filteredData = this.filterBy();
+
         this._aBtnDownloadCSV.style.visibility = (filteredData.length > 0) ? 'visible' : 'hidden';
         this.setDonut(filteredData);
         this.sortBy(filteredData);
 
-        var sb = [];
+        let sb = [];
         for (var i = 0; i < filteredData.length; i++) {
-            var item = filteredData[i];
+            const item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
             sb.push(`<td class="govuk-table__cell" style="width:420px">${item.providerName}</td>`);
             sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
@@ -72,14 +77,13 @@ class JobQueuedController {
             sb.push(`<td class="govuk-table__cell">${item.statusDescription}</td>`);
             sb.push(`</tr>`);
         }
-        var result = sb.join('');
 
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
+        const dataContent = document.getElementById("dataContent");
+        dataContent.innerHTML = sb.join('');;
     }
 
     filterBy() {
-        var filters = [];
+        let filters = [];
         if (this._ilr && this._ilr.checked) {
             filters.push(this._ilr.value);
         }
@@ -91,13 +95,11 @@ class JobQueuedController {
         }
 
         if (filters.length > 0) {
-
             return this._data.jobs.filter(function (array_el) {
                 return filters.filter(function (anotherOne_el) {
                     return anotherOne_el == array_el.collectionType;
                 }).length > 0
             });
-
         }
 
         return this._data.jobs;
@@ -139,8 +141,7 @@ class JobQueuedController {
     }
 
     downloadCSV() {
-
-        var filteredData = this.filterBy();
+        const filteredData = this.filterBy();
 
         if (filteredData.length > 0) {
             let newData = filteredData.map(function (obj) {
@@ -154,8 +155,7 @@ class JobQueuedController {
             });
             convertToCsv({ filename: 'Jobs-queued.csv', data: newData });
         }
-
     }
 }
 
-export default JobQueuedController
+export const jobQueuedController = new JobQueuedController();

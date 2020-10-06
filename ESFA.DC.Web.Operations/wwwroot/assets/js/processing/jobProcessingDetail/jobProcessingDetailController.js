@@ -1,52 +1,57 @@
 ﻿import { convertToCsv } from '/assets/js/csv-operations.js';
-import { msToTime } from '/assets/js/util.js';
+import { msToTime, displayConnectionState, getInitialStateModel, $on, parseToObject} from '/assets/js/util.js';
+import Hub from '/assets/js/hubs/hub.js';
+import Client from '/assets/js/processing/jobProcessingDetail/client.js';
 
 class JobProcessingDetailController {
 
     constructor() {
         this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
-        this._data = {};
         this._refreshData = document.getElementById("refreshData");
         this._dataLoadingSpinner = document.getElementById('dataLoadingSpinner');
-        this._jobProcessingType = null;
+
+        const hub = new Hub('jobProcessingDetailHub', displayConnectionState);
+        hub.startHub();
+
+        this._hubClient = new Client(hub.getConnection());
+        this.registerEvents();
+
+        const state = getInitialStateModel();
+        this._jobProcessingType = state.jobProcessingType;
+        this.updatePage(state.data);
     }
 
-    init(jobProcessingType) {
-        this._jobProcessingType = jobProcessingType;
-        this._refreshData.addEventListener("click", this.refreshData.bind(this));
+    registerEvents() {
+        $on(this._aBtnDownloadCSV, 'click', () => {
+            this.downloadCSV();
+        });
+
+        $on(this._refreshData, 'click', () => {
+            this.refreshData();
+        });
     }
 
     refreshData() {
         this._dataLoadingSpinner.style.visibility = 'visible';
         if (this._jobProcessingType === "CurrentPeriod") {
-            window.jobProcessingDetailClient.getJobProcessingDetailsForCurrentPeriod(this.updatePage.bind(this));
+            this._hubClient.getJobProcessingDetailsForCurrentPeriod(this.updatePage.bind(this));
         } else if (this._jobProcessingType === "LastHour") {
-            window.jobProcessingDetailClient.getJobProcessingDetailsForLastHour(this.updatePage.bind(this));
+            this._hubClient.getJobProcessingDetailsForLastHour(this.updatePage.bind(this));
         } else if (this._jobProcessingType === "LastFiveMins") {
-            window.jobProcessingDetailClient.getJobProcessingDetailsForLastFiveMins(this.updatePage.bind(this));
+            this._hubClient.getJobProcessingDetailsForLastFiveMins(this.updatePage.bind(this));
         }
     }
 
     updatePage(data) {
-        if (typeof data === 'object') {
-            this._data = data;
-        }
-        else {
-            this._data = JSON.parse(data);
-        }
+        this._data = parseToObject(data);
         this.drawGrid();
         this._dataLoadingSpinner.style.visibility = 'hidden';
-    }
-
-    displayConnectionState(state) {
-        const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
     }
 
     drawGrid() {
         this.sortByUkprn();
         this._aBtnDownloadCSV.style.visibility = (this._data.length > 0) ? 'visible' : 'hidden';
-        var sb = [];
+        let sb = [];
         for (var i = 0; i < this._data.length; i++) {
             var item = this._data[i];
             sb.push(`<tr class="govuk-table__row">`);
@@ -57,10 +62,8 @@ class JobProcessingDetailController {
             sb.push(`</tr>`);
         }
 
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
+        const dataContent = document.getElementById("dataContent");
+        dataContent.innerHTML = sb.join('');;
 
         if (this._data.length > 0) {
             paginator({
@@ -80,7 +83,6 @@ class JobProcessingDetailController {
     }
 
     downloadCSV() {
-
         if (this._data.length > 0) {
             let newData = this._data.map(function (obj) {
                 return {
@@ -95,4 +97,4 @@ class JobProcessingDetailController {
     }
 }
 
-export default JobProcessingDetailController;
+export const jobProcessingDetailController = new JobProcessingDetailController();

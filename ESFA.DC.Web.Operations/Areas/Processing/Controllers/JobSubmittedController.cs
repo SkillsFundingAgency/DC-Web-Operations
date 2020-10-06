@@ -12,8 +12,8 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobSubmitted")]
     public class JobSubmittedController : BaseController
     {
-        IJobSubmittedService _jobSubmittedService;
-        ILogger _logger;
+        private readonly IJobSubmittedService _jobSubmittedService;
+        private readonly ILogger _logger;
 
         public JobSubmittedController(IJobSubmittedService jobSubmittedService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)

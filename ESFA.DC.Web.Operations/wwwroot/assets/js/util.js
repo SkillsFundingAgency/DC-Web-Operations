@@ -142,4 +142,17 @@ export function $on(target, type, callback, capture) {
     target.addEventListener(type, callback, !!capture);
 }
 
+export function $onAll(targets, type, callback, capture) {
+    for (const target of targets) {
+        $on(target, type, callback, capture);
+    }
+}
+
+export function parseToObject(jsonToParse) {
+    if (typeof jsonToParse !== 'object') {
+        return JSON.parse(jsonToParse);
+    }
+    return jsonToParse;
+}
+
 

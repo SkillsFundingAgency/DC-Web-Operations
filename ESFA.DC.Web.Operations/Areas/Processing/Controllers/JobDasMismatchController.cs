@@ -12,8 +12,8 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobDasMismatch")]
     public class JobDasMismatchController : BaseController
     {
-        IJobDasMismatchService _jobDasMisMatchService;
-        ILogger _logger;
+        private readonly IJobDasMismatchService _jobDasMisMatchService;
+        private readonly ILogger _logger;
 
         public JobDasMismatchController(IJobDasMismatchService jobDasMismatchService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)

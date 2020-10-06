@@ -14,7 +14,7 @@
                 <label class="govuk-label" for="sort">
                     Sort by
                 </label>
-                <select class="govuk-select" id="sort" name="sort" onchange="window.change();">
+                <select class="govuk-select" id="sort" name="sort">
                     <option value="TimeTaken" selected>Time taken - Slowest first</option>
                     <option value="Alphabetical">Alphabetical</option>
                     <option value="Ukprn">UKPRN</option>
@@ -22,19 +22,19 @@
             </div>
             <div class="flex">
                 <div class="govuk-checkboxes__item">
-                    <input id="ILR" class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="ILR" onchange="window.change();">
+                    <input id="ILR" class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="ILR">
                     <label class="govuk-label govuk-checkboxes__label" for="waste-1">
                         ILR
                     </label>
                 </div>
                 <div class="govuk-checkboxes__item">
-                    <input id="EAS" class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="EAS" onchange="window.change();">
+                    <input id="EAS" class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="EAS">
                     <label class="govuk-label govuk-checkboxes__label" for="waste-2">
                         EAS
                     </label>
                 </div>
                 <div class="govuk-checkboxes__item">
-                    <input id="ESF" class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="ESF" onchange="window.change();">
+                    <input id="ESF" class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="ESF">
                     <label class="govuk-label govuk-checkboxes__label" for="waste-3">
                         ESF
                     </label>
@@ -74,7 +74,7 @@
     </div>
 </div>
 
-<a href="#" class="govuk-button" onclick="downloadCSV()" id="aBtnDownloadCSV">Download CSV</a>
+<a href="#" class="govuk-button" id="aBtnDownloadCSV">Download CSV</a>
 
 <br />
 
@@ -87,28 +87,10 @@
     </div>
 </div>
 
-<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-<script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
-
-<script type="module">
-    import JobProcessingController from "/assets/js/processing/jobProcessingController.js";
-    import Hub from '/assets/js/hubs/hub.js';
-
-    (function () {
-        const jobProcessingController = new JobProcessingController();
-        const hub = new Hub('jobProcessingHub', jobProcessingController.displayConnectionState);
-        const data = @Json.Serialize(Model);
-
-        jobProcessingController.registerHandlers(hub);
-        hub.startHub();
-        jobProcessingController.updatePage(data);
-
-        window.change = function () {
-            jobProcessingController.updatePage(jobProcessingController._data);
-        };
-
-        window.downloadCSV = function () {
-            jobProcessingController.downloadCSV();
-        };
-    })();
-</script>
+@section PageScripts
+{
+    <partial name="_InitialState" model="Model"/>
+    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/processing/jobProcessingController.js" asp-append-version="true" type="module"></script>
+}

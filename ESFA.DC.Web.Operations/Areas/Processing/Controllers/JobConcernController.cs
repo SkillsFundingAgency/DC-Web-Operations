@@ -12,8 +12,8 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobConcern")]
     public class JobConcernController : BaseController
     {
-        IJobConcernService _jobConcernService;
-        ILogger _logger;
+        private readonly IJobConcernService _jobConcernService;
+        private readonly ILogger _logger;
 
         public JobConcernController(IJobConcernService jobConcernService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)

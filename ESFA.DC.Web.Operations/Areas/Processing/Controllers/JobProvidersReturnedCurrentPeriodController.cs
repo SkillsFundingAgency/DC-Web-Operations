@@ -13,8 +13,8 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobProvidersReturnedCurrentPeriod")]
     public class JobProvidersReturnedCurrentPeriodController : BaseController
     {
-        private IJobProvidersReturnedCurrentPeriodService _JobProvidersReturnedCurrentPeriodService;
-        ILogger _logger;
+        private readonly IJobProvidersReturnedCurrentPeriodService _JobProvidersReturnedCurrentPeriodService;
+        private readonly ILogger _logger;
 
         public JobProvidersReturnedCurrentPeriodController(
             IJobProvidersReturnedCurrentPeriodService jobProvidersReturnedCurrentPeriodService,

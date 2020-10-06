@@ -12,8 +12,8 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobFailedToday")]
     public class JobFailedTodayController : BaseController
     {
-        IJobFailedTodayService _jobFailedTodayService;
-        ILogger _logger;
+        private readonly IJobFailedTodayService _jobFailedTodayService;
+        private readonly ILogger _logger;
 
         public JobFailedTodayController(IJobFailedTodayService jobFailedTodayService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)

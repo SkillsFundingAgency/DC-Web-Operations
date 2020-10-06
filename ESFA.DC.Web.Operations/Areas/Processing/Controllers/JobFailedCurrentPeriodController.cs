@@ -13,8 +13,8 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobFailedCurrentPeriod")]
     public class JobFailedCurrentPeriodController : BaseController
     {
-        IJobFailedCurrentPeriodService _jobFailedCurrentPeriodService;
-        ILogger _logger;
+        private readonly IJobFailedCurrentPeriodService _jobFailedCurrentPeriodService;
+        private readonly ILogger _logger;
 
         public JobFailedCurrentPeriodController(
             IJobFailedCurrentPeriodService jobFailedCurrentPeriodService,

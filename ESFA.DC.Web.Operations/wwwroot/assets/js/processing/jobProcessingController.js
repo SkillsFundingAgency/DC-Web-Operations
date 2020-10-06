@@ -1,7 +1,6 @@
-﻿import { getColorForPercentage } from '/assets/js/util.js';
+﻿import { getColorForPercentage, getMessageForPercentage, replaceNullOrEmpty, displayConnectionState, getInitialStateModel, $on, $onAll, parseToObject } from '/assets/js/util.js';
 import { convertToCsv } from '/assets/js/csv-operations.js';
-import { getMessageForPercentage } from '/assets/js/util.js';
-import { replaceNullOrEmpty } from '/assets/js/util.js';
+import Hub from '/assets/js/hubs/hub.js';
 
 class JobProcessingController {
     constructor() {
@@ -15,29 +14,40 @@ class JobProcessingController {
         this._esf = document.getElementById('ESF');
 
         this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
-
         this._percentageTextRangeJobProcessing = [{ value: 85, label: 'Urgent Attention!' }, { value: 60, label: 'Needs Attention' }, { value: 0, label: 'Looking Good' }];
 
-        this._data = {};
+        const hub = new Hub('jobProcessingHub', displayConnectionState);
+        this.registerHandlers(hub);
+        hub.startHub();
+
+        this.registerEvents();
+        this.updatePage(getInitialStateModel());
     }
 
     updatePage(data) {
+        this._data = parseToObject(data);
 
-        if (typeof data === 'object') {
-            this._data = data;
-        }
-        else {
-            this._data = JSON.parse(data);
-            this._data.jobs.map(p => {                
-                    p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA')
-            });
-        }
+        this._data.jobs.map(p => {                
+            p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA')
+        });
 
         this.drawGrid();
     }
 
     registerHandlers(hub) {
         hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+    }
+
+    registerEvents() {
+        const dataRefreshElements = document.querySelectorAll("[name='sort'], [name='waste']");
+
+        $onAll(dataRefreshElements, 'change', () => {
+            this.updatePage(this._data);
+        });
+
+        $on(this._aBtnDownloadCSV, 'click', () => {
+            this.downloadCSV();
+        });
     }
 
     setDonut(filteredData) {
@@ -50,18 +60,13 @@ class JobProcessingController {
         this._firstDonutText.textContent = getMessageForPercentage(percentage, this._percentageTextRangeJobProcessing);
     }
 
-    displayConnectionState(state) {
-        const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
-    }
-
     drawGrid() {
-        var filteredData = this.filterBy();
+        const filteredData = this.filterBy();
         this._aBtnDownloadCSV.style.visibility = (filteredData.length > 0) ? 'visible' : 'hidden';
         this.setDonut(filteredData);
         this.sortBy(filteredData);
 
-        var sb = [];
+        let sb = [];
         for (var i = 0; i < filteredData.length; i++) {
             var item = filteredData[i];
             sb.push(`<tr class="govuk-table__row">`);
@@ -71,14 +76,13 @@ class JobProcessingController {
             sb.push(`<td class="govuk-table__cell">${item.averageProcessingTime}</td>`);
             sb.push(`</tr>`);
         }
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
+       
+        const dataContent = document.getElementById("dataContent");
+        dataContent.innerHTML = sb.join('');;
     }
 
     filterBy() {
-        var filters = [];
+        let filters = [];
         if (this._ilr && this._ilr.checked) {
             filters.push(this._ilr.value);
         }
@@ -90,7 +94,6 @@ class JobProcessingController {
         }
 
         if (filters.length > 0) {
-
             return this._data.jobs.filter(function (array_el) {
                 return filters.filter(function (anotherOne_el) {
                     return anotherOne_el == array_el.collectionType;
@@ -132,7 +135,7 @@ class JobProcessingController {
     }
 
     downloadCSV() {
-        var filteredData = this.filterBy();
+        const filteredData = this.filterBy();
         if (filteredData.length > 0) {
             let newData = filteredData.map(function (obj) {
                 return {
@@ -147,4 +150,4 @@ class JobProcessingController {
     }
 }
 
-export default JobProcessingController
+export const jobProcessingController = new JobProcessingController();
