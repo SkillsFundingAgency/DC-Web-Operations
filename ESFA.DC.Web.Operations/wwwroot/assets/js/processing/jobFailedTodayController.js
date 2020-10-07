@@ -1,86 +1,43 @@
-﻿import { convertToCsv } from '/assets/js/csv-operations.js';
-import { replaceNullOrEmpty, getFormattedDatetimeString, displayConnectionState, getInitialStateModel, $on, $onAll, parseToObject } from '/assets/js/util.js';
-import Hub from '/assets/js/hubs/hub.js';
+﻿import { getFormattedDatetimeString, replaceNullOrEmpty } from '/assets/js/util.js';
+import { sortByUkprn } from '/assets/js/sortingUtils.js';
+import JobReportControllerBase from './jobReportControllerBase.js';
 
-class JobFailedTodayController {
+class JobFailedTodayController extends JobReportControllerBase {
 
     constructor() {
-        this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
-        const hub = new Hub('jobFailedTodayHub', displayConnectionState);
-        this.registerHandlers(hub);
-        hub.startHub();
-
-        this.registerEvents();
-        this.updatePage(getInitialStateModel());
+        super('jobFailedTodayHub', sortByUkprn);
     }
 
-    updatePage(data) {
-        this._data = parseToObject(data);
+    formatDataForDisplay() {
         this._data.jobs.map(p => {
             p.failedAtDateStr = getFormattedDatetimeString(p.failedAt),
-                p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA'),
-                p.fileName = replaceNullOrEmpty(p.fileName, '')
-        });
-
-        this.drawGrid();
-    }
-
-    registerHandlers(hub) {
-        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
-    }
-
-    registerEvents() {
-        const dataRefreshElements = document.querySelectorAll("[name='sort'], [name='waste']");
-
-        $onAll(dataRefreshElements, 'change', () => {
-            this.updatePage(this._data);
-        });
-
-        $on(this._aBtnDownloadCSV, 'click', () => {
-            this.downloadCSV();
+            p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA'),
+            p.fileName = replaceNullOrEmpty(p.fileName, '')
         });
     }
 
-    drawGrid() {
-        this.sortByUkprn();
-        this._aBtnDownloadCSV.style.visibility = (this._data.jobs.length > 0) ? 'visible' : 'hidden';
-
-        let sb = [];
-
-        for (var i = 0; i < this._data.jobs.length; i++) {
-            const item = this._data.jobs[i];
-            sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:250px">${item.providerName}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.failedAtDateStr}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.processingTimeBeforeFailure}</td>`);
-            sb.push(`</tr>`);
-        }
-
-        const dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = sb.join('');
+    createReportRow(item) {
+        return `<tr class="govuk-table__row">
+                    <td class="govuk-table__cell" style="width:250px">${item.providerName}</td>
+                    <td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>
+                    <td class="govuk-table__cell" style="width:170px">${item.fileName}</td>
+                    <td class="govuk-table__cell" style="width:170px">${item.failedAtDateStr}</td>
+                    <td class="govuk-table__cell">${item.processingTimeBeforeFailure}</td>
+                </tr>`
     }
 
-    sortByUkprn() {
-        this._data.jobs.sort(function (a, b) {
-            return a.ukprn - b.ukprn;
+    getCSVData() {
+        const data = this._data.jobs.map(function (obj) {
+            return {
+                "Provider name": obj.providerName,
+                "Ukprn": obj.ukprn,
+                "Filename": obj.fileName,
+                "Failed at": obj.failedAtDateStr,
+                "Processing time before failure": obj.processingTimeBeforeFailure
+            }
         });
-    }
 
-    downloadCSV() {
-        if (this._data.jobs.length > 0) {
-            let newData = this._data.jobs.map(function (obj) {
-                return {
-                    "Provider name": obj.providerName,
-                    "Ukprn": obj.ukprn,
-                    "Filename": obj.fileName,
-                    "Failed at": obj.failedAtDateStr,
-                    "Processing time before failure": obj.processingTimeBeforeFailure
-                }
-            });
-            convertToCsv({ filename: 'Jobs-Failed-Today.csv', data: newData });
-        }
+        return { data, fileName: 'Jobs-Failed-Today.csv' };
     }
 }
 

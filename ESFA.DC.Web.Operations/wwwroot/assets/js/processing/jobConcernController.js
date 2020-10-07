@@ -1,81 +1,43 @@
-﻿import { convertToCsv } from '/assets/js/csv-operations.js';
-import { getFormattedDatetimeString, replaceNullOrEmpty, displayConnectionState, getInitialStateModel, $on, parseToObject } from '/assets/js/util.js';
-import Hub from '/assets/js/hubs/hub.js';
+﻿import { getFormattedDatetimeString, replaceNullOrEmpty } from '/assets/js/util.js';
+import { sortByUkprn } from '/assets/js/sortingUtils.js';
+import JobReportControllerBase from './jobReportControllerBase.js';
 
-class JobConcernController {
+class JobConcernController extends JobReportControllerBase {
 
     constructor() {
-        this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
-
-        const hub = new Hub('jobConcernHub', displayConnectionState);
-        this.registerHandlers(hub);
-        hub.startHub();
-
-        this.registerEvents();
-        this.updatePage(getInitialStateModel());
+        super('jobConcernHub', sortByUkprn);
     }
 
-    registerHandlers(hub) {
-        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
-    }
-
-    registerEvents() {
-        $on(this._aBtnDownloadCSV, 'click', () => {
-            this.downloadCSV();
-        });
-    }
-
-    updatePage(data) {
-        this._data = parseToObject(data);
-        console.log(data);
-
+    formatDataForDisplay() {
         this._data.jobs.map(item => {
             item.providerName = replaceNullOrEmpty(item.providerName, 'ESFA'),
                 item.fileName = replaceNullOrEmpty(item.fileName, ''),
                 item.lastSuccessfulSubmission = getFormattedDatetimeString(item.lastSuccessfulSubmission)
         });
-        this.drawGrid();
     }
 
-    drawGrid() {
-        this.sortByUkprn();
-        this._aBtnDownloadCSV.style.visibility = (this._data.jobs.length > 0) ? 'visible' : 'hidden';
-        let sb = [];
-
-        for (var i = 0; i < this._data.jobs.length; i++) {
-            const item = this._data.jobs[i];
-            sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell">${item.providerName}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.ukprn}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.fileName}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.lastSuccessfulSubmission}</td>`);
-            sb.push(`<td class="govuk-table__cell">${item.periodOfLastSuccessfulSubmission}</td>`);
-            sb.push(`</tr>`);
-        }
-
-        const dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = sb.join('');
+    createReportRow(item) {
+        return `<tr class="govuk-table__row">
+                    <td class="govuk-table__cell">${item.providerName}</td>
+                    <td class="govuk-table__cell">${item.ukprn}</td>
+                    <td class="govuk-table__cell">${item.fileName}</td>
+                    <td class="govuk-table__cell">${item.lastSuccessfulSubmission}</td>
+                    <td class="govuk-table__cell">${item.periodOfLastSuccessfulSubmission}</td>
+               </tr>`;
     }
 
-    sortByUkprn() {
-        this._data.jobs.sort(function (a, b) {
-            return a.ukprn - b.ukprn;
+    getCSVData() {
+        const data = this._data.jobs.map(function (obj) {
+            return {
+                "Provider name": obj.providerName,
+                "Ukprn": obj.ukprn,
+                "Filename": obj.fileName,
+                "Last successful submission": obj.lastSuccessfulSubmission,
+                "Period of last successful submission": obj.periodOfLastSuccessfulSubmission
+            }
         });
-    }
 
-    downloadCSV() {
-        if (this._data.jobs.length > 0) {
-            let newData = this._data.jobs.map(function (obj) {
-                return {
-                    "Provider name": obj.providerName,
-                    "Ukprn": obj.ukprn,
-                    "Filename": obj.fileName,
-                    "Last successful submission": obj.lastSuccessfulSubmission,
-                    "Period of last successful submission": obj.periodOfLastSuccessfulSubmission
-                }
-            });
-            convertToCsv({ filename: 'Jobs-Concern.csv', data: newData });
-        }
+        return { data, fileName: 'Jobs-Concern.csv' };
     }
 }
 
