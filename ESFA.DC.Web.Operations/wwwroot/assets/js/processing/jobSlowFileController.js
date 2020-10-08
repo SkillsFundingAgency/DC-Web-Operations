@@ -1,11 +1,10 @@
 ﻿import { replaceNullOrEmpty } from '/assets/js/util.js';
-import { sortByUkprn } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobSlowFileController extends JobReportControllerBase {
 
     constructor() {
-        super('jobSlowFileHub', sortByUkprn);
+        super({ hubUrl: 'jobSlowFileHub' });
     }
 
     formatDataForDisplay() {
@@ -33,7 +32,7 @@ class JobSlowFileController extends JobReportControllerBase {
                 "Filename": obj.fileName,
                 "Time taken": obj.timeTaken,
                 "Average time": obj.averageTime
-            }
+            };
         });
 
         return { data, fileName: 'Jobs-Slow-File.csv'};

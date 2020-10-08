@@ -5,15 +5,15 @@ import JobReportControllerBase from './jobReportControllerBase.js';
 class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
-        super('jobProvidersReturnedCurrentPeriodHub', sortByProviderName);
+        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName });
     }
 
     formatDataForDisplay() {
         this._data.jobs.map(item => {
             item.providerName = replaceNullOrEmpty(item.providerName, 'ESFA'),
-                item.fileName = replaceNullOrEmpty(item.fileName, ''),
-                item.dateTimeSubmission = getFormattedDatetimeString(item.dateTimeSubmission),
-                item.processingTime = getFormattedTimeString(item.processingTime)
+            item.fileName = replaceNullOrEmpty(item.fileName, ''),
+            item.dateTimeSubmission = getFormattedDatetimeString(item.dateTimeSubmission),
+            item.processingTime = getFormattedTimeString(item.processingTime)
         });
     }
 
@@ -35,7 +35,7 @@ class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBas
                 "Filename": obj.fileName,
                 "Date/time of submission (latest)": obj.dateTimeSubmission,
                 "Processing time": obj.processingTime
-            }
+            };
         });
 
         return { data, fileName: 'Jobs-ProvidersReturnedCurrentPeriod.csv'};

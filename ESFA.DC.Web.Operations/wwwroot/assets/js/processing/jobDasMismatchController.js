@@ -5,14 +5,14 @@ import JobReportControllerBase from './jobReportControllerBase.js';
 class JobDasMismatchController extends JobReportControllerBase {
 
     constructor() {
-        super('jobDasMismatchHub', sortByProviderName);
+        super({ hubUrl: 'jobDasMismatchHub', defaultSort: sortByProviderName });
     }
 
     formatDataForDisplay() {
         this._data.jobs.map(item => {
             item.providerName = replaceNullOrEmpty(item.providerName, 'ESFA'),
-                item.fileName = replaceNullOrEmpty(item.fileName, ''),
-                item.submissionDate = getFormattedDatetimeString(item.submissionDate)
+            item.fileName = replaceNullOrEmpty(item.fileName, ''),
+            item.submissionDate = getFormattedDatetimeString(item.submissionDate)
         });
     }
 
@@ -34,7 +34,7 @@ class JobDasMismatchController extends JobReportControllerBase {
                 "Filename": obj.fileName,
                 "Date/time of submission": obj.submissionDate,
                 "Job id": obj.jobId
-            }
+            };
         });
 
         return { data, fileName: 'Jobs-DasMismatch.csv'};

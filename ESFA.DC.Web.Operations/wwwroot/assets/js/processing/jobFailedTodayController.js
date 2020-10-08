@@ -1,11 +1,10 @@
 ﻿import { getFormattedDatetimeString, replaceNullOrEmpty } from '/assets/js/util.js';
-import { sortByUkprn } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobFailedTodayController extends JobReportControllerBase {
 
     constructor() {
-        super('jobFailedTodayHub', sortByUkprn);
+        super({ hubUrl: 'jobFailedTodayHub' });
     }
 
     formatDataForDisplay() {
@@ -34,7 +33,7 @@ class JobFailedTodayController extends JobReportControllerBase {
                 "Filename": obj.fileName,
                 "Failed at": obj.failedAtDateStr,
                 "Processing time before failure": obj.processingTimeBeforeFailure
-            }
+            };
         });
 
         return { data, fileName: 'Jobs-Failed-Today.csv' };

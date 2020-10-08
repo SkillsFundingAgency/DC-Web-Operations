@@ -86,6 +86,13 @@ export function setControlEnabledState(enabledState, controlId) {
     }
 }
 
+export function setControlVisiblity(isVisible, controlId) {
+    const control = document.getElementById(controlId);
+    if (control) {
+        control.style.visibility = isVisible ? 'visible' : 'hidden';
+    }
+}
+
 export function msToTime(duration) {
     var seconds = Math.floor((duration / 1000) % 60),
         minutes = Math.floor((duration / (1000 * 60)) % 60),

@@ -1,18 +1,17 @@
 ﻿import { getFormattedDatetimeString, replaceNullOrEmpty } from '/assets/js/util.js';
-import { sortByUkprn } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobConcernController extends JobReportControllerBase {
 
     constructor() {
-        super('jobConcernHub', sortByUkprn);
+        super({ hubUrl: 'jobConcernHub'});
     }
 
     formatDataForDisplay() {
         this._data.jobs.map(item => {
             item.providerName = replaceNullOrEmpty(item.providerName, 'ESFA'),
-                item.fileName = replaceNullOrEmpty(item.fileName, ''),
-                item.lastSuccessfulSubmission = getFormattedDatetimeString(item.lastSuccessfulSubmission)
+            item.fileName = replaceNullOrEmpty(item.fileName, ''),
+            item.lastSuccessfulSubmission = getFormattedDatetimeString(item.lastSuccessfulSubmission)
         });
     }
 
@@ -34,7 +33,7 @@ class JobConcernController extends JobReportControllerBase {
                 "Filename": obj.fileName,
                 "Last successful submission": obj.lastSuccessfulSubmission,
                 "Period of last successful submission": obj.periodOfLastSuccessfulSubmission
-            }
+            };
         });
 
         return { data, fileName: 'Jobs-Concern.csv' };

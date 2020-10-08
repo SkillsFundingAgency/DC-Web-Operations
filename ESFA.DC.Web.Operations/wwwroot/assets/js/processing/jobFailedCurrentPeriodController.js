@@ -5,15 +5,15 @@ import JobReportControllerBase from './jobReportControllerBase.js';
 class JobFailedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
-        super('jobFailedCurrentPeriodHub', sortByProviderName);
+        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName });
     }
 
     formatDataForDisplay() {
         this._data.jobs.map(item => {
             item.providerName = replaceNullOrEmpty(item.providerName, 'ESFA'),
-                item.fileName = replaceNullOrEmpty(item.fileName, ''),
-                item.dateTimeOfFailure = getFormattedDatetimeString(item.dateTimeOfFailure),
-                item.processingTimeBeforeFailure = getFormattedTimeString(item.processingTimeBeforeFailure)
+            item.fileName = replaceNullOrEmpty(item.fileName, ''),
+            item.dateTimeOfFailure = getFormattedDatetimeString(item.dateTimeOfFailure),
+            item.processingTimeBeforeFailure = getFormattedTimeString(item.processingTimeBeforeFailure)
         });
     }
 
@@ -35,7 +35,7 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
                 "Filename": obj.fileName,
                 "Date/time of failure": obj.dateTimeOfFailure,
                 "Processing time before failure": obj.processingTimeBeforeFailure
-            }
+            };
         });
 
         return { data, fileName: 'Jobs-FailedInCurrentPeriod.csv' };

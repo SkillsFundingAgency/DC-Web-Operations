@@ -13,3 +13,7 @@ export function sortByProviderName(a, b) {
     }
     return 0;
 }
+
+export function sortByDateTime(a, b) {
+    return Number(a.datetime) - Number(b.datetime);
+}

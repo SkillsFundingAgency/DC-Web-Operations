@@ -1,23 +1,24 @@
 ﻿import { convertToCsv } from '/assets/js/csv-operations.js';
 import { displayConnectionState, getInitialStateModel, $on, parseToObject } from '/assets/js/util.js';
+import { sortByUkprn } from '/assets/js/sortingUtils.js';
 import Hub from '/assets/js/hubs/hub.js';
 
 class JobReportControllerBase {
 
-    constructor(hubUrl, defaultSort) {
+    constructor({hubUrl, defaultSort = sortByUkprn, initialState = getInitialStateModel()} = {}) {
         this._defaultSortMethod = defaultSort;
         this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
 
-        const hub = new Hub(hubUrl, displayConnectionState);
-        this.registerHandlers(hub);
-        hub.startHub();
+        this._hub = new Hub(hubUrl, displayConnectionState);
+        this.registerHandlers();
+        this._hub.startHub();
 
         this.registerEvents();
-        this.updatePage(getInitialStateModel());
+        this.updatePage(initialState);
     }
 
-    registerHandlers(hub) {
-        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+    registerHandlers() {
+        this._hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
     }
 
     registerEvents() {
