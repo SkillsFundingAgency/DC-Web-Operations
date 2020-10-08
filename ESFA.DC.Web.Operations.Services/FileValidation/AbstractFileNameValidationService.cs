@@ -193,7 +193,8 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
             }
 
             var fileDateTime = GetFileDateTime(fileNameRegex, fileName);
-            var existingJobFileDateTime = GetFileDateTime(fileNameRegex, job.FileName.Split('/')[1]);
+            var filenameParts = job.FileName.Split('/');
+            var existingJobFileDateTime = GetFileDateTime(fileNameRegex, filenameParts.Last());
             if (fileDateTime < existingJobFileDateTime)
             {
                 return new FileNameValidationResultModel()
