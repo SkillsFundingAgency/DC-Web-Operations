@@ -12,14 +12,12 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobFailedToday")]
     public class JobFailedTodayController : BaseController
     {
-        IJobFailedTodayService _jobFailedTodayService;
-        ILogger _logger;
+        private readonly IJobFailedTodayService _jobFailedTodayService;
 
         public JobFailedTodayController(IJobFailedTodayService jobFailedTodayService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _jobFailedTodayService = jobFailedTodayService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

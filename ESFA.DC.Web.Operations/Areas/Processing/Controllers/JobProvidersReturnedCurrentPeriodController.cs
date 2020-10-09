@@ -13,8 +13,7 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobProvidersReturnedCurrentPeriod")]
     public class JobProvidersReturnedCurrentPeriodController : BaseController
     {
-        private IJobProvidersReturnedCurrentPeriodService _JobProvidersReturnedCurrentPeriodService;
-        ILogger _logger;
+        private readonly IJobProvidersReturnedCurrentPeriodService _JobProvidersReturnedCurrentPeriodService;
 
         public JobProvidersReturnedCurrentPeriodController(
             IJobProvidersReturnedCurrentPeriodService jobProvidersReturnedCurrentPeriodService,
@@ -23,7 +22,6 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
             : base(logger, telemetryClient)
         {
             _JobProvidersReturnedCurrentPeriodService = jobProvidersReturnedCurrentPeriodService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)

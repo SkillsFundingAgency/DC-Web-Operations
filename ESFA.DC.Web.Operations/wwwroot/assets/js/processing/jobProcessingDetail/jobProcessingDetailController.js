@@ -1,68 +1,60 @@
-﻿import { convertToCsv } from '/assets/js/csv-operations.js';
-import { msToTime } from '/assets/js/util.js';
+﻿import { msToTime, getInitialStateModel, $on, replaceNullOrEmpty, setControlVisiblity} from '/assets/js/util.js';
+import Client from '/assets/js/processing/jobProcessingDetail/client.js';
+import JobReportControllerBase from '/assets/js/processing/jobReportControllerBase.js';
 
-class JobProcessingDetailController {
+class JobProcessingDetailController extends JobReportControllerBase {
 
     constructor() {
-        this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
-        this._data = {};
-        this._refreshData = document.getElementById("refreshData");
-        this._dataLoadingSpinner = document.getElementById('dataLoadingSpinner');
-        this._jobProcessingType = null;
+        const state = getInitialStateModel();
+        super({ hubUrl: 'jobProcessingDetailHub', initialState: { jobs: state.data } });
+        this._jobProcessingType = state.jobProcessingType;
+        this._hubClient = new Client(this._hub.getConnection());
     }
 
-    init(jobProcessingType) {
-        this._jobProcessingType = jobProcessingType;
-        this._refreshData.addEventListener("click", this.refreshData.bind(this));
+    formatDataForDisplay() {
+        this._data.jobs.map(p => {
+            p.providerName = replaceNullOrEmpty(p.providerName, 'ESFA'),
+            p.fileName = replaceNullOrEmpty(p.fileName, '')
+        });
     }
 
-    refreshData() {
-        this._dataLoadingSpinner.style.visibility = 'visible';
-        if (this._jobProcessingType === "CurrentPeriod") {
-            window.jobProcessingDetailClient.getJobProcessingDetailsForCurrentPeriod(this.updatePage.bind(this));
-        } else if (this._jobProcessingType === "LastHour") {
-            window.jobProcessingDetailClient.getJobProcessingDetailsForLastHour(this.updatePage.bind(this));
-        } else if (this._jobProcessingType === "LastFiveMins") {
-            window.jobProcessingDetailClient.getJobProcessingDetailsForLastFiveMins(this.updatePage.bind(this));
-        }
+    registerEvents() {
+        super.registerEvents();
+        $on(document.getElementById("refreshData"), 'click', () => {
+            this.refreshData();
+        });
     }
 
     updatePage(data) {
-        if (typeof data === 'object') {
-            this._data = data;
-        }
-        else {
-            this._data = JSON.parse(data);
-        }
-        this.drawGrid();
-        this._dataLoadingSpinner.style.visibility = 'hidden';
+        super.updatePage(data);
+        setControlVisiblity(false, 'dataLoadingSpinner');
     }
 
-    displayConnectionState(state) {
-        const stateLabel = document.getElementById("state");
-        stateLabel.textContent = `Status: ${state}`;
+    registerHandlers() { }
+
+    refreshData() {
+        setControlVisiblity(true, 'dataLoadingSpinner');
+        if (this._jobProcessingType === "CurrentPeriod") {
+            this._hubClient.getJobProcessingDetailsForCurrentPeriod(this.updatePage.bind(this));
+        } else if (this._jobProcessingType === "LastHour") {
+            this._hubClient.getJobProcessingDetailsForLastHour(this.updatePage.bind(this));
+        } else if (this._jobProcessingType === "LastFiveMins") {
+            this._hubClient.getJobProcessingDetailsForLastFiveMins(this.updatePage.bind(this));
+        }
+    }
+
+    createReportRow(item) {
+        return `<tr class="govuk-table__row">
+                    <td class="govuk-table__cell" style="width:250px">${item.providerName}</td>
+                    <td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>
+                    <td class="govuk-table__cell" style="width:170px">${item.fileName}</td>
+                    <td class="govuk-table__cell" style="width:170px">${msToTime(item.processingTimeMilliSeconds)}</td>
+                 </tr>`;
     }
 
     drawGrid() {
-        this.sortByUkprn();
-        this._aBtnDownloadCSV.style.visibility = (this._data.length > 0) ? 'visible' : 'hidden';
-        var sb = [];
-        for (var i = 0; i < this._data.length; i++) {
-            var item = this._data[i];
-            sb.push(`<tr class="govuk-table__row">`);
-            sb.push(`<td class="govuk-table__cell" style="width:250px">${item.providerName}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${item.fileName}</td>`);
-            sb.push(`<td class="govuk-table__cell" style="width:170px">${msToTime(item.processingTimeMilliSeconds)}</td>`);
-            sb.push(`</tr>`);
-        }
-
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
-
-        if (this._data.length > 0) {
+        super.drawGrid();
+        if (this._data.jobs.length > 0) {
             paginator({
                 table: document.getElementById("table_box_native").getElementsByTagName("table")[0],
                 box: document.getElementById("index_native"),
@@ -73,26 +65,18 @@ class JobProcessingDetailController {
         }
     }
 
-    sortByUkprn() {
-        this._data.sort(function (a, b) {
-            return a.ukprn - b.ukprn;
+    getCSVData() {
+        const data = this._data.jobs.map(function (obj) {
+            return {
+                "Provider name": obj.providerName,
+                "Ukprn": obj.ukprn,
+                "Filename": obj.fileName,
+                "Processing time ": obj.processingTimeMilliSeconds
+            };
         });
-    }
 
-    downloadCSV() {
-
-        if (this._data.length > 0) {
-            let newData = this._data.map(function (obj) {
-                return {
-                    "Provider name": obj.providerName,
-                    "Ukprn": obj.ukprn,
-                    "Filename": obj.fileName,
-                    "Processing time ": obj.processingTimeMilliSeconds
-                };
-            });
-            convertToCsv({ filename: 'JobsProcessingDetail-' + this._jobProcessingType + '.csv', data: newData });
-        }
+        return { data, fileName: `JobsProcessingDetail-${this._jobProcessingType}.csv`};
     }
 }
 
-export default JobProcessingDetailController;
+export const jobProcessingDetailController = new JobProcessingDetailController();

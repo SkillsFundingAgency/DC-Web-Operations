@@ -12,14 +12,12 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobSlowFile")]
     public class JobSlowFileController : BaseController
     {
-        IJobSlowFileService _jobSlowFileService;
-        ILogger _logger;
+        private readonly IJobSlowFileService _jobSlowFileService;
 
         public JobSlowFileController(IJobSlowFileService jobSlowFileService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _jobSlowFileService = jobSlowFileService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

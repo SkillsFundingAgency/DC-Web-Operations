@@ -1,0 +1,32 @@
+﻿@model List<SelectListItem>
+
+<div id="typeFilter" class="govuk-checkboxes">
+    <div id="minusMargin" class="govuk-form-group margin-right">
+        <label class="govuk-label" for="sort">
+            Sort by
+        </label>
+        <select class="govuk-select" id="sort" name="sort" asp-items="Model">
+        </select>
+    </div>
+    <div class="flex">
+        <div class="govuk-checkboxes__item">
+            <input id="ILR" class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="ILR">
+            <label class="govuk-label govuk-checkboxes__label" for="waste-1">
+                ILR
+            </label>
+        </div>
+        <div class="govuk-checkboxes__item">
+            <input id="EAS" class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="EAS">
+            <label class="govuk-label govuk-checkboxes__label" for="waste-2">
+                EAS
+            </label>
+        </div>
+        <div class="govuk-checkboxes__item">
+            <input id="ESF" class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="ESF">
+            <label class="govuk-label govuk-checkboxes__label" for="waste-3">
+                ESF
+            </label>
+        </div>
+    </div>
+</div>
+
