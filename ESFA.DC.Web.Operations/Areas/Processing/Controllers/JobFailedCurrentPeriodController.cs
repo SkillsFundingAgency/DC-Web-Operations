@@ -14,7 +14,6 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     public class JobFailedCurrentPeriodController : BaseController
     {
         private readonly IJobFailedCurrentPeriodService _jobFailedCurrentPeriodService;
-        private readonly ILogger _logger;
 
         public JobFailedCurrentPeriodController(
             IJobFailedCurrentPeriodService jobFailedCurrentPeriodService,
@@ -23,7 +22,6 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
             : base(logger, telemetryClient)
         {
             _jobFailedCurrentPeriodService = jobFailedCurrentPeriodService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
