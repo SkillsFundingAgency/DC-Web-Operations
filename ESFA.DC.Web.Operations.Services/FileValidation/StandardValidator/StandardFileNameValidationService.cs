@@ -32,7 +32,6 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.StandardValidator
             Utils.CollectionNames.DevolvedPostcodesLocalAuthority,
             Utils.CollectionNames.DevolvedPostcodesSof,
             Utils.CollectionNames.DevolvedPostcodesOnsOverride,
-            Utils.CollectionNames.ReferenceDataFundingClaimsProviderData,
             Utils.CollectionNames.OnsPostcodes,
             Utils.CollectionNames.ReferenceDataProviderPostcodeSpecialistResources,
             Utils.CollectionNames.ReferenceDataValidationMessages2021,

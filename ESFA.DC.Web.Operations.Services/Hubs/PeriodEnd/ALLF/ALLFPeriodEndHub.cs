@@ -11,6 +11,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
 {
     public class ALLFPeriodEndHub : Hub
     {
+        private const string CollectionType = CollectionTypes.ALLF;
         private readonly IHubEventBase _eventBase;
         private readonly IHubContext<ALLFPeriodEndHub> _hubContext;
         private readonly IALLFPeriodEndService _periodEndService;
@@ -34,9 +35,9 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             _logger = logger;
         }
 
-        public async Task SendMessage(string paths, string collectionType, CancellationToken cancellationToken)
+        public async Task SendMessage(string paths, CancellationToken cancellationToken)
         {
-            await SetButtonStates(collectionType, cancellationToken);
+            await SetButtonStates(cancellationToken);
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", paths, cancellationToken);
         }
@@ -54,11 +55,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             }
         }
 
-        public async Task StartPeriodEnd(int collectionYear, int period, string collectionType)
+        public async Task StartPeriodEnd(int collectionYear, int period)
         {
             try
             {
-                await _periodEndService.StartPeriodEndAsync(collectionYear, period, collectionType, CancellationToken.None);
+                await _periodEndService.StartPeriodEndAsync(collectionYear, period, CollectionType, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -67,12 +68,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             }
         }
 
-        public async Task ClosePeriodEnd(int collectionYear, int period, string collectionType)
+        public async Task ClosePeriodEnd(int collectionYear, int period)
         {
             try
             {
                 await _hubContext.Clients.All.SendAsync("TurnOffMessage");
-                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, collectionType, CancellationToken.None);
+                await _periodEndService.ClosePeriodEndAsync(collectionYear, period, CollectionType, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -109,12 +110,12 @@ namespace ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF
             }
         }
 
-        private async Task SetButtonStates(string collectionType, CancellationToken cancellationToken)
+        private async Task SetButtonStates(CancellationToken cancellationToken)
         {
-            var period = await _periodService.ReturnPeriod(collectionType, cancellationToken);
+            var period = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
             var periodClosed = period.PeriodClosed;
 
-            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year ?? 0, period.Period, collectionType, cancellationToken);
+            string stateString = await _periodEndService.GetPathItemStatesAsync(period.Year ?? 0, period.Period, CollectionType, cancellationToken);
             var state = _stateService.GetMainState(stateString);
 
             var startEnabled = periodClosed && !state.PeriodEndStarted && !state.PeriodEndFinished;

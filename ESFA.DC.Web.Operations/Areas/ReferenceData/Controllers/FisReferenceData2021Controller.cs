@@ -5,6 +5,7 @@ using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
+using ESFA.DC.Web.Operations.Interfaces.Storage;
 using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
@@ -13,23 +14,28 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
     [Area(AreaNames.ReferenceData)]
-    [Route(AreaNames.ReferenceData + "/fisReferenceData")]
-    public class FisReferenceData2021Controller : BaseControllerWithDevOpsOrAdvancedSupportPolicy
+    [Route(AreaNames.ReferenceData + "/fisReferenceData2021")]
+    public class FisReferenceData2021Controller : BaseReferenceDataController
     {
         private const string CollectionName = CollectionNames.FisReferenceData2021;
         private const int Period = 0;
 
         private readonly IReferenceDataService _referenceDataService;
+        private readonly IReferenceDataProcessService _fisReferenceDataService;
         private readonly ICollectionsService _collectionsService;
 
         public FisReferenceData2021Controller(
+            IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            ICollectionsService collectionsService)
-            : base(logger, telemetryClient)
+            IReferenceDataProcessService fisReferenceDataService,
+            ICollectionsService collectionsService,
+            IFileNameValidationServiceProvider fileNameValidationServiceProvider)
+            : base(storageService, logger, telemetryClient, fileNameValidationServiceProvider)
         {
             _referenceDataService = referenceDataService;
+            _fisReferenceDataService = fisReferenceDataService;
             _collectionsService = collectionsService;
         }
 
@@ -46,14 +52,23 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             return View("Index", await RefreshModelData(cancellationToken));
         }
 
+        [Route("getReportFile/{collectionName}/{fileName}/{jobId?}")]
+        public async Task<FileResult> GetCollectionReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
+        {
+            return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
+        }
+
         private async Task<ReferenceDataViewModel> RefreshModelData(CancellationToken cancellationToken)
         {
             var collection = _collectionsService.GetReferenceDataCollection(CollectionName);
 
-            var model = await _referenceDataService.GetSubmissionsPerCollectionAsync(
+            var model = await _fisReferenceDataService.GetProcessOutputsForCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
                 collection.CollectionName,
                 collection.ReportName,
+                FileNameExtensionConsts.CSV,
+                collection.FileNameFormat,
+                collection.FileFormat,
                 cancellationToken: cancellationToken);
 
             model.CollectionDisplayName = collection.DisplayName;

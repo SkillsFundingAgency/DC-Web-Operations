@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.PeriodEnd.Models;
+using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
 
 namespace ESFA.DC.Web.Operations.Interfaces.Reports
@@ -17,5 +18,13 @@ namespace ESFA.DC.Web.Operations.Interfaces.Reports
         Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<ReportDetails>> GetOperationsReportsDetails(int collectionYear, int collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IEnumerable<ReportDetails>> GetFundingClaimsReportsDetails(CancellationToken cancellationToken = default(CancellationToken));
+
+        string BuildFileName(
+            ReportType reportType,
+            int collectionYear,
+            string periodString,
+            string decodedFileName);
     }
 }

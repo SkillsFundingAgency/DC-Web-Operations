@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Features.Indexed;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
-using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models;
 using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Models.ReferenceData;
-using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
 
@@ -27,42 +25,34 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         private readonly ICollectionsService _collectionsService;
         private readonly IJobService _jobService;
-        private readonly IStorageService _storageService;
         private readonly IFileUploadJobMetaDataModelBuilderService _fileUploadJobMetaDataModelBuilderService;
         private readonly IFundingClaimsDatesService _fundingClaimsDatesService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICloudStorageService _cloudStorageService;
-        private readonly AzureStorageSection _azureStorageConfig;
         private readonly ILogger _logger;
-        private readonly IHttpClientService _httpClientService;
-
-        private readonly string _baseUrl;
+        private readonly IReferenceDataServiceClient _referenceDataServiceClient;
+        private readonly IFileService _fileService;
 
         public ReferenceDataService(
             ICollectionsService collectionsService,
             IJobService jobService,
-            IStorageService storageService,
             IFileUploadJobMetaDataModelBuilderService fileUploadJobMetaDataModelBuilderService,
             IFundingClaimsDatesService fundingClaimsDatesService,
             IDateTimeProvider dateTimeProvider,
             ICloudStorageService cloudStorageService,
-            ApiSettings apiSettings,
-            AzureStorageSection azureStorageConfig,
             ILogger logger,
-            IHttpClientService httpClientService)
+            IReferenceDataServiceClient referenceDataServiceClient,
+            IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;
-            _storageService = storageService;
             _fileUploadJobMetaDataModelBuilderService = fileUploadJobMetaDataModelBuilderService;
             _fundingClaimsDatesService = fundingClaimsDatesService;
             _dateTimeProvider = dateTimeProvider;
             _cloudStorageService = cloudStorageService;
-            _azureStorageConfig = azureStorageConfig;
             _logger = logger;
-            _httpClientService = httpClientService;
-
-            _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _referenceDataServiceClient = referenceDataServiceClient;
+            _fileService = operationsFileService[PersistenceStorageKeys.DctAzureStorage];
         }
 
         public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, CancellationToken cancellationToken)
@@ -72,66 +62,28 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 return;
             }
 
-            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
+            var fileName = $"{collectionName}/{Path.GetFileName(file.FileName)}";
+            await SubmitJobAndPutFileInStorage(period, collectionName, userName, email, file, fileName, cancellationToken);
+        }
 
-            try
+        public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, IFormFile file, string containingFolder, CancellationToken cancellationToken)
+        {
+            if (file == null
+                || string.IsNullOrWhiteSpace(containingFolder))
             {
-                var fileName = $"{collectionName}/{Path.GetFileName(file.FileName)}";
-
-                var job = new JobSubmission
-                {
-                    CollectionName = collection.CollectionTitle,
-                    FileName = fileName,
-                    FileSizeBytes = file.Length,
-                    SubmittedBy = userName,
-                    NotifyEmail = email,
-                    StorageReference = collection.StorageReference,
-                    Period = period,
-                    CollectionYear = collection.CollectionYear
-                };
-
-                // add to the queue
-                await _jobService.SubmitJob(job, cancellationToken);
-
-                await (await _storageService.GetAzureStorageReferenceService(_azureStorageConfig.ConnectionString, collection.StorageReference))
-                    .SaveAsync(fileName, file.OpenReadStream(), cancellationToken);
+                return;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error trying to submit Reference Data file with name : {file.Name}", ex);
-                throw;
-            }
+
+            var fileName = $"{containingFolder}/{collectionName}/{Path.GetFileName(file.FileName)}";
+            await SubmitJobAndPutFileInStorage(period, collectionName, userName, email, file, fileName, cancellationToken);
         }
 
         public async Task SubmitJobAsync(int period, string collectionName, string userName, string email, CancellationToken cancellationToken)
         {
-            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
+            var job = await CreateJobSubmissionAsync(period, collectionName, userName, email, "ValueNeededButNotUsed", 0, cancellationToken);
 
-            try
-            {
-                var fileName = "ValueNeededButNotUsed";
-                var fileSizeInBytes = 0;
-
-                var job = new JobSubmission
-                {
-                    CollectionName = collection.CollectionTitle,
-                    FileName = fileName,
-                    FileSizeBytes = fileSizeInBytes,
-                    SubmittedBy = userName,
-                    NotifyEmail = email,
-                    StorageReference = collection.StorageReference,
-                    Period = period,
-                    CollectionYear = collection.CollectionYear
-                };
-
-                // add to the queue
-                await _jobService.SubmitJob(job, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error trying to submit Reference Data job", ex);
-                throw;
-            }
+            // add to the queue
+            await _jobService.SubmitJob(job, cancellationToken);
         }
 
         public async Task<ReferenceDataViewModel> GetSubmissionsPerCollectionAsync(
@@ -144,7 +96,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             var model = new ReferenceDataViewModel();
 
             // get job info from db
-            var files = (await GetSubmittedFilesPerCollectionAsync(collectionName, cancellationToken))
+            var files = (await _referenceDataServiceClient.GetSubmittedFilesPerCollectionAsync(Api, collectionName, cancellationToken))
                 .OrderByDescending(f => f.SubmissionDate)
                 .Take(maxRows)
                 .ToList();
@@ -155,7 +107,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             await Task.WhenAll(
                 files
                     .Select(file => _fileUploadJobMetaDataModelBuilderService
-                        .PopulateFileUploadJobMetaDataModelForReferenceData(
+                        .PopulateFileUploadJobMetaDataModelForReferenceDataUpload(
                             file,
                             reportName,
                             SummaryFileName,
@@ -176,7 +128,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
             var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
             var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
-            var latestSuccessfulFcProviderDataJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataFundingClaimsProviderData);
             var latestSuccessfulPPSResourcesJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataProviderPostcodeSpecialistResources);
             var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
             var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
@@ -205,12 +156,6 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                     LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder,
                     Valid = true
                 },
-                FundingClaimsProviderData = new ReferenceDataIndexBase
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulFcProviderDataJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulFcProviderDataJob?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
                 ProviderPostcodeSpecialistResources = new ReferenceDataIndexBase
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulPPSResourcesJob?.DateTimeSubmittedUtc),
@@ -233,7 +178,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                 {
                     LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
                     LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = !(await IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
+                    Valid = !(await _referenceDataServiceClient.IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
                 },
                 FundingClaimsDates = new ReferenceDataIndexBase()
                 {
@@ -264,18 +209,33 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             return model;
         }
 
-        private async Task<bool> IsReferenceDataCollectionExpired(string collectionName, CancellationToken cancellationToken)
+        private async Task<JobSubmission> CreateJobSubmissionAsync(int period, string collectionName, string userName, string email, string fileName, long fileSizeInBytes, CancellationToken cancellationToken)
         {
-            var url = $"{_baseUrl}/api/returns-calendar/expired/{collectionName}";
+            var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
 
-            return await _httpClientService.GetAsync<bool>(url, cancellationToken);
+            return new JobSubmission
+            {
+                CollectionName = collection.CollectionTitle,
+                FileName = fileName,
+                FileSizeBytes = fileSizeInBytes,
+                SubmittedBy = userName,
+                NotifyEmail = email,
+                StorageReference = collection.StorageReference,
+                Period = period,
+                CollectionYear = collection.CollectionYear
+            };
         }
 
-        private async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmittedFilesPerCollectionAsync(string collectionName, CancellationToken cancellationToken)
+        private async Task SubmitJobAndPutFileInStorage(int period, string collectionName, string userName, string email, IFormFile file, string fileName, CancellationToken cancellationToken)
         {
-            var url = $"{_baseUrl}{Api}file-uploads/{collectionName}";
+            var job = await CreateJobSubmissionAsync(period, collectionName, userName, email, fileName, file.Length, cancellationToken);
 
-            return await _httpClientService.GetAsync<IEnumerable<FileUploadJobMetaDataModel>>(url, cancellationToken);
+            await _jobService.SubmitJob(job, cancellationToken);
+
+            using (Stream stream = await _fileService.OpenWriteStreamAsync(fileName, job.StorageReference, cancellationToken))
+            {
+                await file.CopyToAsync(stream);
+            }
         }
 
         private DateTime GetDate(DateTime? date)

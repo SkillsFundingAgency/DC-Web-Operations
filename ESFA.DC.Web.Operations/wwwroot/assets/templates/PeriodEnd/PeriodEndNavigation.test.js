@@ -5,7 +5,7 @@ const Handlebars = require('Handlebars');
 
 beforeAll(() => {
     Handlebars.registerHelper('removeSpaces', (item) => item);
-    Handlebars.registerHelper('isCurrent', () => false);
+    Handlebars.registerHelper('isPathItemCurrent', () => false);
     Handlebars.registerHelper('includeInNav', () => true);
 });
 
@@ -46,7 +46,7 @@ describe('ILR Navigation', () => {
     test('should add active attribute to current path item', () => {
         // Arrange
         const viewModel = { "paths": [{ "name": "Path", "pathId": 1, pathItems: [{ pathId: 1, name: 'Past item', ordinal: 1}, { pathId: 2, name: 'Current item', ordinal:2}] }] };
-        Handlebars.registerHelper('isCurrent', (ordinal) => { return ordinal === viewModel.paths[0].pathItems[1].ordinal ? true : false });
+        Handlebars.registerHelper('isPathItemCurrent', (ordinal) => { return ordinal === viewModel.paths[0].pathItems[1].ordinal ? true : false });
 
         // Act
         document.body.innerHTML = template(viewModel);

@@ -10,13 +10,13 @@
         public const string ILRProvidersReturningFirstTimePerDayReport = "ILRProvidersReturningFirstTimePerDayReport";
 
         public const string ConditionOfFundingRemovalReportName = "CoFRemovalRD-ValidationReport";
-        public const string FundingClaimsProviderDataReportName = "FundingClaimsProviderDataRD-ValidationReport";
         public const string ProviderPostcodeSpecialistResourcesReportName = "ProviderPostcodeSpecialistResourcesRD-ValidationReport";
         public const string CampusIdentifiersReportName = "CampusIdentifierRD-ValidationReport";
         public const string DevolvedContractsReportName = "DevolvedContractsRD-ValidationReport";
         public const string ValidationMessagesReportName = "ValidationMessagesRD-ValidationReport";
         public const string ShortTermFundingInitiativesReportName = "ShortTermFundingInitiativesRD-ValidationReport";
-        public const string FisReferenceDataReportName = "";
+        public const string FisReferenceData2021SummaryReportName = "FISReferenceData2021-SummaryReport";
+        public const string FisReferenceData2021ZipName = "FISReferenceData2021-SummaryReport";
 
         public const string DevolvedPostcodesFullNameReportName = "MCAGLA_FullName_RD-ValidationReport";
         public const string DevolvedPostcodesLocalAuthorityReportName = "MCAGLA_LocalAuthority_RD-ValidationReport";

@@ -37,9 +37,11 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
         {
             var reportDetails = await _reportsService.GetAllReportDetails(collectionYear, collectionPeriod);
             var operationsReportsDetails = await _reportsService.GetOperationsReportsDetails(collectionYear, collectionPeriod);
+            var fundingClaimsReportsDetails = await _reportsService.GetFundingClaimsReportsDetails();
 
             var reportDetailsList = reportDetails.ToList();
             reportDetailsList.AddRange(operationsReportsDetails);
+            reportDetailsList.AddRange(fundingClaimsReportsDetails);
             var reportUrlDetails = reportDetailsList.Where(x => !string.IsNullOrEmpty(x.Url));
 
             var availableReports = await _reportsService.GetAvailableReportsAsync(collectionYear);

@@ -22,6 +22,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
     [Route(AreaNames.ReferenceData + "/devolvedPostcodes")]
     public class DevolvedPostcodesController : BaseReferenceDataController
     {
+        private const string PostCodeContainer = "DevolvedPostcodes";
         private readonly IReferenceDataService _referenceDataService;
         private readonly IEnumerable<ICollection> _collections;
 
@@ -106,15 +107,15 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
                 return View();
             }
 
-            await _referenceDataService.SubmitJobAsync(Period, collectionForJob, User.Name(), User.Email(), file, cancellationToken);
+            await _referenceDataService.SubmitJobAsync(Period, collectionForJob, User.Name(), User.Email(), file, PostCodeContainer, cancellationToken);
 
             return RedirectToAction("Index");
         }
 
-        [Route("getReportFile/{collectionName}/{fileName}/{jobId?}")]
+        [Route("getCollectionReportFileAsync/{collectionName}/{fileName}/{jobId?}")]
         public async Task<FileResult> GetCollectionReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
         {
-            return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
+            return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken, "DevolvedPostcodes");
         }
     }
 }

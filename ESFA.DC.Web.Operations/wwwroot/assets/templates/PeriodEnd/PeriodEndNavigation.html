@@ -5,10 +5,10 @@
             {{#each this.pathItems}}
                 {{#if (includeInNav this ..)}}
                     <li class="compact-list-item">
-                        {{#if (isCurrent this.ordinal ../position)}}
+                        {{#if (isPathItemCurrent this.ordinal ../position)}}
                             <div class="triangle-right"></div>
                         {{/if}}
-                        <a class="govuk-link small-link {{#if (isCurrent this.ordinal ../position)}}active{{/if}}" href="#{{this.name}}">{{this.name}}</a>
+                        <a class="govuk-link small-link {{#if (isPathItemCurrent this.ordinal ../position)}}active{{/if}}" href="#{{this.name}}">{{this.name}}</a>
                     </li>
                 {{/if}}
             {{/each}}

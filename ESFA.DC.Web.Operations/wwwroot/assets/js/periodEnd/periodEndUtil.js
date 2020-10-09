@@ -55,19 +55,22 @@ export function getStatus(status) {
     return jobStatusConvertor(status);
 }
 
-export function isCurrent(pathItemOrdinal, pathPosition) {
+export function isPathItemCurrent(pathItemOrdinal, pathPosition) {
     return pathItemOrdinal === pathPosition - 1;
 }
 
-export function isPast(pathItemOrdinal, pathPosition) {
+export function isPathItemPast(pathItemOrdinal, pathPosition) {
     return pathItemOrdinal < pathPosition - 1;
 }
 
-export function isCompleted(pathItem, path) {
-    const jobItems = pathItem.pathItemJobs;
-    if ((pathItem.ordinal < path.position - 1 ||
-        (pathItem.ordinal + 1 === path.position && pathItem.ordinal + 1 === path.pathItems.length))
-        && (jobItems === undefined || jobItems === null || jobItems.length === 0 || canContinue(jobItems))) {
+export function isLastPathItem(pathItemOrdinal, pathItems) {
+    return pathItemOrdinal + 1 === pathItems.length
+}
+
+export function isAutoCompleted(pathItem, path) {
+    const hasPathItemJobs = Array.isArray(pathItem.pathItemJobs) && pathItem.pathItemJobs.length > 0;
+    if (!hasPathItemJobs
+        && (isPathItemPast(pathItem.ordinal, path.position) || (isPathItemCurrent(pathItem.ordinal, path.position) && isLastPathItem(pathItem.ordinal, path.pathItems)))) {
         return true;
     }
     return false;

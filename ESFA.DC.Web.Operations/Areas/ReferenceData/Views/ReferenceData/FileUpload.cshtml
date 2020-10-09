@@ -78,7 +78,7 @@
 
         (function() {
             const model = @Json.Serialize(Model);
-            const controller = new Controller();
+            const controller = new Controller('@Url.Action("GetCollectionReportFileAsync", "ReferenceData")');
             const hub = new Hub('@Model.HubName', controller.displayConnectionState);
 
             controller.registerHandlers(hub, '@Model.ReferenceDataCollectionName');

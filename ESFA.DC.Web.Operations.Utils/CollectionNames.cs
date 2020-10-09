@@ -12,8 +12,6 @@
 
         public const string ReferenceDataConditionsOfFundingRemoval = "CoFRemoval";
 
-        public const string ReferenceDataFundingClaimsProviderData = "FundingClaimsProviderData";
-
         public const string ReferenceDataProviderPostcodeSpecialistResources = "ProviderPostcodeSpecialistResources";
 
         public const string ReferenceDataValidationMessages2021 = "ILRValidationMessages2021";
@@ -47,6 +45,8 @@
         public const string ILRFileSubmissionsPerDayReport = @"OP-ILRFileSubmissionsPerDay-Report" + Constants.CollectionYearToken;
 
         public const string FrmReportCollectionName = @"FRM-Reports1920";
+
+        public const string FundingClaimsProviderSubmission1920Report = @"OP-FundingClaimsProviderSubmission1920-Report";
 
         public const string ValidationRuleDetailsReportCollectionName = @"OP-Validation-Report";
 

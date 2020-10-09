@@ -89,7 +89,6 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ConditionOfFundingRemovalHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedContractsHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<DevolvedPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
-            builder.RegisterType<FundingClaimsProviderDataHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<OnsPostcodesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ShortTermFundingInitiativesHub>().As<IReferenceDataHub>().SingleInstance();
@@ -117,7 +116,9 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationRulesService>().As<IValidationRulesService>().InstancePerLifetimeScope();
             builder.RegisterType<FundingClaimsDatesService>().As<IFundingClaimsDatesService>().InstancePerLifetimeScope();
+            builder.RegisterType<ReferenceDataProcessService>().As<IReferenceDataProcessService>().InstancePerLifetimeScope();
             builder.RegisterType<ReferenceDataService>().As<IReferenceDataService>().InstancePerLifetimeScope();
+            builder.RegisterType<ReferenceDataServiceClient>().As<IReferenceDataServiceClient>().InstancePerLifetimeScope();
             builder.RegisterType<NotificationsService>().As<INotificationsService>().InstancePerLifetimeScope();
 
             builder.RegisterType<StandardFileNameValidationService>().As<IFileNameValidationService>().InstancePerLifetimeScope();
@@ -157,11 +158,11 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<PeriodEndDataQualityReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ILRFileSubmissionsPerDayReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsProviderSubmission1920Report>().As<IReport>().InstancePerLifetimeScope();
 
             // Collections
             builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<CoFRemoval>().As<ICollection>().InstancePerLifetimeScope();
-            builder.RegisterType<FundingClaimsProviderData>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<OnsPostcodes>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ProviderPostcodeSpecialistResources>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationMessages2021>().As<ICollection>().InstancePerLifetimeScope();
