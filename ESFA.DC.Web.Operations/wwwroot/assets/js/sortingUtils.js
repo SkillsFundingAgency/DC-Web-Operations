@@ -3,8 +3,9 @@
 }
 
 export function sortByProviderName(a, b) {
-    const nameA = a.providerName.toUpperCase();
-    const nameB = b.providerName.toUpperCase();
+    const nameA = a.providerName ? a.providerName.toUpperCase() : '';
+    const nameB = b.providerName ? b.providerName.toUpperCase() : '';
+
     if (nameA < nameB) {
         return -1;
     }
