@@ -99,6 +99,7 @@ else
 @if (!Model.PeriodEndInProgress)
 {
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
 
     <script type="module">
         import ValidityPeriodController from "/assets/js/periodEnd/validityPeriodController.js";
@@ -113,7 +114,7 @@ else
                 var connection = hub.getConnection();
                 var periodNumber = document.getElementById('periodNumber');
                 var collectionYear = document.getElementById('collectionYear');
-                validityPeriodController.getData(connection, "GetValidityPeriodList", collectionYear.value, periodNumber.value);
+                validityPeriodController.getData(connection, "GetValidityStructure", collectionYear.value, periodNumber.value);
             };
 
             hub.startHub(window.change);

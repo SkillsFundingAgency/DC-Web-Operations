@@ -28,5 +28,10 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
         {
             return await _httpClientService.PutDataAsync($"{_baseUrl}/api/validityperiod/updatevalidityperiod/{collectionYear}/{period}", validityPeriods, cancellationToken);
         }
+
+        public async Task<string> GetValidityStructure(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/validityperiod/allvaliditiesperperiod/{collectionYear}/{period}", cancellationToken);
+        }
     }
 }

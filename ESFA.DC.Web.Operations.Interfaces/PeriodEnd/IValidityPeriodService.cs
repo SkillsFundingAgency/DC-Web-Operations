@@ -8,5 +8,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
         Task<string> GetValidityPeriodList(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> UpdateValidityPeriod(int collectionYear, int period, object validityPeriods, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<string> GetValidityStructure(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

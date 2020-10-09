@@ -38,7 +38,8 @@ export const Templates = {
     PeriodEnd: 'PeriodEnd/PeriodEnd.html',
     PeriodEndNavigation: 'PeriodEnd/PeriodEndNavigation.html',
     FisFilesList: 'ReferenceData/FisFilesListTemplate.html',
-    ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html'
+    ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html',
+    ValidityPeriod : 'PeriodEnd/ValidityPeriods.html'
 };
 
 export const Partials = {

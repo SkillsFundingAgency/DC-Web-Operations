@@ -12,7 +12,7 @@
 
     registerHandlers(hub) {
         hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
-        hub.registerMessageHandler("GetValidityPeriodList", (data) => this.updatePage(data));
+        hub.registerMessageHandler("GetValidityStructure", (data) => this.updatePage(data));
         hub.registerMessageHandler("UpdateValidityPeriod", (data) => this.updatePage(data));
     }
 
@@ -21,16 +21,31 @@
         stateLabel.textContent = `Status: ${state}`;
     }
 
-    drawGrid() {
 
-        var sb = [];
-        for (var i = 0; i < this._data.length; i++) {
-            var item = this._data[i];
-            var enabled = item.enabled ? true : false;
-            var checked = enabled ? 'checked="checked"' : '';
 
-            sb.push(`<tr class="govuk-table__row">
-                         <td class="govuk-table__cell">${item.collection}</td>
+    drawPaths(pathId) {
+        let path = null;
+        
+        for (let i = 0; i < this._data.length; i++) {
+            if (this._data[i].pathId === pathId) {
+                path = this._data[i];
+                break;
+            }
+        }
+
+        const name = path.name;
+        const enabled = path.isValidForPeriod ? true : false;
+        const checked = enabled ? 'checked="checked"' : '';
+        const type = path.entityType;
+        const id = pathId;
+        const pathItems = path.pathItems;
+
+        const pathHTML = this.generateHtml(name, enabled, checked, type, id);
+    }
+
+    generateHtml(itemName, enabledFlag, checkedAttribute, type, id) {
+        return `<tr class="govuk-table__row">
+                         <td class="govuk-table__cell">${itemName}</td>
                          <td class="govuk-table__cell">
                             <div class="govuk-checkboxes">
                                 <div class="flex">
@@ -39,21 +54,16 @@
                                                id="chkEnabled"
                                                name="chkEnabled"
                                                type="checkbox"
-                                               ${checked}
-                                               value="${enabled}" 
-                                               onchange="window.checkedChanged(${i}, this);"/>
+                                               ${checkedAttribute}
+                                               value="${enabledFlag}" 
+                                               onchange="window.checkedChanged(${type}, ${id}, this);"/>
                                         <label class="govuk-label govuk-checkboxes__label">
                                         </label>
                                     </div>
                                 </div>
                             </div>
                        </td>
-                  </tr>`);
-        }
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
+                  </tr>`;
     }
 
     getData(connection, action, collectionYear, period) {
