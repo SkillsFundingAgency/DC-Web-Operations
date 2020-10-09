@@ -34,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             var model = new ManageAssignmentsViewModel();
 
             var provider = await _manageAssignmentsService.GetProviderAsync(ukprn, cancellationToken);
-            var providerAssignments = await _manageAssignmentsService.GetProviderAssignmentsAsync(ukprn, cancellationToken);
+            var providerAssignments = await _manageAssignmentsService.GetActiveProviderAssignmentsAsync(ukprn, cancellationToken);
             var availableCollections = (await _manageAssignmentsService.GetAvailableCollectionsAsync(cancellationToken)).ExceptBy(providerAssignments, p => p.CollectionId);
 
             model.Ukprn = ukprn;
