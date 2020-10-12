@@ -11,6 +11,7 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Extensions;
 using ESFA.DC.Web.Operations.Settings.Models;
+using MoreLinq.Extensions;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
 
 namespace ESFA.DC.Web.Operations.Services.Provider
@@ -82,30 +83,26 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             const int maximumVarianceInMonths = 2;
 
             var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_baseUrl}/api/org/assignments/{ukprn}", cancellationToken);
-
             var dateTimeNow = _dateTimeProvider.GetNowUtc();
+            var isOpenCollectionRequests = new Dictionary<OrganisationCollection, Task<bool>>();
 
-            var collectionAssignments = new List<CollectionAssignment>();
+            response.ForEach(assignment => isOpenCollectionRequests.Add(
+                assignment,
+                _httpClientService.GetAsync<bool>($"{_baseUrl}/api/collections/isOpenWithVariance/{assignment.CollectionId}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken)));
 
-            foreach (var assignment in response)
-            {
-                var collectionIsOpen = await _httpClientService.GetAsync<bool>($"{_baseUrl}/api/collections/isOpenWithVariance/{assignment.CollectionId}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken);
+            await Task.WhenAll(isOpenCollectionRequests.Values);
 
-                if (collectionIsOpen)
+            return (from request in isOpenCollectionRequests
+                where request.Value.Result
+                select new CollectionAssignment
                 {
-                    collectionAssignments.Add(new CollectionAssignment
-                    {
-                        CollectionId = assignment.CollectionId,
-                        Name = assignment.CollectionName,
-                        StartDate = _dateTimeProvider.ConvertUtcToUk(assignment.StartDate),
-                        EndDate = assignment.EndDate.HasValue ? _dateTimeProvider.ConvertUtcToUk(assignment.EndDate.Value) : (DateTime?)null,
-                        DisplayOrder = SetDisplayOrder(assignment.CollectionType, assignment.CollectionName),
-                        ToBeDeleted = false
-                    });
-                }
-            }
-
-            return collectionAssignments;
+                    CollectionId = request.Key.CollectionId,
+                    Name = request.Key.CollectionName,
+                    StartDate = _dateTimeProvider.ConvertUtcToUk(request.Key.StartDate),
+                    EndDate = request.Key.EndDate.HasValue ? _dateTimeProvider.ConvertUtcToUk(request.Key.EndDate.Value) : (DateTime?)null,
+                    DisplayOrder = SetDisplayOrder(request.Key.CollectionType, request.Key.CollectionName),
+                    ToBeDeleted = false
+                }).ToList();
         }
 
         public int SetDisplayOrder(CollectionType collectionType, string collectionName)
