@@ -14,7 +14,8 @@
     "@testing-library/jest-dom": "5.11.4"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "precompileTemplates": "handlebars wwwroot/assets/templates -f wwwroot/assets/templates/templates.precompiled.js"
   },
   "jest": {
     "moduleDirectories": [
