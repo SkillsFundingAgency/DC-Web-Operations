@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,6 +67,38 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                         Name = assignment.CollectionName,
                         StartDate = startDate,
                         EndDate = endDate,
+                        DisplayOrder = SetDisplayOrder(assignment.CollectionType, assignment.CollectionName),
+                        ToBeDeleted = false
+                    });
+                }
+            }
+
+            return collectionAssignments;
+        }
+
+        public async Task<IEnumerable<CollectionAssignment>> GetActiveProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken)
+        {
+            const int minimumVarianceInMonths = -2;
+            const int maximumVarianceInMonths = 2;
+
+            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_baseUrl}/api/org/assignments/{ukprn}", cancellationToken);
+
+            var dateTimeNow = _dateTimeProvider.GetNowUtc();
+
+            var collectionAssignments = new List<CollectionAssignment>();
+
+            foreach (var assignment in response)
+            {
+                var collectionIsOpen = await _httpClientService.GetAsync<bool>($"{_baseUrl}/api/collections/isOpenWithVariance/{assignment.CollectionId}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken);
+
+                if (collectionIsOpen)
+                {
+                    collectionAssignments.Add(new CollectionAssignment
+                    {
+                        CollectionId = assignment.CollectionId,
+                        Name = assignment.CollectionName,
+                        StartDate = _dateTimeProvider.ConvertUtcToUk(assignment.StartDate),
+                        EndDate = assignment.EndDate.HasValue ? _dateTimeProvider.ConvertUtcToUk(assignment.EndDate.Value) : (DateTime?)null,
                         DisplayOrder = SetDisplayOrder(assignment.CollectionType, assignment.CollectionName),
                         ToBeDeleted = false
                     });
