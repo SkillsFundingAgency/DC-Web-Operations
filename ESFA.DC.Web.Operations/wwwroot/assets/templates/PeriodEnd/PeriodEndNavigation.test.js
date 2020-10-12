@@ -11,7 +11,7 @@ beforeAll(() => {
 
 describe('ILR Navigation', () => {
 
-    const templateHtml = fs.readFileSync(path.resolve(__dirname, `PeriodEndNavigation.html`), 'utf8');
+    const templateHtml = fs.readFileSync(path.resolve(__dirname, `PeriodEndNavigation.handlebars`), 'utf8');
     const template = Handlebars.compile(templateHtml.toString());
 
     test('should render each path as link', () => {
