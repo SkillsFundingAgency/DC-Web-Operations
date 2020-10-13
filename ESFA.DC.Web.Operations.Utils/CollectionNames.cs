@@ -53,5 +53,11 @@
         public const string ShortTermFundingInitiatives = "ShortTermFundingInitiatives";
 
         public const string FisReferenceData2021 = "FISReferenceData2021";
+
+        public const string NcsOutcomeRates = "NcsOutcomeRates";
+
+        public const string FundingClaimsMetaData = "FundingClaimsMetaData";
+
+        public const string DevolvedPostcodes = "DevolvedPostcodes";
     }
 }
