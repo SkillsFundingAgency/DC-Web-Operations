@@ -11,7 +11,7 @@ beforeAll(() => {
 
 describe('proceed button', () => {
 
-    const templateHtml = fs.readFileSync(path.resolve(__dirname, `proceedButton.html`), 'utf8');
+    const templateHtml = fs.readFileSync(path.resolve(__dirname, `proceedButton.handlebars`), 'utf8');
     const viewModel = { pathItem: { "pathId": 0, "pathItemId": 4 }, yearPeriod: { "year": 1920, "period": 1 } };
 
     test('should be disabled when can continue is false', () => {
