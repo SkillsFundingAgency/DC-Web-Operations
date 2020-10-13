@@ -55,24 +55,5 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
                 throw;
             }
         }
-
-        public async Task UpdateValidityPeriod(int collectionYear, int period, object validityPeriods)
-        {
-            try
-            {
-                await ReceiveMessage();
-
-                var updatedDataCount = await _validityPeriodService.UpdateValidityPeriod(collectionYear, period, validityPeriods);
-
-                var validityPeriodData = await _validityPeriodService.GetValidityPeriodList(collectionYear, period);
-
-                await SendMessage(validityPeriodData);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                throw;
-            }
-        }
     }
 }

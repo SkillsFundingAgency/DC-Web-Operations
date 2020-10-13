@@ -1,3 +1,63 @@
 ﻿<ol class="app-task-list">
+    {{#each viewModel}}
+    <li>
+        <input type="hidden" class="hidden" 
+               id="path-{{this.pathId}}"
+               name="path-{{this.pathId}}"
+               value="{{this.pathId}}" />
 
+        <input type="hidden" class="hidden" 
+               id="type-{{this.pathId}}" 
+               name="type-{{this.pathId}}" 
+               value="{{this.entityType}}" />
+        
+        <div class="checkbox-container">
+            <div class="checkbox-text">{{this.name}}</div>
+            <div class="govuk-checkboxes">
+                <div class="flex">
+                    <div class="govuk-checkboxes__item">
+                        <input type="checkbox" class="govuk-checkboxes__input"
+                               name="ckpath-{{this.pathId}}"
+                               id="ckpath-{{this.pathId}}" 
+                               {{#if this.isValidForPeriod}} checked{{/if}} />
+                        <label class="govuk-label govuk-checkboxes__label">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="app-task-list__items">
+            {{#each this.pathItems}}
+            <li>
+                <input type="hidden" class="hidden" 
+                       id="pathitem-{{this.pathId}}-{{this.pathItemId}}" 
+                       name="pathitem-{{this.pathId}}-{{this.pathItemId}}" 
+                       value="{{this.pathItemId}}" />
+
+                <input type="hidden" class="hidden" 
+                       id="type-{{this.pathId}}-{{this.pathItemId}}" 
+                       name="type-{{this.pathId}}-{{this.pathItemId}}"
+                       value="{{this.entityType}}" />
+                
+                <div class="checkbox-container">
+                    <div class="checkbox-text">{{this.name}}</div>
+                    <div class="govuk-checkboxes">
+                        <div class="flex">
+                            <div class="govuk-checkboxes__item">
+                                <input type="checkbox" class="govuk-checkboxes__input"
+                                       name="ckpathItem-{{this.pathId}}-{{this.pathItemId}}"
+                                       id="ckpathItem-{{this.pathId}}-{{this.pathItemId}}" 
+                                       {{#if this.isValidForPeriod}} checked{{/if}} />
+                                <label class="govuk-label govuk-checkboxes__label">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </li>
+    {{/each}}
 </ol>

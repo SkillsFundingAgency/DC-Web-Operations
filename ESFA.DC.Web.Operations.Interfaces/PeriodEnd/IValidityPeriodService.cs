@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.Web.Operations.Models.PeriodEnd;
 
 namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
@@ -7,7 +9,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
     {
         Task<string> GetValidityPeriodList(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<string> UpdateValidityPeriod(int collectionYear, int period, object validityPeriods, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> UpdateValidityPeriod(int collectionYear, int period, IEnumerable<ValidityPeriod> validityPeriods, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetValidityStructure(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken));
     }

@@ -842,3 +842,14 @@ progress::-moz-progress-bar { background: white; }
     margin-top: -45px;
     color: govuk-colour("grey-2")
 }
+
+.checkbox-container {
+    margin-bottom: 20px;
+}
+
+.checkbox-text {
+    float: left;
+    width: 400px;
+    height: govuk-spacing(7);
+    line-height: govuk-spacing(7);
+}

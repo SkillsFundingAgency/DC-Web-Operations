@@ -21,58 +21,48 @@
 
 @if (!Model.PeriodEndInProgress)
 {
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl heading-bottom-margin">Validity Periods</h1>
-            <br />
-            <br />
-            <div id="typeFilter" class="govuk-checkboxes">
-                <div id="minusMargin" class="govuk-form-group margin-right">
-                    <label class="govuk-label">Collection year</label>
-                    <select class="govuk-select" id="collectionYear" name="collectionYear" onchange="window.change();">
-                        @foreach (var year in Model.AllYears)
-                        {
-                            <option value="@year" @if (Model.Year == year) { @: selected
-                                    }>
-                                @year
-                            </option>
-                        }
-                    </select>
-                </div>
+    @using(Html.BeginForm("UpdateValidityPeriod", "ValidityPeriod"))
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-xl heading-bottom-margin">Validity Periods</h1>
+                <br />
+                <br />
+                <div id="typeFilter" class="govuk-checkboxes">
+                    <div id="minusMargin" class="govuk-form-group margin-right">
+                        <label class="govuk-label">Collection year</label>
+                        <select class="govuk-select" id="collectionYear" name="collectionYear">
+                            @foreach (var year in Model.AllYears)
+                            {
+                                <option value="@year" @if (Model.Year == year) { @: selected
+                                        }>
+                                    @year
+                                </option>
+                            }
+                        </select>
+                    </div>
 
-                <div id="minusMargin" class="govuk-form-group margin-right">
-                    <label class="govuk-label">Period number</label>
-                    <select class="govuk-select" id="periodNumber" name="periodNumber" onchange="window.change();">
-                        @for (var i = 1; i <= 14; i++)
-                        {
-                            <option value="@i"
-                                    @if (Model.Period == i) { @: selected
-                                    }>
-                                @i
-                            </option>
-                        }
-                    </select>
+                    <div id="minusMargin" class="govuk-form-group margin-right">
+                        <label class="govuk-label">Period number</label>
+                        <select class="govuk-select" id="periodNumber" name="periodNumber">
+                            @for (var i = 1; i <= 14; i++)
+                            {
+                                <option value="@i"
+                                        @if (Model.Period == i) { @: selected
+                                        }>
+                                    @i
+                                </option>
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <div id="structureContainer"></div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <table class="govuk-table" id="tblData">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col">Collection name</th>
-                        <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Enabled</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body" id="dataContent"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <a href="#" class="govuk-button" onclick="saveList();return false;" id="aSaveList">Save</a>
+        <button type="submit" class="govuk-button" id="saveChanges">Save</button>
+    }
 }
 else
 {
@@ -103,32 +93,9 @@ else
 
     <script type="module">
         import ValidityPeriodController from "/assets/js/periodEnd/validityPeriodController.js";
-        import Hub from '/assets/js/hubs/hub.js';
 
         (function () {
             const validityPeriodController = new ValidityPeriodController();
-            const hub = new Hub('validityPeriodHub', validityPeriodController.displayConnectionState);
-            validityPeriodController.registerHandlers(hub);
-
-            window.change = function () {
-                var connection = hub.getConnection();
-                var periodNumber = document.getElementById('periodNumber');
-                var collectionYear = document.getElementById('collectionYear');
-                validityPeriodController.getData(connection, "GetValidityStructure", collectionYear.value, periodNumber.value);
-            };
-
-            hub.startHub(window.change);
-
-            window.saveList = function () {
-                var connection = hub.getConnection();
-                var periodNumber = document.getElementById('periodNumber');
-                var collectionYear = document.getElementById('collectionYear');
-                validityPeriodController.saveList(connection, "UpdateValidityPeriod", collectionYear.value, periodNumber.value);
-            };
-
-            window.checkedChanged = function (idx, checkBox) {
-                validityPeriodController._data[idx].enabled = checkBox.checked;
-            };
         })();
 
     </script>
