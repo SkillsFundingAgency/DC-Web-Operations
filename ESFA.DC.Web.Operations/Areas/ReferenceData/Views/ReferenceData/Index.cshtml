@@ -4,6 +4,17 @@
 
 @{
     ViewData["Title"] = "Index";
+    var campusIdentifiersStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.ReferenceDataCampusIdentifiers).Value;
+    var conditionOfFundingRemovalStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.ReferenceDataConditionsOfFundingRemoval).Value;
+    var fundingClaimsMetaDataStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.FundingClaimsMetaData).Value;
+    var shortTermFundingInitiativesStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.ShortTermFundingInitiatives).Value;
+    var devolvedContractsStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.DevolvedContracts).Value;
+    var providerPostcodeSpecialistResourcesStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.ReferenceDataProviderPostcodeSpecialistResources).Value;
+    var onsPostcodesStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.OnsPostcodes).Value;
+    var validationMessagesStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.ReferenceDataValidationMessages2021).Value;
+    var ncsOutcomeRatesStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.NcsOutcomeRates).Value;
+    var devolvedPostcodesStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.DevolvedPostcodes).Value;
+    var fisReferenceDataStats = @Model.CollectionJobStats.Single(c => c.Key == CollectionNames.FisReferenceData2021).Value;
 }
 
 <div class="govuk-width-container">
@@ -16,8 +27,6 @@
             <li class="govuk-breadcrumbs__list-item" aria-current="page">Reference Data</li>
         </ol>
     </div>
-
-
 
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
@@ -35,8 +44,8 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.ReferenceDataCampusIdentifiers" class="govuk-link">Campus Identifiers</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.CampusIdentifiers.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.CampusIdentifiers.LastUpdatedByWho</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@campusIdentifiersStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @campusIdentifiersStats.LastUpdatedByWho</p>
                             </li>
                         </ul>
                     </div>
@@ -46,21 +55,20 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.ReferenceDataConditionsOfFundingRemoval" class="govuk-link">Conditions of Funding Removal</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ConditionOfFundingRemoval.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ConditionOfFundingRemoval.LastUpdatedByWho</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@conditionOfFundingRemovalStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @conditionOfFundingRemovalStats.LastUpdatedByWho</p>
                             </li>
                         </ul>
                     </div>
-
 
                     <div class="govuk-grid-column-one-third">
                         <ul class="govuk-list">
                             <li>
                                 <h3 class="home-services__heading">@Html.ActionLink("Funding Claims dates", "Index", "FundingClaimsDates", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.FundingClaimsDates.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.FundingClaimsDates.LastUpdatedByWho</p>
-                                <br/>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@fundingClaimsMetaDataStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @fundingClaimsMetaDataStats.LastUpdatedByWho</p>
+                                <br />
                             </li>
                         </ul>
                     </div>
@@ -70,8 +78,8 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.ShortTermFundingInitiatives" class="govuk-link">Short Term Funding Initiatives</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ShortTermFundingInitiatives.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ShortTermFundingInitiatives.LastUpdatedByWho</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@shortTermFundingInitiativesStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @shortTermFundingInitiativesStats.LastUpdatedByWho</p>
                             </li>
                         </ul>
                     </div>
@@ -81,9 +89,9 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.DevolvedContracts" class="govuk-link">Devolved Contracts</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.DevolvedContracts.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.DevolvedContracts.LastUpdatedByWho</p>
-                                <br/>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@devolvedContractsStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @devolvedContractsStats.LastUpdatedByWho</p>
+                                <br />
                             </li>
                         </ul>
                     </div>
@@ -93,9 +101,9 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.ReferenceDataProviderPostcodeSpecialistResources" class="govuk-link">Provider Postcode Specialist Resources</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ProviderPostcodeSpecialistResources.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ProviderPostcodeSpecialistResources.LastUpdatedByWho</p>
-                                <br/>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@providerPostcodeSpecialistResourcesStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @providerPostcodeSpecialistResourcesStats.LastUpdatedByWho</p>
+                                <br />
                             </li>
                         </ul>
                     </div>
@@ -105,26 +113,38 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.OnsPostcodes" class="govuk-link">ONS postcodes</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.OnsPostcodes.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.OnsPostcodes.LastUpdatedByWho</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@onsPostcodesStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @onsPostcodesStats.LastUpdatedByWho</p>
                                 <br />
                             </li>
                         </ul>
                     </div>
 
-                    @if (Model.ValidationMessages2021.Valid)
+                    @if (validationMessagesStats.Valid)
                     {
                         <div class="govuk-grid-column-one-third">
                             <ul class="govuk-list">
                                 <li>
                                     <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.ReferenceDataValidationMessages2021" class="govuk-link">Validation Messages 20-21</a></h3>
                                     <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.ValidationMessages2021.LastUpdatedDateTime.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) at @Model.ValidationMessages2021.LastUpdatedDateTime.ToString("hh:mm tt", CultureInfo.InvariantCulture).ToLower()</p>
-                                    <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.ValidationMessages2021.LastUpdatedByWho</p>
+                                    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@validationMessagesStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                    <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @validationMessagesStats.LastUpdatedByWho</p>
                                 </li>
                             </ul>
                         </div>
                     }
+
+                    <div class="govuk-grid-column-one-third">
+                        <ul class="govuk-list">
+                            <li>
+                                <h3 class="home-services__heading"><a asp-action="Index" asp-controller="ReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.NcsOutcomeRates" class="govuk-link">NCS Outcome Rates</a></h3>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@ncsOutcomeRatesStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @ncsOutcomeRatesStats.LastUpdatedByWho</p>
+                                <br />
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </main>
         </div>
@@ -145,8 +165,8 @@
                             <li>
                                 <h3 class="home-services__heading">@Html.ActionLink("Devolved postcodes", "Index", "DevolvedPostcodes", new { area = AreaNames.ReferenceData }, new { @class = "govuk-link" })</h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.DevolvedPostcodes.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.DevolvedPostcodes.LastUpdatedByWho</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@devolvedPostcodesStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @devolvedPostcodesStats.LastUpdatedByWho</p>
                                 <br />
                             </li>
                         </ul>
@@ -157,8 +177,8 @@
                             <li>
                                 <h3 class="home-services__heading"><a asp-action="Index" asp-controller="FisReferenceData" asp-area="ReferenceData" asp-route-collectionName="@CollectionNames.FisReferenceData2021" class="govuk-link">FIS reference data 2021</a></h3>
                                 <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-1">Last update</p>
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@Model.FisReferenceData2021.LastUpdatedDateTimeFormattedDisplay</p>
-                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @Model.FisReferenceData2021.LastUpdatedByWho</p>
+                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@fisReferenceDataStats.LastUpdatedDateTimeFormattedDisplay</p>
+                                <p class="govuk-body govuk-!-font-weight-regular govuk-!-margin-bottom-7">by @fisReferenceDataStats.LastUpdatedByWho</p>
                                 <br />
                             </li>
                         </ul>

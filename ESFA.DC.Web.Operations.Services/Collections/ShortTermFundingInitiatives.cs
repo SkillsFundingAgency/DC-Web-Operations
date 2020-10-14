@@ -3,9 +3,9 @@ using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Collections
 {
-    public class ShortTermFundingInitiatives : ICollection
+    public class ShortTermFundingInitiatives : BaseCollection, ICollection
     {
-        public string CollectionName => CollectionNames.ShortTermFundingInitiatives;
+        public override string CollectionName => CollectionNames.ShortTermFundingInitiatives;
 
         public string ReportName => ReportTypes.ShortTermFundingInitiativesReportName;
 

@@ -16,5 +16,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         public string FileFormat => FileNameExtensionConsts.CSV;
 
         public string FileNameFormat => "MCAGLA_LocalAuthority_RD-YYYYMMDDHHMM.csv";
+
+        public override bool IsDisplayedOnReferenceDataSummary => false;
     }
 }

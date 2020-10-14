@@ -6,7 +6,7 @@ namespace ESFA.DC.Web.Operations.Interfaces
 {
     public interface IFileNameValidationService
     {
-        string[] CollectionNames { get; }
+        string CollectionName { get; }
 
         Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, string fileNameFormat, long? fileSize, CancellationToken cancellationToken);
     }
