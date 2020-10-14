@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Extensions;
 using ESFA.DC.Web.Operations.Settings.Models;
+using MoreLinq.Extensions;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
 
 namespace ESFA.DC.Web.Operations.Services.Provider
@@ -73,6 +75,34 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             }
 
             return collectionAssignments;
+        }
+
+        public async Task<IEnumerable<CollectionAssignment>> GetActiveProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken)
+        {
+            const int minimumVarianceInMonths = -2;
+            const int maximumVarianceInMonths = 2;
+
+            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_baseUrl}/api/org/assignments/{ukprn}", cancellationToken);
+            var dateTimeNow = _dateTimeProvider.GetNowUtc();
+            var isOpenCollectionRequests = new Dictionary<OrganisationCollection, Task<bool>>();
+
+            response.ForEach(assignment => isOpenCollectionRequests.Add(
+                assignment,
+                _httpClientService.GetAsync<bool>($"{_baseUrl}/api/collections/isOpenWithVariance/{assignment.CollectionId}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken)));
+
+            await Task.WhenAll(isOpenCollectionRequests.Values);
+
+            return (from request in isOpenCollectionRequests
+                where request.Value.Result
+                select new CollectionAssignment
+                {
+                    CollectionId = request.Key.CollectionId,
+                    Name = request.Key.CollectionName,
+                    StartDate = _dateTimeProvider.ConvertUtcToUk(request.Key.StartDate),
+                    EndDate = request.Key.EndDate.HasValue ? _dateTimeProvider.ConvertUtcToUk(request.Key.EndDate.Value) : (DateTime?)null,
+                    DisplayOrder = SetDisplayOrder(request.Key.CollectionType, request.Key.CollectionName),
+                    ToBeDeleted = false
+                }).ToList();
         }
 
         public int SetDisplayOrder(CollectionType collectionType, string collectionName)

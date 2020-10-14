@@ -160,6 +160,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ILRProvidersReturningFirstTimePerDayReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ILRFileSubmissionsPerDayReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<FundingClaimsProviderSubmission1920Report>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<FundingClaimsDataExtract1920Report>().As<IReport>().InstancePerLifetimeScope();
 
             // Collections
             builder.RegisterType<CampusIdentifiers>().As<ICollection>().InstancePerLifetimeScope();

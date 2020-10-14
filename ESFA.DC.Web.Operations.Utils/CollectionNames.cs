@@ -48,6 +48,8 @@
 
         public const string FundingClaimsProviderSubmission1920Report = @"OP-FundingClaimsProviderSubmission1920-Report";
 
+        public const string FundingClaimsDataExtract1920Report = @"OP-FundingClaimsDataExtract1920-Report";
+
         public const string ValidationRuleDetailsReportCollectionName = @"OP-Validation-Report";
 
         public const string ShortTermFundingInitiatives = "ShortTermFundingInitiatives";
