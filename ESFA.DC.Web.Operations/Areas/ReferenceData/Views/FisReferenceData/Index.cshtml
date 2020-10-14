@@ -30,7 +30,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="FisReferenceData2021" asp-action="Post" method="post" enctype="multipart/form-data">
+        <form asp-controller="FisReferenceData" asp-action="Post" method="post" enctype="multipart/form-data">
             <input asp-for="ReferenceDataCollectionName" type="hidden" />
             <input asp-for="HubName" type="hidden" />
             <input asp-for="CollectionDisplayName" type="hidden" />
@@ -59,12 +59,13 @@
     <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
 
     <script type="module">
-        import Controller from '/assets/js/referenceData/fis2021/fis2021Controller.js';
+        import Controller from '/assets/js/referenceData/fisController.js';
         import Hub from '/assets/js/hubs/hub.js';
 
         (function() {
             const model = @Json.Serialize(Model);
-            const controller = new Controller();
+            const controller = new Controller('@Url.Action("GetCollectionReportFileAsync", "fisReferenceData")');
+
             const hub = new Hub('@Model.HubName', controller.displayConnectionState);
 
             controller.registerHandlers(hub, '@Model.ReferenceDataCollectionName');

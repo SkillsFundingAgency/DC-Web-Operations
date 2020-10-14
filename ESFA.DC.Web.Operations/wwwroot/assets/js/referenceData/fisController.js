@@ -1,10 +1,11 @@
 ﻿import { updateSync } from '/assets/js/baseController.js';
 import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 
-class fis2021Controller {
+class fisController {
 
-    constructor() {
+    constructor(downloadController) {
         this._slowTimer = null;
+        this._downloadController = downloadController;
     }
 
     registerHandlers(hub, type) {
@@ -44,8 +45,8 @@ class fis2021Controller {
         this.sortByDate(stateModel);
 
         var compiledTemplate = getHandleBarsTemplate(Templates.FisFilesList);
-        document.getElementById("fisFilesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName });
+        document.getElementById("fisFilesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName, downloadController: this._downloadController });
     }
 }
 
-export default fis2021Controller;
+export default fisController;
