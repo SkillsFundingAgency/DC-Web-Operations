@@ -61,14 +61,9 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateValidityPeriod([FromForm] string collectionYear, [FromForm] string period, [FromForm] List<ValidityPeriod> items)
+        public async Task<IActionResult> UpdateValidityPeriod([FromForm] int collectionYear, [FromForm] int period, [FromForm] List<ValidityPeriod> items)
         {
-            var yearNumber = Convert.ToInt32(collectionYear);
-            var periodNumber = Convert.ToInt32(period);
-
-            //var data = MapFormDataToModel(items);
-
-            await _validityPeriodService.UpdateValidityPeriods(yearNumber, periodNumber, items);
+            await _validityPeriodService.UpdateValidityPeriods(collectionYear, period, items);
 
             return RedirectToAction("Index");
         }
