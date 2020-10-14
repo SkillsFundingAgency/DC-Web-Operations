@@ -12,14 +12,12 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobQueued")]
     public class JobQueuedController : BaseController
     {
-        IJobQueuedService _jobQueuedService;
-        ILogger _logger;
+        private readonly IJobQueuedService _jobQueuedService;
 
         public JobQueuedController(IJobQueuedService jobQueuedService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _jobQueuedService = jobQueuedService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

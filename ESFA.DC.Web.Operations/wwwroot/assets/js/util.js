@@ -86,6 +86,13 @@ export function setControlEnabledState(enabledState, controlId) {
     }
 }
 
+export function setControlVisiblity(isVisible, controlId) {
+    const control = document.getElementById(controlId);
+    if (control) {
+        control.style.visibility = isVisible ? 'visible' : 'hidden';
+    }
+}
+
 export function msToTime(duration) {
     var seconds = Math.floor((duration / 1000) % 60),
         minutes = Math.floor((duration / (1000 * 60)) % 60),
@@ -141,3 +148,18 @@ export function displayConnectionState(state) {
 export function $on(target, type, callback, capture) {
     target.addEventListener(type, callback, !!capture);
 }
+
+export function $onAll(targets, type, callback, capture) {
+    for (const target of targets) {
+        $on(target, type, callback, capture);
+    }
+}
+
+export function parseToObject(jsonToParse) {
+    if (typeof jsonToParse !== 'object') {
+        return JSON.parse(jsonToParse);
+    }
+    return jsonToParse;
+}
+
+

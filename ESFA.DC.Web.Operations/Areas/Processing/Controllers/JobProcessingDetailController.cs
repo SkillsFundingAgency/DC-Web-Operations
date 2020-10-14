@@ -23,8 +23,7 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
         private const string JobProcessingTypeCurrentPeriod = "CurrentPeriod";
         private const string JobProcessingTypeLastHour = "LastHour";
         private const string JobProcessingTypeLastFiveMins = "LastFiveMins";
-        IJobProcessingDetailService _jobProcessingDetailService;
-        ILogger _logger;
+        private readonly IJobProcessingDetailService _jobProcessingDetailService;
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public JobProcessingDetailController(
@@ -35,7 +34,6 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
             : base(logger, telemetryClient)
         {
             _jobProcessingDetailService = jobProcessingDetailService;
-            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
         }
 

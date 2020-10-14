@@ -12,14 +12,12 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
     [Route(AreaNames.Processing + "/jobConcern")]
     public class JobConcernController : BaseController
     {
-        IJobConcernService _jobConcernService;
-        ILogger _logger;
+        private readonly IJobConcernService _jobConcernService;
 
         public JobConcernController(IJobConcernService jobConcernService, ILogger logger, TelemetryClient telemetryClient)
             : base(logger, telemetryClient)
         {
             _jobConcernService = jobConcernService;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

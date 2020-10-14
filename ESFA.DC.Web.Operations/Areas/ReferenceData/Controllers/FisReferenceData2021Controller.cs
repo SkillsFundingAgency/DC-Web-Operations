@@ -52,7 +52,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             return View("Index", await RefreshModelData(cancellationToken));
         }
 
-        [Route("getReportFile/{collectionName}/{fileName}/{jobId?}")]
+        [Route("getCollectionReportFileAsync/{collectionName}/{fileName}/{jobId?}")]
         public async Task<FileResult> GetCollectionReportFileAsync(string collectionName, string fileName, long? jobId, CancellationToken cancellationToken)
         {
             return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
