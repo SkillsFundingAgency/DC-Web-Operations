@@ -98,4 +98,6 @@ Handlebars.registerHelper("setVar", function (varName, varValue, options) {
     options.data.root[varName] = varValue;
 });
 
-
+Handlebars.registerHelper("increment", function (value, options) {
+    return parseInt(value) + 1;
+});

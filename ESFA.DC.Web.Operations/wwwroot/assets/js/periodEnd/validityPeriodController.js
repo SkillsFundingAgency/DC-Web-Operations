@@ -14,7 +14,7 @@ class ValidityPeriodController {
         this._hub.startHub(this.getData.bind(this));
 
         document.getElementById("collectionYear").addEventListener("click", this.getData.bind(this));
-        document.getElementById("periodNumber").addEventListener("click", this.getData.bind(this));
+        document.getElementById("period").addEventListener("click", this.getData.bind(this));
     }
 
     updatePage(data) {
@@ -38,7 +38,7 @@ class ValidityPeriodController {
     }
 
     getData() {
-        const period = document.getElementById('periodNumber').value;
+        const period = document.getElementById('period').value;
         const collectionYear = document.getElementById('collectionYear').value;
         this._client.invokeAction("GetValidityStructure", collectionYear, period);
     }

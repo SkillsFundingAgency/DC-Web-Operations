@@ -61,62 +61,16 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateValidityPeriod([FromForm] Dictionary<string, string> formData)
+        public async Task<IActionResult> UpdateValidityPeriod([FromForm] string collectionYear, [FromForm] string period, [FromForm] List<ValidityPeriod> items)
         {
-            formData.TryGetValue("collectionYear", out var yearString);
-            formData.TryGetValue("periodNumber", out var periodString);
+            var yearNumber = Convert.ToInt32(collectionYear);
+            var periodNumber = Convert.ToInt32(period);
 
-            var collectionYear = Convert.ToInt32(yearString);
-            var period = Convert.ToInt32(periodString);
+            //var data = MapFormDataToModel(items);
 
-            var data = MapFormDataToModel(formData);
-
-            await _validityPeriodService.UpdateValidityPeriod(collectionYear, period, data);
+            await _validityPeriodService.UpdateValidityPeriods(yearNumber, periodNumber, items);
 
             return RedirectToAction("Index");
-        }
-
-        private IEnumerable<ValidityPeriod> MapFormDataToModel(Dictionary<string, string> formData)
-        {
-            var validities = new List<ValidityPeriod>();
-
-            var paths = formData.Where(fd => fd.Key.StartsWith("path-")).Select(fd => fd.Value);
-            foreach (var pathId in paths.Select(path => Convert.ToInt32(path)))
-            {
-                if (pathId != 0)
-                {
-                    formData.TryGetValue($"type-{pathId}", out var typeString);
-                    formData.TryGetValue($"ckpath-{pathId}", out var enabledString);
-
-                    var pathValidity = new ValidityPeriod
-                    {
-                        Id = pathId,
-                        EntityType = Convert.ToInt32(typeString),
-                        Enabled = enabledString == "on"
-                    };
-
-                    validities.Add(pathValidity);
-                }
-
-                var pathItems = formData.Where(fd => fd.Key.StartsWith($"pathitem-{pathId}-")).Select(fd => fd.Value);
-
-                foreach (var pathItemId in pathItems.Select(pathItem => Convert.ToInt32(pathItem)))
-                {
-                    formData.TryGetValue($"type-{pathId}-{pathItemId}", out var itemTypeString);
-                    formData.TryGetValue($"ckpathItem-{pathId}-{pathItemId}", out var itemEnabledString);
-
-                    var pathValidity = new ValidityPeriod
-                    {
-                        Id = pathItemId,
-                        EntityType = Convert.ToInt32(itemTypeString),
-                        Enabled = itemEnabledString == "on"
-                    };
-
-                    validities.Add(pathValidity);
-                }
-            }
-
-            return validities;
         }
     }
 }

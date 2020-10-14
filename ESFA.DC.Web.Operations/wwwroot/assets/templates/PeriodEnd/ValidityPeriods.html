@@ -1,24 +1,28 @@
 ﻿<ol class="app-task-list">
+    {{setVar "masterIndex" 0}}
     {{#each viewModel}}
+
+
     <li>
-        <input type="hidden" class="hidden" 
+        <input type="hidden" class="hidden"
                id="path-{{this.pathId}}"
-               name="path-{{this.pathId}}"
+               name="items[{{@root.masterIndex}}].Id"
                value="{{this.pathId}}" />
 
-        <input type="hidden" class="hidden" 
-               id="type-{{this.pathId}}" 
-               name="type-{{this.pathId}}" 
+
+        <input type="hidden" class="hidden"
+               id="type-{{this.pathId}}"
+               name="items[{{@root.masterIndex}}].EntityType"
                value="{{this.entityType}}" />
-        
+
         <div class="checkbox-container">
             <div class="checkbox-text">{{this.name}}</div>
             <div class="govuk-checkboxes">
                 <div class="flex">
                     <div class="govuk-checkboxes__item">
                         <input type="checkbox" class="govuk-checkboxes__input"
-                               name="ckpath-{{this.pathId}}"
-                               id="ckpath-{{this.pathId}}" 
+                               name="items[{{@root.masterIndex}}].Enabled"
+                               id="ckpath-{{this.pathId}}"
                                {{#if this.isValidForPeriod}} checked{{/if}} />
                         <label class="govuk-label govuk-checkboxes__label">
                         </label>
@@ -29,25 +33,26 @@
 
         <ul class="app-task-list__items">
             {{#each this.pathItems}}
+            {{setVar "masterIndex" (increment @root.masterIndex)}}
             <li>
-                <input type="hidden" class="hidden" 
-                       id="pathitem-{{this.pathId}}-{{this.pathItemId}}" 
-                       name="pathitem-{{this.pathId}}-{{this.pathItemId}}" 
+                <input type="hidden" class="hidden"
+                       id="pathitem-{{this.pathId}}-{{this.pathItemId}}"
+                       name="items[{{@root.masterIndex}}].Id"
                        value="{{this.pathItemId}}" />
 
-                <input type="hidden" class="hidden" 
-                       id="type-{{this.pathId}}-{{this.pathItemId}}" 
-                       name="type-{{this.pathId}}-{{this.pathItemId}}"
+                <input type="hidden" class="hidden"
+                       id="type-{{this.pathId}}-{{this.pathItemId}}"
+                       name="items[{{@root.masterIndex}}].EntityType"
                        value="{{this.entityType}}" />
-                
+
                 <div class="checkbox-container">
                     <div class="checkbox-text">{{this.name}}</div>
                     <div class="govuk-checkboxes">
                         <div class="flex">
                             <div class="govuk-checkboxes__item">
                                 <input type="checkbox" class="govuk-checkboxes__input"
-                                       name="ckpathItem-{{this.pathId}}-{{this.pathItemId}}"
-                                       id="ckpathItem-{{this.pathId}}-{{this.pathItemId}}" 
+                                       name="items[{{@root.masterIndex}}].Enabled"
+                                       id="ckpathItem-{{this.pathId}}-{{this.pathItemId}}"
                                        {{#if this.isValidForPeriod}} checked{{/if}} />
                                 <label class="govuk-label govuk-checkboxes__label">
                                 </label>
@@ -59,5 +64,6 @@
             {{/each}}
         </ul>
     </li>
+    {{setVar "masterIndex" (increment @root.masterIndex)}}
     {{/each}}
 </ol>
