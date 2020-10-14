@@ -127,12 +127,11 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
 
         public async Task<ReferenceDataIndexModel> GetLatestReferenceDataJobs(CancellationToken cancellationToken)
         {
-            var collectionsToExcludeForSummary = new string[] { CollectionNames.DevolvedPostcodesFullName, CollectionNames.DevolvedPostcodesOnsOverride, CollectionNames.DevolvedPostcodesLocalAuthority, CollectionNames.DevolvedPostcodesSof };
             var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken))?.ToList();
 
             var model = new ReferenceDataIndexModel();
 
-            foreach (var collection in _collections.Where(w => !collectionsToExcludeForSummary.Contains(w.CollectionName)))
+            foreach (var collection in _collections.Where(w => w.IsDisplayedOnReferenceDataSummary))
             {
                 var collectionJobs = jobs?.FirstOrDefault(j => j.CollectionName == collection.CollectionName);
                 model.CollectionJobStats.Add(collection.CollectionName, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(collectionJobs?.DateTimeSubmittedUtc), LastUpdatedByWho = collectionJobs?.CreatedBy ?? DataUnavailable, Valid = await IsCollectionValid(collection.CollectionName, cancellationToken) });

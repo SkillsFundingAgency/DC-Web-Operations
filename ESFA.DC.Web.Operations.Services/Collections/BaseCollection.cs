@@ -3,5 +3,7 @@
     public abstract class BaseCollection
     {
         public abstract string CollectionName { get; }
+
+        public virtual bool IsDisplayedOnReferenceDataSummary => true;
     }
 }

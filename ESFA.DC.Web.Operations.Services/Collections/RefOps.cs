@@ -16,5 +16,7 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         public string FileFormat => Utils.FileNameExtensionConsts.CSV;
 
         public string FileNameFormat => "PROVIDERS-YYYMMDD-HHMMSS.CSV";
+
+        public override bool IsDisplayedOnReferenceDataSummary => false;
     }
 }
