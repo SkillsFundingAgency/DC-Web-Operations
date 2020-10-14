@@ -17,6 +17,11 @@
     "test": "jest",
     "precompileTemplates": "handlebars wwwroot/assets/templates -f wwwroot/assets/templates/templates.precompiled.js"
   },
+  "-vs-binding": {
+    "BeforeBuild": [
+      "precompileTemplates"
+    ]
+  },
   "jest": {
     "moduleDirectories": [
       "node_modules",
