@@ -40,20 +40,14 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
 
         public IFileNameValidationService GetFileNameValidationService(string collectionName)
         {
-            var service = _fileNameValidationServices.FirstOrDefault(x => x.CollectionNames.Equals(collectionName, StringComparison.CurrentCultureIgnoreCase));
-
-            if (service == null)
-            {
-                return new StandardFileNameValidationService(
+            return _fileNameValidationServices.FirstOrDefault(x => x.CollectionName.Equals(collectionName, StringComparison.CurrentCultureIgnoreCase)) ??
+                   new StandardFileNameValidationService(
                     _storageService,
                     _featureFlags,
                     _jobService,
                     _collectionService,
                     _azureStorageSection,
                     _collections);
-            }
-
-            return service;
         }
     }
 }

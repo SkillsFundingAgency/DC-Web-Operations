@@ -32,7 +32,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.Providers
             _collections = collections;
         }
 
-        public override string CollectionNames => Utils.CollectionNames.ReferenceDataOps;
+        public override string CollectionName => Utils.CollectionNames.ReferenceDataOps;
 
         public override async Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, string fileNameFormat, long? fileSize, CancellationToken cancellationToken)
         {

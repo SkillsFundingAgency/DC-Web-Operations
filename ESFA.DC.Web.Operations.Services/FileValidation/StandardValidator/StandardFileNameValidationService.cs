@@ -24,7 +24,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.StandardValidator
         {
         }
 
-        public override string CollectionNames => string.Empty;
+        public override string CollectionName => string.Empty;
 
         public override DateTime GetFileDateTime(Regex fileNameRegex, string fileName)
         {
