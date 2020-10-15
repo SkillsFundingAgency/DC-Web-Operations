@@ -79,7 +79,7 @@ stages:
 # Display Variables
 #********************************************************************************   
     - task: PowerShell@2
-      enabled: false
+      enabled: true
       name: DislayAllVariables2
       displayName: 'Display all variables'
       continueOnError: true  
@@ -248,12 +248,11 @@ stages:
         projectName: 'ESFA.DC.Web.Operations'
         scanPath: '**/*.*'
         format: 'JUNIT'
-        out: '$(Build.SourcesDirectory)/OWASPTestResults'
         
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles:  '$(Build.SourcesDirectory)/OWASPTestResults/*.xml'
+        testResultsFiles:  '**/dependency-check-junit.xml'
         mergeTestResults: true
 
 #********************************************************************************
