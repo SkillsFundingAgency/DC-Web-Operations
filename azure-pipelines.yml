@@ -248,6 +248,12 @@ stages:
         projectName: 'ESFA.DC.Web.Operations'
         scanPath: '**/*.*'
         format: 'JUNIT'
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml'
+        mergeTestResults: true
+
 #********************************************************************************
 # Publish Artifacts
 #********************************************************************************    
