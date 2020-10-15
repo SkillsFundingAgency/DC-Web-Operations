@@ -39,7 +39,7 @@
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text">
-                @Html.ActionLink("Jobs processing", "Index", "JobProcessing", new { area = AreaNames.Processing })
+                <a asp-controller="JobProcessing" asp-action="Index" asp-area="Processing">Jobs processing</a>
             </h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
@@ -54,7 +54,7 @@
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text">
-                @Html.ActionLink("Jobs queued", "Index", "JobQueued", new { area = AreaNames.Processing })
+                <a asp-controller="JobQueued" asp-action="Index" asp-area="Processing">Jobs queued</a>
             </h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
@@ -69,7 +69,7 @@
     <div class="govuk-grid-column-one-third">
         <section class="margin-bottom">
             <h2 class="govuk-heading-m centre-text">
-                @Html.ActionLink("Submissions", "Index", "JobSubmitted", new { area = AreaNames.Processing })
+                <a asp-controller="JobSubmitted" asp-action="Index" asp-area="Processing">Submissions</a>
             </h2>
             <svg class="circle-chart" viewBox="0 0 33.83098862 33.83098862" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle stroke="#ffffff" stroke-width="2" fill="none" cx="16.91549431" cy="16.91549431" r="15"></circle>
@@ -113,7 +113,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Failed today", "Index", "JobFailedToday", new { area = AreaNames.Processing })
+                <a asp-controller="JobFailedToday" asp-action="Index" asp-area="Processing">Failed today</a>
             </h2>
             <span id="failedToday" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -122,7 +122,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Slow files", "Index", "JobSlowFile", new { area = AreaNames.Processing })
+                <a asp-controller="JobSlowFile" asp-action="Index" asp-area="Processing">Slow files</a>
             </h2>
             <span id="slowFiles" class="govuk-heading-l no-margin-bottom">0</span>
             <span class="govuk-body-s">Taking 20% longer than usual</span>
@@ -132,7 +132,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Concerns", "Index", "JobConcern", new { area = AreaNames.Processing })
+                <a asp-controller="JobConcern" asp-action="Index" asp-area="Processing">Concerns</a>
             </h2>
             <span id="concerns" class="govuk-heading-l no-margin-bottom">0</span>
             <span class="govuk-body-s">Providers where their last submitted file was unsuccessful</span>
@@ -154,7 +154,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Current Period", "CurrentPeriod", "JobProcessingDetail", new { area = AreaNames.Processing })
+                <a asp-controller="JobProcessingDetail" asp-action="CurrentPeriod" asp-area="Processing">Current Period</a>
             </h2>
             <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -163,7 +163,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Last Hour", "LastHour", "JobProcessingDetail", new { area = AreaNames.Processing })
+                <a asp-controller="JobProcessingDetail" asp-action="LastHour" asp-area="Processing">Last Hour</a>
             </h2>
             <span id="lastHour" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -172,7 +172,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Last 5 Minutes", "LastFiveMins", "JobProcessingDetail", new { area = AreaNames.Processing })
+                <a asp-controller="JobProcessingDetail" asp-action="LastFiveMins" asp-area="Processing">Last 5 Minutes</a>
             </h2>
             <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -180,7 +180,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("ILR returners in current period", "Index", "JobProvidersReturnedCurrentPeriod", new { area = AreaNames.Processing })
+                <a asp-controller="JobProvidersReturnedCurrentPeriod" asp-action="Index" asp-area="Processing">ILR returners in current period</a>
             </h2>
             <span id="ilrReturns" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -189,7 +189,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("Failed files in current period", "Index", "JobFailedCurrentPeriod", new { area = AreaNames.Processing })
+                <a asp-controller="" asp-action="" id="failedFilesInCurrentPeriodLink">Failed files in current period</a>
             </h2>
             <span id="failedFiles" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -198,7 +198,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                @Html.ActionLink("SLD/DAS mismatches", "Index", "JobDasMismatch", new { area = AreaNames.Processing })
+                <a asp-controller="JobDasMismatch" asp-action="Index" asp-area="Processing">SLD/DAS mismatches</a>
             </h2>
             <span id="sldDasMismatches" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -216,8 +216,17 @@
 
 @section PageScripts
 {
-    <partial name="_InitialState" for="DashboardStats"/>
+    <partial name="_InitialState" for="DashboardStats" />
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
     <script src="~/assets/js/dashBoard/dashBoardController.js" asp-append-version="true" type="module"></script>
+    <script>
+        document.getElementById("failedFilesInCurrentPeriodLink").onclick = function() {
+            var selectedYear = document.getElementById("collectionYears").value;
+            var link = document.getElementById("failedFilesInCurrentPeriodLink");
+            link.setAttribute("href", "/processing/jobFailedCurrentPeriod/?collectionYear=" + selectedYear);
+            window.open(link.href, "_self");
+            return false;
+        }
+    </script>
 }

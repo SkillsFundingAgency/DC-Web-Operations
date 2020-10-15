@@ -24,9 +24,9 @@ namespace ESFA.DC.Web.Operations.Areas.Processing.Controllers
             _jobFailedCurrentPeriodService = jobFailedCurrentPeriodService;
         }
 
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(int? collectionYear, CancellationToken cancellationToken)
         {
-            return View("Index", await _jobFailedCurrentPeriodService.GetJobsFailedCurrentPeriodAsync(cancellationToken));
+            return View("Index", await _jobFailedCurrentPeriodService.GetJobsFailedCurrentPeriodAsync(collectionYear, cancellationToken));
         }
     }
 }
