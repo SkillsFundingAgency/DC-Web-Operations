@@ -248,10 +248,12 @@ stages:
         projectName: 'ESFA.DC.Web.Operations'
         scanPath: '**/*.*'
         format: 'JUNIT'
+        out: '$(Build.SourcesDirectory)/OWASPTestResults'
+        
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '**/dependency-check-junit.xml'
+        testResultsFiles:  '$(Build.SourcesDirectory)/OWASPTestResults/*.xml'
         mergeTestResults: true
 
 #********************************************************************************
