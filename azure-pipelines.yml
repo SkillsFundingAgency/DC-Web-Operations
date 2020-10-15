@@ -270,3 +270,8 @@ stages:
       inputs:
         ArtifactName: Databases
         PathtoPublish: '$(build.artifactstagingdirectory)\Databases'
+    - task: dependency-check-build-task@5
+      inputs:
+        projectName: 'ESFA.DC.Web.Operations'
+        scanPath: '**/*.*'
+        format: 'HTML'
