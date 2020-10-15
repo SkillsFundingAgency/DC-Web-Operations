@@ -241,7 +241,13 @@ stages:
         codeCoverageTool: Cobertura
         summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
         reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
-      
+    
+    - task: dependency-check-build-task@5
+      displayName: 'Run OWASP Dependency Check'
+      inputs:
+        projectName: 'ESFA.DC.Web.Operations'
+        scanPath: '**/*.*'
+        format: 'JUNIT'
 #********************************************************************************
 # Publish Artifacts
 #********************************************************************************    
@@ -270,8 +276,3 @@ stages:
       inputs:
         ArtifactName: Databases
         PathtoPublish: '$(build.artifactstagingdirectory)\Databases'
-    - task: dependency-check-build-task@5
-      inputs:
-        projectName: 'ESFA.DC.Web.Operations'
-        scanPath: '**/*.*'
-        format: 'HTML'
