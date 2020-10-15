@@ -245,14 +245,15 @@ stages:
     - task: dependency-check-build-task@5
       displayName: 'Run OWASP Dependency Check'
       inputs:
-        projectName: 'ESFA.DC.Web.Operations'
+        projectName: 'SFA.DC.Web.Operations'
         scanPath: '**/*.*'
-        format: 'JUNIT'
+        format: 'HTML, JUNIT'
+        reportsDirectory: '$(Build.SourcesDirectory)/OWASP'
         
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles:  '$(Common.TestResultDirectory)/**/dependency-check-junit.xml'
+        testResultsFiles:  '$(Build.SourcesDirectory)/OWASP/**/dependency-check-junit.xml'
         mergeTestResults: true
 
 #********************************************************************************
