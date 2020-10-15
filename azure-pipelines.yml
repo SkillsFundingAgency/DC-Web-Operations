@@ -251,7 +251,7 @@ stages:
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '**/TEST-*.xml'
+        testResultsFiles: '**/dependency-check-junit.xml'
         mergeTestResults: true
 
 #********************************************************************************
