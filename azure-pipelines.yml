@@ -252,7 +252,7 @@ stages:
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles:  '**/dependency-check-junit.xml'
+        testResultsFiles:  '$(Common.TestResultDirectory)/**/dependency-check-junit.xml'
         mergeTestResults: true
 
 #********************************************************************************
