@@ -1,23 +1,5 @@
 ﻿[
   {
-    "outputFile": "wwwroot/assets/css/docs.css",
-    "inputFile": "wwwroot/assets/scss/docs.scss",
-    "minify": { "enabled": false },
-    "options": { "sourceMap": true }
-  },
-  {
-    "outputFile": "wwwroot/assets/css/override.css",
-    "inputFile": "wwwroot/assets/scss/override.scss",
-    "minify": { "enabled": false },
-    "options": { "sourceMap": true }
-  },
-  {
-    "outputFile": "wwwroot/assets/css/banner.css",
-    "inputFile": "wwwroot/assets/scss/banner.scss",
-    "minify": { "enabled": false },
-    "options": { "sourceMap": true }
-  },
-  {
     "outputFile": "wwwroot/assets/css/application.css",
     "inputFile": "wwwroot/assets/scss/application.scss",
     "minify": { "enabled": false },
