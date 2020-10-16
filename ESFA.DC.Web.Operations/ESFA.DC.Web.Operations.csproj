@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
-    <Content Remove="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +37,6 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-    <None Include="wwwroot\assets\scss\banner.scss" />
   </ItemGroup>
 
 

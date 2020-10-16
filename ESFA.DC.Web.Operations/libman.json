@@ -26,6 +26,16 @@
       "files": [
         "dist/Chart.bundle.min.js"
       ]
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/govuk-frontend/assets/fonts/",
+      "destination": "wwwroot/lib/govuk-frontend/assets/fonts"
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/govuk-frontend/assets/images/",
+      "destination": "wwwroot/lib/govuk-frontend/assets/images"
     }
   ]
 }
