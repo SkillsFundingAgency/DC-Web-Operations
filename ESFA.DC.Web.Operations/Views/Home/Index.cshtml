@@ -189,7 +189,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                <a asp-controller="" asp-action="" id="failedFilesInCurrentPeriodLink">Failed files in current period</a>
+                <a asp-controller="" asp-action="" id="jobFailedCurrentPeriod">Failed files in current period</a>
             </h2>
             <span id="failedFiles" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -216,17 +216,8 @@
 
 @section PageScripts
 {
-    <partial name="_InitialState" for="DashboardStats" />
+    <partial name="_InitialState" for="DashboardStats"/>
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
     <script src="~/assets/js/dashBoard/dashBoardController.js" asp-append-version="true" type="module"></script>
-    <script>
-        document.getElementById("failedFilesInCurrentPeriodLink").onclick = function() {
-            var selectedYear = document.getElementById("collectionYears").value;
-            var link = document.getElementById("failedFilesInCurrentPeriodLink");
-            link.setAttribute("href", "/processing/jobFailedCurrentPeriod/?collectionYear=" + selectedYear);
-            window.open(link.href, "_self");
-            return false;
-        }
-    </script>
 }
