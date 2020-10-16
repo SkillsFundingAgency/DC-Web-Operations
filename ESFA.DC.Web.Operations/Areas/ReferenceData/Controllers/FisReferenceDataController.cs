@@ -48,7 +48,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             await _referenceDataService.SubmitJobAsync(Period, model.ReferenceDataCollectionName, User.Name(), User.Email(), cancellationToken);
 
-            return View("Index", await RefreshModelData(model.ReferenceDataCollectionName, cancellationToken));
+            return RedirectToAction("Index", "FisReferenceData", new { collectionName = model.ReferenceDataCollectionName });
         }
 
         [Route("getCollectionReportFileAsync/{collectionName}/{fileName}/{jobId?}")]
