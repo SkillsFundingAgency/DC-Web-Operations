@@ -335,3 +335,6 @@ ASALocalRun/
 /ESFA.DC.Web.Operations/wwwroot/assets/css
 /ESFA.DC.Web.Operations/wwwroot/assets/minified/site.min.css
 /ESFA.DC.Web.Operations/wwwroot/lib
+
+# Precompiled handlebars templates
+/ESFA.DC.Web.Operations/wwwroot/assets/templates/templates.precompiled.js
