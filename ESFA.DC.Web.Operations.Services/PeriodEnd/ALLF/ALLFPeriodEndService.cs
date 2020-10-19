@@ -166,6 +166,27 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             return model;
         }
 
+        public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsForAllPeriodsAsync(int currentYear, int currentPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var pathItemStates = GetPathItemStatesAsync(currentYear, currentPeriod, CollectionType, cancellationToken);
+            var submissions = GetSubmissionsPerPeriodAsync(0, 0, cancellationToken);
+
+            await Task.WhenAll(pathItemStates, submissions);
+
+            var file = submissions.Result
+                .Where(f => f.PeriodNumber == currentPeriod)
+                .OrderByDescending(f => f.SubmissionDate)
+                .FirstOrDefault();
+
+            if (file != null)
+            {
+                var state = _stateService.GetMainState(pathItemStates.Result);
+                file.UsedForPeriodEnd = state.PeriodEndStarted;
+            }
+
+            return submissions.Result;
+        }
+
         public async Task<IEnumerable<FileUploadJobMetaDataModel>> GetSubmissionsPerPeriodAsync(
             int year,
             int period,

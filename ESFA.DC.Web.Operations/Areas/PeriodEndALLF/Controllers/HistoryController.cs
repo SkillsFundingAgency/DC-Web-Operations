@@ -33,6 +33,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
         public async Task<IActionResult> Index(int? collectionYear, CancellationToken cancellationToken)
         {
             var currentYearPeriod = await _periodService.ReturnPeriod(CollectionTypes.ALLF, cancellationToken);
+
             if (currentYearPeriod.Year == null)
             {
                 throw new Exception($"Return period {currentYearPeriod.Period} has no year.");
@@ -43,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndALLF.Controllers
                 Year = collectionYear ?? currentYearPeriod.Year.Value
             };
 
-            model.PeriodHistories = await _allfHistoryService.GetHistoryDetails(model.Year, cancellationToken);
+            model.PeriodHistories = await _allfHistoryService.GetHistoryDetails(model.Year, currentYearPeriod.Period, cancellationToken);
 
             return View(model);
         }
