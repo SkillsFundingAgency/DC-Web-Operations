@@ -4,6 +4,7 @@ import Hub from '/assets/js/hubs/hub.js';
 class DashBoardController {
     constructor() {
         this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
+        this._jobFailedCurrentPeriod = document.getElementById('jobFailedCurrentPeriod');
        
         this._data = null;
         this._queuesSystem = null;
@@ -22,6 +23,7 @@ class DashBoardController {
         $on(document.getElementById('collectionYears'), 'change', (event) => {
             this._year = parseInt(event.target.value);
             this.updateProcessingInDetails(this._data.jobStats, this._year);
+            this.updateDrillDownUrl(this._jobFailedCurrentPeriod, this._year);
         });
 
         $on(window, 'pageshow', () => {
@@ -52,7 +54,12 @@ class DashBoardController {
             this._year = jobStats.collectionYears[jobStats.collectionYears.length - 1];
             const collectionYearContainer = document.getElementById("collectionYearContainer");
             
-            jobStats.collectionYears.length < 2 ? collectionYearContainer.style.display = "none" : collectionYearContainer.style.display = "block";
+            if (jobStats.collectionYears.length < 2) {
+                collectionYearContainer.style.display = "none";
+                this.defaultAllDrillDownControls(jobStats.collectionYears[0]);
+            } else {
+                collectionYearContainer.style.display = "block";
+            }
             this.addYearsToDropdown(jobStats.collectionYears);
         }
     }
@@ -63,6 +70,7 @@ class DashBoardController {
             select.options[select.options.length] = new Option(this.formatYearForDisplay(years[index]), years[index]);
         }
         select.selectedIndex = years.length - 1;
+        this.defaultAllDrillDownControls(select.options[select.selectedIndex].value);
     }
 
     formatYearForDisplay(year) {
@@ -308,6 +316,14 @@ class DashBoardController {
 
         const timeLabel = document.getElementById("lastTime");
         timeLabel.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    updateDrillDownUrl(link, year) {
+        link.setAttribute("href", "/processing/" + link.id + "/?collectionYear=" + year);
+    }
+
+    defaultAllDrillDownControls(year) {
+        this.updateDrillDownUrl(this._jobFailedCurrentPeriod, year);
     }
 }
 

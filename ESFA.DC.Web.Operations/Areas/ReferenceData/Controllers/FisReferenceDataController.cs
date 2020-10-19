@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Extensions;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
@@ -14,17 +13,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
     [Area(AreaNames.ReferenceData)]
-    [Route(AreaNames.ReferenceData + "/fisReferenceData2021")]
-    public class FisReferenceData2021Controller : BaseReferenceDataController
+    [Route(AreaNames.ReferenceData + "/fisReferenceData")]
+    public class FisReferenceDataController : BaseReferenceDataController
     {
-        private const string CollectionName = CollectionNames.FisReferenceData2021;
         private const int Period = 0;
 
         private readonly IReferenceDataService _referenceDataService;
         private readonly IReferenceDataProcessService _fisReferenceDataService;
         private readonly ICollectionsService _collectionsService;
 
-        public FisReferenceData2021Controller(
+        public FisReferenceDataController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
@@ -39,9 +37,10 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             _collectionsService = collectionsService;
         }
 
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        [Route("{collectionName}")]
+        public async Task<IActionResult> Index(string collectionName, CancellationToken cancellationToken)
         {
-            return View("Index", await RefreshModelData(cancellationToken));
+            return View("Index", await RefreshModelData(collectionName, cancellationToken));
         }
 
         [HttpPost]
@@ -49,7 +48,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             await _referenceDataService.SubmitJobAsync(Period, model.ReferenceDataCollectionName, User.Name(), User.Email(), cancellationToken);
 
-            return View("Index", await RefreshModelData(cancellationToken));
+            return RedirectToAction("Index", "FisReferenceData", new { collectionName = model.ReferenceDataCollectionName });
         }
 
         [Route("getCollectionReportFileAsync/{collectionName}/{fileName}/{jobId?}")]
@@ -58,9 +57,9 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
             return await GetReportFileAsync(collectionName, fileName, jobId, cancellationToken);
         }
 
-        private async Task<ReferenceDataViewModel> RefreshModelData(CancellationToken cancellationToken)
+        private async Task<ReferenceDataViewModel> RefreshModelData(string collectionName, CancellationToken cancellationToken)
         {
-            var collection = _collectionsService.GetReferenceDataCollection(CollectionName);
+            var collection = _collectionsService.GetReferenceDataCollection(collectionName);
 
             var model = await _fisReferenceDataService.GetProcessOutputsForCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,

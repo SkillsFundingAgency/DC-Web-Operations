@@ -94,6 +94,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ShortTermFundingInitiativesHub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<ValidationErrorMessages2021Hub>().As<IReferenceDataHub>().SingleInstance();
             builder.RegisterType<FisReferenceData2021Hub>().As<IReferenceDataHub>().SingleInstance();
+            builder.RegisterType<NcsOutcomeRatesHub>().As<IReferenceDataHub>().SingleInstance();
 
             builder.RegisterType<DashBoardService>().As<IDashBoardService>().InstancePerLifetimeScope();
 
@@ -175,6 +176,7 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<RefOps>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<ShortTermFundingInitiatives>().As<ICollection>().InstancePerLifetimeScope();
             builder.RegisterType<FisReferenceData2021>().As<ICollection>().InstancePerLifetimeScope();
+            builder.RegisterType<NcsOutcomeRates>().As<ICollection>().InstancePerLifetimeScope();
 
             // DB Contexts
             builder.RegisterType<JobQueueDataContext>().SingleInstance();

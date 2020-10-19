@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
+using ESFA.DC.Web.Operations.Services.FileValidation.StandardValidator;
 
 namespace ESFA.DC.Web.Operations.Services.FileValidation
 {
@@ -18,13 +19,8 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
 
         public IFileNameValidationService GetFileNameValidationService(string collectionName)
         {
-            var service = _fileNameValidationServices.FirstOrDefault(x => x.CollectionNames.Contains(collectionName));
-            if (service == null)
-            {
-                throw new ArgumentException("collectionName invalid");
-            }
-
-            return service;
+            return _fileNameValidationServices.FirstOrDefault(x => x.CollectionName.Equals(collectionName, StringComparison.CurrentCultureIgnoreCase)) ??
+                _fileNameValidationServices.FirstOrDefault(x => x.GetType() == typeof(StandardFileNameValidationService));
         }
     }
 }

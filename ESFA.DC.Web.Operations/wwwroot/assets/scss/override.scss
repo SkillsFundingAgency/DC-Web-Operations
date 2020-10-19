@@ -1,4 +1,6 @@
+$govuk-assets-path: '/lib/govuk-frontend/assets/';
 @import "node_modules/govuk-frontend/all";
+
 /* Override styles - amend at will */
 a:link, .govuk-list a:link {
     color: govuk-colour("blue");
@@ -513,7 +515,7 @@ progress::-moz-progress-bar { background: white; }
     display: inline-block;
     min-width: 125px;
     padding-top: 112px;
-    background-image: url("/assets/images/govuk-crest.png");
+    background-image: url("/lib/govuk-frontend/assets/images/govuk-crest.png");
     background-repeat: no-repeat;
     background-position: 50% 0%;
     background-size: 125px 102px;
@@ -524,7 +526,7 @@ progress::-moz-progress-bar { background: white; }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
     .govuk-footer__copyright-logo {
-        background-image: url("/assets/images/govuk-crest-2x.png");
+        background-image: url("/lib/govuk-frontend/assets/images/govuk-crest-2x.png");
     }
 }
 

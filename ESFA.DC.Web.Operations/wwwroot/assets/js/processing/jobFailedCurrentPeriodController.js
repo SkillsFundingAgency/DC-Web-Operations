@@ -6,6 +6,8 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
         super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName });
+        this._collectionYear = document.getElementById('collectionYear');
+        this._collectionYear.textContent = this._data.collectionYear;
     }
 
     formatDataForDisplay() {

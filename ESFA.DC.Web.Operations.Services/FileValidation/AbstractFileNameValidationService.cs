@@ -44,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation
             _collections = collections;
         }
 
-        public abstract string[] CollectionNames { get; }
+        public abstract string CollectionName { get; }
 
         public virtual async Task<FileNameValidationResultModel> ValidateFileNameAsync(string collectionName, string fileName, string fileNameFormat, long? fileSize, CancellationToken cancellationToken)
         {

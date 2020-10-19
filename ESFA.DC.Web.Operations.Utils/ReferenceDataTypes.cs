@@ -10,6 +10,7 @@
         OnsPostcodes,
         ShortTermFundingInitiatives,
         DevolvedContracts,
-        FisReferenceData2021
+        FisReferenceData2021,
+        NcsOutcomeRates
     }
 }
