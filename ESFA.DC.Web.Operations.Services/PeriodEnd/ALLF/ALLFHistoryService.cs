@@ -16,9 +16,9 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd.ALLF
             _periodEndService = periodEndService;
         }
 
-        public Task<IEnumerable<FileUploadJobMetaDataModel>> GetHistoryDetails(int currentYear, int currentPeriod, CancellationToken cancellationToken)
+        public Task<IEnumerable<FileUploadJobMetaDataModel>> GetHistoryDetails(int year, int latestPeriod, CancellationToken cancellationToken)
         {
-            return _periodEndService.GetSubmissionsForAllPeriodsAsync(currentYear, currentPeriod, cancellationToken);
+            return _periodEndService.GetSubmissionsForAllPeriodsAsync(year, latestPeriod, cancellationToken);
         }
     }
 }
