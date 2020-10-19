@@ -1,4 +1,5 @@
 ﻿import { Templates, getHandleBarsTemplate } from '/assets/js/handlebars-helpers.js';
+import { $on, $onAll } from '/assets/js/util.js';
 import Client from '/assets/js/periodEnd/client.js';
 import Hub from '/assets/js/hubs/hub.js';
 
@@ -13,8 +14,10 @@ class ValidityPeriodController {
         this.registerHandlers();
         this._hub.startHub(this.getData.bind(this));
 
-        document.getElementById("collectionYear").addEventListener("click", this.getData.bind(this));
-        document.getElementById("period").addEventListener("click", this.getData.bind(this));
+        $on(document.getElementById("collectionYear"), "change", () => { this.getData(); });
+        $on(document.getElementById("period"), "change", () => { this.getData(); });
+
+        
     }
 
     updatePage(data) {
@@ -35,6 +38,15 @@ class ValidityPeriodController {
     renderStructure(data) {
         const container = document.getElementById("structureContainer");
         container.innerHTML = this._template({ viewModel: data });
+
+        $onAll(document.querySelectorAll(".validityCheckbox"), "change", (e) => e.target.value = this.toggleCheckboxValue(e.target.value));
+    }
+
+    toggleCheckboxValue(currentValue) {
+        if (currentValue === "true")
+            return "false";
+        else
+            return "true";
     }
 
     getData() {
@@ -44,4 +56,4 @@ class ValidityPeriodController {
     }
 }
 
-export default ValidityPeriodController
+export const validityController = new ValidityPeriodController();

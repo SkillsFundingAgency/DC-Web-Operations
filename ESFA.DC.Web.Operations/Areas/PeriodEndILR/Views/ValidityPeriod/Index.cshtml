@@ -1,5 +1,4 @@
-﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.ValidityPeriodViewModel
+﻿@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.ValidityPeriodViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -21,8 +20,7 @@
 
 @if (!Model.PeriodEndInProgress)
 {
-    @using(Html.BeginForm("UpdateValidityPeriod", "ValidityPeriod"))
-    {
+    <form asp-action="UpdateValidityPeriod" asp-controller="ValidityPeriod">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h1 class="govuk-heading-xl heading-bottom-margin">Validity Periods</h1>
@@ -34,10 +32,14 @@
                         <select class="govuk-select" id="collectionYear" name="collectionYear">
                             @foreach (var year in Model.AllYears)
                             {
-                                <option value="@year" @if (Model.Year == year) { @: selected
-                                        }>
-                                    @year
-                                </option>
+                                if (Model.Year == year)
+                                {
+                                    <option value="@year" selected>@year</option>
+                                }
+                                else
+                                {
+                                    <option value="@year">@year</option>
+                                }
                             }
                         </select>
                     </div>
@@ -47,11 +49,14 @@
                         <select class="govuk-select" id="period" name="period">
                             @for (var i = 1; i <= 14; i++)
                             {
-                                <option value="@i"
-                                        @if (Model.Period == i) { @: selected
-                                        }>
-                                    @i
-                                </option>
+                                if (Model.Period == i)
+                                {
+                                    <option value="@i" selected>@i</option>
+                                }
+                                else
+                                {
+                                    <option value="@i">@i</option>
+                                }
                             }
                         </select>
                     </div>
@@ -62,7 +67,7 @@
         <div id="structureContainer"></div>
 
         <button type="submit" class="govuk-button" id="saveChanges">Save</button>
-    }
+    </form>
 }
 else
 {
@@ -86,17 +91,6 @@ else
     </div>
 </div>
 
-@if (!Model.PeriodEndInProgress)
-{
-    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-    <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
-
-    <script type="module">
-        import ValidityPeriodController from "/assets/js/periodEnd/validityPeriodController.js";
-
-        (function () {
-            const validityPeriodController = new ValidityPeriodController();
-        })();
-
-    </script>
-}
+<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+<script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
+<script src="~/assets/js/periodEnd/validityPeriodController.js" type="module"></script>
