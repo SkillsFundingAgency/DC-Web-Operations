@@ -20,8 +20,8 @@
                     <td class="govuk-table__cell">
                         <span class="{{jobStatusClass displayStatus}}">{{displayStatus}}</span> <br />
                     </td>
-                    <td class="govuk-table__cell td--width-150-wrap"><a href="/referencedata/referenceData/getReportFile/{{collectionName}}/{{reportName}}/{{jobId}}">{{reportName}}</a></td>
-                    <td class="govuk-table__cell td--width-150-wrap"><a href="/referencedata/referenceData/getReportFile/{{collectionName}}/{{fileName}}/{{jobId}}">{{fileName}}</a></td>
+                    <td class="govuk-table__cell td--width-150-wrap"><a href="{{../downloadController}}/{{collectionName}}/{{reportName}}/{{jobId}}">{{reportName}}</a></td>
+                    <td class="govuk-table__cell td--width-150-wrap"><a href="{{../downloadController}}/{{collectionName}}/{{fileName}}/{{jobId}}">{{fileName}}</a></td>
                 </tr>
             {{/each}}
             </tbody>

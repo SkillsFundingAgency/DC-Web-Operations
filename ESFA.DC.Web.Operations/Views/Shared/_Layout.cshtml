@@ -33,11 +33,13 @@
 
     <script src="~/assets/js/govuk-template.js" asp-append-version="true"></script>
     <script src="~/assets/minified/govuk.min.js" asp-append-version="true"></script>
+    <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
+    <script src="~/assets/templates/templates.precompiled.js" asp-append-version="true"></script>
 
     @RenderSection("PageScripts", required: false)
 
     <script>
-    if (typeof window.GOVUK === 'undefined')
+        if (typeof window.GOVUK === 'undefined')
             document.body.className = document.body.className.replace('js-enabled', '');
 
         function goBack() {

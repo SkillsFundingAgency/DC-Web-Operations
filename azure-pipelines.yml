@@ -79,7 +79,7 @@ stages:
 # Display Variables
 #********************************************************************************   
     - task: PowerShell@2
-      enabled: false
+      enabled: true
       name: DislayAllVariables2
       displayName: 'Display all variables'
       continueOnError: true  
@@ -241,7 +241,21 @@ stages:
         codeCoverageTool: Cobertura
         summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
         reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
-      
+    
+    - task: dependency-check-build-task@5
+      displayName: 'Run OWASP Dependency Check'
+      inputs:
+        projectName: 'SFA.DC.Web.Operations'
+        scanPath: '**/*.*'
+        format: 'HTML, JUNIT'
+        reportsDirectory: '$(Build.SourcesDirectory)/OWASP'
+        
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles:  '$(Build.SourcesDirectory)/OWASP/**/dependency-check-junit.xml'
+        mergeTestResults: true
+
 #********************************************************************************
 # Publish Artifacts
 #********************************************************************************    

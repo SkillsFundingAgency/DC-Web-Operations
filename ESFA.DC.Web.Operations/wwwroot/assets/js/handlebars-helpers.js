@@ -1,27 +1,4 @@
-export const getHandleBarsTemplate = function (name, root) {
-    if (root === undefined) {
-        root = '/assets/templates/';
-    }
-
-    if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
-
-        var xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    Handlebars.templates = Handlebars.templates || {};
-                    Handlebars.templates[name] = Handlebars.compile(xhr.responseText);
-                }
-                else {
-                    console.log('Error fetching the template.');
-                }
-            }
-        }
-
-        xhr.open("GET", root + name, false);
-        xhr.send();
-    }
+export const getHandleBarsTemplate = function (name) {
     return Handlebars.templates[name];
 };
 
@@ -31,23 +8,23 @@ export const registerPartialTemplate = function (name, template) {
 }
 
 export const Templates = {
-    ReferenceDataFilesList: 'ReferenceData/FilesListTemplate.html',
-    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList.html',
-    InternalReportsDownloadList: 'Reports/InternalReportsDownloadList.html',
-    ReportListOptions: 'Reports/ReportListOptions.html',
-    PeriodEnd: 'PeriodEnd/PeriodEnd.html',
-    PeriodEndNavigation: 'PeriodEnd/PeriodEndNavigation.html',
-    FisFilesList: 'ReferenceData/FisFilesListTemplate.html',
-    ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList.html',
-    ValidityPeriod : 'PeriodEnd/ValidityPeriods.html'
+    ReferenceDataFilesList: 'ReferenceData/FilesListTemplate',
+    FundingClaimsDatesList: 'ReferenceData/FundingClaimsDatesList',
+    InternalReportsDownloadList: 'Reports/InternalReportsDownloadList',
+    ReportListOptions: 'Reports/ReportListOptions',
+    PeriodEnd: 'PeriodEnd/PeriodEnd',
+    PeriodEndNavigation: 'PeriodEnd/PeriodEndNavigation',
+    FisFilesList: 'ReferenceData/FisFilesListTemplate',
+    ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList',
+    ValidityPeriod: 'PeriodEnd/ValidityPeriods'
 };
 
 export const Partials = {
-    ProceedButton: 'PeriodEnd/Partials/ProceedButton.html',
-    PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary.html',
-    ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper.html',
-    PathHeader: 'PeriodEnd/Partials/PathHeader.html',
-    ILRPathHeader: 'PeriodEnd/Partials/ILRPathHeader.html'
+    ProceedButton: 'PeriodEnd/Partials/ProceedButton',
+    PathItemJobSummary: 'PeriodEnd/Partials/PathItemJobSummary',
+    ProceedableItemWrapper: 'PeriodEnd/Partials/ProceedableItemWrapper',
+    PathHeader: 'PeriodEnd/Partials/PathHeader',
+    ILRPathHeader: 'PeriodEnd/Partials/ILRPathHeader'
 }
 
 export const registerHelper = function (helper, helperFunction) {

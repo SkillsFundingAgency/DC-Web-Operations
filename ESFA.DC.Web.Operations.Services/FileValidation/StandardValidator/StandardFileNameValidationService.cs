@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
@@ -23,20 +24,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.StandardValidator
         {
         }
 
-        public override string[] CollectionNames => new[]
-        {
-            Utils.CollectionNames.ReferenceDataCampusIdentifiers,
-            Utils.CollectionNames.ReferenceDataConditionsOfFundingRemoval,
-            Utils.CollectionNames.DevolvedContracts,
-            Utils.CollectionNames.DevolvedPostcodesFullName,
-            Utils.CollectionNames.DevolvedPostcodesLocalAuthority,
-            Utils.CollectionNames.DevolvedPostcodesSof,
-            Utils.CollectionNames.DevolvedPostcodesOnsOverride,
-            Utils.CollectionNames.OnsPostcodes,
-            Utils.CollectionNames.ReferenceDataProviderPostcodeSpecialistResources,
-            Utils.CollectionNames.ReferenceDataValidationMessages2021,
-            Utils.CollectionNames.ShortTermFundingInitiatives
-        };
+        public override string CollectionName => string.Empty;
 
         public override DateTime GetFileDateTime(Regex fileNameRegex, string fileName)
         {
@@ -46,7 +34,7 @@ namespace ESFA.DC.Web.Operations.Services.FileValidation.StandardValidator
             }
 
             return DateTime.ParseExact(
-                $"{Path.GetFileNameWithoutExtension(fileName).Split('-')[1]}",
+                $"{Path.GetFileNameWithoutExtension(fileName).Split('-').Last()}",
                 "yyyyMMddHHmm",
                 CultureInfo.InvariantCulture);
         }

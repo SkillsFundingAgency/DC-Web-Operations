@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,6 +15,7 @@ using ESFA.DC.Web.Operations.Models.Job;
 using ESFA.DC.Web.Operations.Models.ReferenceData;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.AspNetCore.Http;
+using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Services.ReferenceData
 {
@@ -21,7 +23,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
     {
         private const string Api = "/api/reference-data-uploads/";
         private const string SummaryFileName = "Upload Result Report";
-        private const string CreatedByPlaceHolder = "Data unavailable";
+        private const string DataUnavailable = "Data unavailable";
 
         private readonly ICollectionsService _collectionsService;
         private readonly IJobService _jobService;
@@ -32,6 +34,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         private readonly ILogger _logger;
         private readonly IReferenceDataServiceClient _referenceDataServiceClient;
         private readonly IFileService _fileService;
+        private readonly IEnumerable<ICollection> _collections;
 
         public ReferenceDataService(
             ICollectionsService collectionsService,
@@ -42,7 +45,8 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             ICloudStorageService cloudStorageService,
             ILogger logger,
             IReferenceDataServiceClient referenceDataServiceClient,
-            IIndex<PersistenceStorageKeys, IFileService> operationsFileService)
+            IIndex<PersistenceStorageKeys, IFileService> operationsFileService,
+            IEnumerable<ICollection> collections)
         {
             _collectionsService = collectionsService;
             _jobService = jobService;
@@ -52,6 +56,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             _cloudStorageService = cloudStorageService;
             _logger = logger;
             _referenceDataServiceClient = referenceDataServiceClient;
+            _collections = collections;
             _fileService = operationsFileService[PersistenceStorageKeys.DctAzureStorage];
         }
 
@@ -124,12 +129,18 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
         {
             var jobs = (await _jobService.GetLatestJobForReferenceDataCollectionsAsync(CollectionTypes.ReferenceData, cancellationToken))?.ToList();
 
-            var fundingClaimsCollectionMetaDataLastUpdate = await _fundingClaimsDatesService.GetLastUpdatedFundingClaimsCollectionMetaDataAsync(cancellationToken);
+            var model = new ReferenceDataIndexModel();
 
-            var latestSuccessfulCIJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataCampusIdentifiers);
-            var latestSuccessfulCoFRJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataConditionsOfFundingRemoval);
-            var latestSuccessfulPPSResourcesJob = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataProviderPostcodeSpecialistResources);
-            var latestSuccessfulVal2021Job = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ReferenceDataValidationMessages2021);
+            foreach (var collection in _collections.Where(w => w.IsDisplayedOnReferenceDataSummary))
+            {
+                var collectionJobs = jobs?.FirstOrDefault(j => j.CollectionName == collection.CollectionName);
+                model.CollectionJobStats.Add(collection.CollectionName, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(collectionJobs?.DateTimeSubmittedUtc), LastUpdatedByWho = collectionJobs?.CreatedBy ?? DataUnavailable, Valid = await IsCollectionValid(collection.CollectionName, cancellationToken) });
+            }
+
+            // Special Cases
+            var fundingClaimsCollectionMetaDataLastUpdate = await _fundingClaimsDatesService.GetLastUpdatedFundingClaimsCollectionMetaDataAsync(cancellationToken);
+            model.CollectionJobStats.Add(CollectionNames.FundingClaimsMetaData, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(fundingClaimsCollectionMetaDataLastUpdate?.DateTimeUpdatedUtc), LastUpdatedByWho = fundingClaimsCollectionMetaDataLastUpdate?.CreatedBy ?? DataUnavailable, Valid = true });
+
             var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
                 w => w.CollectionName == CollectionNames.DevolvedPostcodesFullName ||
                      w.CollectionName == CollectionNames.DevolvedPostcodesLocalAuthority ||
@@ -137,76 +148,17 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                      w.CollectionName == CollectionNames.DevolvedPostcodesSof)
                 .OrderByDescending(o => o.DateTimeSubmittedUtc)
                 .FirstOrDefault();
-            var latestSuccessfulOnsPostcodes = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.OnsPostcodes);
-            var latestSuccessfulDevolvedContracts = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.DevolvedContracts);
-            var latestSuccessfulShortTermFundingInitiatives = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.ShortTermFundingInitiatives);
-            var latestSuccessfulFisReferenceDataJobs = jobs?.FirstOrDefault(j => j.CollectionName == CollectionNames.FisReferenceData2021);
 
-            var model = new ReferenceDataIndexModel
-            {
-                CampusIdentifiers = new ReferenceDataIndexBase
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulCIJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulCIJob?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                ConditionOfFundingRemoval = new ReferenceDataIndexBase
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulCoFRJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulCoFRJob?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                ProviderPostcodeSpecialistResources = new ReferenceDataIndexBase
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulPPSResourcesJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulPPSResourcesJob?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                DevolvedPostcodes = new ReferenceDataIndexBase()
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                OnsPostcodes = new ReferenceDataIndexBase()
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulOnsPostcodes?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulOnsPostcodes?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                ValidationMessages2021 = new ReferenceDataIndexBase
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulVal2021Job?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulVal2021Job?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = !(await _referenceDataServiceClient.IsReferenceDataCollectionExpired(CollectionNames.ReferenceDataValidationMessages2021, cancellationToken))
-                },
-                FundingClaimsDates = new ReferenceDataIndexBase()
-                {
-                    LastUpdatedDateTime = GetDate(fundingClaimsCollectionMetaDataLastUpdate?.DateTimeUpdatedUtc),
-                    LastUpdatedByWho = fundingClaimsCollectionMetaDataLastUpdate?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                DevolvedContracts = new ReferenceDataIndexBase()
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedContracts?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulDevolvedContracts?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                ShortTermFundingInitiatives = new ReferenceDataIndexBase()
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulShortTermFundingInitiatives?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulShortTermFundingInitiatives?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                },
-                FisReferenceData2021 = new ReferenceDataIndexBase()
-                {
-                    LastUpdatedDateTime = GetDate(latestSuccessfulFisReferenceDataJobs?.DateTimeSubmittedUtc),
-                    LastUpdatedByWho = latestSuccessfulFisReferenceDataJobs?.CreatedBy ?? CreatedByPlaceHolder,
-                    Valid = true
-                }
-            };
+            model.CollectionJobStats.Add(CollectionNames.DevolvedPostcodes, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc), LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? DataUnavailable, Valid = true });
 
             return model;
+        }
+
+        private async Task<bool> IsCollectionValid(string collectionName, CancellationToken cancellationToken)
+        {
+            return collectionName != CollectionNames.ReferenceDataValidationMessages2021 ||
+                   !(await _referenceDataServiceClient.IsReferenceDataCollectionExpired(
+                       CollectionNames.ReferenceDataValidationMessages2021, cancellationToken));
         }
 
         private async Task<JobSubmission> CreateJobSubmissionAsync(int period, string collectionName, string userName, string email, string fileName, long fileSizeInBytes, CancellationToken cancellationToken)

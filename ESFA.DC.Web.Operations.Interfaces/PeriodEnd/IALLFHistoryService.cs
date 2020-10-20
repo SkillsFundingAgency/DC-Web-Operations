@@ -7,6 +7,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 {
     public interface IALLFHistoryService
     {
-        Task<IEnumerable<FileUploadJobMetaDataModel>> GetHistoryDetails(int year, CancellationToken cancellationToken);
+        Task<IEnumerable<FileUploadJobMetaDataModel>> GetHistoryDetails(int year, int latestPeriod, CancellationToken cancellationToken);
     }
 }

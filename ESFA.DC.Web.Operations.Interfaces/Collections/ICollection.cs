@@ -13,5 +13,7 @@
         string FileFormat { get; }
 
         string FileNameFormat { get; }
+
+        bool IsDisplayedOnReferenceDataSummary { get; }
     }
 }

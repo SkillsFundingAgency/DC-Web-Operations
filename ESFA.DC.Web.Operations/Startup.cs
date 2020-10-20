@@ -296,6 +296,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<NcsOutcomeRatesHub>("/ncsOutcomeRatesHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>
@@ -341,7 +346,6 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<NCSPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ALLFPeriodEndHub>().InstancePerLifetimeScope().ExternallyOwned();
-            containerBuilder.RegisterType<CampusIdentifiersHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.RegisterType<ProviderSearchHub>().InstancePerLifetimeScope().ExternallyOwned();
 
@@ -356,9 +360,6 @@ namespace ESFA.DC.Web.Operations
             containerBuilder.RegisterType<JobFailedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ProvidersReturnedCurrentPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
             containerBuilder.RegisterType<ValidityPeriodHub>().InstancePerLifetimeScope().ExternallyOwned();
-
-            containerBuilder.RegisterType<ConditionOfFundingRemovalHub>().InstancePerLifetimeScope().ExternallyOwned();
-            containerBuilder.RegisterType<ProviderPostcodeSpecialistResourcesHub>().InstancePerLifetimeScope().ExternallyOwned();
 
             containerBuilder.Populate(services);
             _applicationContainer = containerBuilder.Build();
