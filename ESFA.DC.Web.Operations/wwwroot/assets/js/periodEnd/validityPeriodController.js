@@ -39,14 +39,34 @@ class ValidityPeriodController {
         const container = document.getElementById("structureContainer");
         container.innerHTML = this._template({ viewModel: data });
 
-        $onAll(document.querySelectorAll(".validityCheckbox"), "change", (e) => e.target.value = this.toggleCheckboxValue(e.target.value));
+        $onAll(document.querySelectorAll(".validityCheckbox"), "change", (e) => e.target.value = this.toggleCheckboxValue(e.target, e.target.value));
     }
 
-    toggleCheckboxValue(currentValue) {
-        if (currentValue === "true")
+    toggleCheckboxValue(element, currentValue) {
+        if (currentValue === "true") {
+            this.disableChildCheckBoxes(element, false);
             return "false";
-        else
+        }
+        else {
+            this.disableChildCheckBoxes(element, true);
             return "true";
+        }
+    }
+
+    disableChildCheckBoxes(checkboxElement, checked) {
+        const sibling = checkboxElement.closest(".checkbox-container").nextElementSibling;
+        if (sibling && sibling.classList.contains("inner-list")) {
+            const childCheckboxes = sibling.querySelectorAll("input");
+            if (checked) {
+                sibling.classList.remove("greyed-out");
+            } else {
+                sibling.classList.add("greyed-out");
+            }
+
+            childCheckboxes.forEach((c) => {
+                c.disabled = !checked;
+            });
+        }
     }
 
     getData() {

@@ -866,3 +866,7 @@ progress::-moz-progress-bar { background: white; }
 .hr-bottom-margin {
     margin-bottom: 30px;
 }
+
+.greyed-out {
+    color: govuk-colour("grey-1")
+}

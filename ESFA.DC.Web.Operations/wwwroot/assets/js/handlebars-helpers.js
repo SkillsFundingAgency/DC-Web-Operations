@@ -78,3 +78,11 @@ Handlebars.registerHelper("setVar", function (varName, varValue, options) {
 Handlebars.registerHelper("increment", function (value, options) {
     return parseInt(value) + 1;
 });
+
+Handlebars.registerHelper("isInitiatingItem", function(isPausing, hasJobs, isHidden, entityType, options) {
+    return isPausing === true && hasJobs === false && isHidden === false && entityType === 2;
+});
+
+Handlebars.registerHelper("disableCheckboxes", function (isValid, criticalParent, options) {
+    return !isValid && !criticalParent;
+});

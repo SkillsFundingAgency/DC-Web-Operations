@@ -40,9 +40,11 @@
             </div>
         </div>
 
-        <ul class="inner-list">
+        <ul 
+            class="inner-list {{#if (disableCheckboxes this.isValidForPeriod this.isCritical)}} greyed-out{{/if}}">
             {{#each this.pathItems}}
             {{setVar "masterIndex" (increment @root.masterIndex)}}
+            {{setVar "initiatingItem" (isInitiatingItem this.isPausing this.hasJobs this.hidden this.entityType) }}
             <li>
                 <input type="hidden" class="hidden"
                        id="pathitem-{{this.pathId}}-{{this.pathItemId}}"
@@ -59,7 +61,7 @@
                         {{#if this.hidden}}
                         <a href="#{{this.subPaths}}">{{this.name}}</a>
                         {{else}}
-                            {{this.name}}
+                        {{this.name}}
                         {{/if}}
                     </div>
 
@@ -67,13 +69,16 @@
                         <div class="flex">
                             <div class="govuk-checkboxes__item">
                                 {{#unless this.hidden}}
+                                {{#unless @root.initiatingItem}}
                                 <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
                                        name="items[{{@root.masterIndex}}].Enabled"
                                        id="ckpathItem-{{this.pathId}}-{{this.pathItemId}}"
                                        value="{{this.isValidForPeriod}}"
+                                       {{#if (disableCheckboxes ../isValidForPeriod ../isCritical)}} disabled{{/if}}
                                        {{#if this.isValidForPeriod}} checked{{/if}} />
                                 <label class="govuk-label govuk-checkboxes__label">
                                 </label>
+                                {{/unless}}
                                 {{/unless}}
                             </div>
                         </div>
