@@ -37,20 +37,22 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             _validityPeriodService = validityPeriodService;
         }
 
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        [HttpGet("{collectionYear?}/{period?}")]
+        public async Task<IActionResult> Index(int? collectionYear, int? period, CancellationToken cancellationToken)
         {
-            var period = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
+            var returnPeriod = await _periodService.ReturnPeriod(CollectionType, cancellationToken);
             var years = await _periodService.GetValidityYearsAsync(CollectionType, null, cancellationToken);
 
-            period.Year = period.Year ?? 0;
+            var year = collectionYear ?? returnPeriod.Year ?? 0;
+            var periodNumber = period ?? returnPeriod.Period;
 
-            var stateString = await _periodEndService.GetPrepStateAsync(period.Year, period.Period, CollectionType, cancellationToken);
+            var stateString = await _periodEndService.GetPrepStateAsync(year, periodNumber, CollectionType, cancellationToken);
             var state = _stateService.GetPrepState(stateString);
 
             var model = new ValidityPeriodViewModel
             {
-                Year = period.Year.Value,
-                Period = period.Period,
+                Year = year,
+                Period = periodNumber,
                 PeriodEndInProgress = state.State.PeriodEndStarted && !state.State.PeriodEndFinished,
                 AllYears = years
             };
@@ -63,7 +65,7 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
         {
             await _validityPeriodService.UpdateValidityPeriods(collectionYear, period, items);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { collectionYear, period });
         }
     }
 }

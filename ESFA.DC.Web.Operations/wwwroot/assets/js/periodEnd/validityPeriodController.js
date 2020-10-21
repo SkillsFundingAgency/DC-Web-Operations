@@ -1,4 +1,4 @@
-﻿import { Templates, getHandleBarsTemplate } from '/assets/js/handlebars-helpers.js';
+﻿import { Templates, getHandleBarsTemplate, registerHelper} from '/assets/js/handlebars-helpers.js';
 import { $on, $onAll } from '/assets/js/util.js';
 import Client from '/assets/js/periodEnd/client.js';
 import Hub from '/assets/js/hubs/hub.js';
@@ -14,10 +14,11 @@ class ValidityPeriodController {
         this.registerHandlers();
         this._hub.startHub(this.getData.bind(this));
 
+        registerHelper("isInitiatingItem", this.isInitiatingItem);
+        registerHelper("disableCheckboxes", this.disableCheckboxes);
+
         $on(document.getElementById("collectionYear"), "change", () => { this.getData(); });
         $on(document.getElementById("period"), "change", () => { this.getData(); });
-
-        
     }
 
     updatePage(data) {
@@ -39,24 +40,33 @@ class ValidityPeriodController {
         const container = document.getElementById("structureContainer");
         container.innerHTML = this._template({ viewModel: data });
 
-        $onAll(document.querySelectorAll(".validityCheckbox"), "change", (e) => e.target.value = this.toggleCheckboxValue(e.target, e.target.value));
+        $onAll(document.querySelectorAll(".validityCheckbox"), "change",
+            (e) => {
+                const hiddenItem = e.target.previousElementSibling;
+                const state = this.toggleCheckboxValue(e.target, e.target.value);
+
+                e.target.value = state;
+                if(hiddenItem)
+                    hiddenItem.value = state;
+            }
+        );
     }
 
     toggleCheckboxValue(element, currentValue) {
         if (currentValue === "true") {
-            this.disableChildCheckBoxes(element, false);
+            this.toggleChildCheckBoxes(element, false);
             return "false";
         }
         else {
-            this.disableChildCheckBoxes(element, true);
+            this.toggleChildCheckBoxes(element, true);
             return "true";
         }
     }
 
-    disableChildCheckBoxes(checkboxElement, checked) {
+    toggleChildCheckBoxes(checkboxElement, checked) {
         const sibling = checkboxElement.closest(".checkbox-container").nextElementSibling;
         if (sibling && sibling.classList.contains("inner-list")) {
-            const childCheckboxes = sibling.querySelectorAll("input");
+            const childCheckboxes = sibling.querySelectorAll("input[type=checkbox]");
             if (checked) {
                 sibling.classList.remove("greyed-out");
             } else {
@@ -73,6 +83,14 @@ class ValidityPeriodController {
         const period = document.getElementById('period').value;
         const collectionYear = document.getElementById('collectionYear').value;
         this._client.invokeAction("GetValidityStructure", collectionYear, period);
+    }
+
+    isInitiatingItem(isPausing, hasJobs, isHidden, entityType, options) {
+        return isPausing === true && hasJobs === false && isHidden === false && entityType === 2;
+    }
+
+    disableCheckboxes(isValid, criticalParent, options) {
+        return !isValid && !criticalParent;
     }
 }
 

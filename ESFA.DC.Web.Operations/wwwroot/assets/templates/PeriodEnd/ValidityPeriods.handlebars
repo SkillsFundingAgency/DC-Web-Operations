@@ -18,9 +18,9 @@
         <div class="checkbox-container">
             <div class="checkbox-text govuk-!-font-weight-bold">
                 {{#if this.isCritical}}
-                    {{this.name}}
+                {{this.name}}
                 {{else}}
-                    <a id="{{this.pathId}}">{{this.name}}</a>
+                <a href="#item_{{this.pathId}}" id="{{this.pathId}}">❮</a> {{this.name}}
                 {{/if}}
             </div>
             <div class="govuk-checkboxes">
@@ -59,7 +59,7 @@
                 <div class="checkbox-container">
                     <div class="checkbox-text">
                         {{#if this.hidden}}
-                        <a href="#{{this.subPaths}}">{{this.name}}</a>
+                        {{this.name}} <a href="#{{this.subPaths}}" id="item_{{this.subPaths}}">❯</a>
                         {{else}}
                         {{this.name}}
                         {{/if}}
@@ -70,12 +70,12 @@
                             <div class="govuk-checkboxes__item">
                                 {{#unless this.hidden}}
                                 {{#unless @root.initiatingItem}}
+                                <input type="hidden" name="items[{{@root.masterIndex}}].Enabled" value="{{this.isValidForPeriod}}" />
                                 <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
-                                       name="items[{{@root.masterIndex}}].Enabled"
                                        id="ckpathItem-{{this.pathId}}-{{this.pathItemId}}"
-                                       value="{{this.isValidForPeriod}}"
                                        {{#if (disableCheckboxes ../isValidForPeriod ../isCritical)}} disabled{{/if}}
-                                       {{#if this.isValidForPeriod}} checked{{/if}} />
+                                       {{#if this.isValidForPeriod}} checked{{/if}}
+                                       value="{{this.isValidForPeriod}}" />
                                 <label class="govuk-label govuk-checkboxes__label">
                                 </label>
                                 {{/unless}}
