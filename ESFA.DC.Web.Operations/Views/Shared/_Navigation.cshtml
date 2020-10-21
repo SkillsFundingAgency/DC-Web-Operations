@@ -20,16 +20,15 @@
 {
     if (ViewData.ContainsKey(ViewDataConstants.BackLink))
     {
-        <a onclick="goBack()" class="govuk-back-link">Back</a>
+        <a class="govuk-back-link navigation-back">Back</a>
     }
     else if (ViewData.ContainsKey(ViewDataConstants.GoToStart))
     {
-        <a onclick="goToStart()" class="govuk-back-link">Back</a>
+        <a class="govuk-back-link navigation-back-to-start">Back</a>
     }
     else if (ViewData.ContainsKey(ViewDataConstants.EmailDistributionHome))
     {
-        <a onclick="goToEmaiDistrbutionlHome()" class="govuk-back-link">Back</a>
-
+        <a class="govuk-back-link navigation-back-to-email-home">Back</a>
     }
 }
 

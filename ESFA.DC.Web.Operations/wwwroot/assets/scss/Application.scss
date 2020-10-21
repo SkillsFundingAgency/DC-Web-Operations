@@ -12,6 +12,10 @@ $govuk-global-styles: true;
 // Components that aren't in Frontend
 @import "components/cookie-banner";
 
+a:not([href]) {
+    cursor: pointer;
+}
+
 hr {
     height: 1px;
     color: $govuk-border-colour;
