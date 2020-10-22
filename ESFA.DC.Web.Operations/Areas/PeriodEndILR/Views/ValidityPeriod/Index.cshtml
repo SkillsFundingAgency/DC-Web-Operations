@@ -20,54 +20,56 @@
 
 @if (!Model.PeriodEndInProgress)
 {
-    <form asp-action="UpdateValidityPeriod" asp-controller="ValidityPeriod">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-xl heading-bottom-margin">Validity Periods</h1>
-                <br />
-                <br />
-                <div id="typeFilter" class="govuk-checkboxes">
-                    <div id="minusMargin" class="govuk-form-group margin-right">
-                        <label class="govuk-label">Collection year</label>
-                        <select class="govuk-select" id="collectionYear" name="collectionYear">
-                            @foreach (var year in Model.AllYears)
-                            {
-                                if (Model.Year == year)
-                                {
-                                    <option value="@year" selected>@year</option>
-                                }
-                                else
-                                {
-                                    <option value="@year">@year</option>
-                                }
-                            }
-                        </select>
-                    </div>
+<form asp-action="UpdateValidityPeriod" asp-controller="ValidityPeriod">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl heading-bottom-margin">Validity Periods</h1>
+            <br />
+            <br />
+            <div id="typeFilter" class="govuk-checkboxes">
+                <div id="minusMargin" class="govuk-form-group margin-right">
+                    <label class="govuk-label">Collection year</label>
 
-                    <div id="minusMargin" class="govuk-form-group margin-right">
-                        <label class="govuk-label">Period number</label>
-                        <select class="govuk-select" id="period" name="period">
-                            @for (var i = 1; i <= 14; i++)
+                    <select class="govuk-select" id="collectionYear" name="collectionYear">
+                        @foreach (var year in Model.AllYears)
+                        {
+                            if (Model.Year == year)
                             {
-                                if (Model.Period == i)
-                                {
-                                    <option value="@i" selected>@i</option>
-                                }
-                                else
-                                {
-                                    <option value="@i">@i</option>
-                                }
+                                <option value="@year" selected>@year</option>
                             }
-                        </select>
-                    </div>
+                            else
+                            {
+                                <option value="@year">@year</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div id="minusMargin" class="govuk-form-group margin-right">
+                    <label class="govuk-label">Period number</label>
+                    <select class="govuk-select" id="period" name="period">
+                        @for (var i = 1; i <= 14; i++)
+                        {
+                            if (Model.Period == i)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
                 </div>
             </div>
+
+            <span id="spinner" class="loading-spinner"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
         </div>
+    </div>
 
-        <div id="structureContainer"></div>
+    <div id="structureContainer"></div>
 
-        <button type="submit" class="govuk-button" id="saveChanges">Save</button>
-    </form>
+</form>
 }
 else
 {

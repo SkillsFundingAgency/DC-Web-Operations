@@ -2,11 +2,19 @@
   {
     "outputFile": "wwwroot/assets/css/application.css",
     "inputFile": "wwwroot/assets/scss/application.scss",
-    "minify": { "enabled": false },
-    "options": { "sourceMap": true }
+    "minify": {
+      "enabled": false
+    },
+    "options": {
+      "sourceMap": true
+    }
   },
   {
     "outputFile": "wwwroot/assets/css/autocomplete.css",
     "inputFile": "wwwroot/assets/scss/autocomplete.scss"
+  },
+  {
+    "outputFile": "wwwroot/assets/scss/override.css",
+    "inputFile": "wwwroot/assets/scss/override.scss"
   }
 ]

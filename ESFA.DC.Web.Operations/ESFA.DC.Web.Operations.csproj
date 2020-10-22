@@ -32,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\assets\scss\override.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Templates\MultipleProvidersTemplate.csv" />
   </ItemGroup>
 

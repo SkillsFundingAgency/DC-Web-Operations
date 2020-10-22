@@ -1,5 +1,5 @@
 ﻿import { Templates, getHandleBarsTemplate, registerHelper} from '/assets/js/handlebars-helpers.js';
-import { $on, $onAll } from '/assets/js/util.js';
+import { $on, $onAll, setControlVisiblity } from '/assets/js/util.js';
 import Client from '/assets/js/periodEnd/client.js';
 import Hub from '/assets/js/hubs/hub.js';
 
@@ -16,6 +16,8 @@ class ValidityPeriodController {
 
         registerHelper("isInitiatingItem", this.isInitiatingItem);
         registerHelper("disableCheckboxes", this.disableCheckboxes);
+        registerHelper("disableCheckBoxIfNotInPeriod", this.disableCheckBoxIfNotInPeriod);
+        registerHelper("mapValidStateToBoolean", this.mapValidStateToBoolean);
 
         $on(document.getElementById("collectionYear"), "change", () => { this.getData(); });
         $on(document.getElementById("period"), "change", () => { this.getData(); });
@@ -24,6 +26,7 @@ class ValidityPeriodController {
     updatePage(data) {
         data = JSON.parse(data);
         this.renderStructure(data);
+        setControlVisiblity(false, 'spinner');
     }
 
     registerHandlers() {
@@ -47,19 +50,19 @@ class ValidityPeriodController {
 
                 e.target.value = state;
                 if(hiddenItem)
-                    hiddenItem.value = state;
+                    hiddenItem.value = state === "1";
             }
         );
     }
 
     toggleCheckboxValue(element, currentValue) {
-        if (currentValue === "true") {
+        if (currentValue !== "1") {
             this.toggleChildCheckBoxes(element, false);
-            return "false";
+            return "0";
         }
         else {
             this.toggleChildCheckBoxes(element, true);
-            return "true";
+            return "1";
         }
     }
 
@@ -80,6 +83,7 @@ class ValidityPeriodController {
     }
 
     getData() {
+        setControlVisiblity(true, 'spinner');
         const period = document.getElementById('period').value;
         const collectionYear = document.getElementById('collectionYear').value;
         this._client.invokeAction("GetValidityStructure", collectionYear, period);
@@ -89,8 +93,20 @@ class ValidityPeriodController {
         return isPausing === true && hasJobs === false && isHidden === false && entityType === 2;
     }
 
-    disableCheckboxes(isValid, criticalParent, options) {
-        return !isValid && !criticalParent;
+    disableCheckboxes(isValid, criticalParent, isNotInPeriod, periodEndHasRunForPeriod, options) {
+        return periodEndHasRunForPeriod === true || isNotInPeriod === true || (!isValid && !criticalParent);
+    }
+
+    mapValidStateToBoolean(state, options) {
+        if(state === 1) {
+            return "true";
+        }
+
+        return "false";
+    }
+
+    disableCheckBoxIfNotInPeriod(state, options) {
+        return state === 2;
     }
 }
 
