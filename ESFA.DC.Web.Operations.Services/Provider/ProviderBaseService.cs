@@ -18,7 +18,8 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 {
     public abstract class ProviderBaseService
     {
-        private readonly string _baseUrl;
+        private readonly string _jobManagementBaseUrl;
+        private readonly string _fundingClaimsBaseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IHttpClientService _httpClientService;
 
@@ -27,52 +28,32 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             IDateTimeProvider dateTimeProvider,
             IHttpClientService httpClientService)
         {
-            _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _jobManagementBaseUrl = apiSettings.JobManagementApiBaseUrl;
+            _fundingClaimsBaseUrl = apiSettings.FundingClaimsApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
             _httpClientService = httpClientService;
         }
 
         public async Task<Models.Provider.Provider> GetProviderAsync(long ukprn, CancellationToken cancellationToken)
         {
-            var data = await _httpClientService.GetAsync<ProviderDetail>($"{_baseUrl}/api/org/{ukprn}", cancellationToken);
+            var data = await _httpClientService.GetAsync<ProviderDetail>($"{_jobManagementBaseUrl}/api/org/{ukprn}", cancellationToken);
 
             return new Models.Provider.Provider(data.Name, data.Ukprn, data.Upin, data.IsMCA);
         }
 
         public async Task<IEnumerable<CollectionAssignment>> GetProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken)
         {
-            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_baseUrl}/api/org/assignments/{ukprn}", cancellationToken);
+            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_jobManagementBaseUrl}/api/org/assignments/{ukprn}", cancellationToken);
 
-            var dateTimeNow = _dateTimeProvider.GetNowUtc();
-
-            var collectionAssignments = new List<CollectionAssignment>();
-
-            foreach (var assignment in response)
+            var collectionAssignments = response.Select(a => new CollectionAssignment
             {
-                var startDate = _dateTimeProvider.ConvertUtcToUk(assignment.StartDate);
-                var endDate = _dateTimeProvider.ConvertUtcToUk(assignment.EndDate ?? dateTimeNow);
-
-                if (startDate.Equals(DateTime.MinValue))
-                {
-                    continue;
-                }
-
-                var displayDateStart = startDate.AddMonths(-2);
-                var displayDateEnd = endDate.AddMonths(2);
-
-                if (dateTimeNow >= displayDateStart && dateTimeNow <= displayDateEnd)
-                {
-                    collectionAssignments.Add(new CollectionAssignment
-                    {
-                        CollectionId = assignment.CollectionId,
-                        Name = assignment.CollectionName,
-                        StartDate = startDate,
-                        EndDate = endDate,
-                        DisplayOrder = SetDisplayOrder(assignment.CollectionType, assignment.CollectionName),
-                        ToBeDeleted = false
-                    });
-                }
-            }
+                CollectionId = a.CollectionId,
+                Name = a.CollectionName,
+                StartDate = a.StartDate,
+                EndDate = a.EndDate,
+                DisplayOrder = SetDisplayOrder(a.CollectionType, a.CollectionName),
+                ToBeDeleted = false
+            }).ToList();
 
             return collectionAssignments;
         }
@@ -82,13 +63,21 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             const int minimumVarianceInMonths = -2;
             const int maximumVarianceInMonths = 2;
 
-            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_baseUrl}/api/org/assignments/{ukprn}", cancellationToken);
+            var response = await _httpClientService.GetAsync<IEnumerable<OrganisationCollection>>($"{_jobManagementBaseUrl}/api/org/assignments/{ukprn}", cancellationToken);
             var dateTimeNow = _dateTimeProvider.GetNowUtc();
             var isOpenCollectionRequests = new Dictionary<OrganisationCollection, Task<bool>>();
 
-            response.ForEach(assignment => isOpenCollectionRequests.Add(
-                assignment,
-                _httpClientService.GetAsync<bool>($"{_baseUrl}/api/collections/isOpenWithVariance/{assignment.CollectionId}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken)));
+            foreach (var assignment in response)
+            {
+                if (assignment.CollectionType == CollectionType.FC)
+                {
+                    isOpenCollectionRequests.Add(assignment, _httpClientService.GetAsync<bool>($"{_fundingClaimsBaseUrl}/collection/isOpenWithVariance/{assignment.CollectionName}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken));
+                }
+                else
+                {
+                    isOpenCollectionRequests.Add(assignment, _httpClientService.GetAsync<bool>($"{_jobManagementBaseUrl}/api/collections/isOpenWithVariance/{assignment.CollectionId}/{dateTimeNow.ToString("s", CultureInfo.InvariantCulture)}/{minimumVarianceInMonths}/{maximumVarianceInMonths}", cancellationToken));
+                }
+            }
 
             await Task.WhenAll(isOpenCollectionRequests.Values);
 
