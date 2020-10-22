@@ -49,20 +49,20 @@ class ValidityPeriodController {
                 const state = this.toggleCheckboxValue(e.target, e.target.value);
 
                 e.target.value = state;
-                if(hiddenItem)
-                    hiddenItem.value = state === "1";
+                if (hiddenItem)
+                    hiddenItem.value = state;
             }
         );
     }
 
     toggleCheckboxValue(element, currentValue) {
-        if (currentValue !== "1") {
-            this.toggleChildCheckBoxes(element, false);
-            return "0";
+        if (currentValue !== "true") {
+            this.toggleChildCheckBoxes(element, true);
+            return true;
         }
         else {
-            this.toggleChildCheckBoxes(element, true);
-            return "1";
+            this.toggleChildCheckBoxes(element, false);
+            return false;
         }
     }
 
@@ -98,11 +98,11 @@ class ValidityPeriodController {
     }
 
     mapValidStateToBoolean(state, options) {
-        if(state === 1) {
-            return "true";
+        if (state === 1) {
+            return true;
         }
 
-        return "false";
+        return false;
     }
 
     disableCheckBoxIfNotInPeriod(state, options) {

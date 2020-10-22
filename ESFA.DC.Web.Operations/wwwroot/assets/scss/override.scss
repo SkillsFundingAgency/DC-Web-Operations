@@ -870,10 +870,11 @@ progress::-moz-progress-bar { background: white; }
 .greyed-out {
     color: govuk-colour("grey-1")
 }
+
 .loading-spinner {
     display: inline-block;
     position: fixed;
     left: 50%;
-    top: 50%;
+    top: 30%;
     transform: translate(-50%, -50%);
 }

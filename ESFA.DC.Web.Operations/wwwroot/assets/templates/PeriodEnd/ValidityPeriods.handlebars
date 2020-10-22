@@ -19,19 +19,19 @@
         <div class="checkbox-container">
             <div class="checkbox-text govuk-!-font-weight-bold">
                 {{#if this.isCritical}}
-                {{this.name}}
+                    {{this.name}}
                 {{else}}
-                <a href="#item_{{this.pathId}}" id="{{this.pathId}}">❮</a> {{this.name}}
+                    <a href="#item_{{this.pathId}}" id="{{this.pathId}}">❮</a> {{this.name}}
                 {{/if}}
             </div>
             <div class="govuk-checkboxes">
                 <div class="flex">
                     <div class="govuk-checkboxes__item">
                         {{#unless this.isCritical}}
+
                         <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
                                name="items[{{@root.masterIndex}}].Enabled"
                                id="ckpath-{{this.pathId}}"
-                               {{#if this.isPreviousPeriod}} disabled{{/if}}
                                {{#if (mapValidStateToBoolean this.isValidForPeriod)}} checked{{/if}}
                                value="{{mapValidStateToBoolean this.isValidForPeriod}}" />
                         <label class="govuk-label govuk-checkboxes__label">
@@ -60,9 +60,9 @@
                 <div class="checkbox-container">
                     <div class="checkbox-text">
                         {{#if this.hidden}}
-                        {{this.name}} <a href="#{{this.subPaths}}" id="item_{{this.subPaths}}">❯</a>
+                            {{this.name}} <a href="#{{this.subPaths}}" id="item_{{this.subPaths}}">❯</a>
                         {{else}}
-                        {{this.name}}
+                            {{this.name}}
                         {{/if}}
                     </div>
 
@@ -72,7 +72,7 @@
                                 {{#unless this.hidden}}
                                 {{#unless @root.initiatingItem}}
                                 {{#unless (disableCheckBoxIfNotInPeriod this.isValidForPeriod)}}
-                                <input type="hidden" name="items[{{@root.masterIndex}}].Enabled" value="{{this.isValidForPeriod}}" />
+                                <input type="hidden" name="items[{{@root.masterIndex}}].Enabled" value="{{mapValidStateToBoolean this.isValidForPeriod}}" />
                                 {{/unless}}
 
                                 <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
@@ -99,5 +99,5 @@
 </ol>
 
 {{#unless viewModel.periodEndHasRunForPeriod}}
-<button type="submit" class="govuk-button" id="saveChanges">Save</button>
+    <button type="submit" class="govuk-button" id="saveChanges">Save</button>
 {{/unless}}
