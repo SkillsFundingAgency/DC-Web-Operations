@@ -5,53 +5,36 @@
 <html lang="en">
 <!--<![endif]-->
 <head>
-    @Html.Partial("_Head")
+    <partial name="_Head" />
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
 <body class="govuk-template__body">
 
-    @Html.Partial("_Header")
+    <partial name="_Header" />
 
     <div class="govuk-width-container">
 
-        @Html.Partial("_Banner")
+        <partial name="_Banner" />
 
         <main class="govuk-main-wrapper" id="content" role="main">
-            @Html.Partial("_Navigation")
+            <partial name="_Navigation" />
 
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    @Html.Partial("_ErrorSummary")
-
+                    <partial name="_ErrorSummary" />
                     @RenderBody()
                 </div>
             </div>
         </main>
     </div>
 
-    @Html.Partial("_Footer")
+    <partial name="_Footer" />
 
+    <script src="~/assets/js/siteController.js" asp-append-version="true" type="module"></script>
     <script src="~/assets/js/govuk-template.js" asp-append-version="true"></script>
     <script src="~/assets/minified/govuk.min.js" asp-append-version="true"></script>
     <script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
     <script src="~/assets/templates/templates.precompiled.js" asp-append-version="true"></script>
-
     @RenderSection("PageScripts", required: false)
-
-    <script>
-        if (typeof window.GOVUK === 'undefined')
-            document.body.className = document.body.className.replace('js-enabled', '');
-
-        function goBack() {
-            window.history.back();
-        }
-
-        function goToStart() {
-            window.location.replace("index")
-        }
-        function goToEmaiDistrbutionlHome() {
-            window.location.replace("/emaildistribution")
-        }
-    </script>
 </body>
 </html>
