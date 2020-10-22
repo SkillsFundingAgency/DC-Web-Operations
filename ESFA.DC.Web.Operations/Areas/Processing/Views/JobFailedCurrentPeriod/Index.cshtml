@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model string
+@model ESFA.DC.Web.Operations.Models.Processing.JobProcessingModel<ESFA.DC.Jobs.Model.Processing.JobsFailedCurrentPeriod.JobsFailedCurrentPeriodLookupModel>
 
 @{
     ViewData["Title"] = "Jobs Failed Current Period";
@@ -9,7 +9,7 @@
 <div class="govuk-grid-row">
     <br />
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Jobs failed current period <span id="collectionYear"></span></h1>
+        <h1 class="govuk-heading-xl">Jobs failed current period <span id="collectionYear">@Model.CollectionYear</span></h1>
     </div>
 </div>
 

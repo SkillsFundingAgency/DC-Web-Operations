@@ -1,53 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.Jobs.Model.Processing.Detail;
-using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Jobs.Model.Processing.JobsProcessing;
+using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
+using ESFA.DC.Web.Operations.Models.Processing;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ESFA.DC.Web.Operations.Services.Hubs
 {
     public class JobProcessingDetailHub : Hub
     {
-        private const int LastHour = -60;
-        private const int LastFiveMins = -5;
         private readonly IJobProcessingDetailService _jobProcessingDetailService;
-        private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ILogger _logger;
+        private readonly IJsonSerializationService _jsonSerializationService;
 
         public JobProcessingDetailHub(
             IJobProcessingDetailService jobProcessingDetailService,
-            IDateTimeProvider dateTimeProvider,
-            ILogger logger)
+            IJsonSerializationService jsonSerializationService)
         {
             _jobProcessingDetailService = jobProcessingDetailService;
-            _dateTimeProvider = dateTimeProvider;
-            _logger = logger;
+            _jsonSerializationService = jsonSerializationService;
         }
 
-        public async Task<IEnumerable<JobDetails>> GetJobProcessingDetailsForLastHour()
+        public async Task<JobProcessingModel<JobProcessingDetailLookupModel>> GetJobProcessingDetailsForLastHour()
         {
-            return await GetJobsProcessingDetails(LastHour);
+            return _jsonSerializationService.Deserialize<JobProcessingModel<JobProcessingDetailLookupModel>>(await _jobProcessingDetailService.GetJobsProcessingDetailsForCurrentPeriodLastHour((short)JobStatusType.Completed, CancellationToken.None));
         }
 
-        public async Task<IEnumerable<JobDetails>> GetJobProcessingDetailsForLastFiveMins()
+        public async Task<JobProcessingModel<JobProcessingDetailLookupModel>> GetJobProcessingDetailsForLastFiveMins()
         {
-            return await GetJobsProcessingDetails(LastFiveMins);
+            return _jsonSerializationService.Deserialize<JobProcessingModel<JobProcessingDetailLookupModel>>(await _jobProcessingDetailService.GetJobsProcessingDetailsForCurrentPeriodLast5Mins((short)JobStatusType.Completed, CancellationToken.None));
         }
 
-        public async Task<IEnumerable<JobDetails>> GetJobProcessingDetailsForCurrentPeriod()
+        public async Task<JobProcessingModel<JobProcessingDetailLookupModel>> GetJobProcessingDetailsForCurrentPeriod()
         {
-            return await _jobProcessingDetailService.GetJobsProcessingDetailsForCurrentPeriod((short)JobStatusType.Completed);
-        }
-
-        private async Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(int minutes)
-        {
-            return await _jobProcessingDetailService.GetJobsProcessingDetails(
-                (short)JobStatusType.Completed,
-                _dateTimeProvider.GetNowUtc().AddMinutes(minutes),
-                _dateTimeProvider.GetNowUtc());
+            return _jsonSerializationService.Deserialize<JobProcessingModel<JobProcessingDetailLookupModel>>(await _jobProcessingDetailService.GetJobsProcessingDetailsForCurrentPeriod((short)JobStatusType.Completed, CancellationToken.None));
         }
     }
 }

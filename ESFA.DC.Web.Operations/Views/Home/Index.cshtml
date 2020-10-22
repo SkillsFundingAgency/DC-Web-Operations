@@ -132,7 +132,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                <a asp-controller="JobConcern" asp-action="Index" asp-area="Processing">Concerns</a>
+                <a asp-controller="JobConcern" asp-action="Index" asp-area="Processing" id="jobConcern">Concerns</a>
             </h2>
             <span id="concerns" class="govuk-heading-l no-margin-bottom">0</span>
             <span class="govuk-body-s">Providers where their last submitted file was unsuccessful</span>
@@ -154,7 +154,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                <a asp-controller="JobProcessingDetail" asp-action="CurrentPeriod" asp-area="Processing">Current Period</a>
+                <a class="dashboardLink" id="jobProcessingDetail/CurrentPeriod">Current Period</a>
             </h2>
             <span id="lastPeriod" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -163,7 +163,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                <a asp-controller="JobProcessingDetail" asp-action="LastHour" asp-area="Processing">Last Hour</a>
+                <a class="dashboardLink" id="jobProcessingDetail/LastHour">Last Hour</a>
             </h2>
             <span id="lastHour" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -172,7 +172,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                <a asp-controller="JobProcessingDetail" asp-action="LastFiveMins" asp-area="Processing">Last 5 Minutes</a>
+                <a class="dashboardLink" id="jobProcessingDetail/LastFiveMins">Last 5 Minutes</a>
             </h2>
             <span id="last5Minutes" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -180,7 +180,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top">
             <h2 class="govuk-heading-m">
-                <a asp-controller="JobProvidersReturnedCurrentPeriod" asp-action="Index" asp-area="Processing">ILR returners in current period</a>
+                <a class="dashboardLink" id="jobProvidersReturnedCurrentPeriod">ILR returners in current period</a>
             </h2>
             <span id="ilrReturns" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -189,7 +189,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                <a asp-controller="" asp-action="" id="jobFailedCurrentPeriod">Failed files in current period</a>
+                <a class="dashboardLink" id="jobFailedCurrentPeriod">Failed files in current period</a>
             </h2>
             <span id="failedFiles" class="govuk-heading-l no-margin-bottom">0</span>
         </div>
@@ -198,7 +198,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="border-top ">
             <h2 class="govuk-heading-m">
-                <a asp-controller="JobDasMismatch" asp-action="Index" asp-area="Processing">SLD/DAS mismatches</a>
+                <a class="dashboardLink" id="jobDasMismatch">SLD/DAS mismatches</a>
             </h2>
             <span id="sldDasMismatches" class="govuk-heading-l no-margin-bottom">0</span>
         </div>

@@ -120,8 +120,10 @@ namespace ESFA.DC.Web.Operations
             services.AddHostedService<JobSubmittedTimedHostedService>();
             services.AddHostedService<JobFailedTodayTimedHostedService>();
             services.AddHostedService<JobSlowFileTimedHostedService>();
+            services.AddHostedService<JobFailedCurrentPeriodTimedHostedService>();
             services.AddHostedService<JobConcernTimedHostedService>();
             services.AddHostedService<JobDasMismatchTimedHostedService>();
+            services.AddHostedService<JobProvidersReturnedCurrentPeriodTimedHostedService>();
 
             services.AddHostedService<NCSPeriodEndPrepTimedHostedService>();
             services.AddHostedService<NCSPeriodEndTimedHostedService>();

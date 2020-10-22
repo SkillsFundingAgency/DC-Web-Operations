@@ -1,13 +1,12 @@
-﻿import { getFormattedDatetimeString, getFormattedTimeString, replaceNullOrEmpty } from '/assets/js/util.js';
+﻿import { getFormattedDatetimeString, getFormattedTimeString, replaceNullOrEmpty, getInitialStateModel } from '/assets/js/util.js';
 import { sortByProviderName } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobFailedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
-        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName });
-        this._collectionYear = document.getElementById('collectionYear');
-        this._collectionYear.textContent = this._data.collectionYear;
+        const state = getInitialStateModel();
+        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { pageData: state } });
     }
 
     formatDataForDisplay() {

@@ -1,11 +1,12 @@
-﻿import { getFormattedDatetimeString, replaceNullOrEmpty } from '/assets/js/util.js';
+﻿import { getFormattedDatetimeString, replaceNullOrEmpty, getInitialStateModel } from '/assets/js/util.js';
 import { sortByProviderName } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobDasMismatchController extends JobReportControllerBase {
 
     constructor() {
-        super({ hubUrl: 'jobDasMismatchHub', defaultSort: sortByProviderName });
+        const state = getInitialStateModel();
+        super({ hubUrl: 'jobDasMismatchHub', defaultSort: sortByProviderName, initialState: { pageData: state } });
     }
 
     formatDataForDisplay() {

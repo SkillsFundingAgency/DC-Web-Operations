@@ -29,8 +29,42 @@ class JobReportControllerBase {
 
     updatePage(data) {
         this._data = parseToObject(data);
+        if (this._collectionYear === undefined) {
+            if (this._data.pageData != undefined && this._data.pageData.collectionYear !== null) {
+                this._collectionYear = this._data.pageData.collectionYear;
+                this._data.jobs = this._data.pageData.jobs[this._collectionYear];
+            } else {
+                if (this._data.pageData != undefined) {
+                    for (const [key, value] of Object.entries(this._data.pageData.jobs)) {
+                        var ret = [];
+                        ret.push(value.flat());
+                    }
+                } else {
+                    for (const [key, value] of Object.entries(this._data.jobs)) {
+                        var ret = [];
+                        ret.push(value.flat());
+                    }
+                }
+
+                if (this._data.jobs !== undefined) {
+                    this._data.jobs = ret.flat();
+                }
+            }
+        } else {
+            this._data.jobs = this._data.jobs[this._collectionYear];
+        }
+
+        if (this._data.jobs === undefined) {
+            this._data.jobs = [];
+        }
+
         this.formatDataForDisplay();
         this.drawGrid();
+
+        this._collectionYearElement = document.getElementById('collectionYear');
+        if (this._collectionYearElement !== null) {
+            this._collectionYearElement.textContent = this._collectionYear;
+        }
     }
 
     drawGrid() {

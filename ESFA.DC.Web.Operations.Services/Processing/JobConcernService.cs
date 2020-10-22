@@ -19,7 +19,7 @@ namespace ESFA.DC.Web.Operations.Services.Processing
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<string> GetJobsThatAreConcern(CancellationToken cancellationToken = default)
+        public async Task<string> GetJobsThatAreConcern(CancellationToken cancellationToken)
         {
             return await _httpClientService.GetDataAsync($"{_baseUrl}/api/job/jobsthatareconcern", cancellationToken);
         }

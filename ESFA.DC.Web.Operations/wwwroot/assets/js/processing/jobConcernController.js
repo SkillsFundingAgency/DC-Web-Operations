@@ -1,10 +1,11 @@
-﻿import { getFormattedDatetimeString, replaceNullOrEmpty } from '/assets/js/util.js';
+﻿import { getFormattedDatetimeString, replaceNullOrEmpty, getInitialStateModel } from '/assets/js/util.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobConcernController extends JobReportControllerBase {
 
     constructor() {
-        super({ hubUrl: 'jobConcernHub'});
+        const state = getInitialStateModel();
+        super({ hubUrl: 'jobConcernHub', initialState: { pageData: state }});
     }
 
     formatDataForDisplay() {

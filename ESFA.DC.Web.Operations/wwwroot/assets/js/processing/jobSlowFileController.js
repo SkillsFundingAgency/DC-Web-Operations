@@ -1,10 +1,11 @@
-﻿import { replaceNullOrEmpty } from '/assets/js/util.js';
+﻿import { replaceNullOrEmpty, getInitialStateModel } from '/assets/js/util.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobSlowFileController extends JobReportControllerBase {
 
     constructor() {
-        super({ hubUrl: 'jobSlowFileHub' });
+        const state = getInitialStateModel();
+        super({ hubUrl: 'jobSlowFileHub', initialState: { pageData: state } });
     }
 
     formatDataForDisplay() {

@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.Processing.Models.JobProcessingDetailViewModel
+@model ESFA.DC.Web.Operations.Models.Processing.JobProcessingModel<ESFA.DC.Jobs.Model.Processing.JobsProcessing.JobProcessingDetailLookupModel>
 
 @{
     ViewData["Title"] = "Job Processing Detail";
@@ -9,7 +9,7 @@
 <div class="govuk-grid-row">
     <br />
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Job Processing Detail - @Model.JobProcessingType</h1>
+        <h1 class="govuk-heading-l">Job Processing Detail - @Model.JobProcessingType <span id="collectionYear">@Model.CollectionYear</span></h1>
     </div>
 </div>
 
