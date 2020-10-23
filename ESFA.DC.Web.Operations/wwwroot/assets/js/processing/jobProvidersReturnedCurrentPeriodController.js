@@ -6,7 +6,7 @@ class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBas
 
     constructor() {
         const state = getInitialStateModel();
-        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { pageData: state }});
+        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { jobs: state.jobs }});
     }
 
     formatDataForDisplay() {

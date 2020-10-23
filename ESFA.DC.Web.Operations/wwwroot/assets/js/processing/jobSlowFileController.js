@@ -5,7 +5,7 @@ class JobSlowFileController extends JobReportControllerBase {
 
     constructor() {
         const state = getInitialStateModel();
-        super({ hubUrl: 'jobSlowFileHub', initialState: { pageData: state } });
+        super({ hubUrl: 'jobSlowFileHub', initialState: { jobs: state.jobs } });
     }
 
     formatDataForDisplay() {

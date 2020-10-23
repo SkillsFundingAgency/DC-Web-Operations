@@ -14,6 +14,7 @@ class JobReportControllerBase {
         this._hub.startHub();
 
         this.registerEvents();
+        this.setCollectionYear(document.getElementById('initialState').innerHTML);
         this.updatePage(initialState);
     }
 
@@ -29,26 +30,16 @@ class JobReportControllerBase {
 
     updatePage(data) {
         this._data = parseToObject(data);
-        if (this._collectionYear === undefined) {
-            if (this._data.pageData != undefined && this._data.pageData.collectionYear !== null) {
-                this._collectionYear = this._data.pageData.collectionYear;
-                this._data.jobs = this._data.pageData.jobs[this._collectionYear];
-            } else {
-                if (this._data.pageData != undefined) {
-                    for (const [key, value] of Object.entries(this._data.pageData.jobs)) {
-                        var ret = [];
-                        ret.push(value.flat());
-                    }
-                } else {
-                    for (const [key, value] of Object.entries(this._data.jobs)) {
-                        var ret = [];
-                        ret.push(value.flat());
-                    }
+        if (this._data.jobs?.jobs !== undefined) {
+            this._data.jobs = this._data.jobs.jobs;
+        }
+        if (this._collectionYear === null) {
+            if (this._data.jobs != undefined) {
+                for (const [key, value] of Object.entries(this._data.jobs)) {
+                    var ret = [];
+                    ret.push(value.flat());
                 }
-
-                if (this._data.jobs !== undefined) {
-                    this._data.jobs = ret.flat();
-                }
+                this._data.jobs = ret.flat();
             }
         } else {
             this._data.jobs = this._data.jobs[this._collectionYear];
@@ -83,6 +74,11 @@ class JobReportControllerBase {
             const csvData = this.getCSVData();
             convertToCsv({ filename: csvData.fileName, data: csvData.data });
         }
+    }
+
+    setCollectionYear(data) {
+        this._data = parseToObject(data);
+        this._collectionYear = this._data.collectionYear;
     }
 
     // Abstract methods

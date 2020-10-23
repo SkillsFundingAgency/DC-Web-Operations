@@ -5,7 +5,7 @@ class JobConcernController extends JobReportControllerBase {
 
     constructor() {
         const state = getInitialStateModel();
-        super({ hubUrl: 'jobConcernHub', initialState: { pageData: state }});
+        super({ hubUrl: 'jobConcernHub', initialState: { jobs: state.jobs }});
     }
 
     formatDataForDisplay() {

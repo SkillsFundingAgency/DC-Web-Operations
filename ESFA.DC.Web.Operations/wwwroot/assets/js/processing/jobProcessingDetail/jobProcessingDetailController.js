@@ -6,7 +6,7 @@ class JobProcessingDetailController extends JobReportControllerBase {
 
     constructor() {
         const state = getInitialStateModel();
-        super({ hubUrl: 'jobProcessingDetailHub', initialState: { pageData: state } });
+        super({ hubUrl: 'jobProcessingDetailHub', initialState: { jobs: state.jobs } });
         this._jobProcessingType = state.jobProcessingType;
         this._hubClient = new Client(this._hub.getConnection());
     }

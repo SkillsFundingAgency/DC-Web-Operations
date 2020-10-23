@@ -6,7 +6,7 @@ class JobDasMismatchController extends JobReportControllerBase {
 
     constructor() {
         const state = getInitialStateModel();
-        super({ hubUrl: 'jobDasMismatchHub', defaultSort: sortByProviderName, initialState: { pageData: state } });
+        super({ hubUrl: 'jobDasMismatchHub', defaultSort: sortByProviderName, initialState: { jobs: state.jobs } });
     }
 
     formatDataForDisplay() {

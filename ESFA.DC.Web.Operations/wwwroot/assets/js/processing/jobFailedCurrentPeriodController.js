@@ -6,7 +6,7 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
         const state = getInitialStateModel();
-        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { pageData: state } });
+        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { jobs: state.jobs } });
     }
 
     formatDataForDisplay() {
