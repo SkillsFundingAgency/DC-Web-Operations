@@ -14,7 +14,7 @@
     "inputFile": "wwwroot/assets/scss/autocomplete.scss"
   },
   {
-    "outputFile": "wwwroot/assets/scss/override.css",
+    "outputFile": "wwwroot/assets/css/override.css",
     "inputFile": "wwwroot/assets/scss/override.scss"
   }
 ]
