@@ -20,7 +20,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 {
     public class ManageAssignmentsService : ProviderBaseService, IManageAssignmentsService
     {
-        private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "OP", "COVID19", "COVIDR" };
+        private readonly string[] _collectionsTypesToExclude = { "REF", "PE", "OP", "COVID19", "COVIDR", "FRM" };
         private readonly ILogger _logger;
         private readonly string _baseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
