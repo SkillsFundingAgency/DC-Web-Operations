@@ -32,6 +32,7 @@
                         <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
                                name="items[{{@root.masterIndex}}].Enabled"
                                id="ckpath-{{this.pathId}}"
+                               {{#if @root.hasAlreadyRun}} disabled{{/if}}
                                {{#if (mapValidStateToBoolean this.isValidForPeriod)}} checked{{/if}}
                                value="{{mapValidStateToBoolean this.isValidForPeriod}}" />
                         <label class="govuk-label govuk-checkboxes__label">
