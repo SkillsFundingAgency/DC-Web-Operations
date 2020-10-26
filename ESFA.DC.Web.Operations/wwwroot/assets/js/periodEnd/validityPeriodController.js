@@ -1,19 +1,37 @@
-﻿class ValidityPeriodController {
+﻿import { Templates, getHandleBarsTemplate, registerHelper} from '/assets/js/handlebars-helpers.js';
+import { $on, $onAll, setControlVisiblity } from '/assets/js/util.js';
+import Client from '/assets/js/periodEnd/client.js';
+import Hub from '/assets/js/hubs/hub.js';
+
+class ValidityPeriodController {
 
     constructor() {
-        this._aBtnDownloadCSV = document.getElementById('aSaveList');
-        this._data = {};
+        this._hub = new Hub("validityPeriodHub", this.displayConnectionState);
+        this._client = new Client(this._hub.getConnection());
+
+        this._template = getHandleBarsTemplate(Templates.ValidityPeriod);
+
+        this.registerHandlers();
+        this._hub.startHub(this.getData.bind(this));
+
+        registerHelper("isInitiatingItem", this.isInitiatingItem);
+        registerHelper("disableCheckboxes", this.disableCheckboxes);
+        registerHelper("disableCheckBoxIfNotInPeriod", this.disableCheckBoxIfNotInPeriod);
+        registerHelper("mapValidStateToBoolean", this.mapValidStateToBoolean);
+
+        $on(document.getElementById("collectionYear"), "change", () => { this.getData(); });
+        $on(document.getElementById("period"), "change", () => { this.getData(); });
     }
 
     updatePage(data) {
-        this._data = JSON.parse(data);
-        this.drawGrid();
+        data = JSON.parse(data);
+        this.renderStructure(data);
+        setControlVisiblity(false, 'spinner');
     }
 
-    registerHandlers(hub) {
-        hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
-        hub.registerMessageHandler("GetValidityPeriodList", (data) => this.updatePage(data));
-        hub.registerMessageHandler("UpdateValidityPeriod", (data) => this.updatePage(data));
+    registerHandlers() {
+        this._hub.registerMessageHandler("ReceiveMessage", (data) => this.updatePage(data));
+        this._hub.registerMessageHandler("GetValidityStructure", (data) => this.updatePage(data));
     }
 
     displayConnectionState(state) {
@@ -21,58 +39,75 @@
         stateLabel.textContent = `Status: ${state}`;
     }
 
-    drawGrid() {
+    renderStructure(data) {
+        const container = document.getElementById("structureContainer");
+        container.innerHTML = this._template({ viewModel: data });
 
-        var sb = [];
-        for (var i = 0; i < this._data.length; i++) {
-            var item = this._data[i];
-            var enabled = item.enabled ? true : false;
-            var checked = enabled ? 'checked="checked"' : '';
+        $onAll(document.querySelectorAll(".validityCheckbox"), "change",
+            (e) => {
+                const hiddenItem = e.target.previousElementSibling;
+                const state = this.toggleCheckboxValue(e.target, e.target.value);
 
-            sb.push(`<tr class="govuk-table__row">
-                         <td class="govuk-table__cell">${item.collection}</td>
-                         <td class="govuk-table__cell">
-                            <div class="govuk-checkboxes">
-                                <div class="flex">
-                                    <div class="govuk-checkboxes__item">
-                                        <input class="govuk-checkboxes__input"
-                                               id="chkEnabled"
-                                               name="chkEnabled"
-                                               type="checkbox"
-                                               ${checked}
-                                               value="${enabled}" 
-                                               onchange="window.checkedChanged(${i}, this);"/>
-                                        <label class="govuk-label govuk-checkboxes__label">
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                       </td>
-                  </tr>`);
+                e.target.value = state;
+                if (hiddenItem)
+                    hiddenItem.value = state;
+            }
+        );
+    }
+
+    toggleCheckboxValue(element, currentValue) {
+        if (currentValue !== "true") {
+            this.toggleChildCheckBoxes(element, true);
+            return true;
         }
-        var result = sb.join('');
-
-        var dataContent = document.getElementById("dataContent");
-        dataContent.innerHTML = result;
+        else {
+            this.toggleChildCheckBoxes(element, false);
+            return false;
+        }
     }
 
-    getData(connection, action, collectionYear, period) {
-        connection
-            .invoke(action, collectionYear, period)
-            .catch(
-                err =>
-                    console.error(err.toString())
-            );
+    toggleChildCheckBoxes(checkboxElement, checked) {
+        const sibling = checkboxElement.closest(".checkbox-container").nextElementSibling;
+        if (sibling && sibling.classList.contains("inner-list")) {
+            const childCheckboxes = sibling.querySelectorAll("input[type=checkbox]");
+            if (checked) {
+                sibling.classList.remove("greyed-out");
+            } else {
+                sibling.classList.add("greyed-out");
+            }
+
+            childCheckboxes.forEach((c) => {
+                c.disabled = !checked;
+            });
+        }
     }
 
-    saveList(connection, action, collectionYear, period) {
-        connection
-            .invoke(action, collectionYear, period, this._data)
-            .catch(
-                err =>
-                    console.error(err.toString())
-            );
+    getData() {
+        setControlVisiblity(true, 'spinner');
+        const period = document.getElementById('period').value;
+        const collectionYear = document.getElementById('collectionYear').value;
+        this._client.invokeAction("GetValidityStructure", collectionYear, period);
+    }
+
+    isInitiatingItem(isPausing, hasJobs, isHidden, entityType, options) {
+        return isPausing === true && hasJobs === false && isHidden === false && entityType === 2;
+    }
+
+    disableCheckboxes(isValid, criticalParent, isNotInPeriod, periodEndHasRunForPeriod, options) {
+        return periodEndHasRunForPeriod === true || isNotInPeriod === true || (!isValid && !criticalParent);
+    }
+
+    mapValidStateToBoolean(state, options) {
+        if (state === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    disableCheckBoxIfNotInPeriod(state, options) {
+        return state === 2;
     }
 }
 
-export default ValidityPeriodController
+export const validityController = new ValidityPeriodController();

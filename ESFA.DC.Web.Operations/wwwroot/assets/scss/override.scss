@@ -844,3 +844,37 @@ progress::-moz-progress-bar { background: white; }
     margin-top: -45px;
     color: govuk-colour("grey-2")
 }
+
+.checkbox-container {
+    margin-bottom: 20px;
+}
+
+.checkbox-text {
+    float: left;
+    width: 400px;
+    height: govuk-spacing(7);
+    line-height: govuk-spacing(7);
+}
+
+.inner-list {
+    padding-left: 45px;
+    list-style: none;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.hr-bottom-margin {
+    margin-bottom: 30px;
+}
+
+.greyed-out {
+    color: govuk-colour("grey-1")
+}
+
+.loading-spinner {
+    display: inline-block;
+    position: fixed;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+}

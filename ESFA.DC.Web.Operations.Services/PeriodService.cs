@@ -74,12 +74,11 @@ namespace ESFA.DC.Web.Operations.Services
             string collectionName,
             CancellationToken cancellationToken)
         {
-            var periods = await _httpClientService.GetAsync<List<ReturnPeriod>>($"{_baseUrl}/api/returns-calendar/all/{collectionName}/{collectionType}", cancellationToken);
+            var periods = await _httpClientService.GetAsync<List<ReturnPeriod>>($"{_baseUrl}/api/returns-calendar/all/{collectionType}", cancellationToken);
 
             AssertPeriodResponseValid(periods);
 
             return periods
-                .Where(p => p.EndDateTimeUtc >= _dateTimeProvider.GetNowUtc())
                 .OrderBy(p => p.CollectionYear)
                 .Select(p => p.CollectionYear)
                 .Distinct()

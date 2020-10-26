@@ -1,0 +1,104 @@
+﻿<hr />
+
+<ol class="app-task-list__items">
+    {{setVar "masterIndex" 0}}
+    {{setVar "hasAlreadyRun" viewModel.periodEndHasRunForPeriod}}
+    {{#each viewModel.paths}}
+    <li>
+        <input type="hidden" class="hidden"
+               id="path-{{this.pathId}}"
+               name="items[{{@root.masterIndex}}].Id"
+               value="{{this.pathId}}" />
+
+        <input type="hidden" class="hidden"
+               id="type-{{this.pathId}}"
+               name="items[{{@root.masterIndex}}].EntityType"
+               value="{{this.entityType}}" />
+
+
+        <div class="checkbox-container">
+            <div class="checkbox-text govuk-!-font-weight-bold">
+                {{#if this.isCritical}}
+                    {{this.name}}
+                {{else}}
+                    <a href="#item_{{this.pathId}}" id="{{this.pathId}}">❮</a> {{this.name}}
+                {{/if}}
+            </div>
+            <div class="govuk-checkboxes">
+                <div class="flex">
+                    <div class="govuk-checkboxes__item">
+                        {{#unless this.isCritical}}
+
+                        <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
+                               name="items[{{@root.masterIndex}}].Enabled"
+                               id="ckpath-{{this.pathId}}"
+                               {{#if @root.hasAlreadyRun}} disabled{{/if}}
+                               {{#if (mapValidStateToBoolean this.isValidForPeriod)}} checked{{/if}}
+                               value="{{mapValidStateToBoolean this.isValidForPeriod}}" />
+                        <label class="govuk-label govuk-checkboxes__label">
+                        </label>
+                        {{/unless}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="inner-list {{#if (disableCheckboxes this.isValidForPeriod this.isCritical)}} greyed-out{{/if}}">
+            {{#each this.pathItems}}
+            {{setVar "masterIndex" (increment @root.masterIndex)}}
+            {{setVar "initiatingItem" (isInitiatingItem this.isPausing this.hasJobs this.hidden this.entityType) }}
+            <li>
+                <input type="hidden" class="hidden"
+                       id="pathitem-{{this.pathId}}-{{this.pathItemId}}"
+                       name="items[{{@root.masterIndex}}].Id"
+                       value="{{this.pathItemId}}" />
+
+                <input type="hidden" class="hidden"
+                       id="type-{{this.pathId}}-{{this.pathItemId}}"
+                       name="items[{{@root.masterIndex}}].EntityType"
+                       value="{{this.entityType}}" />
+
+                <div class="checkbox-container">
+                    <div class="checkbox-text">
+                        {{#if this.hidden}}
+                            {{this.name}} <a href="#{{this.subPaths}}" id="item_{{this.subPaths}}">❯</a>
+                        {{else}}
+                            {{this.name}}
+                        {{/if}}
+                    </div>
+
+                    <div class="govuk-checkboxes">
+                        <div class="flex">
+                            <div class="govuk-checkboxes__item">
+                                {{#unless this.hidden}}
+                                {{#unless @root.initiatingItem}}
+                                {{#unless (disableCheckBoxIfNotInPeriod this.isValidForPeriod)}}
+                                <input type="hidden" name="items[{{@root.masterIndex}}].Enabled" value="{{mapValidStateToBoolean this.isValidForPeriod}}" />
+                                {{/unless}}
+
+                                <input type="checkbox" class="govuk-checkboxes__input validityCheckbox"
+                                       id="ckpathItem-{{this.pathId}}-{{this.pathItemId}}"
+                                       {{#if (disableCheckboxes ../isValidForPeriod ../isCritical (disableCheckBoxIfNotInPeriod this.isValidForPeriod) @root.hasAlreadyRun)}} disabled{{/if}}
+                                       {{#if (mapValidStateToBoolean this.isValidForPeriod)}} checked{{/if}}
+                                       value="{{mapValidStateToBoolean this.isValidForPeriod}}" />
+                                <label class="govuk-label govuk-checkboxes__label">
+                                </label>
+                                {{/unless}}
+                                {{/unless}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+
+        <hr class="hr-bottom-margin" />
+    </li>
+    {{setVar "masterIndex" (increment @root.masterIndex)}}
+    {{/each}}
+</ol>
+
+{{#unless viewModel.periodEndHasRunForPeriod}}
+    <button type="submit" class="govuk-button" id="saveChanges">Save</button>
+{{/unless}}

@@ -1,5 +1,4 @@
-﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.ValidityPeriodViewModel
+﻿@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.ValidityPeriodViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -21,6 +20,7 @@
 
 @if (!Model.PeriodEndInProgress)
 {
+<form asp-action="UpdateValidityPeriod" asp-controller="ValidityPeriod">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl heading-bottom-margin">Validity Periods</h1>
@@ -29,50 +29,47 @@
             <div id="typeFilter" class="govuk-checkboxes">
                 <div id="minusMargin" class="govuk-form-group margin-right">
                     <label class="govuk-label">Collection year</label>
-                    <select class="govuk-select" id="collectionYear" name="collectionYear" onchange="window.change();">
+
+                    <select class="govuk-select" id="collectionYear" name="collectionYear">
                         @foreach (var year in Model.AllYears)
                         {
-                            <option value="@year" @if (Model.Year == year) { @: selected
-                                    }>
-                                @year
-                            </option>
+                            if (Model.Year == year)
+                            {
+                                <option value="@year" selected>@year</option>
+                            }
+                            else
+                            {
+                                <option value="@year">@year</option>
+                            }
                         }
                     </select>
                 </div>
 
                 <div id="minusMargin" class="govuk-form-group margin-right">
                     <label class="govuk-label">Period number</label>
-                    <select class="govuk-select" id="periodNumber" name="periodNumber" onchange="window.change();">
+                    <select class="govuk-select" id="period" name="period">
                         @for (var i = 1; i <= 14; i++)
                         {
-                            <option value="@i"
-                                    @if (Model.Period == i) { @: selected
-                                    }>
-                                @i
-                            </option>
+                            if (Model.Period == i)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
                         }
                     </select>
                 </div>
             </div>
+
+            <span id="spinner" class="loading-spinner"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
         </div>
     </div>
 
+    <div id="structureContainer"></div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <table class="govuk-table" id="tblData">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col">Collection name</th>
-                        <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Enabled</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body" id="dataContent"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <a href="#" class="govuk-button" onclick="saveList();return false;" id="aSaveList">Save</a>
+</form>
 }
 else
 {
@@ -96,39 +93,6 @@ else
     </div>
 </div>
 
-@if (!Model.PeriodEndInProgress)
-{
-    <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-
-    <script type="module">
-        import ValidityPeriodController from "/assets/js/periodEnd/validityPeriodController.js";
-        import Hub from '/assets/js/hubs/hub.js';
-
-        (function () {
-            const validityPeriodController = new ValidityPeriodController();
-            const hub = new Hub('validityPeriodHub', validityPeriodController.displayConnectionState);
-            validityPeriodController.registerHandlers(hub);
-
-            window.change = function () {
-                var connection = hub.getConnection();
-                var periodNumber = document.getElementById('periodNumber');
-                var collectionYear = document.getElementById('collectionYear');
-                validityPeriodController.getData(connection, "GetValidityPeriodList", collectionYear.value, periodNumber.value);
-            };
-
-            hub.startHub(window.change);
-
-            window.saveList = function () {
-                var connection = hub.getConnection();
-                var periodNumber = document.getElementById('periodNumber');
-                var collectionYear = document.getElementById('collectionYear');
-                validityPeriodController.saveList(connection, "UpdateValidityPeriod", collectionYear.value, periodNumber.value);
-            };
-
-            window.checkedChanged = function (idx, checkBox) {
-                validityPeriodController._data[idx].enabled = checkBox.checked;
-            };
-        })();
-
-    </script>
-}
+<script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+<script src="~/lib/handlebars/dist/handlebars.js" asp-append-version="true"></script>
+<script src="~/assets/js/periodEnd/validityPeriodController.js" type="module"></script>

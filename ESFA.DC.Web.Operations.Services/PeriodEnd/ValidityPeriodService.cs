@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models.PeriodEnd;
 using ESFA.DC.Web.Operations.Settings.Models;
 
 namespace ESFA.DC.Web.Operations.Services.PeriodEnd
@@ -24,9 +26,18 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return await _httpClientService.GetDataAsync($"{_baseUrl}/api/validityperiod/validityperiodlist/{collectionYear}/{period}", cancellationToken);
         }
 
-        public async Task<string> UpdateValidityPeriod(int collectionYear, int period, object validityPeriods, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> UpdateValidityPeriods(
+            int collectionYear,
+            int period,
+            IEnumerable<ValidityPeriod> validityPeriods,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _httpClientService.PutDataAsync($"{_baseUrl}/api/validityperiod/updatevalidityperiod/{collectionYear}/{period}", validityPeriods, cancellationToken);
+            return await _httpClientService.PutDataAsync($"{_baseUrl}/api/validityperiod/updatevalidityperiods/{collectionYear}/{period}", validityPeriods, cancellationToken);
+        }
+
+        public async Task<string> GetValidityStructure(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/validityperiod/allvaliditiesperperiod/{collectionYear}/{period}", cancellationToken);
         }
     }
 }
