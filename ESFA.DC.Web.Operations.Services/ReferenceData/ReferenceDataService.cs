@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
@@ -138,20 +139,30 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             }
 
             // Special Cases
-            var fundingClaimsCollectionMetaDataLastUpdate = await _fundingClaimsDatesService.GetLastUpdatedFundingClaimsCollectionMetaDataAsync(cancellationToken);
-            model.CollectionJobStats.Add(CollectionNames.FundingClaimsMetaData, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(fundingClaimsCollectionMetaDataLastUpdate?.DateTimeUpdatedUtc), LastUpdatedByWho = fundingClaimsCollectionMetaDataLastUpdate?.CreatedBy ?? DataUnavailable, Valid = true });
-
-            var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
-                w => w.CollectionName == CollectionNames.DevolvedPostcodesFullName ||
-                     w.CollectionName == CollectionNames.DevolvedPostcodesLocalAuthority ||
-                     w.CollectionName == CollectionNames.DevolvedPostcodesOnsOverride ||
-                     w.CollectionName == CollectionNames.DevolvedPostcodesSof)
-                .OrderByDescending(o => o.DateTimeSubmittedUtc)
-                .FirstOrDefault();
-
-            model.CollectionJobStats.Add(CollectionNames.DevolvedPostcodes, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc), LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? DataUnavailable, Valid = true });
+            await AddFundingClaimJobs(model, jobs, cancellationToken);
+            AddDevolvedPostcodesJobs(model, jobs);
 
             return model;
+        }
+
+        private async Task AddFundingClaimJobs(ReferenceDataIndexModel model, List<SubmittedJob> jobs, CancellationToken cancellationToken)
+        {
+            var fundingClaimsCollectionMetaDataLastUpdate = await _fundingClaimsDatesService.GetLastUpdatedFundingClaimsCollectionMetaDataAsync(cancellationToken);
+
+            model.CollectionJobStats.Add(CollectionNames.FundingClaimsMetaData, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(fundingClaimsCollectionMetaDataLastUpdate?.DateTimeUpdatedUtc), LastUpdatedByWho = fundingClaimsCollectionMetaDataLastUpdate?.CreatedBy ?? DataUnavailable, Valid = true });
+        }
+
+        private void AddDevolvedPostcodesJobs(ReferenceDataIndexModel model, List<SubmittedJob> jobs)
+        {
+            var latestSuccessfulDevolvedPostcodeJob = jobs?.Where(
+               w => w.CollectionName == CollectionNames.DevolvedPostcodesFullName ||
+                    w.CollectionName == CollectionNames.DevolvedPostcodesLocalAuthority ||
+                    w.CollectionName == CollectionNames.DevolvedPostcodesOnsOverride ||
+                    w.CollectionName == CollectionNames.DevolvedPostcodesSof)
+               .OrderByDescending(o => o.DateTimeSubmittedUtc)
+               .FirstOrDefault();
+
+            model.CollectionJobStats.Add(CollectionNames.DevolvedPostcodes, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc), LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? DataUnavailable, Valid = true });
         }
 
         private async Task<bool> IsCollectionValid(string collectionName, CancellationToken cancellationToken)
