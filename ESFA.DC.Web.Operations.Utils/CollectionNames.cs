@@ -61,5 +61,7 @@
         public const string FundingClaimsMetaData = "FundingClaimsMetaData";
 
         public const string DevolvedPostcodes = "DevolvedPostcodes";
+
+        public const string DevolvedPostcodesPublication = "DevolvedPostcodes-Publication";
     }
 }
