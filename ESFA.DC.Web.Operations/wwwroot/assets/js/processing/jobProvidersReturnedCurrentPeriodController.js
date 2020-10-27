@@ -1,12 +1,11 @@
-﻿import { getFormattedDatetimeString, getFormattedTimeString, replaceNullOrEmpty, getInitialStateModel } from '/assets/js/util.js';
+﻿import { getFormattedDatetimeString, getFormattedTimeString, replaceNullOrEmpty } from '/assets/js/util.js';
 import { sortByProviderName } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
-        const state = getInitialStateModel();
-        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { jobs: state.jobs }});
+        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName});
     }
 
     formatDataForDisplay() {
@@ -22,6 +21,7 @@ class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBas
         return `<tr class="govuk-table__row">
                     <td class="govuk-table__cell">${item.providerName}</td>
                     <td class="govuk-table__cell">${item.ukprn}</td>
+                    <td class="govuk-table__cell">${item.jobId}</td>
                     <td class="govuk-table__cell">${item.fileName}</td>
                     <td class="govuk-table__cell">${item.dateTimeSubmission}</td>
                     <td class="govuk-table__cell">${item.processingTime}</td>
@@ -33,6 +33,7 @@ class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBas
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Filename": obj.fileName,
                 "Date/time of submission (latest)": obj.dateTimeSubmission,
                 "Processing time": obj.processingTime

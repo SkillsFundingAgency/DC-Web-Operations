@@ -8,7 +8,7 @@
         this.connection
             .invoke("GetJobProcessingDetailsForCurrentPeriod")
             .then(function (jobs) {
-                updatePage({ jobs });
+                updatePage( jobs );
             })
             .catch(err => console.error(err.toString()));
     }
@@ -17,7 +17,7 @@
         this.connection
             .invoke("GetJobProcessingDetailsForLastHour")
             .then(function (jobs) {
-                updatePage({ jobs });
+                updatePage( jobs );
             })
             .catch(err => console.error(err.toString()));
     }
@@ -26,7 +26,7 @@
         this.connection
             .invoke("GetJobProcessingDetailsForLastFiveMins")
             .then(function (jobs) {
-                updatePage({ jobs });
+                updatePage( jobs );
             })
             .catch(err => console.error(err.toString()));
     }

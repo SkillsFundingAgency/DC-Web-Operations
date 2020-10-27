@@ -1,12 +1,11 @@
-﻿import { getFormattedDatetimeString, getFormattedTimeString, replaceNullOrEmpty, getInitialStateModel } from '/assets/js/util.js';
+﻿import { getFormattedDatetimeString, getFormattedTimeString, replaceNullOrEmpty } from '/assets/js/util.js';
 import { sortByProviderName } from '/assets/js/sortingUtils.js';
 import JobReportControllerBase from './jobReportControllerBase.js';
 
 class JobFailedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
-        const state = getInitialStateModel();
-        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName, initialState: { jobs: state.jobs } });
+        super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName });
     }
 
     formatDataForDisplay() {
@@ -22,6 +21,7 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
         return `<tr class="govuk-table__row">
                     <td class="govuk-table__cell">${item.providerName}</td>
                     <td class="govuk-table__cell">${item.ukprn}</td>
+                    <td class="govuk-table__cell">${item.jobId}</td>
                     <td class="govuk-table__cell">${item.fileName}</td>
                     <td class="govuk-table__cell">${item.dateTimeOfFailure}</td>
                     <td class="govuk-table__cell">${item.processingTimeBeforeFailure}</td>
@@ -29,10 +29,11 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
     }
 
     getCSVData() {
-        const data = this._data.jobs.map(function (obj) {
+        const data = this._data.jobs.filter(x => x.collectionType !== "PE").map(function (obj) {
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Filename": obj.fileName,
                 "Date/time of failure": obj.dateTimeOfFailure,
                 "Processing time before failure": obj.processingTimeBeforeFailure

@@ -19,9 +19,10 @@ class JobSubmittedController extends JobReportWithFilterControllerBase {
 
     createReportRow(item) {
         return `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell" style="width:250px">${replaceNullOrEmpty(item.providerName, '')}</td>
-                    <td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>
-                    <td class="govuk-table__cell" style="width:200px">${item.createdDateStr}</td>
+                    <td class="govuk-table__cell" style="width:200px">${replaceNullOrEmpty(item.providerName, '')}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.ukprn}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.jobId}</td>
+                    <td class="govuk-table__cell" style="width:190px">${item.createdDateStr}</td>
                     <td class="govuk-table__cell" style="width:170px">${replaceNullOrEmpty(item.fileName, '')}</td>
                     <td class="govuk-table__cell">${item.statusDescription}</td>
                 </tr>`;
@@ -44,10 +45,11 @@ class JobSubmittedController extends JobReportWithFilterControllerBase {
     }
 
     getCSVData(data) {
-        const csvData = data.map(function (obj) {
+        const csvData = data.filter(x => x.collectionType !== "PE").map(function (obj) {
             return {
                 "Provider name": replaceNullOrEmpty(obj.providerName, ''),
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Date/time": obj.createdDateStr,
                 "Filename": replaceNullOrEmpty(obj.fileName, ''),
                 "Job status": obj.statusDescription

@@ -16,9 +16,10 @@ class JobProcessingController extends JobReportWithFilterControllerBase {
 
     createReportRow(item) {
         return `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell" style="width:400px">${item.providerName}</td>
-                    <td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>
-                    <td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>
+                    <td class="govuk-table__cell" style="width:350px">${item.providerName}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.ukprn}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.jobId}</td>
+                    <td class="govuk-table__cell" style="width:160px">${item.timeTaken}</td>
                     <td class="govuk-table__cell">${item.averageProcessingTime}</td>
                 </tr>`;
     }
@@ -42,10 +43,11 @@ class JobProcessingController extends JobReportWithFilterControllerBase {
     }
 
     getCSVData(data) {
-        const csvData = data.map(function (obj) {
+        const csvData = data.filter(x => x.collectionType !== "PE").map(function (obj) {
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Time taken": obj.timeTaken,
                 "Average processing time": obj.averageProcessingTime
             };

@@ -5,7 +5,6 @@ using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Jobs.Model.Processing.JobsProcessing;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Web.Operations.Areas.Processing.Models;
 using ESFA.DC.Web.Operations.Controllers;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Models.Processing;
