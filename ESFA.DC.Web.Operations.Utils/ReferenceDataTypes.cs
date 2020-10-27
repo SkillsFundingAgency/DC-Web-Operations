@@ -11,6 +11,7 @@
         ShortTermFundingInitiatives,
         DevolvedContracts,
         FisReferenceData2021,
-        NcsOutcomeRates
+        NcsOutcomeRates,
+        DevolvedPostcodesPublication
     }
 }

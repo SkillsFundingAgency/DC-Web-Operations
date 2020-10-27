@@ -13,27 +13,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
 {
     [Area(AreaNames.ReferenceData)]
-    [Route(AreaNames.ReferenceData + "/fisReferenceData")]
-    public class FisReferenceDataController : BaseReferenceDataController
+    [Route(AreaNames.ReferenceData + "/referenceDataProcess")]
+    public class ReferenceDataProcessController : BaseReferenceDataController
     {
         private const int Period = 0;
 
         private readonly IReferenceDataService _referenceDataService;
-        private readonly IReferenceDataProcessService _fisReferenceDataService;
+        private readonly IReferenceDataProcessService _referenceDataProcessService;
         private readonly ICollectionsService _collectionsService;
 
-        public FisReferenceDataController(
+        public ReferenceDataProcessController(
             IStorageService storageService,
             ILogger logger,
             TelemetryClient telemetryClient,
             IReferenceDataService referenceDataService,
-            IReferenceDataProcessService fisReferenceDataService,
+            IReferenceDataProcessService referenceDataProcessService,
             ICollectionsService collectionsService,
             IFileNameValidationServiceProvider fileNameValidationServiceProvider)
             : base(storageService, logger, telemetryClient, fileNameValidationServiceProvider)
         {
             _referenceDataService = referenceDataService;
-            _fisReferenceDataService = fisReferenceDataService;
+            _referenceDataProcessService = referenceDataProcessService;
             _collectionsService = collectionsService;
         }
 
@@ -48,7 +48,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             await _referenceDataService.SubmitJobAsync(Period, model.ReferenceDataCollectionName, User.Name(), User.Email(), cancellationToken);
 
-            return RedirectToAction("Index", "FisReferenceData", new { collectionName = model.ReferenceDataCollectionName });
+            return RedirectToAction("Index", "ReferenceDataProcess", new { collectionName = model.ReferenceDataCollectionName });
         }
 
         [Route("getCollectionReportFileAsync/{collectionName}/{fileName}/{jobId?}")]
@@ -61,7 +61,7 @@ namespace ESFA.DC.Web.Operations.Areas.ReferenceData.Controllers
         {
             var collection = _collectionsService.GetReferenceDataCollection(collectionName);
 
-            var model = await _fisReferenceDataService.GetProcessOutputsForCollectionAsync(
+            var model = await _referenceDataProcessService.GetProcessOutputsForCollectionAsync(
                 Utils.Constants.ReferenceDataStorageContainerName,
                 collection.CollectionName,
                 collection.ReportName,

@@ -489,57 +489,6 @@ templates['ReferenceData/FilesListTemplate'] = template({"1":function(container,
     + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = (depth0 != null ? lookupProperty(depth0,"viewModel") : depth0)) != null ? lookupProperty(stack1,"files") : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":15,"column":16},"end":{"line":29,"column":25}}})) != null ? stack1 : "")
     + "            </tbody>\r\n        </table>\r\n    </div>\r\n</div>";
 },"useData":true,"useDepths":true});
-templates['ReferenceData/FisFilesListTemplate'] = template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda, lookupProperty = container.lookupProperty || function(parent, propertyName) {
-        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
-          return parent[propertyName];
-        }
-        return undefined
-    };
-
-  return "                <tr class=\"govuk-table__row\">\r\n                    <td class=\"govuk-table__cell govuk-!-font-weight-bold td--width-100-wrap\">"
-    + alias4(((helper = (helper = lookupProperty(helpers,"displayDate") || (depth0 != null ? lookupProperty(depth0,"displayDate") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"displayDate","hash":{},"data":data,"loc":{"start":{"line":17,"column":94},"end":{"line":17,"column":109}}}) : helper)))
-    + "</td>\r\n                    <td class=\"govuk-table__cell\">"
-    + alias4(((helper = (helper = lookupProperty(helpers,"submittedBy") || (depth0 != null ? lookupProperty(depth0,"submittedBy") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"submittedBy","hash":{},"data":data,"loc":{"start":{"line":18,"column":50},"end":{"line":18,"column":65}}}) : helper)))
-    + "</td>\r\n                    <td class=\"govuk-table__cell\">"
-    + alias4(((helper = (helper = lookupProperty(helpers,"jobId") || (depth0 != null ? lookupProperty(depth0,"jobId") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"jobId","hash":{},"data":data,"loc":{"start":{"line":19,"column":50},"end":{"line":19,"column":59}}}) : helper)))
-    + "</td>\r\n                    <td class=\"govuk-table__cell\">\r\n                        <span class=\""
-    + alias4((lookupProperty(helpers,"jobStatusClass")||(depth0 && lookupProperty(depth0,"jobStatusClass"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"displayStatus") : depth0),{"name":"jobStatusClass","hash":{},"data":data,"loc":{"start":{"line":21,"column":37},"end":{"line":21,"column":69}}}))
-    + "\">"
-    + alias4(((helper = (helper = lookupProperty(helpers,"displayStatus") || (depth0 != null ? lookupProperty(depth0,"displayStatus") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"displayStatus","hash":{},"data":data,"loc":{"start":{"line":21,"column":71},"end":{"line":21,"column":88}}}) : helper)))
-    + "</span> <br />\r\n                    </td>\r\n                    <td class=\"govuk-table__cell td--width-150-wrap\"><a href=\""
-    + alias4(alias5((depths[1] != null ? lookupProperty(depths[1],"downloadController") : depths[1]), depth0))
-    + "/"
-    + alias4(((helper = (helper = lookupProperty(helpers,"collectionName") || (depth0 != null ? lookupProperty(depth0,"collectionName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"collectionName","hash":{},"data":data,"loc":{"start":{"line":23,"column":104},"end":{"line":23,"column":122}}}) : helper)))
-    + "/"
-    + alias4(((helper = (helper = lookupProperty(helpers,"reportName") || (depth0 != null ? lookupProperty(depth0,"reportName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"reportName","hash":{},"data":data,"loc":{"start":{"line":23,"column":123},"end":{"line":23,"column":137}}}) : helper)))
-    + "/"
-    + alias4(((helper = (helper = lookupProperty(helpers,"jobId") || (depth0 != null ? lookupProperty(depth0,"jobId") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"jobId","hash":{},"data":data,"loc":{"start":{"line":23,"column":138},"end":{"line":23,"column":147}}}) : helper)))
-    + "\">"
-    + alias4(((helper = (helper = lookupProperty(helpers,"reportName") || (depth0 != null ? lookupProperty(depth0,"reportName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"reportName","hash":{},"data":data,"loc":{"start":{"line":23,"column":149},"end":{"line":23,"column":163}}}) : helper)))
-    + "</a></td>\r\n                    <td class=\"govuk-table__cell td--width-150-wrap\"><a href=\""
-    + alias4(alias5((depths[1] != null ? lookupProperty(depths[1],"downloadController") : depths[1]), depth0))
-    + "/"
-    + alias4(((helper = (helper = lookupProperty(helpers,"collectionName") || (depth0 != null ? lookupProperty(depth0,"collectionName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"collectionName","hash":{},"data":data,"loc":{"start":{"line":24,"column":104},"end":{"line":24,"column":122}}}) : helper)))
-    + "/"
-    + alias4(((helper = (helper = lookupProperty(helpers,"fileName") || (depth0 != null ? lookupProperty(depth0,"fileName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"fileName","hash":{},"data":data,"loc":{"start":{"line":24,"column":123},"end":{"line":24,"column":135}}}) : helper)))
-    + "/"
-    + alias4(((helper = (helper = lookupProperty(helpers,"jobId") || (depth0 != null ? lookupProperty(depth0,"jobId") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"jobId","hash":{},"data":data,"loc":{"start":{"line":24,"column":136},"end":{"line":24,"column":145}}}) : helper)))
-    + "\">"
-    + alias4(((helper = (helper = lookupProperty(helpers,"fileName") || (depth0 != null ? lookupProperty(depth0,"fileName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"fileName","hash":{},"data":data,"loc":{"start":{"line":24,"column":147},"end":{"line":24,"column":159}}}) : helper)))
-    + "</a></td>\r\n                </tr>\r\n";
-},"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
-        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
-          return parent[propertyName];
-        }
-        return undefined
-    };
-
-  return "﻿<div class=\"govuk-grid-row\">\r\n    <div class=\"govuk-grid-column-full\">\r\n        <table class=\"govuk-table\">\r\n            <thead class=\"govuk-table__head\">\r\n                <tr class=\"govuk-table__row\">\r\n                    <th scope=\"col\" class=\"govuk-table__header td--width-100-wrap\">Date</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header\">Processed by</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header\">Job ID</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header table-width-min\">Status</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header td--width-150-wrap\">Report</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header td--width-150-wrap\">File</th>\r\n                </tr>\r\n            </thead>\r\n            <tbody class=\"govuk-table__body\" id=\"fileContainer\">\r\n"
-    + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = (depth0 != null ? lookupProperty(depth0,"viewModel") : depth0)) != null ? lookupProperty(stack1,"files") : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":15,"column":12},"end":{"line":26,"column":21}}})) != null ? stack1 : "")
-    + "            </tbody>\r\n        </table>\r\n    </div>\r\n</div>";
-},"useData":true,"useDepths":true});
 templates['ReferenceData/FundingClaimsDatesList'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
@@ -647,6 +596,57 @@ templates['ReferenceData/FundingClaimsDatesList'] = template({"1":function(conta
     + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"viewModel") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":20,"column":16},"end":{"line":61,"column":25}}})) != null ? stack1 : "")
     + "                </tbody>\r\n            </table>\r\n        </form>\r\n    </div>\r\n</div>\r\n";
 },"useData":true});
+templates['ReferenceData/RefDataProcessFilesList'] = template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda, lookupProperty = container.lookupProperty || function(parent, propertyName) {
+        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
+          return parent[propertyName];
+        }
+        return undefined
+    };
+
+  return "                <tr class=\"govuk-table__row\">\r\n                    <td class=\"govuk-table__cell govuk-!-font-weight-bold td--width-100-wrap\">"
+    + alias4(((helper = (helper = lookupProperty(helpers,"displayDate") || (depth0 != null ? lookupProperty(depth0,"displayDate") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"displayDate","hash":{},"data":data,"loc":{"start":{"line":17,"column":94},"end":{"line":17,"column":109}}}) : helper)))
+    + "</td>\r\n                    <td class=\"govuk-table__cell\">"
+    + alias4(((helper = (helper = lookupProperty(helpers,"submittedBy") || (depth0 != null ? lookupProperty(depth0,"submittedBy") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"submittedBy","hash":{},"data":data,"loc":{"start":{"line":18,"column":50},"end":{"line":18,"column":65}}}) : helper)))
+    + "</td>\r\n                    <td class=\"govuk-table__cell\">"
+    + alias4(((helper = (helper = lookupProperty(helpers,"jobId") || (depth0 != null ? lookupProperty(depth0,"jobId") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"jobId","hash":{},"data":data,"loc":{"start":{"line":19,"column":50},"end":{"line":19,"column":59}}}) : helper)))
+    + "</td>\r\n                    <td class=\"govuk-table__cell\">\r\n                        <span class=\""
+    + alias4((lookupProperty(helpers,"jobStatusClass")||(depth0 && lookupProperty(depth0,"jobStatusClass"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"displayStatus") : depth0),{"name":"jobStatusClass","hash":{},"data":data,"loc":{"start":{"line":21,"column":37},"end":{"line":21,"column":69}}}))
+    + "\">"
+    + alias4(((helper = (helper = lookupProperty(helpers,"displayStatus") || (depth0 != null ? lookupProperty(depth0,"displayStatus") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"displayStatus","hash":{},"data":data,"loc":{"start":{"line":21,"column":71},"end":{"line":21,"column":88}}}) : helper)))
+    + "</span> <br />\r\n                    </td>\r\n                    <td class=\"govuk-table__cell td--width-150-wrap\"><a href=\""
+    + alias4(alias5((depths[1] != null ? lookupProperty(depths[1],"downloadController") : depths[1]), depth0))
+    + "/"
+    + alias4(((helper = (helper = lookupProperty(helpers,"collectionName") || (depth0 != null ? lookupProperty(depth0,"collectionName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"collectionName","hash":{},"data":data,"loc":{"start":{"line":23,"column":104},"end":{"line":23,"column":122}}}) : helper)))
+    + "/"
+    + alias4(((helper = (helper = lookupProperty(helpers,"reportName") || (depth0 != null ? lookupProperty(depth0,"reportName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"reportName","hash":{},"data":data,"loc":{"start":{"line":23,"column":123},"end":{"line":23,"column":137}}}) : helper)))
+    + "/"
+    + alias4(((helper = (helper = lookupProperty(helpers,"jobId") || (depth0 != null ? lookupProperty(depth0,"jobId") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"jobId","hash":{},"data":data,"loc":{"start":{"line":23,"column":138},"end":{"line":23,"column":147}}}) : helper)))
+    + "\">"
+    + alias4(((helper = (helper = lookupProperty(helpers,"reportName") || (depth0 != null ? lookupProperty(depth0,"reportName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"reportName","hash":{},"data":data,"loc":{"start":{"line":23,"column":149},"end":{"line":23,"column":163}}}) : helper)))
+    + "</a></td>\r\n                    <td class=\"govuk-table__cell td--width-150-wrap\"><a href=\""
+    + alias4(alias5((depths[1] != null ? lookupProperty(depths[1],"downloadController") : depths[1]), depth0))
+    + "/"
+    + alias4(((helper = (helper = lookupProperty(helpers,"collectionName") || (depth0 != null ? lookupProperty(depth0,"collectionName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"collectionName","hash":{},"data":data,"loc":{"start":{"line":24,"column":104},"end":{"line":24,"column":122}}}) : helper)))
+    + "/"
+    + alias4(((helper = (helper = lookupProperty(helpers,"fileName") || (depth0 != null ? lookupProperty(depth0,"fileName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"fileName","hash":{},"data":data,"loc":{"start":{"line":24,"column":123},"end":{"line":24,"column":135}}}) : helper)))
+    + "/"
+    + alias4(((helper = (helper = lookupProperty(helpers,"jobId") || (depth0 != null ? lookupProperty(depth0,"jobId") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"jobId","hash":{},"data":data,"loc":{"start":{"line":24,"column":136},"end":{"line":24,"column":145}}}) : helper)))
+    + "\">"
+    + alias4(((helper = (helper = lookupProperty(helpers,"fileName") || (depth0 != null ? lookupProperty(depth0,"fileName") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"fileName","hash":{},"data":data,"loc":{"start":{"line":24,"column":147},"end":{"line":24,"column":159}}}) : helper)))
+    + "</a></td>\r\n                </tr>\r\n";
+},"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
+    var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
+        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
+          return parent[propertyName];
+        }
+        return undefined
+    };
+
+  return "﻿<div class=\"govuk-grid-row\">\r\n    <div class=\"govuk-grid-column-full\">\r\n        <table class=\"govuk-table\">\r\n            <thead class=\"govuk-table__head\">\r\n                <tr class=\"govuk-table__row\">\r\n                    <th scope=\"col\" class=\"govuk-table__header td--width-100-wrap\">Date</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header\">Processed by</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header\">Job ID</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header table-width-min\">Status</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header td--width-150-wrap\">Report</th>\r\n                    <th scope=\"col\" class=\"govuk-table__header td--width-150-wrap\">File</th>\r\n                </tr>\r\n            </thead>\r\n            <tbody class=\"govuk-table__body\" id=\"fileContainer\">\r\n"
+    + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = (depth0 != null ? lookupProperty(depth0,"viewModel") : depth0)) != null ? lookupProperty(stack1,"files") : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":15,"column":12},"end":{"line":26,"column":21}}})) != null ? stack1 : "")
+    + "            </tbody>\r\n        </table>\r\n    </div>\r\n</div>";
+},"useData":true,"useDepths":true});
 templates['Reports/InternalReportsDownloadList'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3="function", alias4=container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {

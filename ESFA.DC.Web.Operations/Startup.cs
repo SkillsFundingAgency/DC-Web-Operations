@@ -301,6 +301,11 @@ namespace ESFA.DC.Web.Operations
                 {
                     options.Transports = HttpTransportType.WebSockets;
                 });
+
+                routes.MapHub<DevolvedPostcodesPublicationHub>("/devolvedPostcodesPublicationHub", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             app.UseMvc(routes =>

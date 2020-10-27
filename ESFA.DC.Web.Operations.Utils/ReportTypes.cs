@@ -23,6 +23,8 @@
         public const string DevolvedPostcodesSofReportName = "MCAGLA_SOF_RD-ValidationReport";
         public const string DevolvedPostcodesOnsOverride = "MCAGLA_ONSOverride_RD-ValidationReport";
 
+        public const string DevolvedPostcodesPublicationSummaryReportName = "DevolvedPostcodesPublication-SummaryReport";
+
         public const string OnsPostcodesReportName = "ONSPD-ValidationReport";
 
         public const string NcsOutcomeRatesReportName = "NCSOutcomeRatesRD-ValidationReport";
