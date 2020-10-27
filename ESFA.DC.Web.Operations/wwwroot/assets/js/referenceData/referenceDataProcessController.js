@@ -44,8 +44,8 @@ class fisController {
 
         this.sortByDate(stateModel);
 
-        var compiledTemplate = getHandleBarsTemplate(Templates.FisFilesList);
-        document.getElementById("fisFilesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName, downloadController: this._downloadController });
+        var compiledTemplate = getHandleBarsTemplate(Templates.RefDataProcessFilesList);
+        document.getElementById("RefDataProcessFilesList").innerHTML = compiledTemplate({ viewModel: stateModel, controllerName: controllerName, downloadController: this._downloadController });
     }
 }
 

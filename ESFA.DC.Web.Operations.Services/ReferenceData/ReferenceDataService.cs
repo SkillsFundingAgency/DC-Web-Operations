@@ -139,7 +139,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
             }
 
             // Special Cases
-            await AddFundingClaimJobs(model, jobs, cancellationToken);
+            //await AddFundingClaimJobs(model, jobs, cancellationToken);
             AddDevolvedPostcodesJobs(model, jobs);
 
             return model;
@@ -162,6 +162,7 @@ namespace ESFA.DC.Web.Operations.Services.ReferenceData
                .OrderByDescending(o => o.DateTimeSubmittedUtc)
                .FirstOrDefault();
 
+            model.CollectionJobStats.Add(CollectionNames.FundingClaimsMetaData, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc), LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? DataUnavailable, Valid = true });
             model.CollectionJobStats.Add(CollectionNames.DevolvedPostcodes, new ReferenceDataIndexBase { LastUpdatedDateTime = GetDate(latestSuccessfulDevolvedPostcodeJob?.DateTimeSubmittedUtc), LastUpdatedByWho = latestSuccessfulDevolvedPostcodeJob?.CreatedBy ?? DataUnavailable, Valid = true });
         }
 

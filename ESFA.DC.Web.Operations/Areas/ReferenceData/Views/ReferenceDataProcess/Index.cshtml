@@ -30,7 +30,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <form asp-controller="FisReferenceData" asp-action="Post" method="post" enctype="multipart/form-data">
+        <form asp-controller="ReferenceDataProcess" asp-action="Post" method="post" enctype="multipart/form-data">
             <input asp-for="ReferenceDataCollectionName" type="hidden" />
             <input asp-for="HubName" type="hidden" />
             <input asp-for="CollectionDisplayName" type="hidden" />
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div id="fisFilesList">
+<div id="RefDataProcessFilesList">
 </div>
 
 <div class="govuk-grid-row">
@@ -58,12 +58,12 @@
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
 
     <script type="module">
-        import Controller from '/assets/js/referenceData/fisController.js';
+        import Controller from '/assets/js/referenceData/ReferenceDataProcessController.js';
         import Hub from '/assets/js/hubs/hub.js';
 
         (function() {
             const model = @Json.Serialize(Model);
-            const controller = new Controller('@Url.Action("GetCollectionReportFileAsync", "fisReferenceData")');
+            const controller = new Controller('@Url.Action("GetCollectionReportFileAsync", "referenceDataProcess")');
 
             const hub = new Hub('@Model.HubName', controller.displayConnectionState);
 

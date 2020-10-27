@@ -14,7 +14,7 @@ export const Templates = {
     ReportListOptions: 'Reports/ReportListOptions',
     PeriodEnd: 'PeriodEnd/PeriodEnd',
     PeriodEndNavigation: 'PeriodEnd/PeriodEndNavigation',
-    FisFilesList: 'ReferenceData/FisFilesListTemplate',
+    RefDataProcessFilesList: 'ReferenceData/RefDataProcessFilesList',
     ALLFPeriodEndFileList: 'PeriodEnd/ALLFPeriodEndFileList',
     ValidityPeriod: 'PeriodEnd/ValidityPeriods'
 };
