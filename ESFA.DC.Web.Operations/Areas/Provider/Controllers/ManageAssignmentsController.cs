@@ -34,13 +34,14 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             var model = new ManageAssignmentsViewModel();
 
             var provider = await _manageAssignmentsService.GetProviderAsync(ukprn, cancellationToken);
-            var providerAssignments = await _manageAssignmentsService.GetActiveProviderAssignmentsAsync(ukprn, cancellationToken);
-            var availableCollections = (await _manageAssignmentsService.GetAvailableCollectionsAsync(cancellationToken)).ExceptBy(providerAssignments, p => p.CollectionId);
+
+            var availableCollections = await _manageAssignmentsService.GetAvailableCollectionsAsync(cancellationToken);
+            var providerAssignments = await _manageAssignmentsService.GetActiveProviderAssignmentsAsync(ukprn, availableCollections.ToList(), cancellationToken);
 
             model.Ukprn = ukprn;
             model.ProviderName = provider.Name;
             model.ActiveCollectionsAssignments = providerAssignments.OrderByDescending(o => o.StartDate).ThenBy(t => t.DisplayOrder).ToList();
-            model.InactiveCollectionAssignments = availableCollections.OrderBy(o => o.DisplayOrder).ToList();
+            model.InactiveCollectionAssignments = availableCollections.OrderBy(o => o.DisplayOrder).ExceptBy(providerAssignments, p => p.CollectionId).ToList();
 
             return View("Index", model);
         }
