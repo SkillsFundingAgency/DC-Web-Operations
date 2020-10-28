@@ -4,8 +4,8 @@ import Hub from '/assets/js/hubs/hub.js';
 class DashBoardController {
     constructor() {
         this._serviceBusStatistics = document.getElementById('serviceBusStatistics');
-        this._jobFailedCurrentPeriod = document.getElementById('jobFailedCurrentPeriod');
-       
+        this._dashboardLinks = document.querySelectorAll('.dashboardLink');
+
         this._data = null;
         this._queuesSystem = null;
         this._queuesTopics = null;
@@ -23,7 +23,7 @@ class DashBoardController {
         $on(document.getElementById('collectionYears'), 'change', (event) => {
             this._year = parseInt(event.target.value);
             this.updateProcessingInDetails(this._data.jobStats, this._year);
-            this.updateDrillDownUrl(this._jobFailedCurrentPeriod, this._year);
+            this.updateDrillDownUrl(this._dashboardLinks, this._year);
         });
 
         $on(window, 'pageshow', () => {
@@ -318,12 +318,14 @@ class DashBoardController {
         timeLabel.textContent = `${hours}:${minutes}:${seconds}`;
     }
 
-    updateDrillDownUrl(link, year) {
-        link.setAttribute("href", "/processing/" + link.id + "/?collectionYear=" + year);
+    updateDrillDownUrl(links, year) {
+        for (let index in links) {
+            links.item(index).setAttribute("href", "/processing/" + links.item(index).id + "/?collectionYear=" + year);
+        }
     }
 
     defaultAllDrillDownControls(year) {
-        this.updateDrillDownUrl(this._jobFailedCurrentPeriod, year);
+        this.updateDrillDownUrl(this._dashboardLinks, year);
     }
 }
 

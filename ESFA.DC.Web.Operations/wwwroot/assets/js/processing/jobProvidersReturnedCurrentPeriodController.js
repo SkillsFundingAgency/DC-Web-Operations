@@ -5,7 +5,7 @@ import JobReportControllerBase from './jobReportControllerBase.js';
 class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
-        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName });
+        super({ hubUrl: 'jobProvidersReturnedCurrentPeriodHub', defaultSort: sortByProviderName});
     }
 
     formatDataForDisplay() {
@@ -21,6 +21,7 @@ class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBas
         return `<tr class="govuk-table__row">
                     <td class="govuk-table__cell">${item.providerName}</td>
                     <td class="govuk-table__cell">${item.ukprn}</td>
+                    <td class="govuk-table__cell">${item.jobId}</td>
                     <td class="govuk-table__cell">${item.fileName}</td>
                     <td class="govuk-table__cell">${item.dateTimeSubmission}</td>
                     <td class="govuk-table__cell">${item.processingTime}</td>
@@ -32,6 +33,7 @@ class JobProvidersReturnedCurrentPeriodController extends JobReportControllerBas
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Filename": obj.fileName,
                 "Date/time of submission (latest)": obj.dateTimeSubmission,
                 "Processing time": obj.processingTime

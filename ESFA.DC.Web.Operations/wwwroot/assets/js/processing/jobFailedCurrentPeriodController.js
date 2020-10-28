@@ -6,8 +6,6 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
 
     constructor() {
         super({ hubUrl: 'jobFailedCurrentPeriodHub', defaultSort: sortByProviderName });
-        this._collectionYear = document.getElementById('collectionYear');
-        this._collectionYear.textContent = this._data.collectionYear;
     }
 
     formatDataForDisplay() {
@@ -23,6 +21,7 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
         return `<tr class="govuk-table__row">
                     <td class="govuk-table__cell">${item.providerName}</td>
                     <td class="govuk-table__cell">${item.ukprn}</td>
+                    <td class="govuk-table__cell">${item.jobId}</td>
                     <td class="govuk-table__cell">${item.fileName}</td>
                     <td class="govuk-table__cell">${item.dateTimeOfFailure}</td>
                     <td class="govuk-table__cell">${item.processingTimeBeforeFailure}</td>
@@ -30,10 +29,11 @@ class JobFailedCurrentPeriodController extends JobReportControllerBase {
     }
 
     getCSVData() {
-        const data = this._data.jobs.map(function (obj) {
+        const data = this._data.jobs.filter(x => x.collectionType !== "PE").map(function (obj) {
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Filename": obj.fileName,
                 "Date/time of failure": obj.dateTimeOfFailure,
                 "Processing time before failure": obj.processingTimeBeforeFailure

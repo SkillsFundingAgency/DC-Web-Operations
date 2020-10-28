@@ -1,5 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
-@model string
+@model ESFA.DC.Web.Operations.Models.Processing.JobProcessingModel<ESFA.DC.Jobs.Model.Processing.JobsProcessing.JobProcessingLookupModel>
 
 @{
     ViewData["Title"] = "Jobs processing";
@@ -11,23 +11,24 @@
         <h1 class="govuk-heading-xl">Jobs processing</h1>
         <partial name="_SortAndFilters" model="@(new List<SelectListItem>{
                                                     new SelectListItem { Text="Time taken - Slowest first",Value="TimeTaken", Selected=true},
-                                                    new SelectListItem { Text="Alphabetical", Value="Alphabetical"},                                                    
+                                                    new SelectListItem { Text="Alphabetical", Value="Alphabetical"},
                                                     new SelectListItem { Text="UKPRN", Value="Ukprn"}})" />
         <br>
     </div>
     <div class="govuk-grid-column-one-third">
-        <partial name="_Donut"/>
+        <partial name="_Donut" />
     </div>
 </div>
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-full" id="table_box_native">
         <table class="govuk-table" id="tblData">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="col" style="width:400px">Provider name</th>
-                    <th class="govuk-table__header" scope="col" style="width:100px">UKPRN</th>
-                    <th class="govuk-table__header" scope="col" style="width:170px">Time taken</th>
+                    <th class="govuk-table__header" scope="col" style="width:350px">Provider name</th>
+                    <th class="govuk-table__header" scope="col" style="width:80px">UKPRN</th>
+                    <th class="govuk-table__header" scope="col" style="width:80px">Job Id</th>
+                    <th class="govuk-table__header" scope="col" style="width:160px">Time taken</th>
                     <th class="govuk-table__header" scope="col">Average processing time</th>
                 </tr>
             </thead>
@@ -35,6 +36,7 @@
             </tbody>
         </table>
     </div>
+    <div id="index_native" class="box"></div>
 </div>
 
 <a href="#" class="govuk-button" id="aBtnDownloadCSV">Download CSV</a>
@@ -49,8 +51,9 @@
 
 @section PageScripts
 {
-    <partial name="_InitialState" model="Model"/>
+    <partial name="_InitialState" model="Model" />
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/lib/chartjs/dist/chart.bundle.min.js" asp-append-version="true"></script>
     <script src="~/assets/js/processing/jobProcessingController.js" asp-append-version="true" type="module"></script>
+    <script src="~/assets/js/paginator.js" asp-append-version="true"></script>
 }

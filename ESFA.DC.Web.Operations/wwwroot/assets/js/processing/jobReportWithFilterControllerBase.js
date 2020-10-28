@@ -53,9 +53,22 @@ class JobReportWithFilterControllerBase {
     }
 
     updatePage(data) {
-        this._data = parseToObject(data);
+        this._data = { jobs: this.getJobs(parseToObject(data)) };
         this.formatDataForDisplay();
         this.drawGrid();
+    }
+
+    getJobs(data) {
+        if (this._collectionYear) {
+            return data.jobs[this._collectionYear];
+        }
+
+        let jobs = [];
+        for (const year in data.jobs) {
+            jobs = jobs.concat(data.jobs[year]);
+        }
+
+        return jobs;
     }
 
     drawGrid() {
@@ -69,6 +82,16 @@ class JobReportWithFilterControllerBase {
 
         const dataContent = document.getElementById("dataContent");
         dataContent.innerHTML = sb.join('');
+
+        if (this._data.jobs.length > 0) {
+            paginator({
+                table: document.getElementById("table_box_native").getElementsByTagName("table")[0],
+                box: document.getElementById("index_native"),
+                page: 1,
+                rows_per_page: 25,
+                page_options: false
+            });
+        }
     }
 
     filterBy() {

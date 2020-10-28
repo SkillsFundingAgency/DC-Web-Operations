@@ -16,19 +16,21 @@ class JobSlowFileController extends JobReportControllerBase {
 
     createReportRow(item) {
         return `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell" style="width:250px">${item.providerName}</td>
-                    <td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>
-                    <td class="govuk-table__cell" style="width:170px">${item.fileName}</td>
+                    <td class="govuk-table__cell" style="width:200px">${item.providerName}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.ukprn}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.jobId}</td>
+                    <td class="govuk-table__cell" style="width:160px">${item.fileName}</td>
                     <td class="govuk-table__cell" style="width:170px">${item.timeTaken}</td>
                     <td class="govuk-table__cell">${item.averageTime}</td>
                 </tr>`;
     }
 
     getCSVData() {
-        const data = this._data.jobs.map(function (obj) {
+        const data = this._data.jobs.filter(x => x.collectionType !== "PE").map(function (obj) {
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Filename": obj.fileName,
                 "Time taken": obj.timeTaken,
                 "Average time": obj.averageTime

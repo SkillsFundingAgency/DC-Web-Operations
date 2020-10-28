@@ -5,6 +5,6 @@ namespace ESFA.DC.Web.Operations.Interfaces.Processing
 {
     public interface IJobDasMismatchService
     {
-        Task<string> GetDasMismatches(CancellationToken cancellationToken = default);
+        Task<string> GetDasMismatches(CancellationToken cancellationToken);
     }
 }

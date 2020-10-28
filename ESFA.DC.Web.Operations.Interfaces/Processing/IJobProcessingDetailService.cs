@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Jobs.Model.Processing.Detail;
 
 namespace ESFA.DC.Web.Operations.Interfaces.Processing
 {
     public interface IJobProcessingDetailService
     {
-        Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(short jobStatus, DateTime startDateTimeUtc, DateTime endDateTimeUtc, CancellationToken cancellationToken = default);
+        Task<string> GetJobsProcessingDetailsForCurrentPeriod(short jobStatus, CancellationToken cancellationToken);
 
-        Task<IEnumerable<JobDetails>> GetJobsProcessingDetailsForCurrentPeriod(short jobStatus, CancellationToken cancellationToken = default);
+        Task<string> GetJobsProcessingDetailsForCurrentPeriodLast5Mins(short jobStatus, CancellationToken cancellationToken);
+
+        Task<string> GetJobsProcessingDetailsForCurrentPeriodLastHour(short jobStatus, CancellationToken cancellationToken);
     }
 }

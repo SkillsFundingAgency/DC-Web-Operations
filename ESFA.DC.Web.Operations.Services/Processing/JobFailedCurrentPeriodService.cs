@@ -19,9 +19,9 @@ namespace ESFA.DC.Web.Operations.Services.Processing
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<string> GetJobsFailedCurrentPeriodAsync(int? calendarYear, CancellationToken cancellationToken)
+        public async Task<string> GetJobsFailedCurrentPeriodAsync(CancellationToken cancellationToken)
         {
-            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/job/failedJobsCurrentPeriod/{calendarYear}", cancellationToken);
+            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/job/failedJobsCurrentPeriod", cancellationToken);
         }
     }
 }

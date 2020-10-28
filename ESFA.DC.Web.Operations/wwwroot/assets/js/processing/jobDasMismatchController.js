@@ -20,6 +20,7 @@ class JobDasMismatchController extends JobReportControllerBase {
         return `<tr class="govuk-table__row">
                     <td class="govuk-table__cell">${item.providerName}</td>
                     <td class="govuk-table__cell">${item.ukprn}</td>
+                    <td class="govuk-table__cell">${item.jobId}</td>
                     <td class="govuk-table__cell">${item.fileName}</td>
                     <td class="govuk-table__cell">${item.submissionDate}</td>
                     <td class="govuk-table__cell">${item.jobId}</td>
@@ -31,6 +32,7 @@ class JobDasMismatchController extends JobReportControllerBase {
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Filename": obj.fileName,
                 "Date/time of submission": obj.submissionDate,
                 "Job id": obj.jobId

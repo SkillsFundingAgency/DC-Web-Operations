@@ -16,9 +16,10 @@ class JobQueuedController extends JobReportWithFilterControllerBase {
 
     createReportRow(item) {
         return `<tr class="govuk-table__row">
-                    <td class="govuk-table__cell" style="width:420px">${item.providerName}</td>
-                    <td class="govuk-table__cell" style="width:100px">${item.ukprn}</td>
-                    <td class="govuk-table__cell" style="width:170px">${item.timeInQueue}</td>
+                    <td class="govuk-table__cell" style="width:350px">${item.providerName}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.ukprn}</td>
+                    <td class="govuk-table__cell" style="width:80px">${item.jobId}</td>
+                    <td class="govuk-table__cell" style="width:160px">${item.timeInQueue}</td>
                     <td class="govuk-table__cell">${item.statusDescription}</td>
                 </tr>`
     }
@@ -47,10 +48,11 @@ class JobQueuedController extends JobReportWithFilterControllerBase {
     }
 
     getCSVData(data) {
-        const csvData = data.map(function (obj) {
+        const csvData = data.filter(x => x.collectionType !== "PE").map(function (obj) {
             return {
                 "Provider name": obj.providerName,
                 "Ukprn": obj.ukprn,
+                "Job Id": obj.jobId,
                 "Collection type": obj.collectionType,
                 "Job status": obj.statusDescription,
                 "Time in queue": obj.timeInQueue

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Jobs.Model.Processing.Detail;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Processing;
 using ESFA.DC.Web.Operations.Settings.Models;
-using ESFA.DC.Web.Operations.Utils;
 
 namespace ESFA.DC.Web.Operations.Services.Processing
 {
@@ -24,22 +19,19 @@ namespace ESFA.DC.Web.Operations.Services.Processing
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
 
-        public async Task<IEnumerable<JobDetails>> GetJobsProcessingDetails(short jobStatus, DateTime startDateTimeUtc, DateTime endDateTimeUtc, CancellationToken cancellationToken = default)
+        public async Task<string> GetJobsProcessingDetailsForCurrentPeriod(short jobStatus, CancellationToken cancellationToken)
         {
-            var url = $"{_baseUrl}/api/job/job-processing-details/{jobStatus}/{DateHelper.GetUrlFriendlyDate(startDateTimeUtc)}/{DateHelper.GetUrlFriendlyDate(endDateTimeUtc)}";
-
-            var data = await _httpClientService.GetAsync<IEnumerable<JobDetails>>(url, cancellationToken);
-
-            return data ?? Enumerable.Empty<JobDetails>();
+            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/job/jobs-processing-details/current-period/{jobStatus}", cancellationToken);
         }
 
-        public async Task<IEnumerable<JobDetails>> GetJobsProcessingDetailsForCurrentPeriod(short jobStatus, CancellationToken cancellationToken = default)
+        public async Task<string> GetJobsProcessingDetailsForCurrentPeriodLast5Mins(short jobStatus, CancellationToken cancellationToken)
         {
-            var url = $"{_baseUrl}/api/job/job-processing-details/current-period/{jobStatus}";
+            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/job/jobs-processing-details/current-period/last5mins/{jobStatus}", cancellationToken);
+        }
 
-            var data = await _httpClientService.GetAsync<IEnumerable<JobDetails>>(url, cancellationToken);
-
-            return data ?? Enumerable.Empty<JobDetails>();
+        public async Task<string> GetJobsProcessingDetailsForCurrentPeriodLastHour(short jobStatus, CancellationToken cancellationToken)
+        {
+            return await _httpClientService.GetDataAsync($"{_baseUrl}/api/job/jobs-processing-details/current-period/lasthour/{jobStatus}", cancellationToken);
         }
     }
 }
