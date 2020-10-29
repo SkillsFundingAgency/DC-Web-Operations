@@ -1,5 +1,4 @@
-﻿@using ESFA.DC.Web.Operations.Constants
-@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.PeriodEndReportViewModel
+﻿@model ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models.PeriodEndReportViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -43,7 +42,7 @@
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                @if (Model != null && Model.CollectionStats.Any())
+                @if (Model?.CollectionStats != null && Model.CollectionStats.Any())
                 {
                     foreach (var collectionStat in Model.CollectionStats)
                     {
@@ -193,6 +192,39 @@
                         </tr>
                     }
                 }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">LLV Sample Reports</h2>
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col">Report name</th>
+                <th class="govuk-table__header" scope="col">Download</th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            @if (Model?.LLVSampleReports != null && Model.LLVSampleReports.Any())
+            {
+                foreach (var reportDetail in Model.LLVSampleReports)
+                {
+                    var fileDisplayName = reportDetail.Url.Substring(reportDetail.Url.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@reportDetail.DisplayName</td>
+                        <td class="govuk-table__cell">
+                            @Html.ActionLink(fileDisplayName, "GetLLVReportFile", new { collectionYear = Model.Year, period = Model.Period, fileName = reportDetail.Url })
+                        </td>
+                    </tr>
+                }
+            }
             </tbody>
         </table>
     </div>
