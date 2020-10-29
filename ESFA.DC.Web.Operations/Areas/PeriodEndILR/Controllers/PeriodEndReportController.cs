@@ -97,6 +97,16 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             }
         }
 
+        [Route("getLLVSampleReport/{collectionYear}/{ukPrn}")]
+        public async Task<FileResult> GetLLVReportFile(int collectionYear, string ukPrn)
+        {
+            var containerName = Utils.Constants.PeriodEndBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
+
+            var zipStream = await _storageService.GetLLVZipFile(containerName, ukPrn, CancellationToken.None);
+
+            return new FileStreamResult(zipStream, _storageService.GetMimeTypeFromFileName(".zip"));
+        }
+
         [Route("getSampleReport/{collectionYear}/{period}/{*fileName}")]
         public async Task<FileResult> GetReportFile(int collectionYear, int period, string fileName)
         {
