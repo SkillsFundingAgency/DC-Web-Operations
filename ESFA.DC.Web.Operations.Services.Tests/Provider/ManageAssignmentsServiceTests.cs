@@ -28,19 +28,20 @@ namespace ESFA.DC.Web.Operations.Services.Tests
 
             _apiSettings = new ApiSettings
             {
-                JobManagementApiBaseUrl = "Url"
+                JobManagementApiBaseUrl = "JMUrl",
+                FundingClaimsApiBaseUrl = "FCUrl"
             };
         }
 
         [Fact]
-        public async Task GetAvailableCollectionsAsync_ExcludesCollectionsByDate()
+        public async Task GetAvailableCollectionsAsync_ExcludesJobManagmentCollectionsByDate()
         {
             // Arrange
             var currentDate = new DateTime(2020, 10, 17);
 
             _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
 
-            var collectionAssignments = new List<Collection>
+            var collections = new List<Collection>
             {
                 new Collection
                 {
@@ -65,7 +66,7 @@ namespace ESFA.DC.Web.Operations.Services.Tests
                 }
             };
 
-            SetCollectionMock(2021, collectionAssignments);
+            SetJobManagementCollectionMock(2021, collections);
 
             var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
 
@@ -77,10 +78,132 @@ namespace ESFA.DC.Web.Operations.Services.Tests
             Assert.Equal("Open", result.First().Name);
         }
 
-        private void SetCollectionMock(int collectionYear, List<Collection> collectionsToReturn)
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_IncludesJobManagmentCollectionsWithinDateTolerance()
         {
-            _httpClientService.Setup(x => x.GetAsync<IEnumerable<Collection>>($"Url/api/collections/for-year/{collectionYear}", CancellationToken.None)).ReturnsAsync(collectionsToReturn);
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<Collection>
+            {
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-3),
+                    EndDateTimeUtc = currentDate.AddMonths(-2),
+                    CollectionTitle = "Closed but withintolerance",
+                    CollectionType = CollectionType.ILR.ToString()
+                },
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-2),
+                    EndDateTimeUtc = currentDate.AddMonths(2),
+                    CollectionTitle = "Not yet open but within tolerance",
+                    CollectionType = CollectionType.ILR.ToString()
+                },
+            };
+
+            SetJobManagementCollectionMock(2021, collections);
+
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
+
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
+
+            // Assert
+            Assert.Equal(2, result.Count());
         }
 
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_ExcludesJobManagmentCollectionsByType()
+        {
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<Collection>
+            {
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open",
+                    CollectionType = CollectionType.ILR.ToString()
+                },
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open with invalid type (funding claim)",
+                    CollectionType = CollectionType.FC.ToString()
+                },
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open with invalid type (period end)",
+                    CollectionType = CollectionType.PE.ToString()
+                }
+            };
+
+            SetJobManagementCollectionMock(2021, collections);
+
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
+
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Open", result.First().Name);
+        }
+
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_ExcludesFundingClaimCollectionsByDate()
+        {
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<FundingClaimsCollection>
+            {
+                new FundingClaimsCollection
+                {
+                    SubmissionOpenDateUtc = currentDate,
+                    SubmissionCloseDateUtc = currentDate.AddDays(14),
+                    CollectionName = "Open"
+                },
+                new FundingClaimsCollection
+                {
+                    SubmissionOpenDateUtc = currentDate.AddDays(-45),
+                    SubmissionCloseDateUtc = currentDate.AddMonths(-20),
+                    CollectionName = "Closed"
+                }
+            };
+
+            SetFundingClaimsManagementCollectionMock(2021, collections);
+
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
+
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Open", result.First().Name);
+        }
+
+        private void SetJobManagementCollectionMock(int collectionYear, List<Collection> collectionsToReturn)
+        {
+            _httpClientService.Setup(x => x.GetAsync<IEnumerable<Collection>>($"{_apiSettings.JobManagementApiBaseUrl}/api/collections/for-year/{collectionYear}", CancellationToken.None)).ReturnsAsync(collectionsToReturn);
+        }
+
+        private void SetFundingClaimsManagementCollectionMock(int collectionYear, List<FundingClaimsCollection> collectionsToReturn)
+        {
+            _httpClientService.Setup(x => x.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_apiSettings.FundingClaimsApiBaseUrl}/collection/collectionYear/{collectionYear}", CancellationToken.None)).ReturnsAsync(collectionsToReturn);
+        }
     }
 }

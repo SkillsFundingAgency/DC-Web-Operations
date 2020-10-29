@@ -20,11 +20,13 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 {
     public class ManageAssignmentsService : ProviderBaseService, IManageAssignmentsService
     {
+        private const int ReturnPeriodCollectionOpenVarianceInMonths = 2;
+        private const int FundingClaimCollectionOpenVarianceInDays = 14;
+
         private readonly string[] _jobManagementCollectionsTypesToExclude = { "REF", "PE", "OP", "COVID19", "COVIDR", "FRM", "FC" };
         private readonly ILogger _logger;
         private readonly string _jobManagementBaseUrl;
         private readonly string _fundingClaimsBaseUrl;
-
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IHttpClientService _httpClientService;
 
@@ -46,10 +48,12 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         {
             var collectionYears = GetCollectionYears();
 
-            var openReturnPeriodCollections = await GetOpenCollectionsWithReturnPeriods(collectionYears, cancellationToken);
-            var openFundingClaimCollections = await GetOpenFundingClaimCollections(collectionYears, cancellationToken);
+            var openReturnPeriodCollections = GetOpenCollectionsWithReturnPeriods(collectionYears, cancellationToken);
+            var openFundingClaimCollections = GetOpenFundingClaimCollections(collectionYears, cancellationToken);
 
-            return openReturnPeriodCollections.Concat(openFundingClaimCollections);
+            await Task.WhenAll(openReturnPeriodCollections, openFundingClaimCollections);
+
+            return openReturnPeriodCollections.Result.Concat(openFundingClaimCollections.Result);
         }
 
         public async Task<bool> UpdateProviderAssignmentsAsync(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken)
@@ -186,7 +190,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             if (startDateUtc.HasValue && endDateUtc.HasValue)
             {
-                return startDateUtc.Value.AddMonths(-2) <= now && endDateUtc.Value.AddMonths(2) >= now;
+                return startDateUtc.Value.AddMonths(-ReturnPeriodCollectionOpenVarianceInMonths) <= now && endDateUtc.Value.AddMonths(ReturnPeriodCollectionOpenVarianceInMonths) >= now;
             }
 
             return true;
@@ -196,7 +200,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         {
             if (endDateUtc.HasValue)
             {
-                return endDateUtc.Value.AddDays(14) >= _dateTimeProvider.GetNowUtc();
+                return endDateUtc.Value.AddDays(FundingClaimCollectionOpenVarianceInDays) >= _dateTimeProvider.GetNowUtc();
             }
 
             return true;
