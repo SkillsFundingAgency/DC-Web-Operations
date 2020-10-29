@@ -11,7 +11,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Provider
 
         Task<Models.Provider.Provider> GetProviderAsync(long ukprn, CancellationToken cancellationToken);
 
-        Task<IEnumerable<CollectionAssignment>> GetActiveProviderAssignmentsAsync(long ukprn, CancellationToken cancellationToken);
+        Task<IEnumerable<CollectionAssignment>> GetActiveProviderAssignmentsAsync(long ukprn, List<CollectionAssignment> availableCollections, CancellationToken cancellationToken);
 
         Task<bool> UpdateProviderAssignmentsAsync(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken);
     }

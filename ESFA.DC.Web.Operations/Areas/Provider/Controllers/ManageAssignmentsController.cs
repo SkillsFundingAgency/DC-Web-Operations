@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using MoreLinq;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
@@ -31,16 +29,20 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 
         public async Task<IActionResult> Index(long ukprn, CancellationToken cancellationToken)
         {
-            var model = new ManageAssignmentsViewModel();
+            var provider = _manageAssignmentsService.GetProviderAsync(ukprn, cancellationToken);
+            var availableCollections = _manageAssignmentsService.GetAvailableCollectionsAsync(cancellationToken);
 
-            var provider = await _manageAssignmentsService.GetProviderAsync(ukprn, cancellationToken);
-            var providerAssignments = await _manageAssignmentsService.GetActiveProviderAssignmentsAsync(ukprn, cancellationToken);
-            var availableCollections = (await _manageAssignmentsService.GetAvailableCollectionsAsync(cancellationToken)).ExceptBy(providerAssignments, p => p.CollectionId);
+            await Task.WhenAll(provider, availableCollections);
 
-            model.Ukprn = ukprn;
-            model.ProviderName = provider.Name;
-            model.ActiveCollectionsAssignments = providerAssignments.OrderByDescending(o => o.StartDate).ThenBy(t => t.DisplayOrder).ToList();
-            model.InactiveCollectionAssignments = availableCollections.OrderBy(o => o.DisplayOrder).ToList();
+            var providerAssignments = await _manageAssignmentsService.GetActiveProviderAssignmentsAsync(ukprn, availableCollections.Result.ToList(), cancellationToken);
+
+            var model = new ManageAssignmentsViewModel
+            {
+                Ukprn = ukprn,
+                ProviderName = provider.Result.Name,
+                ActiveCollectionsAssignments = providerAssignments.OrderByDescending(o => o.StartDate).ThenBy(t => t.DisplayOrder).ToList(),
+                InactiveCollectionAssignments = availableCollections.Result.OrderBy(o => o.DisplayOrder).ExceptBy(providerAssignments, p => p.CollectionId).ToList()
+            };
 
             return View("Index", model);
         }
