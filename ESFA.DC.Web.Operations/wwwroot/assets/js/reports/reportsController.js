@@ -181,7 +181,7 @@ class ReportsController {
         var rule = document.getElementById('autocomplete-overlay').value;
         if (rule) {
             this._spinner.style.visibility = 'visible';
-            window.location.href = this._validationReportGenerationUrl + '?year=' + year + '&Period=' + periodValue + '&rule=' + rule;
+            window.location.href = `${this._validationReportGenerationUrl}?year=${year}&Period=${periodValue}&rule=${rule}`;
         }
     }
 
