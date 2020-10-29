@@ -103,8 +103,8 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 var collections = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_jobManagementBaseUrl}/api/collections/for-year/{collectionYear}", cancellationToken);
                 if (collections != null)
                 {
-                    collections = collections.Where(c => !_jobManagementCollectionsTypesToExclude.Contains(c.CollectionType));
-                    collections = collections.Where(c => IsReturnPeriodCollectionWithinDateTolerance(c.StartDateTimeUtc, c.EndDateTimeUtc));
+                    collections = collections.Where(c => !_jobManagementCollectionsTypesToExclude.Contains(c.CollectionType)
+                                                    && IsReturnPeriodCollectionWithinDateTolerance(c.StartDateTimeUtc, c.EndDateTimeUtc));
                     openCollections.AddRange(collections);
                 }
             }
