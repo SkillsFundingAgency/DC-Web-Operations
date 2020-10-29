@@ -177,10 +177,11 @@ class ReportsController {
 
     generateValidationDetailReport() {
         var year = this._yearSelection.value;
+        var periodValue = this._periodSelection.value;
         var rule = document.getElementById('autocomplete-overlay').value;
         if (rule) {
             this._spinner.style.visibility = 'visible';
-            window.location.href = this._validationReportGenerationUrl + '?year=' + year + '&rule=' + rule;
+            window.location.href = this._validationReportGenerationUrl + '?year=' + year + '&Period=' + periodValue + '&rule=' + rule;
         }
     }
 
