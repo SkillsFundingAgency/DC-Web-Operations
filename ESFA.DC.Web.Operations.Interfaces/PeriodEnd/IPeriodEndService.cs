@@ -32,6 +32,8 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<IEnumerable<ReportDetails>> GetSampleReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<IEnumerable<ReportDetails>> GetLLVSampleReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<IEnumerable<ReportDetails>> GetMcaReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<CollectionStats>> GetCollectionStatsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken));

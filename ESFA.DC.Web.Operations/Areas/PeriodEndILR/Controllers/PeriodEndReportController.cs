@@ -60,17 +60,19 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
                 model.Period = currentYearPeriod.Period;
             }
 
-            var reportDetails = _periodEndService.GetPeriodEndReportsAsync(model.Year, model.Period, cancellationToken);
-            var sampleReports = _periodEndService.GetSampleReportsAsync(model.Year, model.Period, cancellationToken);
-            var collectionStats = _periodEndService.GetCollectionStatsAsync(model.Year, model.Period, cancellationToken);
-            var mcaReports = _periodEndService.GetMcaReportsAsync(model.Year, model.Period, cancellationToken);
+            var reportDetailsTask = _periodEndService.GetPeriodEndReportsAsync(model.Year, model.Period, cancellationToken);
+            var sampleReportsTask = _periodEndService.GetSampleReportsAsync(model.Year, model.Period, cancellationToken);
+            var llvSampleReportsTask = _periodEndService.GetLLVSampleReportsAsync(model.Year, model.Period, cancellationToken);
+            var collectionStatsTask = _periodEndService.GetCollectionStatsAsync(model.Year, model.Period, cancellationToken);
+            var mcaReportsTask = _periodEndService.GetMcaReportsAsync(model.Year, model.Period, cancellationToken);
 
-            await Task.WhenAll(reportDetails, sampleReports, collectionStats, mcaReports);
+            await Task.WhenAll(reportDetailsTask, sampleReportsTask, llvSampleReportsTask, collectionStatsTask, mcaReportsTask);
 
-            model.ReportDetails = reportDetails.Result;
-            model.SampleReports = sampleReports.Result;
-            model.CollectionStats = collectionStats.Result;
-            model.McaReports = mcaReports.Result;
+            model.ReportDetails = reportDetailsTask.Result;
+            model.SampleReports = sampleReportsTask.Result;
+            model.LLVSampleReports = llvSampleReportsTask.Result;
+            model.CollectionStats = collectionStatsTask.Result;
+            model.McaReports = mcaReportsTask.Result;
 
             model.SummarisationTotals = await GetSummarisationTotalsAsync(model.Year, model.Period, cancellationToken);
 
@@ -97,14 +99,13 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Controllers
             }
         }
 
-        [Route("getLLVSampleReport/{collectionYear}/{ukPrn}")]
-        public async Task<FileResult> GetLLVReportFile(int collectionYear, string ukPrn)
+        [Route("getLLVSampleReport/{collectionYear}/{period}/{*fileName}")]
+        public async Task<FileResult> GetLLVReportFile(int collectionYear, int period, string fileName)
         {
-            var containerName = Utils.Constants.PeriodEndBlobContainerName.Replace(Utils.Constants.CollectionYearToken, collectionYear.ToString());
+            var file = fileName.Substring(fileName.LastIndexOf("/") + 1);
+            var downloadName = $"{fileName.Substring(fileName.IndexOf('/') + 1, 8)}_{collectionYear}_R{period.ToString().PadLeft(2, '0')}_{file}";
 
-            var zipStream = await _storageService.GetLLVZipFile(containerName, ukPrn, CancellationToken.None);
-
-            return new FileStreamResult(zipStream, _storageService.GetMimeTypeFromFileName(".zip"));
+            return await GetReportFile(collectionYear, fileName, downloadName);
         }
 
         [Route("getSampleReport/{collectionYear}/{period}/{*fileName}")]

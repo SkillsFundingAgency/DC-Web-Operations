@@ -19,6 +19,8 @@ namespace ESFA.DC.Web.Operations.Areas.PeriodEndILR.Models
 
         public IEnumerable<ReportDetails> SampleReports { get; set; }
 
+        public IEnumerable<ReportDetails> LLVSampleReports { get; set; }
+
         public IEnumerable<ReportDetails> McaReports { get; set; }
 
         public IEnumerable<CollectionStats> CollectionStats { get; set; }
