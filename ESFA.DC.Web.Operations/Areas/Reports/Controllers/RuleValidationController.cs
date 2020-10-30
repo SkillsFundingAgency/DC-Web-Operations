@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,18 +60,18 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         }
 
         [HttpGet("ValidationRulesReport")]
-        public async Task<IActionResult> ValidationRulesReport(int year, string rule)
+        public async Task<IActionResult> ValidationRulesReport(int year, int period, string rule)
         {
             var model = new RuleSearchViewModel();
             var collectionYears = await _collectionsService.GetCollectionYearsByType(CollectionTypeConstants.Ilr);
             model.CollectionYears = collectionYears.OrderByDescending(x => x).ToList();
             ViewData["years"] = model.CollectionYears.Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() }).ToList();
             var jobId = await _validationRulesService.GenerateReport(rule, year, User.Name());
-            return RedirectToAction("InProgress", new { jobId });
+            return RedirectToAction("InProgress", new { jobId, period });
         }
 
         [HttpGet("InProgress")]
-        public async Task<IActionResult> InProgress(long jobId)
+        public async Task<IActionResult> InProgress(long jobId, int period)
         {
             ViewBag.AutoRefresh = true;
             var jobStatus = await _jobService.GetJobStatus(jobId);
@@ -86,11 +87,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 return View();
             }
 
-            return RedirectToAction("Report", new { jobId });
+            return RedirectToAction("Report", new { jobId, period });
         }
 
         [HttpGet("Report")]
-        public async Task<IActionResult> Report(long jobId)
+        public async Task<IActionResult> Report(long jobId, int period)
         {
             var model = new ValidationRuleDetailReportViewModel();
             List<ValidationRuleDetail> validationRuleDetails = new List<ValidationRuleDetail>();
@@ -101,6 +102,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             model.ReportFileName = string.Format(validationRuleDetailsReportCsv, jobId);
             model.Rule = job.Rule;
             model.Year = job.SelectedCollectionYear;
+            model.Period = period;
 
             // json file
             using (var stream = await _operationsFileService.OpenReadStreamAsync(validationRuleDetailsReportJsonFile, job.StorageReference, CancellationToken.None))
@@ -113,13 +115,15 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         }
 
         [HttpPost("DownloadReport")]
-        public async Task<IActionResult> DownloadReport(string containerName, string reportFilename, string rule, int year, int jobId)
+        public async Task<IActionResult> DownloadReport(string containerName, string reportFilename, string rule, int year, int period, int jobId)
         {
             var blobStream = await _operationsFileService.OpenReadStreamAsync(reportFilename, containerName, CancellationToken.None);
 
+            var periodString = $"R{period.ToString("00", NumberFormatInfo.InvariantInfo)}";
+
             return new FileStreamResult(blobStream, _storageService.GetMimeTypeFromFileName(reportFilename))
             {
-                FileDownloadName = $"ValidationRuleDetailReport_{rule}_{year}.csv"
+                FileDownloadName = $"{rule}_{year}_{periodString}_ValidationRuleDetailReport.csv"
             };
         }
     }

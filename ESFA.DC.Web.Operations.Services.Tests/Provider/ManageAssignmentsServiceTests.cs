@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
-using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Services.Provider;
 using ESFA.DC.Web.Operations.Settings.Models;
-using FluentAssertions;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using CollectionType = ESFA.DC.CollectionsManagement.Models.Enums.CollectionType;
 
@@ -18,179 +17,193 @@ namespace ESFA.DC.Web.Operations.Services.Tests
 {
     public class ManageAssignmentsServiceTests
     {
-        [Fact]
-        public async Task GetProviderAssignmentsAsync()
-        {
-            var cancellationToken = CancellationToken.None;
-            long ukprn = 12345678;
-            var dateTimeNow = new DateTime(2020, 7, 1);
-            var startDate1 = new DateTime(2020, 8, 1);
-            DateTime? endDate1 = new DateTime(2020, 9, 1);
-            var startDate2 = new DateTime(2020, 11, 1);
-            DateTime? endDate2 = new DateTime(2021, 7, 1);
+        private readonly Mock<IDateTimeProvider> _dateTimeProvider;
+        private readonly Mock<IHttpClientService> _httpClientService;
+        private readonly ApiSettings _apiSettings;
 
-            var collectionAssignments = new List<OrganisationCollection>
+        public ManageAssignmentsServiceTests()
+        {
+            _dateTimeProvider = new Mock<IDateTimeProvider>();
+            _httpClientService = new Mock<IHttpClientService>();
+
+            _apiSettings = new ApiSettings
             {
-                new OrganisationCollection
+                JobManagementApiBaseUrl = "JMUrl",
+                FundingClaimsApiBaseUrl = "FCUrl"
+            };
+        }
+
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_ExcludesJobManagmentCollectionsByDate()
+        {
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<Collection>
+            {
+                new Collection
                 {
-                    StartDate = startDate1,
-                    EndDate = endDate1,
-                    CollectionName = "CollectionName1",
-                    CollectionId = 1,
-                    CollectionType = CollectionType.ILR
+                    StartDateTimeUtc = currentDate.AddMonths(3),
+                    EndDateTimeUtc = currentDate.AddMonths(5),
+                    CollectionTitle = "NotYetOpen",
+                    CollectionType = CollectionType.ILR.ToString()
                 },
-                new OrganisationCollection
+                new Collection
                 {
-                    StartDate = startDate2,
-                    EndDate = endDate2,
-                    CollectionName = "CollectionName2",
-                    CollectionId = 2,
-                    CollectionType = CollectionType.EAS
-                }
-            };
-
-            var expectedAssignments = new List<CollectionAssignment>
-            {
-                new CollectionAssignment
-                {
-                    StartDate = startDate1,
-                    EndDate = endDate1,
-                    Name = "CollectionName1",
-                    CollectionId = 1,
-                    DisplayOrder = 1,
-                    ToBeDeleted = false
-                }
-            };
-
-            var apiSettings = new ApiSettings
-            {
-                JobManagementApiBaseUrl = "Url"
-            };
-
-            var dateTimeProvider = new Mock<IDateTimeProvider>();
-            dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(dateTimeNow);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate1)).Returns(startDate1);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate1.Value)).Returns(endDate1.Value);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate2)).Returns(startDate2);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate2.Value)).Returns(endDate2.Value);
-
-            var httpClientService = new Mock<IHttpClientService>();
-            httpClientService.Setup(x => x.GetAsync<IEnumerable<OrganisationCollection>>($"Url/api/org/assignments/{ukprn}", cancellationToken)).ReturnsAsync(collectionAssignments);
-
-            var assignments = await NewService(apiSettings, dateTimeProvider.Object, httpClientService.Object).GetProviderAssignmentsAsync(ukprn, cancellationToken);
-
-            assignments.Should().BeEquivalentTo(expectedAssignments);
-        }
-
-        [Fact]
-        public async Task GetProviderAssignmentsAsync_NoCollectionEndDate()
-        {
-            var cancellationToken = CancellationToken.None;
-            long ukprn = 12345678;
-            var dateTimeNow = new DateTime(2020, 7, 1);
-            var startDate = new DateTime(2020, 8, 1);
-            DateTime? endDate = null;
-
-            var collectionAssignments = new List<OrganisationCollection>
-            {
-                new OrganisationCollection
-                {
-                    StartDate = startDate,
-                    EndDate = endDate,
-                    CollectionName = "CollectionName1",
-                    CollectionId = 1,
-                    CollectionType = CollectionType.ILR
-                }
-            };
-
-            var expectedAssignments = new List<CollectionAssignment>
-            {
-                new CollectionAssignment
-                {
-                    StartDate = startDate,
-                    EndDate = dateTimeNow,
-                    Name = "CollectionName1",
-                    CollectionId = 1,
-                    DisplayOrder = 1,
-                    ToBeDeleted = false
-                }
-            };
-
-            var apiSettings = new ApiSettings
-            {
-                JobManagementApiBaseUrl = "Url"
-            };
-
-            var dateTimeProvider = new Mock<IDateTimeProvider>();
-            dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(dateTimeNow);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate)).Returns(startDate);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(dateTimeNow)).Returns(dateTimeNow);
-
-            var httpClientService = new Mock<IHttpClientService>();
-            httpClientService.Setup(x => x.GetAsync<IEnumerable<OrganisationCollection>>($"Url/api/org/assignments/{ukprn}", cancellationToken)).ReturnsAsync(collectionAssignments);
-
-            var assignments = await NewService(apiSettings, dateTimeProvider.Object, httpClientService.Object).GetProviderAssignmentsAsync(ukprn, cancellationToken);
-
-            assignments.Should().BeEquivalentTo(expectedAssignments);
-        }
-
-        [Fact]
-        public async Task GetProviderAssignmentsAsync_DatesOutOfRange()
-        {
-            var cancellationToken = CancellationToken.None;
-            long ukprn = 12345678;
-            var dateTimeNow = new DateTime(2020, 5, 1);
-            var startDate1 = new DateTime(2020, 8, 1);
-            DateTime? endDate1 = new DateTime(2020, 9, 1);
-            var startDate2 = new DateTime(2020, 11, 1);
-            DateTime? endDate2 = new DateTime(2021, 7, 1);
-
-            var collectionAssignments = new List<OrganisationCollection>
-            {
-                new OrganisationCollection
-                {
-                    StartDate = startDate1,
-                    EndDate = endDate1,
-                    CollectionName = "CollectionName1",
-                    CollectionId = 1,
-                    CollectionType = CollectionType.ILR
+                    StartDateTimeUtc = currentDate.AddMonths(-5),
+                    EndDateTimeUtc = currentDate.AddMonths(-4),
+                    CollectionTitle = "Closed",
+                    CollectionType = CollectionType.ILR.ToString()
                 },
-                new OrganisationCollection
+                new Collection
                 {
-                    StartDate = startDate2,
-                    EndDate = endDate2,
-                    CollectionName = "CollectionName2",
-                    CollectionId = 2,
-                    CollectionType = CollectionType.EAS
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open",
+                    CollectionType = CollectionType.ILR.ToString()
                 }
             };
 
-            var apiSettings = new ApiSettings
-            {
-                JobManagementApiBaseUrl = "Url"
-            };
+            SetJobManagementCollectionMock(2021, collections);
 
-            var dateTimeProvider = new Mock<IDateTimeProvider>();
-            dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(dateTimeNow);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate1)).Returns(startDate1);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate1.Value)).Returns(endDate1.Value);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(startDate2)).Returns(startDate2);
-            dateTimeProvider.Setup(x => x.ConvertUtcToUk(endDate2.Value)).Returns(endDate2.Value);
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
 
-            var httpClientService = new Mock<IHttpClientService>();
-            httpClientService.Setup(x => x.GetAsync<IEnumerable<OrganisationCollection>>($"Url/api/org/assignments/{ukprn}", cancellationToken)).ReturnsAsync(collectionAssignments);
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
 
-            var assignments = await NewService(apiSettings, dateTimeProvider.Object, httpClientService.Object).GetProviderAssignmentsAsync(ukprn, cancellationToken);
-
-            assignments.Should().BeNullOrEmpty();
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Open", result.First().Name);
         }
 
-        private ManageAssignmentsService NewService(
-            ApiSettings apiSettings = null,
-            IDateTimeProvider dateTimeProvider = null,
-            IHttpClientService httpClientService = null)
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_IncludesJobManagmentCollectionsWithinDateTolerance()
         {
-            return new ManageAssignmentsService(Mock.Of<ILogger>(), dateTimeProvider, apiSettings, httpClientService);
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<Collection>
+            {
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-3),
+                    EndDateTimeUtc = currentDate.AddMonths(-2),
+                    CollectionTitle = "Closed but withintolerance",
+                    CollectionType = CollectionType.ILR.ToString()
+                },
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-2),
+                    EndDateTimeUtc = currentDate.AddMonths(2),
+                    CollectionTitle = "Not yet open but within tolerance",
+                    CollectionType = CollectionType.ILR.ToString()
+                },
+            };
+
+            SetJobManagementCollectionMock(2021, collections);
+
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
+
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
+
+            // Assert
+            Assert.Equal(2, result.Count());
+        }
+
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_ExcludesJobManagmentCollectionsByType()
+        {
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<Collection>
+            {
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open",
+                    CollectionType = CollectionType.ILR.ToString()
+                },
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open with invalid type (funding claim)",
+                    CollectionType = CollectionType.FC.ToString()
+                },
+                new Collection
+                {
+                    StartDateTimeUtc = currentDate.AddMonths(-1),
+                    EndDateTimeUtc = currentDate.AddMonths(3),
+                    CollectionTitle = "Open with invalid type (period end)",
+                    CollectionType = CollectionType.PE.ToString()
+                }
+            };
+
+            SetJobManagementCollectionMock(2021, collections);
+
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
+
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Open", result.First().Name);
+        }
+
+        [Fact]
+        public async Task GetAvailableCollectionsAsync_ExcludesFundingClaimCollectionsByDate()
+        {
+            // Arrange
+            var currentDate = new DateTime(2020, 10, 17);
+
+            _dateTimeProvider.Setup(x => x.GetNowUtc()).Returns(currentDate);
+
+            var collections = new List<FundingClaimsCollection>
+            {
+                new FundingClaimsCollection
+                {
+                    SubmissionOpenDateUtc = currentDate,
+                    SubmissionCloseDateUtc = currentDate.AddDays(14),
+                    CollectionName = "Open"
+                },
+                new FundingClaimsCollection
+                {
+                    SubmissionOpenDateUtc = currentDate.AddDays(-45),
+                    SubmissionCloseDateUtc = currentDate.AddMonths(-20),
+                    CollectionName = "Closed"
+                }
+            };
+
+            SetFundingClaimsManagementCollectionMock(2021, collections);
+
+            var _sut = new ManageAssignmentsService(Mock.Of<ILogger>(), _dateTimeProvider.Object, _apiSettings, _httpClientService.Object);
+
+            // Act
+            var result = await _sut.GetAvailableCollectionsAsync(CancellationToken.None);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Open", result.First().Name);
+        }
+
+        private void SetJobManagementCollectionMock(int collectionYear, List<Collection> collectionsToReturn)
+        {
+            _httpClientService.Setup(x => x.GetAsync<IEnumerable<Collection>>($"{_apiSettings.JobManagementApiBaseUrl}/api/collections/for-year/{collectionYear}", CancellationToken.None)).ReturnsAsync(collectionsToReturn);
+        }
+
+        private void SetFundingClaimsManagementCollectionMock(int collectionYear, List<FundingClaimsCollection> collectionsToReturn)
+        {
+            _httpClientService.Setup(x => x.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_apiSettings.FundingClaimsApiBaseUrl}/collection/collectionYear/{collectionYear}", CancellationToken.None)).ReturnsAsync(collectionsToReturn);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace ESFA.DC.Web.Operations.Utils
 
         public const int DefaultSubmissionCount = 15;
 
+        public const string UkprnToken = "{UKPRN}";
+
         public const string IlrCollectionNamePrefix = "ILR";
         public const int YearStartMonth = 8;
         public const int CriticalPathHubId = 0;
@@ -39,5 +41,7 @@ namespace ESFA.DC.Web.Operations.Utils
         public static readonly string ALLFPeriodPrefix = "A";
 
         public static readonly DateTime MaxDateTime = new DateTime(2600, 7, 31);
+
+        public static readonly string LearnerLevelViewJsonReportFileName = $"{UkprnToken} Learner Level View Report Summary.json";
     }
 }

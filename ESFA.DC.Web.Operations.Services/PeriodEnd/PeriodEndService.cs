@@ -122,6 +122,13 @@ namespace ESFA.DC.Web.Operations.Services.PeriodEnd
             return await _httpClientService.GetAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
         }
 
+        public async Task<IEnumerable<ReportDetails>> GetLLVSampleReportsAsync(int year, int period, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string url = $"{_baseUrl}/api/period-end/reports/{year}/{period}/llvsamples";
+
+            return await _httpClientService.GetAsync<IEnumerable<ReportDetails>>(url, cancellationToken);
+        }
+
         public async Task<List<SummarisationCollectionReturnCode>> GetLatestSummarisationCollectionCodesAsync(string collectionType, int numberOfPeriods, CancellationToken cancellationToken)
         {
             string url = $"{_baseUrl}/api/summarisation/return-codes/{collectionType}/{numberOfPeriods}";

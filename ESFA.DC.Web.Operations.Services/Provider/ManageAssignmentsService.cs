@@ -20,9 +20,13 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 {
     public class ManageAssignmentsService : ProviderBaseService, IManageAssignmentsService
     {
-        private readonly string[] _collectionsTypesToExclude = { "REF", "PE" };
+        private const int ReturnPeriodCollectionOpenVarianceInMonths = 2;
+        private const int FundingClaimCollectionOpenVarianceInDays = 14;
+
+        private readonly string[] _jobManagementCollectionsTypesToExclude = { "REF", "PE", "OP", "COVID19", "COVIDR", "FRM", "FC" };
         private readonly ILogger _logger;
-        private readonly string _baseUrl;
+        private readonly string _jobManagementBaseUrl;
+        private readonly string _fundingClaimsBaseUrl;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IHttpClientService _httpClientService;
 
@@ -34,48 +38,22 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             : base(apiSettings, dateTimeProvider, httpClientService)
         {
             _logger = logger;
-            _baseUrl = apiSettings.JobManagementApiBaseUrl;
+            _jobManagementBaseUrl = apiSettings.JobManagementApiBaseUrl;
+            _fundingClaimsBaseUrl = apiSettings.FundingClaimsApiBaseUrl;
             _dateTimeProvider = dateTimeProvider;
             _httpClientService = httpClientService;
         }
 
         public async Task<IEnumerable<CollectionAssignment>> GetAvailableCollectionsAsync(CancellationToken cancellationToken)
         {
-            var collectionYears = new List<int>();
+            var collectionYears = GetCollectionYears();
 
-            var nowUtc = _dateTimeProvider.GetNowUtc();
+            var openReturnPeriodCollections = GetOpenCollectionsWithReturnPeriods(collectionYears, cancellationToken);
+            var openFundingClaimCollections = GetOpenFundingClaimCollections(collectionYears, cancellationToken);
 
-            switch (nowUtc.Month)
-            {
-                case int n when n >= 1 && n <= 7:
-                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYearMinusOne }, nowUtc);
-                    break;
-                case int n when n >= 8 && n <= 10:
-                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear, CollectionYearOption.CurrentYearMinusOne }, nowUtc);
-                    break;
-                case int n when n >= 11 && n <= 12:
-                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear }, nowUtc);
-                    break;
-            }
+            await Task.WhenAll(openReturnPeriodCollections, openFundingClaimCollections);
 
-            var collections = new List<Collection>();
-
-            foreach (var collectionYear in collectionYears)
-            {
-                var data = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_baseUrl}/api/collections/for-year/{collectionYear}", cancellationToken);
-
-                collections.AddRange(data);
-            }
-
-            return collections
-                .Where(w => !Array.Exists(_collectionsTypesToExclude, search => search.Contains(w.CollectionType.ToString())))
-                .Select(s => new CollectionAssignment
-                {
-                    CollectionId = s.CollectionId,
-                    Name = s.CollectionTitle,
-                    DisplayOrder = SetDisplayOrder((CollectionType)Enum.Parse(typeof(CollectionType), s.CollectionType), s.CollectionTitle)
-                })
-                .ToList();
+            return openReturnPeriodCollections.Result.Concat(openFundingClaimCollections.Result);
         }
 
         public async Task<bool> UpdateProviderAssignmentsAsync(long ukprn, ICollection<CollectionAssignment> assignments, CancellationToken cancellationToken)
@@ -102,10 +80,10 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
             try
             {
-                await _httpClientService.SendDataAsync($"{_baseUrl}/api/org/assignments/delete/{ukprn}", organisationToDelete, cancellationToken);
+                await _httpClientService.SendDataAsync($"{_jobManagementBaseUrl}/api/org/assignments/delete/{ukprn}", organisationToDelete, cancellationToken);
                 _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Successfully deleted:{organisationToDelete.Count}");
 
-                await _httpClientService.SendDataAsync($"{_baseUrl}/api/org/assignments/update/{ukprn}", organisationToUpdate, cancellationToken);
+                await _httpClientService.SendDataAsync($"{_jobManagementBaseUrl}/api/org/assignments/update/{ukprn}", organisationToUpdate, cancellationToken);
                 _logger.LogInfo($"Entered UpdateProviderAssignments - Web Operations. Successfully updated:{organisationToUpdate.Count}");
                 return true;
             }
@@ -114,6 +92,73 @@ namespace ESFA.DC.Web.Operations.Services.Provider
                 _logger.LogError("Error Updating Organisation Collections", ex);
                 return false;
             }
+        }
+
+        private async Task<IEnumerable<CollectionAssignment>> GetOpenCollectionsWithReturnPeriods(List<int> collectionYears, CancellationToken cancellationToken)
+        {
+            var openCollections = new List<Collection>();
+
+            foreach (var collectionYear in collectionYears)
+            {
+                var collections = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_jobManagementBaseUrl}/api/collections/for-year/{collectionYear}", cancellationToken);
+                if (collections != null)
+                {
+                    collections = collections.Where(c => !_jobManagementCollectionsTypesToExclude.Contains(c.CollectionType)
+                                                    && IsReturnPeriodCollectionWithinDateTolerance(c.StartDateTimeUtc, c.EndDateTimeUtc));
+                    openCollections.AddRange(collections);
+                }
+            }
+
+            return openCollections.Select(s => new CollectionAssignment
+            {
+                CollectionId = s.CollectionId,
+                Name = s.CollectionTitle,
+                DisplayOrder = SetDisplayOrder((CollectionType)Enum.Parse(typeof(CollectionType), s.CollectionType), s.CollectionTitle),
+            });
+        }
+
+        private async Task<IEnumerable<CollectionAssignment>> GetOpenFundingClaimCollections(List<int> collectionYears, CancellationToken cancellationToken)
+        {
+            var openCollections = new List<FundingClaimsCollection>();
+
+            foreach (var collectionYear in collectionYears)
+            {
+                var collections = await _httpClientService.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_fundingClaimsBaseUrl}/collection/collectionYear/{collectionYear}", cancellationToken);
+                if (collections != null)
+                {
+                    collections = collections?.Where(c => IsFundingClaimCollectionWithinDateTolerance(c.SubmissionCloseDateUtc));
+                    openCollections.AddRange(collections);
+                }
+            }
+
+            return openCollections.Select(s => new CollectionAssignment
+            {
+                CollectionId = s.CollectionId,
+                Name = s.CollectionName,
+                DisplayOrder = SetDisplayOrder(CollectionType.FC, s.CollectionName),
+            });
+        }
+
+        private List<int> GetCollectionYears()
+        {
+            var collectionYears = new List<int>();
+
+            var nowUtc = _dateTimeProvider.GetNowUtc();
+
+            switch (nowUtc.Month)
+            {
+                case int n when n >= 1 && n <= 7:
+                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYearMinusOne }, nowUtc);
+                    break;
+                case int n when n >= 8 && n <= 10:
+                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear, CollectionYearOption.CurrentYearMinusOne }, nowUtc);
+                    break;
+                case int n when n >= 11 && n <= 12:
+                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear }, nowUtc);
+                    break;
+            }
+
+            return collectionYears;
         }
 
         private List<int> FormatDateToCollectionYear(CollectionYearOption[] options, DateTime nowUtc)
@@ -137,6 +182,28 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             }
 
             return years;
+        }
+
+        private bool IsReturnPeriodCollectionWithinDateTolerance(DateTime? startDateUtc, DateTime? endDateUtc)
+        {
+            var now = _dateTimeProvider.GetNowUtc();
+
+            if (startDateUtc.HasValue && endDateUtc.HasValue)
+            {
+                return startDateUtc.Value.AddMonths(-ReturnPeriodCollectionOpenVarianceInMonths) <= now && endDateUtc.Value.AddMonths(ReturnPeriodCollectionOpenVarianceInMonths) >= now;
+            }
+
+            return true;
+        }
+
+        private bool IsFundingClaimCollectionWithinDateTolerance(DateTime? endDateUtc)
+        {
+            if (endDateUtc.HasValue)
+            {
+                return endDateUtc.Value.AddDays(FundingClaimCollectionOpenVarianceInDays) >= _dateTimeProvider.GetNowUtc();
+            }
+
+            return true;
         }
     }
 }
