@@ -1,18 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Authorisation;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
+using ESFA.DC.Web.Operations.Models.Collection;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Services.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
+using ESFA.DC.Web.Operations.Utils;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
+using ReturnPeriod = ESFA.DC.CollectionsManagement.Models.ReturnPeriod;
 
 namespace ESFA.DC.Web.Operations.Services.Tests.Reports
 {
@@ -40,12 +48,66 @@ namespace ESFA.DC.Web.Operations.Services.Tests.Reports
             periodEndReportFileName.Should().Be("R03/ActCountReport.xlsx");
         }
 
+
+        [Fact]
+        public async Task GetAvailableReportsAsync_Returns_ClosedReports()
+        {
+            var returnPeriods = new List<ReturnPeriod>
+            {
+                new ReturnPeriod
+                {
+                    CollectionYear = 2021,
+                    PeriodNumber = 1,
+                    IsOpen = false
+                },
+                new ReturnPeriod
+                {
+                    CollectionYear = 2021,
+                    PeriodNumber = 2,
+                    IsOpen = false
+                }
+            };
+
+            var closedReports = new List<IReport>
+            {
+                new ILRProvidersReturningFirstTimePerDayReport(),
+                new ILRFileSubmissionsPerDayReport()
+            };
+
+            var collections = new List<CollectionSummary>()
+            {
+                new CollectionSummary()
+                {
+                    CollectionName = @"OP-ILRProvidersReturningFirstTimePerDay-Report2021"
+                },
+                new CollectionSummary()
+                {
+                    CollectionName = @"OP-ILRFileSubmissionsPerDay-Report2021"
+                }
+            };
+
+            var periodServiceMock = new Mock<IPeriodService>();
+            periodServiceMock.Setup(x => x.GetAllIlrPeriodsAsync(CancellationToken.None)).ReturnsAsync(returnPeriods);
+            periodServiceMock.Setup(x => x.GetOpenPeriodsAsync(CancellationToken.None)).ReturnsAsync(new List<ReturnPeriod>());
+
+
+            var authorisationService = new Mock<IAuthorisationService>();
+            authorisationService.Setup(x => x.IsAuthorisedForReport(It.IsAny<IReport>())).ReturnsAsync(true);
+
+            var collectionServiceMock = new Mock<ICollectionsService>();
+            collectionServiceMock.Setup(x => x.GetAllCollectionsForYear(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(collections);
+
+            var reports = await NewService(null, collectionServiceMock.Object, closedReports, authorisationService.Object, null, null, periodServiceMock.Object)
+                .GetAvailableReportsAsync(2021, 1);
+
+            reports.Count().Should().Be(2);
+        }
+
         private ReportsService NewService(
             ApiSettings apiSettings = null,
             ICollectionsService collectionsService = null,
             IEnumerable<IReport> reports = null,
-            IAuthorizationService authorizationService = null,
-            IHttpContextAccessor httpContextAccessor = null,
+            IAuthorisationService authorisationService = null,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService = null,
             IHttpClientService httpClientService = null,
             IPeriodService periodService = null)
@@ -54,8 +116,7 @@ namespace ESFA.DC.Web.Operations.Services.Tests.Reports
                 apiSettings ?? new ApiSettings(),
                 collectionsService ?? Mock.Of<ICollectionsService>(),
                 reports,
-                authorizationService ?? Mock.Of<IAuthorizationService>(),
-                httpContextAccessor ?? Mock.Of<IHttpContextAccessor>(),
+                authorisationService ?? Mock.Of<IAuthorisationService>(),
                 operationsFileService ?? Mock.Of<IIndex<PersistenceStorageKeys, IFileService>>(),
                 httpClientService ?? Mock.Of<IHttpClientService>(),
                 periodService ?? Mock.Of<IPeriodService>());

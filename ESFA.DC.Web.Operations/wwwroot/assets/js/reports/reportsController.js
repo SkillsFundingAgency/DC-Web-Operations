@@ -1,5 +1,7 @@
 ﻿import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
-import { getInitialStateModel, parseToObject } from '/assets/js/util.js';
+import { getInitialStateModel, parseToObject, $on } from '/assets/js/util.js';
+import Client from '/assets/js/reports/client.js';
+import Hub from '/assets/js/hubs/hub.js';
 
 class ReportsController {
 
@@ -28,6 +30,18 @@ class ReportsController {
         this._data = parseToObject(initialState);
         var latestYear = this.setInitialYear();
         this.setPeriods(latestYear);
+
+        $on(window, 'pageshow', () => {
+            const hub = new Hub('reportsHub', this.displayConnectionState);
+            hub.startHub(() => this.getReports());
+            window.reportClient = new Client(hub.getConnection());
+
+            var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
+            var reportsUrl = '@Url.Action("Index", "Reports")';
+            var reportGenerationUrl = '@Url.Action("RunReport", "Reports")';
+            var reportsDownloadUrl = '@Url.Action("GetReportFile", "Reports")';
+            this.init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl, reportsDownloadUrl);
+        });
     }
 
     displayConnectionState(state) {
@@ -227,4 +241,4 @@ class ReportsController {
     }
 }
 
-export default ReportsController
+export const reportsController = new ReportsController();

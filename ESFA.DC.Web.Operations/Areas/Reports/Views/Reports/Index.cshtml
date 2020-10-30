@@ -77,22 +77,5 @@
     <partial name="_InitialState" model="Model" />
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
-    <script type="module">
-        import Client from '/assets/js/reports/client.js';
-        import Hub from '/assets/js/hubs/hub.js';
-        import ReportsController from '/assets/js/reports/reportsController.js';
-
-        (function () {
-            const controller = new ReportsController();
-            const hub = new Hub('reportsHub', controller.displayConnectionState);
-            hub.startHub(() => controller.getReports());
-            window.reportClient = new Client(hub.getConnection());
-
-            var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
-            var reportsUrl = '@Url.Action("Index", "Reports")';
-            var reportGenerationUrl = '@Url.Action("RunReport", "Reports")';
-            var reportsDownloadUrl = '@Url.Action("GetReportFile", "Reports")';
-            controller.init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl, reportsDownloadUrl);
-        })();
-    </script>
+    <script src="~/assets/js/reports/reportsController.js" asp-append-version="true" type="module"></script>
 }
