@@ -3,6 +3,7 @@ using Autofac.Features.Indexed;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Services.Reports;
@@ -46,7 +47,8 @@ namespace ESFA.DC.Web.Operations.Services.Tests.Reports
             IAuthorizationService authorizationService = null,
             IHttpContextAccessor httpContextAccessor = null,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService = null,
-            IHttpClientService httpClientService = null)
+            IHttpClientService httpClientService = null,
+            IPeriodService periodService = null)
         {
             return new ReportsService(
                 apiSettings ?? new ApiSettings(),
@@ -55,7 +57,8 @@ namespace ESFA.DC.Web.Operations.Services.Tests.Reports
                 authorizationService ?? Mock.Of<IAuthorizationService>(),
                 httpContextAccessor ?? Mock.Of<IHttpContextAccessor>(),
                 operationsFileService ?? Mock.Of<IIndex<PersistenceStorageKeys, IFileService>>(),
-                httpClientService ?? Mock.Of<IHttpClientService>());
+                httpClientService ?? Mock.Of<IHttpClientService>(),
+                periodService ?? Mock.Of<IPeriodService>());
         }
     }
 }

@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Dapper" Version="2.0.30" />
-    <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.5.2" />
+    <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.2.98-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.EmailDistribution.Models" Version="0.2.21-beta0001" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.39-beta0001" />
