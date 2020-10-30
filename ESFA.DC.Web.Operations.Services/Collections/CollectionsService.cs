@@ -166,7 +166,10 @@ namespace ESFA.DC.Web.Operations.Services.Collections
         {
             var data = await _baseHttpClientService.GetAsync<CollectionsManagement.Models.ReturnPeriod>($"{_baseUrl}/api/returnperiod/{id}", cancellationToken);
 
-            return new ReturnPeriod(data.ReturnPeriodId, $"R{data.PeriodNumber:00}", data.StartDateTimeUtc, data.EndDateTimeUtc)
+            var startDate = _dateTimeProvider.ConvertUtcToUk(data.StartDateTimeUtc);
+            var endDate = _dateTimeProvider.ConvertUtcToUk(data.EndDateTimeUtc);
+
+            return new ReturnPeriod(data.ReturnPeriodId, $"R{data.PeriodNumber:00}", startDate, endDate)
             {
                 CollectionName = data.CollectionName,
                 CollectionId = data.CollectionId
