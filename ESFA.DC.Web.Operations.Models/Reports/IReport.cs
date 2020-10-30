@@ -17,5 +17,7 @@ namespace ESFA.DC.Web.Operations.Models.Reports
         string Policy { get; }
 
         ReportType ReportType { get; }
+
+        bool IsApplicableForClosedPeriodOnly { get; }
     }
 }

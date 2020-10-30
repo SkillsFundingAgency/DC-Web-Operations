@@ -1,8 +1,9 @@
 ﻿import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
+import { getInitialStateModel, parseToObject } from '/assets/js/util.js';
 
 class ReportsController {
 
-    constructor() {
+    constructor({ initialState = getInitialStateModel() } = {}) {
         this._reportSelection = document.getElementById('reportSelection');
         this._yearSelection = document.getElementById('collectionYears');
         this._periodSelection = document.getElementById('collectionPeriod');
@@ -24,6 +25,9 @@ class ReportsController {
         this._reportsDownloadUrl = null;
         this.ValidationDetailReport = "RuleValidationDetailReport";
         this._internalReportsDownloadListDiv = document.getElementById("internalReportsDownloadList");
+        this._data = parseToObject(initialState);
+        var latestYear = this.setInitialYear();
+        this.setPeriods(latestYear);
     }
 
     displayConnectionState(state) {
@@ -85,7 +89,7 @@ class ReportsController {
 
     yearsSelectionChange(e) {
         this._yearSelected = this._yearSelection.value;
-        this._periodSelected = this._periodSelection.value;
+        this.setPeriods(this._yearSelected);
         this.getReports();
         this.hideValidationRuleDetailReportSection();
     }
@@ -102,6 +106,8 @@ class ReportsController {
     }
 
     populateReports(reportDetails) {
+        reportDetails.availableReportsList.sort((a, b) =>(a.displayName > b.displayName) ? 1 : ((b.displayName > a.displayName) ? -1 : 0));
+
         var compileReportOptionsTemplate = getHandleBarsTemplate(Templates.ReportListOptions);
         this._reportSelection.innerHTML = compileReportOptionsTemplate({ viewModel: reportDetails });
 
@@ -196,6 +202,27 @@ class ReportsController {
         var yearValue = this._yearSelection.value;
         var periodValue = this._periodSelection.value;
         window.location.href = this._reportsUrl + '?collectionYear=' + yearValue + '&collectionPeriod=' + periodValue;
+    }
+
+    setInitialYear() {
+        var latestCollectionYear = Object.entries(this._data.periods).reduce((a, b) => a[1] < b[1] ? a : b)[0];
+        var collectionYear = document.getElementById('collectionYears');
+        collectionYear.value = latestCollectionYear;
+        return latestCollectionYear;
+    }
+
+    setPeriods(collectionYear) {
+        var collectionPeriod = document.getElementById('collectionPeriod');
+        collectionPeriod.options.length = 0;
+
+        var collectionYearPeriods = this._data.periods[collectionYear];
+
+        collectionYearPeriods.forEach(function (item, index) {
+            collectionPeriod.options[collectionPeriod.options.length] = new Option(item["text"], item["value"]);
+        });
+
+        var latestPeriod = collectionYearPeriods.reduce((a, b) => parseInt(a.value,10) > parseInt(b.value,10) ? a : b);
+        collectionPeriod.value = latestPeriod.value;
     }
 }
 

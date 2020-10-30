@@ -9,18 +9,22 @@
 <br />
 <form method="post">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3>Period:</h3>
+        <div class="govuk-grid-column-one-third">
+            <label for="collectionYears" class="govuk-label">Select academic year</label>
             <select id="collectionYears" asp-for="CollectionYear" class="govuk-select govuk-input--width-10 form-control" asp-items="Model.Years">
             </select>
-            <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control" asp-items="@Model.Periods">
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <label for="collectionPeriod" class="govuk-label">Select period</label>
+            <select id="collectionPeriod" asp-for="CollectionPeriod" class="govuk-select govuk-input--width-10 form-control">
             </select>
         </div>
     </div>
+    <br/>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h3>Create new report for:</h3>
+            <label for="reportSelection" class="govuk-label">Create new report for:</label>
             <select id="reportSelection" class="govuk-select govuk-input--width-20 form-control"></select>
             <button class="govuk-button" data-module="govuk-button" id="createReport">Create report</button>
         </div>
@@ -70,6 +74,7 @@
 
 @section PageScripts
 {
+    <partial name="_InitialState" model="Model" />
     <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
     <script type="module">

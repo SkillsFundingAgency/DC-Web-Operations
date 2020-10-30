@@ -9,6 +9,7 @@ using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
@@ -27,6 +28,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private readonly ICollectionsService _collectionsService;
         private readonly IEnumerable<IReport> _reports;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IPeriodService _periodService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHttpClientService _httpClientService;
         private readonly IFileService _operationsFileService;
@@ -38,13 +40,15 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             IAuthorizationService authorizationService,
             IHttpContextAccessor httpContextAccessor,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService,
-            IHttpClientService httpClientService)
+            IHttpClientService httpClientService,
+            IPeriodService periodService)
         {
             _collectionsService = collectionsService;
             _reports = reports;
             _authorizationService = authorizationService;
             _httpContextAccessor = httpContextAccessor;
             _httpClientService = httpClientService;
+            _periodService = periodService;
             _operationsFileService = operationsFileService[PersistenceStorageKeys.OperationsAzureStorage];
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -155,11 +159,19 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             return result;
         }
 
-        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var authorisedReports = new List<IReport>();
 
-            foreach (var report in _reports)
+            var openPeriods = await _periodService.GetOpenPeriodsAsync(cancellationToken);
+            var isOpenPeriod = openPeriods.Any(p => p.CollectionYear == collectionYear && p.PeriodNumber == period);
+
+            var allIlrReturnPeriodsForYear = (await _periodService.GetAllIlrPeriodsAsync(cancellationToken))
+                .Where(w => w.CollectionYear == collectionYear);
+
+            var isLastPeriodInYear = period == allIlrReturnPeriodsForYear.Max(o => o.PeriodNumber);
+
+            foreach (var report in _reports.Where(r => isOpenPeriod || isLastPeriodInYear || r.IsApplicableForClosedPeriodOnly))
             {
                 if (await IsAuthorised(report))
                 {

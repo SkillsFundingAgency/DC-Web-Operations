@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using ESFA.DC.CollectionsManagement.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.Reports.Models
@@ -19,17 +20,26 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Models
 
         public IEnumerable<SelectListItem> Reports { get; set; }
 
-        public IDictionary<string, int> ReportPeriods { get; set; }
+        public IEnumerable<ReturnPeriod> ReturnPeriods { get; set; }
 
-        public List<SelectListItem> Periods => ReportPeriods?
-            .Select(n => new SelectListItem { Text = n.Key, Value = n.Value.ToString(CultureInfo.CurrentCulture) })
-            .OrderBy(o => o.Text)
-            .ToList();
+        public Dictionary<int, List<SelectListItem>> Periods
+        {
+            get
+            {
+                if (ReturnPeriods == null || !ReturnPeriods.Any())
+                {
+                    return new Dictionary<int, List<SelectListItem>>();
+                }
+
+                var grouping = ReturnPeriods.GroupBy(k => k.CollectionYear).ToDictionary(g => g.Key, g => g.ToList());
+                return grouping.ToDictionary(a => a.Key, a => a.Value.Select(s => new SelectListItem($"R{s.PeriodNumber:00}", s.PeriodNumber.ToString(CultureInfo.CurrentCulture))).ToList());
+            }
+        }
 
         public IEnumerable<int> CollectionYears { get; set; }
 
         public List<SelectListItem> Years => CollectionYears?
-            .Select(n => new SelectListItem { Text = n.ToString(CultureInfo.CurrentCulture), Value = n.ToString(CultureInfo.CurrentCulture) })
+            .Select(n => new SelectListItem { Text = $"20{n.ToString(CultureInfo.CurrentCulture).Substring(0, 2)} to 20{n.ToString(CultureInfo.CurrentCulture).Substring(2, 2)}", Value = n.ToString(CultureInfo.CurrentCulture) })
             .OrderByDescending(o => o.Text)
             .ToList();
     }
