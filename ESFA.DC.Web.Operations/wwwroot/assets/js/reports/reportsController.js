@@ -232,9 +232,8 @@ class ReportsController {
 
         var collectionYearPeriods = this._data.periods[collectionYear];
 
-        collectionYearPeriods.forEach(function (item, index) {
-            collectionPeriod.options[collectionPeriod.options.length] = new Option(item["text"], item["value"]);
-        });
+        collectionYearPeriods.forEach((item) =>
+            collectionPeriod.options[collectionPeriod.options.length] = new Option(item["text"], item["value"]));
 
         var latestPeriod = collectionYearPeriods.reduce((a, b) => parseInt(a.value,10) > parseInt(b.value,10) ? a : b);
         collectionPeriod.value = latestPeriod.value;
