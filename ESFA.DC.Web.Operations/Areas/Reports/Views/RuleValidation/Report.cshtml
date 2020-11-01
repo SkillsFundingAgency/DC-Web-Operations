@@ -5,9 +5,32 @@
     var totalErrors = 0;
     var totalWarnings = 0;
 }
+<br />
+<br />
 
+<a asp-action="Index" asp-controller="Reports" asp-area="Reports">Back</a>
 <br />
 <br />
+<div id="ruleValidationDetailReportSection">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span id="spinner" class="loading-spinner" style="display: block;position: absolute;left: auto;right: auto;"><img src="~/assets/images/loading-spinner.gif" alt="loading-icon"></span>
+            <h3>Search for a validation rule:</h3>
+        </div>
+        <div class="govuk-grid-row govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds">
+                <div id="tt-overlay">
+                    <div id="tt-overlay" class="autocomplete-wrapper"></div>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <button data-prevent-double-click="true" class="govuk-button" type="submit" data-module="govuk-button" id="generateValidationReport">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -17,6 +40,9 @@
     </div>
     <br>
 </div>
+
+
+
 
 <div class="govuk-grid-row">
     <table class="govuk-table">
@@ -35,7 +61,7 @@
                 var subTotalErrors = 0;
                 var subTotalWarnings = 0;
 
-                <tr class="govuk-table__row"><td><h3>@item.Key</h3></td></tr>
+                <tr class="govuk-table__row"><td><h3>Period: @item.Key</h3></td></tr>
                 foreach (var ruleDetail in item.Value)
                 {
                     subTotalErrors = subTotalErrors + @ruleDetail.Errors;
@@ -82,3 +108,34 @@
             Download CSV
         </button>
     </form>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">&nbsp;</div>
+        <div class="govuk-grid-column-two-thirds">
+            <label id="state"></label>
+        </div>
+    </div>
+
+    @section PageScripts
+{
+        <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+        <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
+        <script type="module">
+        import Client from '/assets/js/reports/client.js';
+        import Hub from '/assets/js/hubs/hub.js';
+        import ReportsController from '/assets/js/reports/reportsController.js';
+
+        (function () {
+            const controller = new ReportsController();
+            const hub = new Hub('reportsHub', controller.displayConnectionState);
+            var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
+            //hub.startHub(() => controller.renderValidationRuleDetailByYear(validationReportGenerationUrl, @Model.Year, @Model.Period));
+            hub.startHub(() => controller.renderValidationRuleDetailByYear(@Model.Year));
+            window.reportClient = new Client(hub.getConnection());
+
+
+            controller.initValidationDetailReport(validationReportGenerationUrl, @Model.Year, @Model.Period);
+
+        })();
+        </script>
+    }

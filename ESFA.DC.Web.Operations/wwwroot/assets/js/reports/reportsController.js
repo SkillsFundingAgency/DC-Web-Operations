@@ -44,6 +44,25 @@ class ReportsController {
         this._reportsDownloadUrl = reportsDownloadUrl;
     }
 
+    initValidationDetailReport(validationReportGenerationUrl,year, period) {
+        this._generateValidationReportButton.addEventListener("click", this.generateValidationDetailReportTest(year, period).bind(this));
+        this._validationReportGenerationUrl = validationReportGenerationUrl;
+    }
+
+    renderValidationRuleDetailByYear(year) {
+        window.reportClient.getValidationRules(year, this.populateRules.bind(this));
+    }
+
+    generateValidationDetailReportTest(year, period) {
+        var yearValue = year;
+        var periodValue = period;
+        var rule = document.getElementById('autocomplete-overlay').value;
+        if (rule) {
+            this._spinner.style.visibility = 'visible';
+            window.location.href = `${this._validationReportGenerationUrl}?year=${yearValue}&Period=${periodValue}&rule=${rule}`;
+        }
+    }
+
     getReports() {
         this._reportsLoadingSpinner.style.visibility = 'visible';
         this._yearSelected = document.getElementById('collectionYears').value;
@@ -64,7 +83,7 @@ class ReportsController {
         this.removeElementsByClass('autocomplete__wrapper');
     }
 
-    showValidationRuleDetailReportSection() {
+    showValidationRuleDetailReportSection(year) {
         this._yearSelected = this._yearSelection.value;
         this._spinner.style.visibility = 'visible';
         this._createReportBtn.style.visibility = 'hidden';
