@@ -35,12 +35,8 @@ class ReportsController {
             const hub = new Hub('reportsHub', this.displayConnectionState);
             hub.startHub(() => this.getReports());
             window.reportClient = new Client(hub.getConnection());
-
-            var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
-            var reportsUrl = '@Url.Action("Index", "Reports")';
-            var reportGenerationUrl = '@Url.Action("RunReport", "Reports")';
-            var reportsDownloadUrl = '@Url.Action("GetReportFile", "Reports")';
-            this.init(validationReportGenerationUrl, reportGenerationUrl, reportsUrl, reportsDownloadUrl);
+            
+            this.init(this._data.validationReportGenerationUrl, this._data.reportGenerationUrl, this._data.reportsUrl, this._data.reportsDownloadUrl);
         });
     }
 

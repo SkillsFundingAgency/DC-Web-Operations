@@ -42,5 +42,13 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Models
             .Select(n => new SelectListItem { Text = $"20{n.ToString(CultureInfo.CurrentCulture).Substring(0, 2)} to 20{n.ToString(CultureInfo.CurrentCulture).Substring(2, 2)}", Value = n.ToString(CultureInfo.CurrentCulture) })
             .OrderByDescending(o => o.Text)
             .ToList();
+
+        public string ValidationReportGenerationUrl { get; set; }
+
+        public string ReportsUrl { get; set; }
+
+        public string ReportGenerationUrl { get; set; }
+
+        public string ReportsDownloadUrl { get; set; }
     }
 }

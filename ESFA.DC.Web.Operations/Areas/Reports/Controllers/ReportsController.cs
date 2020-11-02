@@ -56,7 +56,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         public async Task<IActionResult> Index(ReportsViewModel viewModel, CancellationToken cancellationToken)
         {
             var model = new ReportsViewModel();
-
             ViewBag.Error = TempData["error"];
 
             if (viewModel != null && viewModel.CollectionYear != 0)
@@ -70,6 +69,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 model.CollectionPeriod = currentYearPeriod.Period;
                 model = await GenerateReportsViewModel(model, cancellationToken);
             }
+
+            model.ValidationReportGenerationUrl = @"/reports/ValidationRulesReport";
+            model.ReportsUrl = @"/reports/Index";
+            model.ReportGenerationUrl = @"/reports/RunReport";
+            model.ReportsDownloadUrl = @"/reports/GetReportFile";
 
             return View(model);
         }
