@@ -1,5 +1,6 @@
-﻿import { getInitialStateModel, parseToObject, $on, setControlVisiblity } from '/assets/js/util.js';
-export function setupAutocomplete(rules) {
+﻿import { setControlVisiblity } from '/assets/js/util.js';
+
+export function setupValidationRulesAutocomplete(rules) {
     accessibleAutocomplete({
         element: document.querySelector('#tt-overlay'),
         id: 'autocomplete-overlay',
@@ -34,10 +35,8 @@ export function searchRuleSuggestionTemplate(result) {
 }
 
 export function customRulesSuggest(rules, query, syncResults) {
-    //var results = this._rules;
-    var results = rules;
-    syncResults(query
-        ? results.filter(function (result) {
+   syncResults(query
+       ? rules.filter(function (result) {
             var resultContains = result.ruleName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
             return resultContains;
         })
