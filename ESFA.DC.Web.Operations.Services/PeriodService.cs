@@ -62,11 +62,18 @@ namespace ESFA.DC.Web.Operations.Services
             return periods;
         }
 
-        public async Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken)
+        public async Task<List<ReturnPeriod>> GetAllIlrPeriodsAsync(CancellationToken cancellationToken)
         {
-            var maxIlrPeriods = await _httpClientService.GetAsync<int>($"{_baseUrl}/api/returnperiod/maxPeriod/{ilrCollectionType}", cancellationToken);
+            var periods = await _httpClientService.GetAsync<List<ReturnPeriod>>($"{_baseUrl}/api/returns-calendar/all/ILR", cancellationToken);
 
-            return Enumerable.Range(1, maxIlrPeriods).ToDictionary(x => $"R{x:00}");
+            AssertPeriodResponseValid(periods);
+
+            return periods;
+        }
+
+        public async Task<IEnumerable<ReturnPeriod>> GetPeriodsUptoNowAsync(string ilrCollectionType, CancellationToken cancellationToken)
+        {
+            return await _httpClientService.GetAsync<IEnumerable<ReturnPeriod>>($"{_baseUrl}/api/returnperiod/upto/{_dateTimeProvider.GetNowUtc():o}/{ilrCollectionType}", cancellationToken);
         }
 
         public async Task<List<int>> GetValidityYearsAsync(

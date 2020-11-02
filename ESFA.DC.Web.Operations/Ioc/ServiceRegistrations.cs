@@ -14,6 +14,7 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Auditing;
+using ESFA.DC.Web.Operations.Interfaces.Authorisation;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.Dashboard;
 using ESFA.DC.Web.Operations.Interfaces.Notifications;
@@ -28,6 +29,7 @@ using ESFA.DC.Web.Operations.Interfaces.ValidationRules;
 using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Services;
 using ESFA.DC.Web.Operations.Services.Auditing;
+using ESFA.DC.Web.Operations.Services.Authorisation;
 using ESFA.DC.Web.Operations.Services.Builders;
 using ESFA.DC.Web.Operations.Services.Collections;
 using ESFA.DC.Web.Operations.Services.DashBoard;
@@ -151,6 +153,8 @@ namespace ESFA.DC.Web.Operations.Ioc
             builder.RegisterType<ProvidersReturnedCurrentPeriodService>().As<IJobProvidersReturnedCurrentPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ValidityPeriodService>().As<IValidityPeriodService>().InstancePerLifetimeScope();
             builder.RegisterType<ApiAvailabilityService>().As<IApiAvailabilityService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<AuthorisationService>().As<IAuthorisationService>().InstancePerLifetimeScope();
 
             // Reports
             builder.RegisterType<ACTCountReport>().As<IReport>().InstancePerLifetimeScope();

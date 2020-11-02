@@ -18,5 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         public string Policy => AuthorisationPolicy.AdvancedSupportOrDevOpsPolicy;
 
         public ReportType ReportType => ReportType.PeriodEnd;
+
+        public bool IsApplicableForClosedPeriodOnly => false;
     }
 }

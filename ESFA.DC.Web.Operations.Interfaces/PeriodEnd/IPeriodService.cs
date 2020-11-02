@@ -14,11 +14,13 @@ namespace ESFA.DC.Web.Operations.Interfaces.PeriodEnd
 
         Task<List<ReturnPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default);
 
-        Task<IDictionary<string, int>> GetAllPeriodsAsync(string ilrCollectionType, CancellationToken cancellationToken);
+        Task<IEnumerable<ReturnPeriod>> GetPeriodsUptoNowAsync(string ilrCollectionType, CancellationToken cancellationToken);
 
         Task<List<int>> GetValidityYearsAsync(
             string collectionType,
             string collectionName,
             CancellationToken cancellationToken);
+
+        Task<List<ReturnPeriod>> GetAllIlrPeriodsAsync(CancellationToken cancellationToken);
     }
 }

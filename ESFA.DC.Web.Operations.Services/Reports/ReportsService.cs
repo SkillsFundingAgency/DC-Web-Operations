@@ -8,14 +8,14 @@ using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
 using ESFA.DC.Web.Operations.Interfaces;
+using ESFA.DC.Web.Operations.Interfaces.Authorisation;
 using ESFA.DC.Web.Operations.Interfaces.Collections;
+using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 
 namespace ESFA.DC.Web.Operations.Services.Reports
 {
@@ -26,8 +26,8 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private IDictionary<int, IEnumerable<string>> _collectionsByYear = new Dictionary<int, IEnumerable<string>>();
         private readonly ICollectionsService _collectionsService;
         private readonly IEnumerable<IReport> _reports;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAuthorisationService _authorisationService;
+        private readonly IPeriodService _periodService;
         private readonly IHttpClientService _httpClientService;
         private readonly IFileService _operationsFileService;
 
@@ -35,16 +35,16 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             ApiSettings apiSettings,
             ICollectionsService collectionsService,
             IEnumerable<IReport> reports,
-            IAuthorizationService authorizationService,
-            IHttpContextAccessor httpContextAccessor,
+            IAuthorisationService authorisationService,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService,
-            IHttpClientService httpClientService)
+            IHttpClientService httpClientService,
+            IPeriodService periodService)
         {
             _collectionsService = collectionsService;
             _reports = reports;
-            _authorizationService = authorizationService;
-            _httpContextAccessor = httpContextAccessor;
+            _authorisationService = authorisationService;
             _httpClientService = httpClientService;
+            _periodService = periodService;
             _operationsFileService = operationsFileService[PersistenceStorageKeys.OperationsAzureStorage];
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -155,13 +155,21 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             return result;
         }
 
-        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<IReport>> GetAvailableReportsAsync(int collectionYear, int period, CancellationToken cancellationToken = default(CancellationToken))
         {
             var authorisedReports = new List<IReport>();
 
-            foreach (var report in _reports)
+            var openPeriods = await _periodService.GetOpenPeriodsAsync(cancellationToken);
+            var isOpenPeriod = openPeriods.Any(p => p.CollectionYear == collectionYear && p.PeriodNumber == period);
+
+            var allIlrReturnPeriodsForYear = (await _periodService.GetAllIlrPeriodsAsync(cancellationToken))
+                .Where(w => w.CollectionYear == collectionYear);
+
+            var isLastPeriodInYear = !allIlrReturnPeriodsForYear.Any() || (period == allIlrReturnPeriodsForYear.Max(o => o.PeriodNumber));
+
+            foreach (var report in _reports.Where(r => isOpenPeriod || isLastPeriodInYear || r.IsApplicableForClosedPeriodOnly))
             {
-                if (await IsAuthorised(report))
+                if (await _authorisationService.IsAuthorisedForReport(report))
                 {
                     authorisedReports.Add(report);
                 }
@@ -211,11 +219,6 @@ namespace ESFA.DC.Web.Operations.Services.Reports
                     }
                 }
             }
-        }
-
-        private async Task<bool> IsAuthorised(IReport report)
-        {
-            return (await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, report.Policy)).Succeeded;
         }
 
         private List<ReportDetails> filterReports(IReport report, List<string> fileReferences)
