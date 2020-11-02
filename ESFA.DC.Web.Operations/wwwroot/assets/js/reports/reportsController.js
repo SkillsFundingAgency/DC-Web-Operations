@@ -72,7 +72,7 @@ class ReportsController {
         this.removeElementsByClass('autocomplete__wrapper');
     }
 
-    showValidationRuleDetailReportSection(year) {
+    showValidationRuleDetailReportSection() {
         this._yearSelected = this._yearSelection.value;
         this._spinner.style.visibility = 'visible';
         this._createReportBtn.style.visibility = 'hidden';
