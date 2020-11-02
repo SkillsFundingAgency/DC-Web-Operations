@@ -70,10 +70,10 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 model = await GenerateReportsViewModel(model, cancellationToken);
             }
 
-            model.ValidationReportGenerationUrl = @"/reports/ValidationRulesReport";
-            model.ReportsUrl = @"/reports/Index";
-            model.ReportGenerationUrl = @"/reports/RunReport";
-            model.ReportsDownloadUrl = @"/reports/GetReportFile";
+            model.ValidationReportGenerationUrl = Url.Action(nameof(RuleValidationController.ValidationRulesReport), "RuleValidation");
+            model.ReportsUrl = Url.Action(nameof(ReportsController.Index), "Reports");
+            model.ReportGenerationUrl = Url.Action(nameof(ReportsController.RunReport), "Reports");
+            model.ReportsDownloadUrl = Url.Action(nameof(ReportsController.GetReportFile), "Reports");
 
             return View(model);
         }
