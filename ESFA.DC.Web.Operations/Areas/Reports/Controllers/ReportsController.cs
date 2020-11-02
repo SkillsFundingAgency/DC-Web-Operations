@@ -14,9 +14,7 @@ using ESFA.DC.Web.Operations.Interfaces.Collections;
 using ESFA.DC.Web.Operations.Interfaces.PeriodEnd;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Interfaces.Storage;
-using ESFA.DC.Web.Operations.Models.Enums;
 using ESFA.DC.Web.Operations.Models.Reports;
-using ESFA.DC.Web.Operations.Services.Enums;
 using ESFA.DC.Web.Operations.Utils;
 using ESFA.DC.Web.Operations.Utils.Extensions;
 using Microsoft.ApplicationInsights;
@@ -58,7 +56,6 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
         public async Task<IActionResult> Index(ReportsViewModel viewModel, CancellationToken cancellationToken)
         {
             var model = new ReportsViewModel();
-
             ViewBag.Error = TempData["error"];
 
             if (viewModel != null && viewModel.CollectionYear != 0)
@@ -72,6 +69,11 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 model.CollectionPeriod = currentYearPeriod.Period;
                 model = await GenerateReportsViewModel(model, cancellationToken);
             }
+
+            model.ValidationReportGenerationUrl = Url.Action(nameof(RuleValidationController.ValidationRulesReport), "RuleValidation");
+            model.ReportsUrl = Url.Action(nameof(ReportsController.Index), "Reports");
+            model.ReportGenerationUrl = Url.Action(nameof(ReportsController.RunReport), "Reports");
+            model.ReportsDownloadUrl = Url.Action(nameof(ReportsController.GetReportFile), "Reports");
 
             return View(model);
         }
@@ -161,12 +163,12 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
                 CollectionPeriod = reportsViewModel.CollectionPeriod,
             };
 
-            var getAllPeriodsTask = _periodService.GetAllPeriodsAsync(CollectionTypes.ILR, cancellationToken);
+            var getAllPeriodsTask = _periodService.GetPeriodsUptoNowAsync(CollectionTypes.ILR, cancellationToken);
             var collectionYearsTask = _collectionsService.GetCollectionYearsByType(CollectionTypes.ILR, cancellationToken);
 
             await Task.WhenAll(getAllPeriodsTask, collectionYearsTask);
 
-            model.ReportPeriods = getAllPeriodsTask.Result;
+            model.ReturnPeriods = getAllPeriodsTask.Result;
             model.CollectionYears = collectionYearsTask.Result;
 
             return model;

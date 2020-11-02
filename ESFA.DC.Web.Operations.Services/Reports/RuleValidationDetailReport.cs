@@ -18,5 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         public string Policy => AuthorisationPolicy.ReportsPolicy;
 
         public ReportType ReportType => ReportType.Validation;
+
+        public bool IsApplicableForClosedPeriodOnly => false;
     }
 }

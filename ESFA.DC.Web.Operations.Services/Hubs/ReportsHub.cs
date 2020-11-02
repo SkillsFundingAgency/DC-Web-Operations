@@ -44,7 +44,7 @@ namespace ESFA.DC.Web.Operations.Services.Hubs
             reportDetailsList.AddRange(fundingClaimsReportsDetails);
             var reportUrlDetails = reportDetailsList.Where(x => !string.IsNullOrEmpty(x.Url));
 
-            var availableReports = await _reportsService.GetAvailableReportsAsync(collectionYear);
+            var availableReports = await _reportsService.GetAvailableReportsAsync(collectionYear, collectionPeriod);
             var model = new ReportsModel
             {
                 AvailableReportsList = availableReports,

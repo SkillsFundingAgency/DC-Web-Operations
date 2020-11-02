@@ -18,5 +18,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         public string Policy => AuthorisationPolicy.AdvancedSupportOrDevOpsOrReportsPolicy;
 
         public ReportType ReportType => ReportType.FundingClaims;
+
+        public bool IsApplicableForClosedPeriodOnly => false;
     }
 }
