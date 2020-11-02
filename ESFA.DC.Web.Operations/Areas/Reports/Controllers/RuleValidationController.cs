@@ -103,6 +103,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Controllers
             model.Rule = job.Rule;
             model.Year = job.SelectedCollectionYear;
             model.Period = period;
+            model.ValidationReportGenerationUrl = Url.Action(nameof(RuleValidationController.ValidationRulesReport), "RuleValidation");
 
             // json file
             using (var stream = await _operationsFileService.OpenReadStreamAsync(validationRuleDetailsReportJsonFile, job.StorageReference, CancellationToken.None))

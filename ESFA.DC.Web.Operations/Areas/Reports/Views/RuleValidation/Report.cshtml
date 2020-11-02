@@ -11,7 +11,7 @@
 <a asp-action="Index" asp-controller="Reports" asp-area="Reports">Back</a>
 <br />
 <br />
-<partial name="_RuleValidationReportDetail"/>
+<partial name="_RuleValidationReportDetail" />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -97,20 +97,10 @@
 
     @section PageScripts
     {
+        <partial name="_InitialState" model="Model" />
         <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
         <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
-        <script type="module">
-        import Client from '/assets/js/reports/client.js';
-        import Hub from '/assets/js/hubs/hub.js';
-        import ReportsController from '/assets/js/reports/reportsController.js';
-
-        (function () {
-            const controller = new ReportsController();
-            const hub = new Hub('reportsHub', controller.displayConnectionState);
-            var validationReportGenerationUrl = '@Url.Action("ValidationRulesReport", "RuleValidation")';
-            hub.startHub(() => controller.renderValidationRuleDetailByYear(validationReportGenerationUrl, @Model.Year, @Model.Period));
-            window.reportClient = new Client(hub.getConnection());
-
-        })();
-        </script>
+        <script src="~/assets/js/reports/validationDetailReportController.js" asp-append-version="true" type="module"></script>
     }
+
+

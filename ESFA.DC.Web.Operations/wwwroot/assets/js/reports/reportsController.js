@@ -1,5 +1,6 @@
 ﻿import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 import { getInitialStateModel, parseToObject, $on } from '/assets/js/util.js';
+import { setupAutocomplete } from '/assets/js/reports/validationDetailReportBase.js';
 import Client from '/assets/js/reports/client.js';
 import Hub from '/assets/js/hubs/hub.js';
 
@@ -35,7 +36,6 @@ class ReportsController {
             const hub = new Hub('reportsHub', this.displayConnectionState);
             hub.startHub(() => this.getReports());
             window.reportClient = new Client(hub.getConnection());
-            
             this.init(this._data.validationReportGenerationUrl, this._data.reportGenerationUrl, this._data.reportsUrl, this._data.reportsDownloadUrl);
         });
     }
@@ -56,14 +56,6 @@ class ReportsController {
         this._reportGenerationUrl = reportGenerationUrl;
         this._reportsUrl = reportsUrl;
         this._reportsDownloadUrl = reportsDownloadUrl;
-    }
-
-    renderValidationRuleDetailByYear(validationReportGenerationUrl, year, period) {
-        this._yearSelected = year;
-        this._periodSelected = period;
-        this._generateValidationReportButton.addEventListener("click", this.generateValidationDetailReport.bind(this));
-        this._validationReportGenerationUrl = validationReportGenerationUrl;
-        window.reportClient.getValidationRules(year, this.populateRules.bind(this));
     }
 
     getReports() {
@@ -141,6 +133,7 @@ class ReportsController {
     populateRules(rules) {
         this.removeElementsByClass('autocomplete__wrapper');
         this._rulesByYear[this._yearSelected] = rules;
+        //setupAutocomplete(rules);
         accessibleAutocomplete({
             element: this._element,
             id: this._id,

@@ -18,5 +18,7 @@ namespace ESFA.DC.Web.Operations.Areas.Reports.Models
         public int Period { get; set; }
 
         public Dictionary<string, List<ValidationRuleDetail>> ValidationRuleDetailsByReturnPeriod { get; set; }
+
+        public string ValidationReportGenerationUrl { get; set; }
     }
 }
