@@ -1,0 +1,65 @@
+﻿@using ESFA.DC.Web.Operations.Constants
+@model ESFA.DC.Web.Operations.Areas.Publication.Models.PublicationReportModel
+@{
+    ViewData["Title"] = "Publication Unpublish";
+    var collections = (IEnumerable<string>)ViewData[ViewDataConstants.Collections];
+
+}
+<label class="govuk-label" for="name"></label>
+
+<h1 class="govuk-heading-x1">Unpublish reports</h1>
+
+<div class="govuk-form-group">
+
+    @using (Html.BeginForm("ReportTypeChanged", "UnPublish"))
+    {
+        <label class="govuk-label" for="PublicationYearPeriod">
+            Select Publication type
+        </label>
+        @Html.DropDownListFor(model => model.CollectionName, new SelectList(collections),
+            new { @class = "govuk-select govuk-input--width-10 form-control", id = "collectionName", onchange = "submit()" })
+    }
+</div>
+
+
+@if (Model != null && Model.PublishedFrm.Any())
+{
+
+    <div class="govuk-form-group">
+        <label class="govuk-label">Choose a Period to Unpublish</label>
+        @using (Html.BeginForm("UnpublishAsync", "UnPublish"))
+        {
+            <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablecontinue()">
+                <option value="selectone" selected>Select One</option>
+                @foreach (var period in Model.PublishedFrm)
+                {
+                    <option value="@period.CollectionYear/@period.PeriodNumber"> @period.CollectionYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
+                }
+            </select>
+            <input type="hidden" name="collectionName" id="collectionName" value="@Model.CollectionName" />
+            <br />
+            <br />
+            <button id="continue" type="button" class="govuk-button" disabled onclick="showsubmit()">Continue</button>
+            <p hidden id="confirmtext">Are you sure you want to unpublish the selected reports?</p>
+            <button hidden id="submit" class="">Unpublish Reports</button>
+        }
+        <br />
+        <br />
+    </div>
+}
+
+@if (Model != null && !Model.PublishedFrm.Any())
+{
+    <br />
+    <h1 class="govuk-heading-xl">No Reports Available    </h1>
+    <div class="govuk-panel__body govuk-!-font-size-19">
+        There are currently no reports available to unpublish
+    </div>
+}
+
+<environment include="Development">
+    <script type="text/javascript" src="~/assets/js/publication.js"></script>
+</environment>
+<environment exclude="Development">
+    <script type="text/javascript" src="~/assets/minified/declaration.min.js" asp-append-version="true"></script>
+</environment>

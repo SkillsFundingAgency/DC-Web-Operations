@@ -17,7 +17,7 @@ namespace ESFA.DC.Web.Operations.Interfaces.Publication
 
         Task PublishSldAsync(long jobId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken));
 
         Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken));
 

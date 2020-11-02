@@ -125,9 +125,9 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             await _fileService.DeleteFolderAsync(folder, containerName, cancellationToken);
         }
 
-        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string url = $"{_jobApiUrl}/publication/published-periods";
+            string url = $"{_jobApiUrl}/publication/published-periods/{collectionName}";
             var result = await _httpClientService.GetAsync<List<PeriodEndCalendarYearAndPeriodModel>>(url, cancellationToken);
             return result.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }

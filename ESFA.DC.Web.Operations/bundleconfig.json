@@ -11,5 +11,16 @@
     "minify": {
       "enabled": true
     }
+  },
+
+  {
+    "outputFileName": "wwwroot/assets/minified/publication.min.js",
+    "inputFiles": [
+      "wwwroot/assets/js/publication.js"
+    ],
+    "minify": {
+      "enabled": true
+    },
+    "sourceMap": false
   }
 ]
