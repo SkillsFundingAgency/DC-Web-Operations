@@ -45,21 +45,11 @@ class ReportsController {
     }
 
     renderValidationRuleDetailByYear(validationReportGenerationUrl, year, period) {
-        this._generateValidationReportButton.addEventListener("click", this.generateValidationDetailReportTest.bind(this, year, period));
+        this._yearSelected = year;
+        this._periodSelected = period;
+        this._generateValidationReportButton.addEventListener("click", this.generateValidationDetailReport.bind(this));
         this._validationReportGenerationUrl = validationReportGenerationUrl;
         window.reportClient.getValidationRules(year, this.populateRules.bind(this));
-    }
-
-    generateValidationDetailReportTest(year, period) {
-        var yearValue = year;
-        var periodValue = period;
-        if (document.getElementById('autocomplete-overlay')) {
-            var rule = document.getElementById('autocomplete-overlay').value;
-            if (rule) {
-                this._spinner.style.visibility = 'visible';
-                window.location.href = `${this._validationReportGenerationUrl}?year=${yearValue}&Period=${periodValue}&rule=${rule}`;
-            }
-        }
     }
 
     getReports() {
@@ -194,12 +184,10 @@ class ReportsController {
     }
 
     generateValidationDetailReport() {
-        var year = this._yearSelection.value;
-        var periodValue = this._periodSelection.value;
-        var rule = document.getElementById('autocomplete-overlay').value;
+        let rule = document.getElementById('autocomplete-overlay').value;
         if (rule) {
             this._spinner.style.visibility = 'visible';
-            window.location.href = `${this._validationReportGenerationUrl}?year=${year}&Period=${periodValue}&rule=${rule}`;
+            window.location.href = `${this._validationReportGenerationUrl}?year=${this._yearSelected}&Period=${this._periodSelected}&rule=${rule}`;
         }
     }
 
