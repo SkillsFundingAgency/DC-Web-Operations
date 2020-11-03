@@ -5,9 +5,14 @@
     var totalErrors = 0;
     var totalWarnings = 0;
 }
+<br />
+<br />
 
+<a asp-action="Index" asp-controller="Reports" asp-area="Reports">Back</a>
 <br />
 <br />
+<partial name="_RuleValidationReportDetail" />
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -35,7 +40,7 @@
                 var subTotalErrors = 0;
                 var subTotalWarnings = 0;
 
-                <tr class="govuk-table__row"><td><h3>@item.Key</h3></td></tr>
+                <tr class="govuk-table__row"><td><h3>Period: @item.Key</h3></td></tr>
                 foreach (var ruleDetail in item.Value)
                 {
                     subTotalErrors = subTotalErrors + @ruleDetail.Errors;
@@ -82,3 +87,15 @@
             Download CSV
         </button>
     </form>
+
+    <state-display></state-display>
+
+    @section PageScripts
+    {
+        <partial name="_InitialState" model="Model" />
+        <script src="~/lib/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+        <script src="~/assets/minified/accessible-autocomplete.min.js"></script>
+        <script src="~/assets/js/reports/validationDetailReportController.js" asp-append-version="true" type="module"></script>
+    }
+
+

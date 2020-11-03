@@ -1,19 +1,19 @@
 ﻿import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 import { getInitialStateModel, parseToObject, $on } from '/assets/js/util.js';
+import ValidationDetailReportBase from '/assets/js/reports/validationDetailReportBase.js';
 import Client from '/assets/js/reports/client.js';
 import Hub from '/assets/js/hubs/hub.js';
 
-class ReportsController {
+class ReportsController extends ValidationDetailReportBase {
 
     constructor({ initialState = getInitialStateModel() } = {}) {
+        super();
         this._reportSelection = document.getElementById('reportSelection');
         this._yearSelection = document.getElementById('collectionYears');
         this._periodSelection = document.getElementById('collectionPeriod');
         this._ruleValidationDetailReportSection = document.getElementById('ruleValidationDetailReportSection');
         this._createReportBtn = document.getElementById('createReport');
         this._generateValidationReportButton = document.getElementById("generateValidationReport");
-        this._element = document.querySelector('#tt-overlay');
-        this._id = 'autocomplete-overlay';
         this._spinner = document.getElementById('spinner');
         this._reportsLoadingSpinner = document.getElementById('reportsLoadingSpinner');
         this._rulesByYear = {};
@@ -35,7 +35,6 @@ class ReportsController {
             const hub = new Hub('reportsHub', this.displayConnectionState);
             hub.startHub(() => this.getReports());
             window.reportClient = new Client(hub.getConnection());
-            
             this.init(this._data.validationReportGenerationUrl, this._data.reportGenerationUrl, this._data.reportsUrl, this._data.reportsDownloadUrl);
         });
     }
@@ -133,71 +132,14 @@ class ReportsController {
     populateRules(rules) {
         this.removeElementsByClass('autocomplete__wrapper');
         this._rulesByYear[this._yearSelected] = rules;
-        accessibleAutocomplete({
-            element: this._element,
-            id: this._id,
-            displayMenu: 'overlay',
-            confirmOnBlur: false,
-            showNoOptionsFound: false,
-            source: this.customRulesSuggest.bind(this),
-            onConfirm: this.searchRulesOnConfirm.bind(this),
-            templates: {
-                inputValue: this.searchRuleInputValueTemplate.bind(this),
-                suggestion: this.searchRuleSuggestionTemplate.bind(this)
-            },
-            placeholder: 'e.g Rule_01'
-        });
-        var autocompleteElement = document.getElementById('autocomplete-overlay');
-        autocompleteElement.addEventListener("blur", this.onautocompleteblur.bind(this));
-        autocompleteElement.maxLength = "100";
-        this._spinner.style.visibility = 'hidden';
-    }
-
-    customRulesSuggest(query, syncResults) {
-        var results = this._rulesByYear[this._yearSelected];
-        syncResults(query
-            ? results.filter(function (result) {
-                var resultContains = result.ruleName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-                return resultContains;
-            })
-            : []
-        );
-    }
-
-    searchRuleInputValueTemplate(result) {
-        return result && result.ruleName;
-    }
-
-    searchRuleSuggestionTemplate(result) {
-        if (result.isTriggered === true) {
-            return result.ruleName + '<strong> - [Triggered]</strong>';
-        }
-        else {
-            return result.ruleName;
-        }
-    }
-
-    onautocompleteblur() {
-        if (this._id) {
-            if (document.getElementById('autocomplete-overlay').value) {
-                this._generateValidationReportButton.disabled = false;
-            } else {
-                this._generateValidationReportButton.disabled = true;
-            }
-        }
-    }
-
-    searchRulesOnConfirm(result) {
-        this._generateValidationReportButton.disabled = false;
+        super.setupValidationRulesAutocomplete(rules);
     }
 
     generateValidationDetailReport() {
-        var year = this._yearSelection.value;
-        var periodValue = this._periodSelection.value;
-        var rule = document.getElementById('autocomplete-overlay').value;
+        const rule = document.getElementById('autocomplete-overlay').value;
         if (rule) {
             this._spinner.style.visibility = 'visible';
-            window.location.href = `${this._validationReportGenerationUrl}?year=${year}&Period=${periodValue}&rule=${rule}`;
+            window.location.href = `${this._validationReportGenerationUrl}?year=${this._yearSelected}&Period=${this._periodSelected}&rule=${rule}`;
         }
     }
 
