@@ -1,12 +1,13 @@
 ﻿import { getHandleBarsTemplate, Templates } from '/assets/js/handlebars-helpers.js';
 import { getInitialStateModel, parseToObject, $on } from '/assets/js/util.js';
-import { setupValidationRulesAutocomplete } from '/assets/js/reports/validationDetailReportBase.js';
+import ValidationDetailReportBase from '/assets/js/reports/validationDetailReportBase.js';
 import Client from '/assets/js/reports/client.js';
 import Hub from '/assets/js/hubs/hub.js';
 
-class ReportsController {
+class ReportsController extends ValidationDetailReportBase {
 
     constructor({ initialState = getInitialStateModel() } = {}) {
+        super();
         this._reportSelection = document.getElementById('reportSelection');
         this._yearSelection = document.getElementById('collectionYears');
         this._periodSelection = document.getElementById('collectionPeriod');
@@ -131,11 +132,11 @@ class ReportsController {
     populateRules(rules) {
         this.removeElementsByClass('autocomplete__wrapper');
         this._rulesByYear[this._yearSelected] = rules;
-        setupValidationRulesAutocomplete(rules);
+        super.setupValidationRulesAutocomplete(rules);
     }
 
     generateValidationDetailReport() {
-        let rule = document.getElementById('autocomplete-overlay').value;
+        const rule = document.getElementById('autocomplete-overlay').value;
         if (rule) {
             this._spinner.style.visibility = 'visible';
             window.location.href = `${this._validationReportGenerationUrl}?year=${this._yearSelected}&Period=${this._periodSelected}&rule=${rule}`;
