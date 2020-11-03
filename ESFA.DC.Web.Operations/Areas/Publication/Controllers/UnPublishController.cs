@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
@@ -50,7 +51,7 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
         public async Task<IActionResult> ReportTypeChanged(PublicationReportModel model)
         {
             var collectionType = CollectionTypeConstants.Publication;
-            var reportsData = await _reportsPublicationService.GetFrmReportsDataAsync(model.CollectionName);
+            var reportsData = await _reportsPublicationService.GetReportsDataAsync(model.CollectionName);
             var lastTwoYears = await _reportsPublicationService.GetLastTwoCollectionYearsAsync(collectionType);
             var lastYearValue = lastTwoYears.LastOrDefault();
             model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
@@ -68,18 +69,15 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
             return View("Index", model);
         }
 
-        public async Task<IActionResult> UnpublishAsync(string path, string collectionName)
+        public async Task<IActionResult> UnpublishAsync(CancellationToken cancellationToken, int periodNumber, string collectionName)
         {
             try
             {
-                var pathArray = path.Split("/");
-                int yearPeriod = int.Parse(pathArray[0]);
-                int periodNumber = int.Parse(pathArray[1]);
+                var collection = await _collectionsService.GetCollectionAsync(collectionName, cancellationToken);
 
-                await _reportsPublicationService.UnpublishSldAsync(periodNumber, yearPeriod);
-                string containerName = $"frm{yearPeriod}-files";
-                
-                await _reportsPublicationService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);
+                await _reportsPublicationService.UnpublishSldAsync(collectionName, periodNumber);
+
+                await _reportsPublicationService.UnpublishSldDeleteFolderAsync(collection.StorageReference, periodNumber);
                 return View("UnpublishSuccess");
             }
             catch (Exception ex)

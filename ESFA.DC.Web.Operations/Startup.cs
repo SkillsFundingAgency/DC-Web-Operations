@@ -16,7 +16,6 @@ using ESFA.DC.Web.Operations.Interfaces.ReferenceData;
 using ESFA.DC.Web.Operations.Interfaces.Reports;
 using ESFA.DC.Web.Operations.Ioc;
 using ESFA.DC.Web.Operations.Services;
-using ESFA.DC.Web.Operations.Services.Frm;
 using ESFA.DC.Web.Operations.Services.Hubs;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ALLF;
 using ESFA.DC.Web.Operations.Services.Hubs.PeriodEnd.ILR;

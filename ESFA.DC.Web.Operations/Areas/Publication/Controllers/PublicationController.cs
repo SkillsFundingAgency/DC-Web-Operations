@@ -60,13 +60,6 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
             return View("SelectValidate");
         }
 
-        public async Task<IActionResult> SelectUnPublish()
-        {
-            var collections = await _collectionsService.GetCollectionsByType(CollectionTypeConstants.Publication);
-            ViewData[ViewDataConstants.Collections] = collections.Select(x => x.CollectionTitle);
-            return View("SelectUnpublish");
-        }
-
         public async Task<IActionResult> HoldingPageAsync(JobDetails model)
         {
             var frmStatus = (JobStatusType)await _reportsPublicationService.GetFrmStatusAsync(model.JobId);

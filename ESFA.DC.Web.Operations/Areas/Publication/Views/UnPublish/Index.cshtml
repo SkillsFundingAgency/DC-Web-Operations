@@ -29,11 +29,11 @@
         <label class="govuk-label">Choose a Period to Unpublish</label>
         @using (Html.BeginForm("UnpublishAsync", "UnPublish"))
         {
-            <select id="PublishedPeriods" name="path" class="govuk-select" style="width:auto" onchange="enablecontinue()">
+            <select id="PublishedPeriods" name="periodNumber" class="govuk-select" style="width:auto" onchange="enablecontinue()">
                 <option value="selectone" selected>Select One</option>
                 @foreach (var period in Model.PublishedFrm)
                 {
-                    <option value="@period.CollectionYear/@period.PeriodNumber"> @period.CollectionYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
+                    <option value="@period.PeriodNumber"> @period.CollectionYear - R<text></text>@period.PeriodNumber.ToString("D2")</option>
                 }
             </select>
             <input type="hidden" name="collectionName" id="collectionName" value="@Model.CollectionName" />
