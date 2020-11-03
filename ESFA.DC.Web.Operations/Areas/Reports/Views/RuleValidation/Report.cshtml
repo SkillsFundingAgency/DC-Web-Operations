@@ -1,4 +1,5 @@
-﻿@using ESFA.DC.Operations.Reports.Model
+﻿@using System.Globalization
+@using ESFA.DC.Operations.Reports.Model
 @model ESFA.DC.Web.Operations.Areas.Reports.Models.ValidationRuleDetailReportViewModel
 @{
     ViewData["Title"] = " Validation Rule Details Report";
@@ -17,8 +18,7 @@
     <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">Providers who triggered @Model.Rule</h1>
-        <h3 class="govuk-heading-l">Academic Year:  @Model.Year</h3>
-
+        <h3 class="govuk-heading-l">Academic Year:  @Model.Year , Period: R@(Model.Period.ToString("00", NumberFormatInfo.InvariantInfo))</h3>
     </div>
     <br>
 </div>
@@ -40,7 +40,7 @@
                 var subTotalErrors = 0;
                 var subTotalWarnings = 0;
 
-                <tr class="govuk-table__row"><td><h3>Period: @item.Key</h3></td></tr>
+                <tr class="govuk-table__row"><td><h3>@item.Key</h3></td></tr>
                 foreach (var ruleDetail in item.Value)
                 {
                     subTotalErrors = subTotalErrors + @ruleDetail.Errors;
