@@ -41,18 +41,27 @@
  *     disable: true or false, shows all rows of the table and hides pagination controlls if set to true.
  *
  *     tail_call: function to be called after paginator is done.
+ *     
+ *     page_change_event:  function to be called once a page has changed/
  *
  * }
  */
-function paginator(config) {
+export function paginator(config) {
     // throw errors if insufficient parameters were given
-    if (typeof config != "object")
+    if (typeof config !== 'object' || config === null ) {
         throw "Paginator was expecting a config object!";
-    if (typeof config.get_rows != "function" && !(config.table instanceof Element))
+    }
+
+    if (typeof config.get_rows !== "function" && !(config.table instanceof Element)) {
         throw "Paginator was expecting a table or get_row function!";
+    }
+
+    if (typeof config.page_change_event !== 'undefined' && typeof config.page_change_event !== "function") {
+        throw "Paginator was expecting page_change_event to be a function!";
+    }
 
     // get/set if things are disabled
-    if (typeof config.disable == "undefined") {
+    if (typeof config.disable === "undefined") {
         config.disable = false;
     }
 
@@ -64,20 +73,18 @@ function paginator(config) {
     box = config.box;
 
     // get/make function for getting table's rows
-    if (typeof config.get_rows != "function") {
+    if (typeof config.get_rows !== "function") {
         config.get_rows = function () {
             var table = config.table
             var tbody = table.getElementsByTagName("tbody")[0]||table;
 
             // get all the possible rows for paging
             // exclude any rows that are just headers or empty
-            children = tbody.children;
+            const children = tbody.children;
             var trs = [];
-            for (var i=0;i<children.length;i++) {
-                if (children[i].nodeType = "tr") {
-                    if (children[i].getElementsByTagName("td").length > 0) {
-                        trs.push(children[i]);
-                    }
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].getElementsByTagName("td").length > 0) {
+                    trs.push(children[i]);
                 }
             }
 
@@ -88,9 +95,9 @@ function paginator(config) {
     var trs = get_rows();
 
     // get/set rows per page
-    if (typeof config.rows_per_page == "undefined") {
+    if (typeof config.rows_per_page === "undefined") {
         var selects = box.getElementsByTagName("select");
-        if (typeof selects != "undefined" && (selects.length > 0 && typeof selects[0].selectedIndex != "undefined")) {
+        if (typeof selects !== "undefined" && (selects.length > 0 && typeof selects[0].selectedIndex !== "undefined")) {
             config.rows_per_page = selects[0].options[selects[0].selectedIndex].value;
         } else {
             config.rows_per_page = 10;
@@ -99,7 +106,7 @@ function paginator(config) {
     var rows_per_page = config.rows_per_page;
 
     // get/set current page
-    if (typeof config.page == "undefined") {
+    if (typeof config.page === "undefined") {
         config.page = 1;
     }
     var page = config.page;
@@ -122,11 +129,13 @@ function paginator(config) {
     if (page < 1) {
         page = 1;
     }
+
     config.page = page;
- 
+    pageChanged(config);
+
     // hide rows not on current page and show the rows that are
     for (var i=0;i<trs.length;i++) {
-        if (typeof trs[i]["data-display"] == "undefined") {
+        if (typeof trs[i]["data-display"] === "undefined") {
             trs[i]["data-display"] = trs[i].style.display||"";
         }
         if (rows_per_page > 0) {
@@ -155,6 +164,7 @@ function paginator(config) {
                     event.preventDefault();
                     if (this.disabled !== true) {
                         config.page = index;
+                        pageChanged(config);
                         paginator(config);
                     }
                     return false;
@@ -173,21 +183,21 @@ function paginator(config) {
         };
 
         var pageArray = generatePagination(config);
-        var pageBox = document.createElement(config.box_mode == "list" ? "ul" : "div");
+        var pageBox = document.createElement(config.box_mode === "list" ? "ul" : "div");
         
-        var leftButton = make_button("< Previous", (page > 1 ? page - 1 : 1), config, (page == 1), false);
+        var leftButton = make_button("< Previous", (page > 1 ? page - 1 : 1), config, (page === 1), false);
         pageBox.appendChild(leftButton);
         for (var i = 0 ; i < pageArray.length; i++) {
             if (pageArray[i] === '...') {
                 li = make_button(pageArray[i], pageArray[i], config, true, false);
                 pageBox.appendChild(li);
             } else {
-                li = make_button(pageArray[i], pageArray[i], config, false, (page == pageArray[i]));
+                li = make_button(pageArray[i], pageArray[i], config, false, (page === pageArray[i]));
                 pageBox.appendChild(li);
             }
         }
 
-        var rightButton = make_button("Next >", (pages > page ? page + 1 : page), config, (page == pages), false);
+        var rightButton = make_button("Next >", (pages > page ? page + 1 : page), config, (page === pages), false);
         pageBox.appendChild(rightButton);
 
         if (box.childNodes.length) {
@@ -242,17 +252,23 @@ function paginator(config) {
         }
         box.style.display = "none";
     } else {
-        if (box.style.display == "none") {
+        if (box.style.display === "none") {
             box.style.display = box["data-display"]||"";
         }
     }
 
     // run tail function
-    if (typeof config.tail_call == "function") {
+    if (typeof config.tail_call === "function") {
         config.tail_call(config);
     }
 
     return box;
+}
+
+function pageChanged(config) {
+    if (config.page_change_event) {
+        config.page_change_event(config);
+    }
 }
 
 function generatePagination(config) {

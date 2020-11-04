@@ -1,5 +1,6 @@
 ﻿import { convertToCsv } from '/assets/js/csv-operations.js';
-import { displayConnectionState, getInitialStateModel, $on, $onAll, parseToObject, getColorForPercentage, getMessageForPercentage  } from '/assets/js/util.js';
+import { displayConnectionState, getInitialStateModel, $on, $onAll, parseToObject, getColorForPercentage, getMessageForPercentage } from '/assets/js/util.js';
+import { paginator } from '/assets/js/paginator.js';
 import Hub from '/assets/js/hubs/hub.js';
 
 class JobReportWithFilterControllerBase {
@@ -8,6 +9,7 @@ class JobReportWithFilterControllerBase {
         this._firstDonut = document.getElementById("firstDonut");
         this._firstCircle = document.getElementById("firstCircle");
         this._firstDonutText = document.getElementById("firstDonutText");
+        this._pageNumber = 1;
 
         this._sort = document.getElementById('sort');
         this._ilr = document.getElementById('ILR');
@@ -87,9 +89,10 @@ class JobReportWithFilterControllerBase {
             paginator({
                 table: document.getElementById("table_box_native").getElementsByTagName("table")[0],
                 box: document.getElementById("index_native"),
-                page: 1,
+                page: this._pageNumber,
                 rows_per_page: 25,
-                page_options: false
+                page_options: false,
+                page_change_event: (config) => { this._pageNumber = config.page }
             });
         }
     }
