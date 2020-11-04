@@ -129,46 +129,12 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Controllers
                 return RedirectToAction("SelectValidate");
             }
 
-            var collectionType = "frm";
-            var reportsData = await _reportsPublicationService.GetFrmReportsDataAsync();
-            var lastTwoYears = await _reportsPublicationService.GetLastTwoCollectionYearsAsync(collectionType);
-            var lastYearValue = lastTwoYears.LastOrDefault();
-            model.PublishedFrm = reportsData.Where(x => x.CollectionYear == lastYearValue); // get all the open periods from the latest year period
-
-            if (lastTwoYears.Count() > 1) //if there are more than two years in the collection
-            {
-                var firstYearValue = lastTwoYears.First();
-                var firstYearList = reportsData.Where(x => x.CollectionYear == firstYearValue).TakeLast(1); //take the most recent open period in the previous year
-                model.PublishedFrm = firstYearList.Concat(model.PublishedFrm); // add it to the front of the list
-            }
-
-            return View("SelectUnpublish", model);
+            return RedirectToAction("Index", "UnPublish");
         }
 
         public IActionResult CancelFrm()
         {
             return View("CancelledFrm");
-        }
-
-        public async Task<IActionResult> UnpublishFrmAsync(string path)
-        {
-            try
-            {
-                var pathArray = path.Split("/");
-                int yearPeriod = int.Parse(pathArray[0]);
-                int periodNumber = int.Parse(pathArray[1]);
-                await _reportsPublicationService.UnpublishSldAsync(periodNumber, yearPeriod);
-                string containerName = $"frm{yearPeriod}-files";
-                await _reportsPublicationService.UnpublishSldDeleteFolderAsync(containerName, periodNumber);
-                return View("UnpublishSuccess");
-            }
-            catch (Exception ex)
-            {
-                string errorMessage = $"The FRM Reports were not able to be unpublished from SLD";
-                _logger.LogError(errorMessage, ex);
-                TempData["Error"] = errorMessage;
-                return View("ErrorView");
-            }
         }
 
         public async Task<FileResult> GetReportFileAsync(string fileName, string collectionName, string storageReference)

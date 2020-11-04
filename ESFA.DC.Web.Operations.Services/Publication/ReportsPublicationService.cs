@@ -13,7 +13,7 @@ using ESFA.DC.Web.Operations.Interfaces.Publication;
 using ESFA.DC.Web.Operations.Settings.Models;
 using MoreLinq;
 
-namespace ESFA.DC.Web.Operations.Services.Frm
+namespace ESFA.DC.Web.Operations.Services.Publication
 {
     public class ReportsPublicationService : IReportsPublicationService
     {
@@ -112,10 +112,9 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             await _httpClientService.SendAsync(url, cancellationToken);
         }
 
-        public async Task UnpublishSldAsync(int periodNumber, int yearPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UnpublishSldAsync(string collectionName, int periodNumber, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string path = $"{yearPeriod}/{periodNumber}";
-            string url = $"{_jobApiUrl}/publication/mark-as-unpublished/{path}";
+            string url = $"{_jobApiUrl}/publication/mark-as-unpublished/{collectionName}/{periodNumber}";
             await _httpClientService.SendAsync(url, cancellationToken);
         }
 
@@ -125,9 +124,9 @@ namespace ESFA.DC.Web.Operations.Services.Frm
             await _fileService.DeleteFolderAsync(folder, containerName, cancellationToken);
         }
 
-        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetFrmReportsDataAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<PeriodEndCalendarYearAndPeriodModel>> GetReportsDataAsync(string collectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string url = $"{_jobApiUrl}/publication/published-periods";
+            string url = $"{_jobApiUrl}/publication/published-periods/{collectionName}";
             var result = await _httpClientService.GetAsync<List<PeriodEndCalendarYearAndPeriodModel>>(url, cancellationToken);
             return result.OrderBy(x => x.CollectionYear).ThenBy(y => y.PeriodNumber);
         }

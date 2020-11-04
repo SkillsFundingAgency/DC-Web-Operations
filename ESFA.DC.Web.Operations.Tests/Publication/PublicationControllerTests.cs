@@ -165,9 +165,8 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
             var controller = SetupControllerNoDataChoiceSelection();
 
             var result = await controller.ReportChoiceSelectionAsync(model);
-            var viewResult = result as ViewResult;
-
-            viewResult.ViewName.Should().Be("SelectUnpublish");
+            var redirectToActionResult = result as RedirectToActionResult;
+            redirectToActionResult.ControllerName.Should().Be("UnPublish");
 
         }
 
@@ -179,9 +178,9 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
             var controller = SetupControllerOneYearChoiceSelection();
 
             var result = await controller.ReportChoiceSelectionAsync(model);
-            var viewResult = result as ViewResult;
+            var redirectToActionResult = result as RedirectToActionResult;
 
-            viewResult.ViewName.Should().Be("SelectUnpublish");
+            redirectToActionResult.ControllerName.Should().Be("UnPublish");
 
         }
 
@@ -193,9 +192,9 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
             var controller = SetupControllerMultipleYearsChoiceSelection();
 
             var result = await controller.ReportChoiceSelectionAsync(model);
-            var viewResult = result as ViewResult;
+            var redirectToActionResult = result as RedirectToActionResult;
 
-            viewResult.ViewName.Should().Be("SelectUnpublish");
+            redirectToActionResult.ControllerName.Should().Be("UnPublish");
 
         }
 
@@ -209,29 +208,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
             var viewResult = result as ViewResult;
             viewResult.ViewName.Should().Be("CancelledFrm");
         }
-
-        [Fact]
-        public async void TestUnpublishFrmAsyncNoError()
-        {
-            var model = SetupModel(1920, 1, 0);
-            var controller = SetupControllerWithLogger();
-
-            var result = await controller.UnpublishFrmAsync("1920/4");
-            var viewResult = result as ViewResult;
-            viewResult.ViewName.Should().Be("UnpublishSuccess");
-        }
-
-        [Fact]
-        public async void TestUnpublishFrmAsyncError()
-        {
-            var model = SetupModel(1920, 1, 0);
-            var controller = SetupControllerError();
-
-            var result = await controller.UnpublishFrmAsync(null);
-            var viewResult = result as ViewResult;
-            viewResult.ViewName.Should().Be("ErrorView");
-        }
-
+       
         private JobDetails SetupModel(int yearPeriod, int periodNumber, int frmJobId = 0)
         {
             return new JobDetails
@@ -295,7 +272,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
         private PublicationController SetupControllerNoDataChoiceSelection()
         {
             var frmServiceMock = new Mock<IReportsPublicationService>();
-            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<PeriodEndCalendarYearAndPeriodModel>());
+            frmServiceMock.Setup(x => x.GetReportsDataAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<PeriodEndCalendarYearAndPeriodModel>());
             frmServiceMock.Setup(x => x.GetLastTwoCollectionYearsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<int>());
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var controller = new PublicationController(null, frmServiceMock.Object, null, null, null);
@@ -317,7 +294,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
                 CollectionYear = 1920,
                 PeriodNumber = 2
             });
-            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync(It.IsAny<CancellationToken>())).ReturnsAsync(yearModelList);
+            frmServiceMock.Setup(x => x.GetReportsDataAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(yearModelList);
             var yearList = new List<int>()
             {
                 1920
@@ -342,7 +319,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
                 CollectionYear = 1819,
                 PeriodNumber = 1
             });
-            frmServiceMock.Setup(x => x.GetFrmReportsDataAsync(It.IsAny<CancellationToken>())).ReturnsAsync(yearModelList);
+            frmServiceMock.Setup(x => x.GetReportsDataAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(yearModelList);
             var yearList = new List<int>()
             {
                 1819,
@@ -358,7 +335,7 @@ namespace ESFA.DC.Web.Operations.Tests.Publication
         {
             var frmServiceMock = new Mock<IReportsPublicationService>();
             frmServiceMock.Setup(x => x.PublishSldAsync(It.IsAny<long>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
-            frmServiceMock.Setup(x => x.UnpublishSldAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+            frmServiceMock.Setup(x => x.UnpublishSldAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             var iIndex = new Mock<IIndex<PersistenceStorageKeys, IFileService>>();
             var logger = new Mock<ILogger>();
             var controller = new PublicationController(logger.Object, frmServiceMock.Object, null, null, null);

@@ -15,13 +15,7 @@ namespace ESFA.DC.Web.Operations.Areas.Publication.Models
 
         public DateTime PublicationDate { get; set; }
 
-        public string FrmPeriod { get; set; }
-
-        public DateTime? FrmCSVValidDate { get; set; }
-
         public long FrmJobId { get; set; }
-
-        public string FrmJobType { get; set; }
 
         [Range(1, 14, ErrorMessage = "The period must be 2 numeric digits and be equal to a valid period")]
         [Required(ErrorMessage = "A period number is required")]
