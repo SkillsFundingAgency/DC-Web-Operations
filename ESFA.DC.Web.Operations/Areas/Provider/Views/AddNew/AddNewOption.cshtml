@@ -1,4 +1,5 @@
 ﻿@using ESFA.DC.Web.Operations.Constants
+@using ESFA.DC.Web.Operations.Extensions
 @using ESFA.DC.Web.Operations.Utils
 @model ESFA.DC.Web.Operations.Areas.Provider.Models.ProviderViewModel
 
@@ -13,41 +14,38 @@
             <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
             <vc:provider-search search-type="existing"></vc:provider-search>
         </div>
-        <div class="govuk-grid-column-one-third">
-            <div>
-                @*<a href="#">Advanced search</a>
-                    @Html.ActionLink("Add a new provider", "AddNewOption", "AddNew", new { area = AreaNames.Provider })*@
-            </div>
-        </div>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-x1">Add a single provider or multiple providers/collection assignments?</h1>
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="name"></label>
-            @using (Html.BeginForm())
-            {
-                <div class="govuk-radios govuk-radios--inline">
-                    <div class="govuk-radios__item">
-                        <input asp-for="IsSingleAddNewProviderChoice" value="true" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">Add one provider</label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input asp-for="IsSingleAddNewProviderChoice" value="false" class="govuk-radios__input" type="radio" />
-                        <label class="govuk-label govuk-radios__label">Add multiple providers/collection assignments</label>
-                    </div>
-                </div>
-                <br />
-                <br />
-                <button type="submit" class="govuk-button" formaction="AddNewChoiceSubmit">Continue</button>
-                <br />
+        <details class="govuk-details" data-module="govuk-details" role="group">
+            <summary class="govuk-details__summary" role="button" aria-controls="details-content" aria-expanded="true">
+                <span class="govuk-details__summary-text">Upload multiple providers</span>
+            </summary>
+            <div class="govuk-details__text" id="details-content" aria-hidden="false">
                 <p>
-                    <a class="govuk-back-link navigation-back">Cancel</a>
+                    <a asp-controller="AddNew" asp-action="DownloadTemplate">Download CSV template</a>
                 </p>
-            }
-        </div>
+                <form asp-controller="AddNew" asp-action="BulkUpload" method="post" enctype="multipart/form-data" id="providersUploadForm">
+                    @Html.AntiForgeryToken()
+                    <div class="govuk-form-group">
+                        <div class="@ViewContext.GetGroupItemStyle(ErrorMessageKeys.Submission_FileFieldKey)" id="controls">
+                            <label class="govuk-label" for="file">
+                                <strong>Upload a file</strong>
+                            </label>
+                            <div error-field-name="@ErrorMessageKeys.Submission_FileFieldKey"></div>
+                            <input class="govuk-file-upload" id="file" name="file" type="file">
+                        </div>
+                    </div>
+                    <button class="govuk-button">
+                        Upload file
+                    </button>
+                    <br />
+                    <a class="govuk-back-link navigation-back" href='/'>Cancel</a>
+                </form>
+            </div>
+        </details>
     </div>
 </div>
 
@@ -55,8 +53,14 @@
 {
     <script>
         function searchProviderOnConfirm(result) {
-            var manageProvidersUrl = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
-            window.location.href = manageProvidersUrl.replace('__ukprn__', result.ukprn);
+            this._url = '';
+            if (result.existsInSld) {
+                this._url = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
+            } else {
+                this._url = '@Url.Action("Index", "AddNew", new { Area = "Provider", ukprn = "__ukprn__" })';
+            }
+
+            window.location.href = this._url.replace('__ukprn__', result.ukprn);
         }
     </script>
 }

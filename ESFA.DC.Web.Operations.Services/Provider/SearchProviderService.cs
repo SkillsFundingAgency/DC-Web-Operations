@@ -27,7 +27,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var data = await _httpClientService.GetAsync<Jobs.Model.ProviderSearchResult>($"{_baseUrl}/api/org/search/new/{query}", cancellationToken);
 
             var results = new List<ProviderSearchResult>();
-            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName)));
+            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName, p.ExistsInSld)));
 
             return results;
         }
@@ -37,7 +37,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var data = await _httpClientService.GetAsync<Jobs.Model.ProviderSearchResult>($"{_baseUrl}/api/org/search/existing/{query}", cancellationToken);
 
             var results = new List<ProviderSearchResult>();
-            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName)));
+            data.Providers.ForEach(p => results.Add(new ProviderSearchResult(p.Name, p.Ukprn, p.Upin, p.TradingName, p.ExistsInSld)));
 
             return results;
         }

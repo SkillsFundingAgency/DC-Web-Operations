@@ -49,7 +49,7 @@
             <div class="govuk-form-group">
                 <div class="govuk-checkboxes">
                     <div class="govuk-checkboxes__item">
-                        <input asp-for="IsMca" class="govuk-checkboxes__input" id="isMca" onclick="isMcaClick(this)" name="isMca" type="checkbox" is-ismca-disabled="@Model.Ukprn"/>
+                        <input asp-for="IsMca" class="govuk-checkboxes__input" id="isMca" name="isMca" type="checkbox" />
                         <label class="govuk-label govuk-checkboxes__label" for="isMca">
                             MCA
                         </label>
@@ -61,7 +61,7 @@
             <input asp-for="Ukprn" type="hidden" id="hiddenUkprn"/>
             <input asp-for="ProviderName" type="hidden" id="hiddenProviderName"/>
             <input asp-for="Upin" type="hidden" id="hiddenUpin"/>                                           
-            <button type="submit" id="submitButton" class="govuk-button" disabled>Save and continue</button>
+            <button type="submit" id="submitButton" class="govuk-button">Save and continue</button>
             <br />
             <a class="govuk-back-link navigation-back">Cancel</a>
         }
@@ -108,14 +108,6 @@
 
         var v = new aspnetValidation.ValidationService();
         v.bootstrap();
-
-        function isMcaClick(id) {
-            var ukPrnDisplay = document.getElementById('ukprnDisplay');
-            if (ukPrnDisplay.innerHTML !== "") {
-                var submitButton = document.getElementById('submitButton');
-                submitButton.disabled = false;
-            }
-        }
 
     </script>
 }
