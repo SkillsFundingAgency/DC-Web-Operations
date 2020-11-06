@@ -1,4 +1,4 @@
-﻿import { msToTime, getInitialStateModel, $on, replaceNullOrEmpty, setControlVisiblity} from '/assets/js/util.js';
+﻿import { sToTime, getInitialStateModel, $on, replaceNullOrEmpty, setControlVisiblity} from '/assets/js/util.js';
 import Client from '/assets/js/processing/jobProcessingDetail/client.js';
 import JobReportControllerBase from '/assets/js/processing/jobReportControllerBase.js';
 
@@ -51,7 +51,7 @@ class JobProcessingDetailController extends JobReportControllerBase {
                     <td class="govuk-table__cell" style="width:80px">${item.ukprn}</td>
                     <td class="govuk-table__cell" style="width:80px">${item.jobId}</td>
                     <td class="govuk-table__cell" style="width:160px">${item.fileName}</td>
-                    <td class="govuk-table__cell" style="width:170px">${msToTime(item.processingTimeMilliSeconds)}</td>
+                    <td class="govuk-table__cell" style="width:170px">${sToTime(item.processingTimeSeconds)}</td>
                  </tr>`;
     }
 
@@ -62,7 +62,7 @@ class JobProcessingDetailController extends JobReportControllerBase {
                 "Ukprn": obj.ukprn,
                 "Job Id": obj.jobId,
                 "Filename": obj.fileName,
-                "Processing time ": obj.processingTimeMilliSeconds
+                "Processing time ": obj.processingTimeSeconds
             };
         });
 
