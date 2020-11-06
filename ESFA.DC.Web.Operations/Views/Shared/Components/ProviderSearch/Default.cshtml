@@ -43,12 +43,14 @@
     function searchProviderSuggestionTemplate(result) {
         if (result.tradingName.trim() === result.providerName.trim()) {
             return result && result.ukprn + ', ' + result.upin + ', ' +
-                '<strong>' + result.providerName + '</strong>';
+                '<strong>' + result.providerName + '</strong>' +
+                (result.existsInSld ? ', Active' : '');
         }
         else {
             return result && result.ukprn + ', ' + result.upin + ', ' +
                 '<strong>' + result.providerName + '</strong>' + '' + '<br/> <div class="govuk-!-font-size-14"> <i >' +
-                result.tradingName + '</i>';
+                result.tradingName + '</i>' + 
+                (result.existsInSld ? ', Active' : '');
         }
     }
 

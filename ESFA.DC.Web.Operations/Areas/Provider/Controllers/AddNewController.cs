@@ -106,7 +106,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, TempData["JobFailed"].ToString());
             }
 
-            return View("BulkUpload");
+            return View("AddNewOption");
         }
 
         [HttpPost]
@@ -116,7 +116,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
         {
             if (file == null)
             {
-                return View("BulkUpload");
+                return View("AddNewOption");
             }
 
             var collection = _collections.SingleOrDefault(s => string.Equals(ProvidersUploadCollectionName, s.CollectionName, StringComparison.CurrentCultureIgnoreCase));
@@ -127,7 +127,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             {
                 _logger.LogWarning($"collection {ProvidersUploadCollectionName} is not open/available, but file is being uploaded");
                 ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, $"collection {ProvidersUploadCollectionName} is not open/available.");
-                return View();
+                return View("AddNewOption");
             }
 
             var fileNameValidationService = _fileNameValidationServiceProvider.GetFileNameValidationService(collection.CollectionName);
@@ -139,7 +139,7 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
                 ModelState.AddModelError(ErrorMessageKeys.ErrorSummaryKey, validationResult.SummaryError);
 
                 _logger.LogWarning($"User uploaded invalid file with name :{fileName}");
-                return View();
+                return View("AddNewOption");
             }
 
             await (await _storageService.GetAzureStorageReferenceService(_opsDataLoadServiceConfigSettings.ConnectionString, collectionDb.StorageReference)).SaveAsync(fileName, file?.OpenReadStream());
@@ -229,41 +229,6 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             var mimeType = "application/csv";
 
             return File(manifestResourceStream, mimeType, BulkUploadFileName);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddNewChoiceSubmit(ProviderViewModel model)
-        {
-            if (model.IsSingleAddNewProviderChoice)
-            {
-                return RedirectToAction("Index");
-            }
-
-            return RedirectToAction("BulkUpload");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddSingleProvider(ProviderViewModel model)
-        {
-            _logger.LogDebug("Entered AddSingleProvider");
-
-            const string ErrorSavingOrganisation = "An error occured saving the organisation.";
-
-            if (!ModelState.IsValid)
-            {
-                return View("Index", model);
-            }
-
-            if (!(await _addNewProviderService.AddProvider(
-                new Operations.Models.Provider.Provider(model.ProviderName, model.Ukprn.Value, model.Upin, model.IsMca),
-                CancellationToken.None)))
-            {
-                ModelState.AddModelError("Summary", ErrorSavingOrganisation);
-                return View("Index", model);
-            }
-
-            _logger.LogDebug("Exit AddSingleProvider");
-            return RedirectToAction("Index", "ManageProviders", new { ukprn = model.Ukprn });
         }
     }
 }
