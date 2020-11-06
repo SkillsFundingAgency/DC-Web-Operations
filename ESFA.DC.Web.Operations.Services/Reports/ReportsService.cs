@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.PeriodEnd.Models;
@@ -30,6 +31,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
         private readonly IPeriodService _periodService;
         private readonly IHttpClientService _httpClientService;
         private readonly IFileService _operationsFileService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public ReportsService(
             ApiSettings apiSettings,
@@ -38,13 +40,15 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             IAuthorisationService authorisationService,
             IIndex<PersistenceStorageKeys, IFileService> operationsFileService,
             IHttpClientService httpClientService,
-            IPeriodService periodService)
+            IPeriodService periodService,
+            IDateTimeProvider dateTimeProvider)
         {
             _collectionsService = collectionsService;
             _reports = reports;
             _authorisationService = authorisationService;
             _httpClientService = httpClientService;
             _periodService = periodService;
+            _dateTimeProvider = dateTimeProvider;
             _operationsFileService = operationsFileService[PersistenceStorageKeys.OperationsAzureStorage];
             _baseUrl = apiSettings.JobManagementApiBaseUrl;
         }
@@ -165,7 +169,7 @@ namespace ESFA.DC.Web.Operations.Services.Reports
             var allIlrReturnPeriodsForYear = (await _periodService.GetAllIlrPeriodsAsync(cancellationToken))
                 .Where(w => w.CollectionYear == collectionYear);
 
-            var isLastPeriodInYear = !allIlrReturnPeriodsForYear.Any() || (period == allIlrReturnPeriodsForYear.Max(o => o.PeriodNumber));
+            var isLastPeriodInYear = !allIlrReturnPeriodsForYear.Any() || (period == allIlrReturnPeriodsForYear.Where(r => r.StartDateTimeUtc < _dateTimeProvider.GetNowUtc()).Max(o => o.PeriodNumber));
 
             foreach (var report in _reports.Where(r => isOpenPeriod || isLastPeriodInYear || r.IsApplicableForClosedPeriodOnly))
             {
