@@ -171,8 +171,8 @@ namespace ESFA.DC.Web.Operations.Areas.Collections.Controllers
             var returnPeriod = new ReturnPeriod()
             {
                 ReturnPeriodId = model.ReturnPeriodId,
-                OpenDate = openDateTime,
-                CloseDate = closeDateTime
+                OpenDate = _dateTimeProvider.ConvertUkToUtc(openDateTime),
+                CloseDate = _dateTimeProvider.ConvertUkToUtc(closeDateTime)
             };
 
             if (ModelState.IsValid && await _collectionsService.UpdateReturnPeriod(returnPeriod))
