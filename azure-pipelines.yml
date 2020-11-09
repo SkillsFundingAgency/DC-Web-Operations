@@ -24,6 +24,9 @@ stages:
   jobs:  
   - job: Build
     displayName: Build
+    workspace:
+        clean: all 
+            
     variables:
       "Nuget.Feed": 'dct-pkg'  
       "Nuget.Version": '5.3.0'

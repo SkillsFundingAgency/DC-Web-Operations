@@ -23,7 +23,7 @@
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.39-beta0001" />
     <PackageReference Include="ESFA.DC.FundingClaims.Model" Version="0.4.4-beta.1" />
     <PackageReference Include="ESFA.DC.IO.AzureStorage" Version="0.1.38-beta0001" />
-    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.100-beta0001" />
+    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.101-beta0001" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.PeriodEnd.Models" Version="0.2.90-beta0001" />
     <PackageReference Include="ESFA.DC.ReferenceData.Organisations.Model" Version="0.2.210" />
