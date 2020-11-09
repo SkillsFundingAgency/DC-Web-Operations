@@ -19,7 +19,7 @@ class JobReportWithFilterControllerBase {
         this._aBtnDownloadCSV = document.getElementById('aBtnDownloadCSV');
         this.registerEvents();
 
-        this._percentageTextRange = [{ value: 85, label: 'Urgent Attention!'}, { value: 60, label: 'Needs Attention'}, { value: 0, label: 'Looking Good'}];
+        this._percentageTextRange = [{ value: 85, label: 'Super Excited!'}, { value: 60, label: 'Needs Attention'}, { value: 0, label: 'Looking Good'}];
 
         this._hub = new Hub(hubUrl, displayConnectionState);
         this.registerHandlers(this._hub);
