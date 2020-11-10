@@ -10,7 +10,6 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces;
 using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Models.Collection;
-using ESFA.DC.Web.Operations.Services.Enums;
 using ESFA.DC.Web.Operations.Settings.Models;
 using ESFA.DC.Web.Operations.Utils;
 using MoreLinq;
@@ -23,7 +22,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
         private const int ReturnPeriodCollectionOpenVarianceInMonths = 2;
         private const int FundingClaimCollectionOpenVarianceInDays = 14;
 
-        private readonly string[] _jobManagementCollectionsTypesToExclude = { "REF", "PE", "OP", "COVID19", "COVIDR", "FRM", "FC" };
+        private readonly string[] _jobManagementCollectionsTypesToExclude = { "REF", "PE", "OP", "COVID19", "COVIDR", "FRM", "FC", "ALLF" };
         private readonly ILogger _logger;
         private readonly string _jobManagementBaseUrl;
         private readonly string _fundingClaimsBaseUrl;
@@ -46,10 +45,8 @@ namespace ESFA.DC.Web.Operations.Services.Provider
 
         public async Task<IEnumerable<CollectionAssignment>> GetAvailableCollectionsAsync(CancellationToken cancellationToken)
         {
-            var collectionYears = GetCollectionYears();
-
-            var openReturnPeriodCollections = GetOpenCollectionsWithReturnPeriods(collectionYears, cancellationToken);
-            var openFundingClaimCollections = GetOpenFundingClaimCollections(collectionYears, cancellationToken);
+            var openReturnPeriodCollections = GetOpenCollectionsWithReturnPeriods(cancellationToken);
+            var openFundingClaimCollections = GetOpenFundingClaimCollections(cancellationToken);
 
             await Task.WhenAll(openReturnPeriodCollections, openFundingClaimCollections);
 
@@ -94,116 +91,42 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             }
         }
 
-        private async Task<IEnumerable<CollectionAssignment>> GetOpenCollectionsWithReturnPeriods(List<int> collectionYears, CancellationToken cancellationToken)
+        private async Task<IEnumerable<CollectionAssignment>> GetOpenCollectionsWithReturnPeriods(CancellationToken cancellationToken)
         {
-            var openCollections = new List<Collection>();
-
-            foreach (var collectionYear in collectionYears)
-            {
-                var collections = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_jobManagementBaseUrl}/api/collections/for-year/{collectionYear}", cancellationToken);
-                if (collections != null)
-                {
-                    collections = collections.Where(c => !_jobManagementCollectionsTypesToExclude.Contains(c.CollectionType)
-                                                    && IsReturnPeriodCollectionWithinDateTolerance(c.StartDateTimeUtc, c.EndDateTimeUtc));
-                    openCollections.AddRange(collections);
-                }
-            }
-
-            return openCollections.Select(s => new CollectionAssignment
-            {
-                CollectionId = s.CollectionId,
-                Name = s.CollectionTitle,
-                DisplayOrder = SetDisplayOrder((CollectionType)Enum.Parse(typeof(CollectionType), s.CollectionType), s.CollectionTitle),
-            });
-        }
-
-        private async Task<IEnumerable<CollectionAssignment>> GetOpenFundingClaimCollections(List<int> collectionYears, CancellationToken cancellationToken)
-        {
-            var openCollections = new List<FundingClaimsCollection>();
-
-            foreach (var collectionYear in collectionYears)
-            {
-                var collections = await _httpClientService.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_fundingClaimsBaseUrl}/collection/collectionYear/{collectionYear}", cancellationToken);
-                if (collections != null)
-                {
-                    collections = collections?.Where(c => IsFundingClaimCollectionWithinDateTolerance(c.SubmissionCloseDateUtc));
-                    openCollections.AddRange(collections);
-                }
-            }
-
-            return openCollections.Select(s => new CollectionAssignment
-            {
-                CollectionId = s.CollectionId,
-                Name = s.CollectionName,
-                DisplayOrder = SetDisplayOrder(CollectionType.FC, s.CollectionName),
-            });
-        }
-
-        private List<int> GetCollectionYears()
-        {
-            var collectionYears = new List<int>();
-
             var nowUtc = _dateTimeProvider.GetNowUtc();
+            var startDateUtc = nowUtc.AddMonths(ReturnPeriodCollectionOpenVarianceInMonths);
+            var endDateUtc = nowUtc.AddMonths(-ReturnPeriodCollectionOpenVarianceInMonths);
 
-            switch (nowUtc.Month)
-            {
-                case int n when n >= 1 && n <= 7:
-                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYearMinusOne }, nowUtc);
-                    break;
-                case int n when n >= 8 && n <= 10:
-                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear, CollectionYearOption.CurrentYearMinusOne }, nowUtc);
-                    break;
-                case int n when n >= 11 && n <= 12:
-                    collectionYears = FormatDateToCollectionYear(new[] { CollectionYearOption.CurrentYear }, nowUtc);
-                    break;
-            }
+            var collections = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_jobManagementBaseUrl}/api/collections/ByDateRange/{startDateUtc:o}/{endDateUtc:o}", cancellationToken);
 
-            return collectionYears;
-        }
-
-        private List<int> FormatDateToCollectionYear(CollectionYearOption[] options, DateTime nowUtc)
-        {
-            var currentYearMinusOne = $"{(nowUtc.Year - 1).ToString().Substring(2, 2)}{nowUtc.Year.ToString().Substring(2, 2)}";
-            var currentYear = $"{nowUtc.Year.ToString().Substring(2, 2)}{(nowUtc.Year + 1).ToString().Substring(2, 2)}";
-
-            var years = new List<int>();
-
-            foreach (var option in options)
-            {
-                switch (option)
+            return collections
+                .Where(c => !_jobManagementCollectionsTypesToExclude.Contains(c.CollectionType))
+                .Select(s => new CollectionAssignment
                 {
-                    case CollectionYearOption.CurrentYear:
-                        years.Add(int.Parse(currentYear));
-                        break;
-                    case CollectionYearOption.CurrentYearMinusOne:
-                        years.Add(int.Parse(currentYearMinusOne));
-                        break;
-                }
-            }
-
-            return years;
+                    CollectionId = s.CollectionId,
+                    Name = s.CollectionTitle,
+                    DisplayOrder = SetDisplayOrder((CollectionType)Enum.Parse(typeof(CollectionType), s.CollectionType), s.CollectionTitle),
+                });
         }
 
-        private bool IsReturnPeriodCollectionWithinDateTolerance(DateTime? startDateUtc, DateTime? endDateUtc)
+        private async Task<IEnumerable<CollectionAssignment>> GetOpenFundingClaimCollections(CancellationToken cancellationToken)
         {
-            var now = _dateTimeProvider.GetNowUtc();
+            var nowUtc = _dateTimeProvider.GetNowUtc();
+            var endDateUtc = nowUtc.AddDays(-FundingClaimCollectionOpenVarianceInDays);
 
-            if (startDateUtc.HasValue && endDateUtc.HasValue)
+            var collections = await _httpClientService.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_fundingClaimsBaseUrl}/collection/ByDateRange/{nowUtc:o}/{endDateUtc:o}", cancellationToken);
+
+            if (collections != null)
             {
-                return startDateUtc.Value.AddMonths(-ReturnPeriodCollectionOpenVarianceInMonths) <= now && endDateUtc.Value.AddMonths(ReturnPeriodCollectionOpenVarianceInMonths) >= now;
+                return collections.Select(s => new CollectionAssignment
+                {
+                    CollectionId = s.CollectionId,
+                    Name = s.CollectionName,
+                    DisplayOrder = SetDisplayOrder(CollectionType.FC, s.CollectionName),
+                });
             }
 
-            return true;
-        }
-
-        private bool IsFundingClaimCollectionWithinDateTolerance(DateTime? endDateUtc)
-        {
-            if (endDateUtc.HasValue)
-            {
-                return endDateUtc.Value.AddDays(FundingClaimCollectionOpenVarianceInDays) >= _dateTimeProvider.GetNowUtc();
-            }
-
-            return true;
+            return new List<CollectionAssignment>();
         }
     }
 }
