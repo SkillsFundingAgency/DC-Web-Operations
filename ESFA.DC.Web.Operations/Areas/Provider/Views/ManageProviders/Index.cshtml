@@ -71,16 +71,6 @@
 
 @section PageScripts
 {
-    <script>
-        function searchProviderOnConfirm(result) {
-            this._url = '';
-            if (result.existsInSld) {
-                this._url = '@Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" })';
-            } else {
-                this._url = '@Url.Action("Index", "AddNew", new { Area = "Provider", ukprn = "__ukprn__" })';
-            }
-
-            window.location.href = this._url.replace('__ukprn__', result.ukprn);
-        }
-    </script>
+    <partial name="_InitialState" model="Model" />
+    <script src="~/assets/js/providerSearch/providerSearchConfirm.js"></script>
 }

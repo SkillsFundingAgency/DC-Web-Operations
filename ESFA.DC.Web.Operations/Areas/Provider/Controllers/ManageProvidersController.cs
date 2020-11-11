@@ -8,6 +8,7 @@ using ESFA.DC.Web.Operations.Interfaces.Provider;
 using ESFA.DC.Web.Operations.Utils;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
 {
@@ -33,6 +34,8 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Controllers
             viewModel.Ukprn = provider.Ukprn;
             viewModel.Upin = provider.Upin;
             viewModel.IsMca = provider.IsMca.GetValueOrDefault();
+            viewModel.ManageProvidersUrl = Url.Action("Index", "ManageProviders", new { Area = "Provider", ukprn = "__ukprn__" });
+            viewModel.AddNewProvidersUrl = Url.Action("Index", "AddNew", new { Area = "Provider", ukprn = "__ukprn__" });
 
             return View("Index", viewModel);
         }
