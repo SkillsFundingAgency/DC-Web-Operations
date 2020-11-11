@@ -37,7 +37,7 @@ templates['PeriodEnd/ALLFPeriodEndFileList'] = template({"1":function(container,
         return undefined
     };
 
-  return "﻿<table class=\"govuk-table\">\r\n    <thead class=\"govuk-table__head\">\r\n        <tr class=\"govuk-table__row\">\r\n            <th scope=\"col\" class=\"govuk-table__header\">File</th>\r\n            <th scope=\"col\" class=\"govuk-table__header table-width-min\">Status</th>\r\n            <th scope=\"col\" class=\"govuk-table__header\">Reports</th>\r\n        </tr>\r\n    </thead>\r\n    <tbody class=\"govuk-table__body\">\r\n"
+  return "<table class=\"govuk-table\">\r\n    <thead class=\"govuk-table__head\">\r\n        <tr class=\"govuk-table__row\">\r\n            <th scope=\"col\" class=\"govuk-table__header\">File</th>\r\n            <th scope=\"col\" class=\"govuk-table__header table-width-min\">Status</th>\r\n            <th scope=\"col\" class=\"govuk-table__header\">Reports</th>\r\n        </tr>\r\n    </thead>\r\n    <tbody class=\"govuk-table__body\">\r\n"
     + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"files") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":10,"column":8},"end":{"line":23,"column":17}}})) != null ? stack1 : "")
     + "    </tbody>\r\n</table>";
 },"useData":true});
@@ -54,7 +54,7 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
     + "        <ul class=\"app-task-list__items\" id=\"PI-"
     + container.escapeExpression((lookupProperty(helpers,"removeSpaces")||(depth0 && lookupProperty(depth0,"removeSpaces"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"name") : depth0),{"name":"removeSpaces","hash":{},"data":data,"loc":{"start":{"line":5,"column":48},"end":{"line":5,"column":74}}}))
     + "\">\r\n"
-    + ((stack1 = lookupProperty(helpers,"each").call(alias1,(depth0 != null ? lookupProperty(depth0,"pathItems") : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":6,"column":12},"end":{"line":36,"column":21}}})) != null ? stack1 : "")
+    + ((stack1 = lookupProperty(helpers,"each").call(alias1,(depth0 != null ? lookupProperty(depth0,"pathItems") : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":6,"column":12},"end":{"line":32,"column":21}}})) != null ? stack1 : "")
     + "        </ul>\r\n    </li>\r\n";
 },"2":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3=container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
@@ -68,8 +68,8 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
     + alias3((lookupProperty(helpers,"setVar")||(depth0 && lookupProperty(depth0,"setVar"))||alias2).call(alias1,"isCurrent",(lookupProperty(helpers,"isPathItemCurrent")||(depth0 && lookupProperty(depth0,"isPathItemCurrent"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"ordinal") : depth0),(depths[1] != null ? lookupProperty(depths[1],"position") : depths[1]),{"name":"isPathItemCurrent","hash":{},"data":data,"loc":{"start":{"line":7,"column":33},"end":{"line":7,"column":77}}}),{"name":"setVar","hash":{},"data":data,"loc":{"start":{"line":7,"column":12},"end":{"line":7,"column":79}}}))
     + "\r\n            "
     + alias3((lookupProperty(helpers,"setVar")||(depth0 && lookupProperty(depth0,"setVar"))||alias2).call(alias1,"isAutoCompleted",(lookupProperty(helpers,"isAutoCompleted")||(depth0 && lookupProperty(depth0,"isAutoCompleted"))||alias2).call(alias1,depth0,depths[1],{"name":"isAutoCompleted","hash":{},"data":data,"loc":{"start":{"line":8,"column":39},"end":{"line":8,"column":64}}}),{"name":"setVar","hash":{},"data":data,"loc":{"start":{"line":8,"column":12},"end":{"line":8,"column":66}}}))
-    + "\r\n\r\n"
-    + ((stack1 = container.invokePartial(lookupProperty(partials,"proceedableItemWrapper"),depth0,{"name":"proceedableItemWrapper","hash":{"isBusy":(depths[1] != null ? lookupProperty(depths[1],"isBusy") : depths[1]),"isNextItemSubPath":(lookupProperty(helpers,"isNextItemSubPath")||(depth0 && lookupProperty(depth0,"isNextItemSubPath"))||alias2).call(alias1,(depths[1] != null ? lookupProperty(depths[1],"pathItems") : depths[1]),(data && lookupProperty(data,"index")),{"name":"isNextItemSubPath","hash":{},"data":data,"loc":{"start":{"line":10,"column":178},"end":{"line":10,"column":217}}}),"yearPeriod":((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"yearPeriod")),"isProceedable":(lookupProperty(helpers,"isProceedable")||(depth0 && lookupProperty(depth0,"isProceedable"))||alias2).call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isCurrent")),((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isAutoCompleted")),(data && lookupProperty(data,"last")),{"name":"isProceedable","hash":{},"data":data,"loc":{"start":{"line":10,"column":72},"end":{"line":10,"column":131}}}),"pathitem":depth0},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
+    + "\r\n"
+    + ((stack1 = container.invokePartial(lookupProperty(partials,"proceedableItemWrapper"),depth0,{"name":"proceedableItemWrapper","hash":{"isBusy":(depths[1] != null ? lookupProperty(depths[1],"isBusy") : depths[1]),"isNextItemSubPath":(lookupProperty(helpers,"isNextItemSubPath")||(depth0 && lookupProperty(depth0,"isNextItemSubPath"))||alias2).call(alias1,(depths[1] != null ? lookupProperty(depths[1],"pathItems") : depths[1]),(data && lookupProperty(data,"index")),{"name":"isNextItemSubPath","hash":{},"data":data,"loc":{"start":{"line":9,"column":178},"end":{"line":9,"column":217}}}),"yearPeriod":((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"yearPeriod")),"isProceedable":(lookupProperty(helpers,"isProceedable")||(depth0 && lookupProperty(depth0,"isProceedable"))||alias2).call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isCurrent")),((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isAutoCompleted")),(data && lookupProperty(data,"last")),{"name":"isProceedable","hash":{},"data":data,"loc":{"start":{"line":9,"column":72},"end":{"line":9,"column":131}}}),"pathitem":depth0},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
 },"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3=container.escapeExpression, alias4=container.lambda, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
@@ -79,18 +79,18 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
     };
 
   return "                <li id=\""
-    + alias3((lookupProperty(helpers,"removeSpaces")||(depth0 && lookupProperty(depth0,"removeSpaces"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"name") : depth0),{"name":"removeSpaces","hash":{},"data":data,"loc":{"start":{"line":11,"column":24},"end":{"line":11,"column":50}}}))
+    + alias3((lookupProperty(helpers,"removeSpaces")||(depth0 && lookupProperty(depth0,"removeSpaces"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"name") : depth0),{"name":"removeSpaces","hash":{},"data":data,"loc":{"start":{"line":10,"column":24},"end":{"line":10,"column":50}}}))
     + "\" class=\"app-task-list__item\">\r\n                    "
-    + ((stack1 = lookupProperty(helpers,"if").call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isCurrent")),{"name":"if","hash":{},"fn":container.program(4, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":12,"column":20},"end":{"line":12,"column":53}}})) != null ? stack1 : "")
+    + ((stack1 = lookupProperty(helpers,"if").call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isCurrent")),{"name":"if","hash":{},"fn":container.program(4, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":11,"column":20},"end":{"line":11,"column":53}}})) != null ? stack1 : "")
     + alias3(alias4((depth0 != null ? lookupProperty(depth0,"name") : depth0), depth0))
-    + ((stack1 = lookupProperty(helpers,"if").call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isAutoCompleted")),{"name":"if","hash":{},"fn":container.program(6, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":12,"column":66},"end":{"line":12,"column":124}}})) != null ? stack1 : "")
-    + ((stack1 = lookupProperty(helpers,"if").call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isCurrent")),{"name":"if","hash":{},"fn":container.program(8, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":12,"column":124},"end":{"line":12,"column":158}}})) != null ? stack1 : "")
+    + ((stack1 = lookupProperty(helpers,"if").call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isAutoCompleted")),{"name":"if","hash":{},"fn":container.program(6, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":11,"column":66},"end":{"line":11,"column":124}}})) != null ? stack1 : "")
+    + ((stack1 = lookupProperty(helpers,"if").call(alias1,((stack1 = (data && lookupProperty(data,"root"))) && lookupProperty(stack1,"isCurrent")),{"name":"if","hash":{},"fn":container.program(8, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":11,"column":124},"end":{"line":11,"column":158}}})) != null ? stack1 : "")
     + "\r\n\r\n"
-    + ((stack1 = lookupProperty(helpers,"if").call(alias1,(lookupProperty(helpers,"isSubPath")||(depth0 && lookupProperty(depth0,"isSubPath"))||alias2).call(alias1,depth0,{"name":"isSubPath","hash":{},"data":data,"loc":{"start":{"line":14,"column":22},"end":{"line":14,"column":38}}}),{"name":"if","hash":{},"fn":container.program(10, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":14,"column":16},"end":{"line":16,"column":23}}})) != null ? stack1 : "")
-    + "\r\n                <a id=\""
+    + ((stack1 = lookupProperty(helpers,"if").call(alias1,(lookupProperty(helpers,"isSubPath")||(depth0 && lookupProperty(depth0,"isSubPath"))||alias2).call(alias1,depth0,{"name":"isSubPath","hash":{},"data":data,"loc":{"start":{"line":13,"column":22},"end":{"line":13,"column":38}}}),{"name":"if","hash":{},"fn":container.program(10, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":13,"column":16},"end":{"line":15,"column":23}}})) != null ? stack1 : "")
+    + "                <a id=\""
     + alias3(alias4((depth0 != null ? lookupProperty(depth0,"name") : depth0), depth0))
     + "\"></a>\r\n"
-    + ((stack1 = lookupProperty(helpers,"if").call(alias1,(depth0 != null ? lookupProperty(depth0,"pathItemJobs") : depth0),{"name":"if","hash":{},"fn":container.program(12, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":19,"column":16},"end":{"line":33,"column":23}}})) != null ? stack1 : "")
+    + ((stack1 = lookupProperty(helpers,"if").call(alias1,(depth0 != null ? lookupProperty(depth0,"pathItemJobs") : depth0),{"name":"if","hash":{},"fn":container.program(12, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":17,"column":16},"end":{"line":29,"column":23}}})) != null ? stack1 : "")
     + "            </li>\r\n";
 },"4":function(container,depth0,helpers,partials,data) {
     return "<b>";
@@ -118,9 +118,9 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
     };
 
   return "                <ul id=\"JL-"
-    + container.escapeExpression((lookupProperty(helpers,"removeSpaces")||(depth0 && lookupProperty(depth0,"removeSpaces"))||container.hooks.helperMissing).call(alias1,(depth0 != null ? lookupProperty(depth0,"name") : depth0),{"name":"removeSpaces","hash":{},"data":data,"loc":{"start":{"line":20,"column":27},"end":{"line":20,"column":53}}}))
+    + container.escapeExpression((lookupProperty(helpers,"removeSpaces")||(depth0 && lookupProperty(depth0,"removeSpaces"))||container.hooks.helperMissing).call(alias1,(depth0 != null ? lookupProperty(depth0,"name") : depth0),{"name":"removeSpaces","hash":{},"data":data,"loc":{"start":{"line":18,"column":27},"end":{"line":18,"column":53}}}))
     + "\">\r\n"
-    + ((stack1 = lookupProperty(helpers,"each").call(alias1,(depth0 != null ? lookupProperty(depth0,"pathItemJobs") : depth0),{"name":"each","hash":{},"fn":container.program(13, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":21,"column":20},"end":{"line":31,"column":29}}})) != null ? stack1 : "")
+    + ((stack1 = lookupProperty(helpers,"each").call(alias1,(depth0 != null ? lookupProperty(depth0,"pathItemJobs") : depth0),{"name":"each","hash":{},"fn":container.program(13, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":19,"column":20},"end":{"line":27,"column":29}}})) != null ? stack1 : "")
     + "                </ul>\r\n";
 },"13":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=container.escapeExpression, alias2=depth0 != null ? depth0 : (container.nullContext || {}), alias3=container.hooks.helperMissing, lookupProperty = container.lookupProperty || function(parent, propertyName) {
@@ -133,13 +133,14 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
   return "                    <li>\r\n                        Job Id : "
     + alias1(container.lambda((depth0 != null ? lookupProperty(depth0,"jobId") : depth0), depth0))
     + ", "
-    + alias1((lookupProperty(helpers,"getProviderName")||(depth0 && lookupProperty(depth0,"getProviderName"))||alias3).call(alias2,(depth0 != null ? lookupProperty(depth0,"providerName") : depth0),{"name":"getProviderName","hash":{},"data":data,"loc":{"start":{"line":23,"column":49},"end":{"line":23,"column":86}}}))
+    + alias1((lookupProperty(helpers,"getProviderName")||(depth0 && lookupProperty(depth0,"getProviderName"))||alias3).call(alias2,(depth0 != null ? lookupProperty(depth0,"providerName") : depth0),{"name":"getProviderName","hash":{},"data":data,"loc":{"start":{"line":21,"column":49},"end":{"line":21,"column":86}}}))
     + "Status : "
-    + alias1((lookupProperty(helpers,"getStatus")||(depth0 && lookupProperty(depth0,"getStatus"))||alias3).call(alias2,(depth0 != null ? lookupProperty(depth0,"status") : depth0),{"name":"getStatus","hash":{},"data":data,"loc":{"start":{"line":23,"column":95},"end":{"line":23,"column":120}}}))
+    + alias1((lookupProperty(helpers,"getStatus")||(depth0 && lookupProperty(depth0,"getStatus"))||alias3).call(alias2,(depth0 != null ? lookupProperty(depth0,"status") : depth0),{"name":"getStatus","hash":{},"data":data,"loc":{"start":{"line":21,"column":95},"end":{"line":21,"column":120}}}))
     + "\r\n"
-    + ((stack1 = lookupProperty(helpers,"if").call(alias2,(lookupProperty(helpers,"canRetry")||(depth0 && lookupProperty(depth0,"canRetry"))||alias3).call(alias2,(depth0 != null ? lookupProperty(depth0,"status") : depth0),{"name":"canRetry","hash":{},"data":data,"loc":{"start":{"line":24,"column":30},"end":{"line":24,"column":52}}}),{"name":"if","hash":{},"fn":container.program(14, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":24,"column":24},"end":{"line":26,"column":31}}})) != null ? stack1 : "")
-    + "                    </li>\r\n"
-    + ((stack1 = lookupProperty(helpers,"if").call(alias2,(data && lookupProperty(data,"last")),{"name":"if","hash":{},"fn":container.program(16, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":28,"column":20},"end":{"line":30,"column":27}}})) != null ? stack1 : "");
+    + ((stack1 = lookupProperty(helpers,"if").call(alias2,(lookupProperty(helpers,"canRetry")||(depth0 && lookupProperty(depth0,"canRetry"))||alias3).call(alias2,(depth0 != null ? lookupProperty(depth0,"status") : depth0),{"name":"canRetry","hash":{},"data":data,"loc":{"start":{"line":22,"column":30},"end":{"line":22,"column":52}}}),{"name":"if","hash":{},"fn":container.program(14, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":22,"column":24},"end":{"line":24,"column":31}}})) != null ? stack1 : "")
+    + "                    </li>\r\n                    "
+    + ((stack1 = lookupProperty(helpers,"if").call(alias2,(data && lookupProperty(data,"last")),{"name":"if","hash":{},"fn":container.program(16, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":26,"column":20},"end":{"line":26,"column":94}}})) != null ? stack1 : "")
+    + "\r\n";
 },"14":function(container,depth0,helpers,partials,data) {
     var alias1=container.lambda, alias2=container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
@@ -161,7 +162,7 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
         return undefined
     };
 
-  return ((stack1 = container.invokePartial(lookupProperty(partials,"pathItemJobSummary"),depth0,{"name":"pathItemJobSummary","hash":{"summary":(depths[1] != null ? lookupProperty(depths[1],"pathItemJobSummary") : depths[1])},"data":data,"indent":"                    ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
+  return ((stack1 = container.invokePartial(lookupProperty(partials,"pathItemJobSummary"),depth0,{"name":"pathItemJobSummary","hash":{"summary":(depths[1] != null ? lookupProperty(depths[1],"pathItemJobSummary") : depths[1])},"data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
 },"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
@@ -170,8 +171,8 @@ templates['PeriodEnd/PeriodEnd'] = template({"1":function(container,depth0,helpe
         return undefined
     };
 
-  return "﻿<ol class=\"app-task-list\">\r\n"
-    + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = (depth0 != null ? lookupProperty(depth0,"viewModel") : depth0)) != null ? lookupProperty(stack1,"paths") : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":2,"column":4},"end":{"line":39,"column":13}}})) != null ? stack1 : "")
+  return "<ol class=\"app-task-list\">\r\n"
+    + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = (depth0 != null ? lookupProperty(depth0,"viewModel") : depth0)) != null ? lookupProperty(stack1,"paths") : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":2,"column":4},"end":{"line":35,"column":13}}})) != null ? stack1 : "")
     + "</ol>";
 },"usePartial":true,"useData":true,"useDepths":true});
 templates['PeriodEnd/PeriodEndNavigation'] = template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
@@ -229,8 +230,7 @@ templates['PeriodEnd/PeriodEndNavigation'] = template({"1":function(container,de
         return undefined
     };
 
-  return "﻿"
-    + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"paths") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":1,"column":1},"end":{"line":17,"column":9}}})) != null ? stack1 : "");
+  return ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"paths") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data,"loc":{"start":{"line":1,"column":0},"end":{"line":17,"column":9}}})) != null ? stack1 : "");
 },"useData":true,"useDepths":true});
 templates['PeriodEnd/ValidityPeriods'] = template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression, alias3=depth0 != null ? depth0 : (container.nullContext || {}), alias4=container.hooks.helperMissing, lookupProperty = container.lookupProperty || function(parent, propertyName) {
@@ -425,7 +425,7 @@ templates['PeriodEnd/ValidityPeriods'] = template({"1":function(container,depth0
         return undefined
     };
 
-  return "﻿<hr />\r\n\r\n<ol class=\"app-task-list__items\">\r\n    "
+  return "<hr />\r\n\r\n<ol class=\"app-task-list__items\">\r\n    "
     + alias3((lookupProperty(helpers,"setVar")||(depth0 && lookupProperty(depth0,"setVar"))||alias2).call(alias1,"masterIndex",0,{"name":"setVar","hash":{},"data":data,"loc":{"start":{"line":4,"column":4},"end":{"line":4,"column":30}}}))
     + "\r\n    "
     + alias3((lookupProperty(helpers,"setVar")||(depth0 && lookupProperty(depth0,"setVar"))||alias2).call(alias1,"hasAlreadyRun",((stack1 = (depth0 != null ? lookupProperty(depth0,"viewModel") : depth0)) != null ? lookupProperty(stack1,"periodEndHasRunForPeriod") : stack1),{"name":"setVar","hash":{},"data":data,"loc":{"start":{"line":5,"column":4},"end":{"line":5,"column":65}}}))
@@ -719,7 +719,7 @@ templates['PeriodEnd/Partials/ILRPathHeader'] = template({"1":function(container
         return undefined
     };
 
-  return "﻿<a id=\"Path"
+  return "<a id=\"Path"
     + alias2(alias1(((stack1 = (depth0 != null ? lookupProperty(depth0,"path") : depth0)) != null ? lookupProperty(stack1,"pathId") : stack1), depth0))
     + "\"></a>\r\n<h3>\r\n"
     + ((stack1 = lookupProperty(helpers,"if").call(alias3,((stack1 = (depth0 != null ? lookupProperty(depth0,"path") : depth0)) != null ? lookupProperty(stack1,"pathId") : stack1),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":3,"column":4},"end":{"line":5,"column":11}}})) != null ? stack1 : "")
@@ -739,7 +739,7 @@ templates['PeriodEnd/Partials/PathHeader'] = template({"1":function(container,de
         return undefined
     };
 
-  return "﻿<a id=\"Path"
+  return "<a id=\"Path"
     + alias2(alias1(((stack1 = (depth0 != null ? lookupProperty(depth0,"path") : depth0)) != null ? lookupProperty(stack1,"pathId") : stack1), depth0))
     + "\"></a>\r\n<h3>\r\n    "
     + alias2(alias1(((stack1 = (depth0 != null ? lookupProperty(depth0,"path") : depth0)) != null ? lookupProperty(stack1,"name") : stack1), depth0))
@@ -772,8 +772,7 @@ templates['PeriodEnd/Partials/PathItemJobSummary'] = template({"1":function(cont
         return undefined
     };
 
-  return "﻿"
-    + ((stack1 = lookupProperty(helpers,"if").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"summary") : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":1,"column":1},"end":{"line":5,"column":7}}})) != null ? stack1 : "");
+  return ((stack1 = lookupProperty(helpers,"if").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"summary") : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":1,"column":0},"end":{"line":5,"column":7}}})) != null ? stack1 : "");
 },"useData":true});
 templates['PeriodEnd/Partials/ProceedableItemWrapper'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
@@ -804,8 +803,7 @@ templates['PeriodEnd/Partials/ProceedableItemWrapper'] = template({"1":function(
         return undefined
     };
 
-  return "﻿"
-    + ((stack1 = lookupProperty(helpers,"if").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"isProceedable") : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data,"loc":{"start":{"line":1,"column":1},"end":{"line":8,"column":7}}})) != null ? stack1 : "");
+  return ((stack1 = lookupProperty(helpers,"if").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"isProceedable") : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data,"loc":{"start":{"line":1,"column":0},"end":{"line":8,"column":7}}})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 templates['PeriodEnd/Partials/ProceedButton'] = template({"1":function(container,depth0,helpers,partials,data) {
     return " disabled ";
@@ -817,7 +815,7 @@ templates['PeriodEnd/Partials/ProceedButton'] = template({"1":function(container
         return undefined
     };
 
-  return "﻿<li class=\"app-task-list__item\" id=\"PL_"
+  return "<li class=\"app-task-list__item\" id=\"PL_"
     + alias2(alias1(((stack1 = (depth0 != null ? lookupProperty(depth0,"pathItem") : depth0)) != null ? lookupProperty(stack1,"pathItemId") : stack1), depth0))
     + "\">\r\n    <span class=\"inline\">\r\n        <button type=\"submit\" onclick=\"window.periodEndClient.proceed("
     + alias2(alias1(((stack1 = (depth0 != null ? lookupProperty(depth0,"yearPeriod") : depth0)) != null ? lookupProperty(stack1,"year") : stack1), depth0))
