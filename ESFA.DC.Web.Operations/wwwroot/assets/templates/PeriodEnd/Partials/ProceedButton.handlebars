@@ -1,4 +1,4 @@
-﻿<li class="app-task-list__item" id="PL_{{pathItem.pathItemId}}">
+<li class="app-task-list__item" id="PL_{{pathItem.pathItemId}}">
     <span class="inline">
         <button type="submit" onclick="window.periodEndClient.proceed({{yearPeriod.year}},{{yearPeriod.period}},{{pathItem.pathId}},{{pathItem.pathItemId}});this.disabled=true;" class="proceed" id="proceed_{{pathItem.pathItemId}}" {{#unless (canContinue pathItem isBusy)}} disabled {{/unless}}>
             {{getProceedButtonText pathItem.pathItemJobs isNextItemSubPath}}
