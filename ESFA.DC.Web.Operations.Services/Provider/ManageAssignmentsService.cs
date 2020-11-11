@@ -97,7 +97,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var startDateUtc = nowUtc.AddMonths(ReturnPeriodCollectionOpenVarianceInMonths);
             var endDateUtc = nowUtc.AddMonths(-ReturnPeriodCollectionOpenVarianceInMonths);
 
-            var collections = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_jobManagementBaseUrl}/api/collections/ByDateRange/{startDateUtc:o}/{endDateUtc:o}", cancellationToken);
+            var collections = await _httpClientService.GetAsync<IEnumerable<Collection>>($"{_jobManagementBaseUrl}/api/collections/OpenByDateRange/{startDateUtc:o}/{endDateUtc:o}", cancellationToken);
 
             return collections
                 .Where(c => !_jobManagementCollectionsTypesToExclude.Contains(c.CollectionType))
@@ -114,7 +114,7 @@ namespace ESFA.DC.Web.Operations.Services.Provider
             var nowUtc = _dateTimeProvider.GetNowUtc();
             var endDateUtc = nowUtc.AddDays(-FundingClaimCollectionOpenVarianceInDays);
 
-            var collections = await _httpClientService.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_fundingClaimsBaseUrl}/collection/ByDateRange/{nowUtc:o}/{endDateUtc:o}", cancellationToken);
+            var collections = await _httpClientService.GetAsync<IEnumerable<FundingClaimsCollection>>($"{_fundingClaimsBaseUrl}/collection/OpenByDateRange/{nowUtc:o}/{endDateUtc:o}", cancellationToken);
 
             if (collections != null)
             {
