@@ -4,9 +4,19 @@
 
 @{
     ViewData["Title"] = "Manage Providers";
+    ViewData[ViewDataConstants.BackLink] = "/AddNewOption";
 }
 
 <br>
+<div class="app-masthead">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-heading-s govuk-!-font-size-27 white-text">Search for a provider</span>
+            <vc:provider-search search-type="existing"></vc:provider-search>
+        </div>
+    </div>
+</div>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Manage provider</h1>
@@ -14,8 +24,8 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body" id="providerDetails">
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-!-font-weight-bold">Name</td>
-                    <td class="govuk-table__cell">@Model.ProviderName</td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">Name </td>
+                    <td class="govuk-table__cell">@Model.ProviderName <strong class="govuk-tag">Active</strong></td>
                 </tr>
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold">UKPRN</td>
@@ -39,22 +49,28 @@
 
         <table class="govuk-table" id="providerDetails">
             <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">COLLECTION</th>
-                <th scope="col" class="govuk-table__header govuk-table__header">START DATE</th>
-                <th scope="col" class="govuk-table__header govuk-table__header">END DATE</th>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Collection</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header">Start date</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header">End date</th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @foreach (var providerAssignment in Model.CollectionAssignments)
-            {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header"> @providerAssignment.Name</th>
-                    <td class="govuk-table__cell govuk-table__cell"> @providerAssignment.StartDate.Value.ToDateString()</td>
-                    <td class="govuk-table__cell govuk-table__cell">@(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToDateString() : string.Empty)</td>
-                </tr>
-            }
+                @foreach (var providerAssignment in Model.CollectionAssignments)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header"> @providerAssignment.Name</th>
+                        <td class="govuk-table__cell govuk-table__cell"> @providerAssignment.StartDate.Value.ToDateString()</td>
+                        <td class="govuk-table__cell govuk-table__cell">@(@providerAssignment.EndDate.HasValue && @providerAssignment.EndDate.Value != new DateTime(2600, 7, 31) ? @providerAssignment.EndDate.Value.ToDateString() : string.Empty)</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
+
+@section PageScripts
+{
+    <partial name="_InitialState" model="Model" />
+    <script src="~/assets/js/providerSearch/providerSearchConfirm.js" asp-append-version="true"></script>
+}

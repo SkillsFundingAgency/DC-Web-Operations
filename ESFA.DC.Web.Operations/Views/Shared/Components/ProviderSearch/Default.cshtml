@@ -44,13 +44,13 @@
         if (result.tradingName.trim() === result.providerName.trim()) {
             return result && result.ukprn + ', ' + result.upin + ', ' +
                 '<strong>' + result.providerName + '</strong>' +
-                (result.existsInSld ? ', Active' : '');
+                (result.existsInSld ? ' <strong class="govuk-tag">Active</strong>' : '');
         }
         else {
             return result && result.ukprn + ', ' + result.upin + ', ' +
                 '<strong>' + result.providerName + '</strong>' + '' + '<br/> <div class="govuk-!-font-size-14"> <i >' +
                 result.tradingName + '</i>' + 
-                (result.existsInSld ? ', Active' : '');
+                (result.existsInSld ? ' <strong class="govuk-tag">Active</strong>' : '');
         }
     }
 

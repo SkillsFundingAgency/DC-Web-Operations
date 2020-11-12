@@ -14,5 +14,9 @@ namespace ESFA.DC.Web.Operations.Areas.Provider.Models
         public bool IsMca { get; set; }
 
         public IEnumerable<CollectionAssignment> CollectionAssignments { get; set; }
+
+        public string ManageProvidersUrl { get; set; }
+
+        public string AddNewProvidersUrl { get; set; }
     }
 }
