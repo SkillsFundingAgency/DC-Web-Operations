@@ -1,8 +1,8 @@
-{{#if isProceedable}}
+{{#if (isProceedable @root.isCurrent this.isPausing @last)}}
 <div class="app-task-list__item">
     {{> @partial-block}}
-    {{> proceedButton pathItem=this yearPeriod=yearPeriod isNextItemSubPath=isNextItemSubPath isBusy=isBusy}}
+    {{> proceedButton pathItem=this yearPeriod=@root.yearPeriod isNextItemSubPath=(isNextItemSubPath @root.path.pathItems @index) isBusy=@root.path.isBusy}}
 </div>
 {{else}}
-   {{> @partial-block}}
+{{> @partial-block}}
 {{/if}}

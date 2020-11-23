@@ -107,7 +107,7 @@ export function msToTime(duration) {
 
 export function sToTime(duration) {
     var seconds = Math.floor(duration % 60),
-        minutes = Math.floor(duration /  60) % 60,
+        minutes = Math.floor(duration / 60) % 60,
         hours = Math.floor(duration / (60 * 60)) % 24;
 
     hours = (hours < 10) ? "0" + hours : hours;
@@ -122,7 +122,7 @@ export function replaceNullOrEmpty(stringValue, replaceValue) {
         (typeof stringValue == 'undefined')
         ||
         (stringValue == null)
-        ||        
+        ||
         (stringValue.length == 0)
         ||
         (stringValue == "")
@@ -148,7 +148,7 @@ export function sumArrayProperty(array, key) {
 export function getInitialStateModel() {
     const stateContainer = document.getElementById('initialState');
     return stateContainer && stateContainer.innerHTML ? JSON.parse(stateContainer.innerHTML) : {};
-} 
+}
 
 export function displayConnectionState(state) {
     const stateLabel = document.getElementById("state");
@@ -174,4 +174,6 @@ export function parseToObject(jsonToParse) {
     return jsonToParse;
 }
 
-
+export function arrayHasItems(array) {
+    return Array.isArray(array) && array.length > 0;
+}

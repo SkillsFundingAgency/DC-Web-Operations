@@ -1,4 +1,4 @@
-﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus, canContinue, isAutoCompleted } from '/assets/js/periodEnd/periodEndUtil.js';
+﻿import { getPathNameBySubPathId, isNextItemSubPath, getJobContinuationStatus, canContinue, isCompleted } from '/assets/js/periodEnd/periodEndUtil.js';
 import { jobContinuation, jobStatus } from '/assets/js/periodEnd/state.js';
 
 describe('period end util', () => {
@@ -53,7 +53,7 @@ describe('period end util', () => {
     describe('getJobContinuationStatus', () => {
         describe('returns nothingRunning', () => {
             test('when jobs are null', () => {
-                 // Act
+                // Act
                 const result = getJobContinuationStatus(null);
 
                 // Assert
@@ -80,7 +80,7 @@ describe('period end util', () => {
         describe('returns someFailed', () => {
             test('when has failed and completed job', () => {
                 //arrange
-                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed }, ]
+                const pathItems = [{ status: jobStatus.completed }, { status: jobStatus.failed },]
 
                 // Act
                 const result = getJobContinuationStatus(pathItems);
@@ -185,7 +185,7 @@ describe('period end util', () => {
 
         test('when all jobs completed returns true ', () => {
             //arrange
-            const pathItem = { pathItemJobs: [{ status: jobStatus.completed }, { status: jobStatus.completed }]};
+            const pathItem = { pathItemJobs: [{ status: jobStatus.completed }, { status: jobStatus.completed }] };
 
             // Act
             const result = canContinue(pathItem, false);
@@ -216,17 +216,33 @@ describe('period end util', () => {
             expect(result).toBe(false);
         });
 
+
+        test('when has jobs processing in summary but all jobs in object have failed returns false ', () => {
+            //arrange
+            const pathItem = {
+                hasJobs: true,
+                pathItemJobSummary: { "numberOfCompleteJobs": 0, "numberOfFailedJobs": 2, "numberOfRunningJobs": 5, "numberOfWaitingJobs": 5 },
+                pathItemJobs: [{ status: jobStatus.failedRetry }, { status: jobStatus.failed }]
+            };
+
+            // Act
+            const result = canContinue(pathItem, false);
+
+            // Assert
+            expect(result).toBe(false);
+        });
+
     });
 
-    describe('isAutoCompleted', () => {
+    describe('isCompleted', () => {
 
         test('when no jobs and pathItem in past should be true', () => {
             //arrange
-            const pathItem = { ordinal:1 };
+            const pathItem = { ordinal: 1 };
             const path = { position: 3 };
 
             // Act
-            const result = isAutoCompleted(pathItem, path);
+            const result = isCompleted(pathItem, path);
 
             // Assert
             expect(result).toBe(true);
@@ -238,7 +254,7 @@ describe('period end util', () => {
             const path = { position: 3 };
 
             // Act
-            const result = isAutoCompleted(pathItem, path);
+            const result = isCompleted(pathItem, path);
 
             // Assert
             expect(result).toBe(false);
@@ -250,7 +266,7 @@ describe('period end util', () => {
             const path = { position: 1, pathItems: [{}] };
 
             // Act
-            const result = isAutoCompleted(pathItem, path);
+            const result = isCompleted(pathItem, path);
 
             // Assert
             expect(result).toBe(true);
@@ -262,7 +278,7 @@ describe('period end util', () => {
             const path = { position: 1, pathItems: [{}] };
 
             // Act
-            const result = isAutoCompleted(pathItem, path);
+            const result = isCompleted(pathItem, path);
 
             // Assert
             expect(result).toBe(false);

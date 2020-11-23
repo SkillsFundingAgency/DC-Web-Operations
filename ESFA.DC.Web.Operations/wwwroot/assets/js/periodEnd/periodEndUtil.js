@@ -1,5 +1,5 @@
 ﻿import { jobStatus, jobContinuation } from '/assets/js/periodEnd/state.js';
-import { removeSpaces } from '/assets/js/util.js';
+import { removeSpaces, arrayHasItems } from '/assets/js/util.js';
 
 export function jobStatusConvertor(status) {
     switch (status) {
@@ -67,12 +67,20 @@ export function isLastPathItem(pathItemOrdinal, pathItems) {
     return pathItemOrdinal + 1 === pathItems.length
 }
 
-export function isAutoCompleted(pathItem, path) {
-    const hasPathItemJobs = Array.isArray(pathItem.pathItemJobs) && pathItem.pathItemJobs.length > 0;
-    if (!hasPathItemJobs
-        && (isPathItemPast(pathItem.ordinal, path.position) || (isPathItemCurrent(pathItem.ordinal, path.position) && isLastPathItem(pathItem.ordinal, path.pathItems)))) {
-        return true;
+export function isCompleted(pathItem, path) {
+
+    if (!arrayHasItems(pathItem.pathItemJobs)) {
+
+        if (isPathItemPast(pathItem.ordinal, path.position)) {
+            return true;
+        }
+
+        if (isPathItemCurrent(pathItem.ordinal, path.position)
+            && (pathItem.isPausing || isLastPathItem(pathItem.ordinal, path.pathItems))) {
+            return true;
+        }
     }
+
     return false;
 }
 
@@ -101,8 +109,14 @@ export function canContinue(pathItem, isBusy) {
         return false;
     }
 
-    if (!pathItem.hasJobs) {
+    // This is temporary until the hasJobs flag works.
+    if (!arrayHasItems(pathItem.pathItemJobs)) {
         return true;
+    }
+
+    // If summary present use that as not all jobs may be returned.
+    if (pathItem.pathItemJobSummary) {
+        return (pathItem.pathItemJobSummary.numberOfRunningJobs + pathItem.pathItemJobSummary.numberOfWaitingJobs) === 0;
     }
 
     const continueStatus = getJobContinuationStatus(pathItem.pathItemJobs);
@@ -113,8 +127,8 @@ export function isSubPath(path) {
     return path.subPaths ? true : false;
 }
 
-export function isProceedable(isCurrent, isCompleted, isLast) {
-    return isCurrent && !isCompleted && !isLast;
+export function isProceedable(isCurrent, isPausing, isLast) {
+    return isCurrent && isPausing && !isLast;
 }
 
 export function getProceedLabelText(pathItem, nextItemIsSubPath) {
