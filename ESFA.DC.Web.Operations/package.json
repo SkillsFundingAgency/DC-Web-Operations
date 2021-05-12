@@ -4,7 +4,7 @@
     "govuk-frontend": "1.2.0",
     "@hmcts/frontend": "0.0.41-alpha",
     "handlebars": "4.7.6",
-    "chart.js": "2.9.3"
+    "chart.js": "2.9.4"
   },
   "devDependencies": {
     "jest": "26.4.0",
